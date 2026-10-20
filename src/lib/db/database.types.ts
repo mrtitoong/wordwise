@@ -6,6 +6,7 @@ export type Database = {
       cards: {
         Row: {
           created_at: string;
+          deleted_at: string | null;
           difficulty: number;
           due: string;
           id: string;
@@ -23,6 +24,7 @@ export type Database = {
         };
         Insert: {
           created_at?: string;
+          deleted_at?: string | null;
           difficulty?: number;
           due?: string;
           id?: string;
@@ -40,6 +42,7 @@ export type Database = {
         };
         Update: {
           created_at?: string;
+          deleted_at?: string | null;
           difficulty?: number;
           due?: string;
           id?: string;
@@ -223,6 +226,7 @@ export type Database = {
           context_image_url: string | null;
           context_sentence: string | null;
           created_at: string;
+          deleted_at: string | null;
           id: string;
           input_method: string;
           notebook_id: string;
@@ -236,6 +240,7 @@ export type Database = {
           context_image_url?: string | null;
           context_sentence?: string | null;
           created_at?: string;
+          deleted_at?: string | null;
           id?: string;
           input_method: string;
           notebook_id: string;
@@ -249,6 +254,7 @@ export type Database = {
           context_image_url?: string | null;
           context_sentence?: string | null;
           created_at?: string;
+          deleted_at?: string | null;
           id?: string;
           input_method?: string;
           notebook_id?: string;
@@ -278,6 +284,7 @@ export type Database = {
         Row: {
           cover_url: string | null;
           created_at: string;
+          deleted_at: string | null;
           description: string | null;
           id: string;
           is_archived: boolean;
@@ -292,6 +299,7 @@ export type Database = {
         Insert: {
           cover_url?: string | null;
           created_at?: string;
+          deleted_at?: string | null;
           description?: string | null;
           id?: string;
           is_archived?: boolean;
@@ -306,6 +314,7 @@ export type Database = {
         Update: {
           cover_url?: string | null;
           created_at?: string;
+          deleted_at?: string | null;
           description?: string | null;
           id?: string;
           is_archived?: boolean;
@@ -474,6 +483,7 @@ export type Database = {
           custom_image_url: string | null;
           custom_meaning: string | null;
           custom_note: string | null;
+          deleted_at: string | null;
           id: string;
           sense_id: string;
           status: string;
@@ -487,6 +497,7 @@ export type Database = {
           custom_image_url?: string | null;
           custom_meaning?: string | null;
           custom_note?: string | null;
+          deleted_at?: string | null;
           id?: string;
           sense_id: string;
           status?: string;
@@ -500,6 +511,7 @@ export type Database = {
           custom_image_url?: string | null;
           custom_meaning?: string | null;
           custom_note?: string | null;
+          deleted_at?: string | null;
           id?: string;
           sense_id?: string;
           status?: string;

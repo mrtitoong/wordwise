@@ -1,7 +1,7 @@
 "use client";
 
 import { useMemo, useState, type ReactNode } from "react";
-import { useTranslations } from "next-intl";
+import { useLocale, useTranslations } from "next-intl";
 import { Check } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { cn } from "@/lib/utils";
@@ -16,7 +16,15 @@ import {
   type OnboardingSettings,
 } from "@/lib/onboarding/settings";
 import { pickStarterWords, type StarterWord } from "@/lib/onboarding/starter-words";
-import { writeGuestData } from "@/lib/onboarding/guest-storage";
+import { isLocale } from "@/i18n/config";
+import { GUEST_OWNER } from "@/lib/db/ids";
+import { getLocalDb } from "@/lib/db/local";
+import { addSensesToDefaultNotebook, cacheWordContent, saveSettings } from "@/lib/db/repo";
+import { toUserSettingsUpdate } from "@/lib/onboarding/settings";
+import { createClient } from "@/lib/supabase/client";
+import { getSupabaseEnv } from "@/lib/supabase/env";
+import { resolveOwner, syncWithTimeout } from "@/lib/sync/client";
+import { createSupabaseRemote } from "@/lib/sync/remote";
 import { completeOnboarding } from "./actions";
 
 const DEFAULT_REMINDER = "20:00";
@@ -24,13 +32,22 @@ const SETTING_STEPS = 3;
 
 type Step = "language" | "level" | "daily" | "notify" | "starter";
 
+/** Lưu sẵn nội dung 5 từ khởi đầu để xem được khi offline (lỗi mạng thì bỏ qua). */
+async function cacheStarterContent(senseIds: string[]) {
+  if (!getSupabaseEnv()) return;
+  const result = await createSupabaseRemote(createClient())
+    .fetchWordContent(senseIds)
+    .catch(() => null);
+  if (result && "content" in result) await cacheWordContent(getLocalDb(), result.content);
+}
+
 type OnboardingFlowProps = {
-  mode: "account" | "guest";
   candidates: StarterWord[];
 };
 
-export function OnboardingFlow({ mode, candidates }: OnboardingFlowProps) {
+export function OnboardingFlow({ candidates }: OnboardingFlowProps) {
   const t = useTranslations("onboarding");
+  const locale = useLocale();
   const [step, setStep] = useState<Step>("language");
   const [settings, setSettings] = useState<OnboardingSettings>(() =>
     defaultOnboardingSettings(Intl.DateTimeFormat().resolvedOptions().timeZone),
@@ -60,23 +77,28 @@ export function OnboardingFlow({ mode, candidates }: OnboardingFlowProps) {
   async function finish(withStarters: boolean) {
     setSaving(true);
     setFailed(false);
-    const senseIds = withStarters ? starters.map((w) => w.senseId) : [];
-    if (mode === "guest") {
-      writeGuestData((current) => ({
-        ...current,
-        settings,
-        onboardedAt: new Date().toISOString(),
-        senseIds: [...new Set([...current.senseIds, ...senseIds])],
-      }));
-    }
-    const result = await completeOnboarding({ settings, senseIds }).catch(() => null);
-    if (!result?.ok) {
+    try {
+      const owner = await resolveOwner();
+      const db = getLocalDb();
+      const senseIds = withStarters ? starters.map((w) => w.senseId) : [];
+      await saveSettings(
+        db,
+        owner,
+        toUserSettingsUpdate(settings, isLocale(locale) ? locale : "vi", new Date()),
+      );
+      if (senseIds.length > 0) {
+        await addSensesToDefaultNotebook(db, owner, senseIds, t("defaultNotebook"));
+        await cacheStarterContent(senseIds);
+      }
+      if (owner !== GUEST_OWNER) await syncWithTimeout();
+      const result = await completeOnboarding();
+      if (!result.ok) throw new Error("completeOnboarding");
+      // Tải lại hẳn để proxy đọc cookie "đã onboarding".
+      window.location.assign(withStarters ? "/" : "/add");
+    } catch {
       setSaving(false);
       setFailed(true);
-      return;
     }
-    // Tải lại hẳn để proxy đọc cookie "đã onboarding".
-    window.location.assign(withStarters ? "/" : "/add");
   }
 
   const stepNumber = { language: 1, level: 2, daily: 3, notify: 3, starter: 3 }[step];

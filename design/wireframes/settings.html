@@ -1,0 +1,132 @@
+<!doctype html>
+<html lang="vi">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Cài đặt · Wireframe WordWise</title>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Be+Vietnam+Pro:wght@400;500;600;700&display=swap">
+<script src="https://cdn.tailwindcss.com/3.4.17"></script>
+<script>tailwind.config={theme:{extend:{colors:{brand:{50:'#eef7fa',100:'#d5ecf3',500:'#2b8bb0',600:'#1f7396',700:'#195d7a'}}}}}</script>
+<link rel="stylesheet" href="wf.css">
+<style>
+  .row { min-height: 52px; display: flex; align-items: center; justify-content: space-between; gap: 12px; padding: 0 12px; font-size: 14px; }
+  .row + .row { border-top: 1px solid #eef2f4; }
+  .row .v { color: var(--wf-muted); }
+  .sw { width: 40px; height: 24px; border-radius: 999px; background: #cfd8de; position: relative; flex: none; }
+  .sw::after { content: ""; position: absolute; top: 3px; left: 3px; width: 18px; height: 18px; border-radius: 50%; background: #fff; }
+  .sw.on { background: #1f7396; } .sw.on::after { left: 19px; }
+  .group { border: 1px solid var(--wf-line); border-radius: 14px; overflow: hidden; }
+  .gl { font-size: 11px; font-weight: 600; letter-spacing: .06em; text-transform: uppercase; color: var(--wf-muted); padding: 0 4px; }
+</style>
+</head>
+<body>
+<header class="wf-head">
+  <a href="index.html">← Tất cả wireframe</a>
+  <h1>Màn 12 · Cài đặt</h1>
+  <p>Route <code>/settings</code>, mở từ ảnh đại diện ở góc trên. Thay đổi tự lưu.</p>
+</header>
+
+<main class="wf-row">
+
+  <section class="wf-state">
+    <div class="wf-label">1 · Cài đặt (cuộn)</div>
+    <div class="phone" style="min-height:1240px">
+      <div class="statusbar"><span>9:41</span><span>●●● 4G</span></div>
+      <div class="screen">
+        <div class="h-12 px-2 flex items-center gap-2"><span class="w-11 h-11 flex items-center justify-center text-xl">←</span><b class="text-lg">Cài đặt</b></div>
+        <div class="scroll">
+          <div class="flex items-center gap-3">
+            <span class="w-12 h-12 rounded-full bg-slate-200 flex items-center justify-center font-semibold">M</span>
+            <div><p class="font-semibold">Minh Trần</p><p class="text-sm text-slate-500">minh@example.com</p></div>
+          </div>
+
+          <p class="gl">Học tập</p>
+          <div class="group">
+            <div class="row"><span>Ngôn ngữ học</span><span class="v">Tiếng Anh ›</span></div>
+            <div class="row"><span>Trình độ</span><span class="v">B1 ›</span></div>
+            <div class="row"><span>Mục tiêu</span><span class="v">Đọc sách, công việc ›</span></div>
+            <div class="row"><span>Từ mới mỗi ngày</span><span class="v tnum">10 ›</span></div>
+            <div class="row"><span>Thẻ ôn tối đa mỗi ngày</span><span class="v tnum">200 ›</span></div>
+          </div>
+
+          <div class="group p-3 flex flex-col gap-2">
+            <div class="flex justify-between text-sm"><span>Tỉ lệ nhớ mong muốn</span><b class="tnum">90%</b></div>
+            <div class="relative h-2 rounded-full bg-slate-200"><div class="absolute h-2 rounded-full bg-brand-600" style="width:67%"></div><span class="absolute -top-2 w-6 h-6 rounded-full bg-white border-2 border-brand-600" style="left:calc(67% - 12px)"></span></div>
+            <div class="flex justify-between text-[11px] text-slate-500 tnum"><span>80%</span><span>95%</span></div>
+            <p class="text-xs text-slate-600 tnum">Ước tính: khoảng 28 thẻ ôn/ngày. Ở 95% sẽ là khoảng 52 thẻ/ngày.</p>
+          </div>
+
+          <p class="gl">Âm thanh &amp; luyện tập</p>
+          <div class="group">
+            <div class="row"><span>Giọng đọc</span><span class="v">Anh–Mỹ ›</span></div>
+            <div class="row"><span>Luyện nhiều giọng (US/UK)</span><span class="sw on"></span></div>
+            <div class="row"><span>Tự phát audio</span><span class="sw on"></span></div>
+            <div class="row"><span>Bài tập phát âm</span><span class="sw on"></span></div>
+          </div>
+
+          <p class="gl">Nhắc học</p>
+          <div class="group">
+            <div class="row"><span>Nhắc học mỗi ngày</span><span class="sw on"></span></div>
+            <div class="row"><span>Giờ nhắc</span><span class="v tnum">20:00 ›</span></div>
+          </div>
+          <p class="text-xs text-slate-500 px-1">Trên iPhone, cần thêm app vào Màn hình chính để nhận thông báo.</p>
+
+          <p class="gl">Giao diện</p>
+          <div class="group grid grid-cols-3 text-sm text-center">
+            <span class="min-h-[48px] flex items-center justify-center">Sáng</span>
+            <span class="min-h-[48px] flex items-center justify-center">Tối</span>
+            <span class="min-h-[48px] flex items-center justify-center bg-brand-50 text-brand-700 font-medium">Theo máy</span>
+          </div>
+
+          <p class="gl">Dữ liệu &amp; tài khoản</p>
+          <div class="group">
+            <div class="row"><span>Xuất toàn bộ dữ liệu (JSON, CSV)</span><span class="v">›</span></div>
+            <div class="row"><span>Góp ý cho WordWise</span><span class="v">›</span></div>
+            <div class="row"><span>Quyền riêng tư &amp; ghi nguồn</span><span class="v">›</span></div>
+            <div class="row"><span>Đăng xuất</span><span class="v"></span></div>
+            <div class="row"><span class="text-red-600">Xóa tài khoản</span><span class="v">›</span></div>
+          </div>
+          <p class="text-xs text-slate-400 text-center">WordWise 0.1.0</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section class="wf-state">
+    <div class="wf-label">2 · Chế độ khách</div>
+    <div class="phone short" style="min-height:420px">
+      <div class="statusbar"><span>9:41</span><span>●●● 4G</span></div>
+      <div class="screen">
+        <div class="h-12 px-2 flex items-center gap-2"><span class="w-11 h-11 flex items-center justify-center text-xl">←</span><b class="text-lg">Cài đặt</b></div>
+        <div class="scroll">
+          <div class="rounded-xl bg-amber-50 border border-amber-200 p-4 flex flex-col gap-2">
+            <p class="font-semibold">Dữ liệu chỉ lưu trên máy này</p>
+            <p class="text-sm text-slate-700">Tạo tài khoản để không mất 24 từ và chuỗi 3 ngày khi đổi máy hoặc xóa trình duyệt.</p>
+            <span class="h-12 rounded-xl bg-brand-600 text-white font-semibold flex items-center justify-center">Tạo tài khoản</span>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section class="wf-state">
+    <div class="wf-label">3 · Xác nhận xóa tài khoản</div>
+    <div class="phone short" style="min-height:520px">
+      <div class="statusbar"><span>9:41</span><span>●●● 4G</span></div>
+      <div class="screen bg-slate-900/40">
+        <div class="flex-1"></div>
+        <div class="bg-white rounded-t-3xl p-4 flex flex-col gap-3">
+          <p class="text-lg font-semibold">Xóa vĩnh viễn tài khoản?</p>
+          <p class="text-sm text-slate-600 tnum">312 từ, 4 sổ tay và toàn bộ lịch sử ôn sẽ bị xóa, không khôi phục được. Hãy xuất dữ liệu trước nếu cần.</p>
+          <label class="text-sm">Gõ <b>XÓA</b> để xác nhận</label>
+          <div class="h-12 rounded-xl border border-slate-300 px-3 flex items-center">|</div>
+          <span class="h-12 rounded-xl bg-red-600/40 text-white font-semibold flex items-center justify-center">Xóa tài khoản</span>
+          <span class="h-12 rounded-xl border border-slate-300 flex items-center justify-center">Hủy</span>
+        </div>
+      </div>
+    </div>
+  </section>
+
+</main>
+</body>
+</html>

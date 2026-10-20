@@ -1,0 +1,172 @@
+<!doctype html>
+<html lang="vi">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Hôm nay · Wireframe WordWise</title>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Be+Vietnam+Pro:wght@400;500;600;700&display=swap">
+<script src="https://cdn.tailwindcss.com/3.4.17"></script>
+<script>tailwind.config={theme:{extend:{colors:{brand:{50:'#eef7fa',100:'#d5ecf3',500:'#2b8bb0',600:'#1f7396',700:'#195d7a'}}}}}</script>
+<link rel="stylesheet" href="wf.css">
+</head>
+<body>
+<header class="wf-head">
+  <a href="index.html">← Tất cả wireframe</a>
+  <h1>Màn 2 · Hôm nay</h1>
+  <p>Trả lời "hôm nay tôi cần làm gì" trong 1 giây. Route <code>/</code>, tab Hôm nay. 4 trạng thái: bình thường, kho trống, đã ôn xong, quay lại sau khi nghỉ.</p>
+</header>
+
+<main class="wf-row">
+
+  <!-- Trạng thái 1: bình thường -->
+  <section class="wf-state">
+    <div class="wf-label">1 · Bình thường</div>
+    <div class="phone">
+      <div class="statusbar"><span>9:41</span><span>●●● 4G</span></div>
+      <div class="screen">
+        <div class="flex items-center justify-between px-4 py-2">
+          <div>
+            <p class="text-xs text-slate-500">Thứ Ba, 20/10</p>
+            <p class="text-lg font-semibold">Chào Minh</p>
+          </div>
+          <div class="flex items-center gap-2">
+            <span class="text-[11px] px-2 py-1 rounded-full bg-emerald-50 text-emerald-700">● Đã đồng bộ</span>
+            <span class="w-10 h-10 rounded-full bg-slate-200 flex items-center justify-center font-semibold">M</span>
+          </div>
+        </div>
+        <div class="scroll">
+          <div class="flex items-center gap-3 rounded-xl border border-orange-200 bg-orange-50 px-3 py-2">
+            <span class="w-8 h-8 rounded-full bg-orange-400 text-white flex items-center justify-center text-sm font-bold">12</span>
+            <div class="text-sm"><b>Chuỗi 12 ngày</b> · còn 1 ngày nghỉ tuần này</div>
+          </div>
+
+          <div class="rounded-2xl bg-brand-600 text-white p-4 flex flex-col gap-3">
+            <p class="text-sm opacity-90">Ôn hôm nay</p>
+            <div class="flex gap-6 tnum">
+              <div><p class="text-3xl font-bold">24</p><p class="text-xs opacity-90">thẻ cần ôn</p></div>
+              <div><p class="text-3xl font-bold">8</p><p class="text-xs opacity-90">từ mới</p></div>
+              <div><p class="text-3xl font-bold">~9</p><p class="text-xs opacity-90">phút</p></div>
+            </div>
+            <span class="h-12 rounded-xl bg-white text-brand-700 font-semibold flex items-center justify-center">Bắt đầu</span>
+            <span class="text-xs text-center opacity-90 underline">Phiên ngắn 5 phút</span>
+          </div>
+
+          <div class="rounded-xl border border-slate-200 p-3 flex items-center justify-between">
+            <div class="text-sm"><b>Tiếp tục phiên dở</b><br><span class="text-slate-500">Còn 6/20 câu · bắt đầu lúc 7:15</span></div>
+            <span class="h-11 px-4 rounded-lg border border-brand-600 text-brand-700 flex items-center font-medium">Tiếp tục</span>
+          </div>
+
+          <div class="flex flex-col gap-2">
+            <p class="text-xs font-semibold uppercase tracking-wider text-slate-500">Mục tiêu có thời hạn</p>
+            <div class="rounded-xl border border-slate-200 p-3 flex flex-col gap-2">
+              <div class="flex justify-between text-sm"><b>IELTS – Environment</b><span class="text-emerald-700">Đúng hạn</span></div>
+              <div class="h-2 rounded-full bg-slate-100"><div class="h-2 rounded-full bg-emerald-500" style="width:42%"></div></div>
+              <p class="text-xs text-slate-500 tnum">84/200 từ · thi ngày 15/12 · còn 56 ngày</p>
+            </div>
+          </div>
+
+          <div class="flex items-center justify-between text-sm rounded-xl bg-slate-50 px-3 py-3">
+            <span>Sắp học: <b class="tnum">46 từ</b> đang chờ</span>
+            <span class="text-brand-700">Xem</span>
+          </div>
+
+          <div class="flex flex-col gap-2">
+            <p class="text-xs font-semibold uppercase tracking-wider text-slate-500">Thêm gần đây</p>
+            <div class="flex flex-wrap gap-2">
+              <span class="px-3 h-9 rounded-full bg-slate-100 flex items-center">resilient</span>
+              <span class="px-3 h-9 rounded-full bg-slate-100 flex items-center">bounce back</span>
+              <span class="px-3 h-9 rounded-full bg-slate-100 flex items-center">tenacious</span>
+            </div>
+          </div>
+        </div>
+        <span class="fab">+</span>
+        <nav class="bottomnav"><span class="on"><i></i>Hôm nay</span><span><i></i>Từ của tôi</span><span><i></i>Luyện tập</span><span><i></i>Thống kê</span></nav>
+      </div>
+    </div>
+    <div class="wf-note"><b>Ghi chú:</b> không hiện tổng số thẻ tồn đọng; chỉ hiện phần hôm nay. Thời gian ước tính = số thẻ × thời gian trả lời trung vị của người dùng.</div>
+  </section>
+
+  <!-- Trạng thái 2: kho trống -->
+  <section class="wf-state">
+    <div class="wf-label">2 · Rỗng: chưa có từ nào</div>
+    <div class="phone">
+      <div class="statusbar"><span>9:41</span><span>●●● 4G</span></div>
+      <div class="screen">
+        <div class="flex items-center justify-between px-4 py-2">
+          <p class="text-lg font-semibold">Chào bạn</p>
+          <span class="text-[11px] px-2 py-1 rounded-full bg-slate-100 text-slate-600">Chế độ khách</span>
+        </div>
+        <div class="scroll items-center text-center justify-center">
+          <div class="ph w-40 h-32 rounded-2xl"><span>minh họa: sổ tay mở</span></div>
+          <p class="text-lg font-semibold">Bắt đầu với từ đầu tiên</p>
+          <p class="text-slate-500 max-w-[260px]">Thêm từ bạn vừa gặp, hoặc chọn một bộ từ có sẵn theo mục tiêu của bạn.</p>
+          <span class="w-full h-12 rounded-xl bg-brand-600 text-white font-semibold flex items-center justify-center">+ Thêm từ đầu tiên</span>
+          <span class="w-full h-12 rounded-xl border border-slate-300 font-medium flex items-center justify-center">Chọn bộ từ có sẵn</span>
+        </div>
+        <nav class="bottomnav"><span class="on"><i></i>Hôm nay</span><span><i></i>Từ của tôi</span><span><i></i>Luyện tập</span><span><i></i>Thống kê</span></nav>
+      </div>
+    </div>
+  </section>
+
+  <!-- Trạng thái 3: đã ôn xong -->
+  <section class="wf-state">
+    <div class="wf-label">3 · Đã ôn xong hôm nay</div>
+    <div class="phone">
+      <div class="statusbar"><span>21:05</span><span>●●● Wi-Fi</span></div>
+      <div class="screen">
+        <div class="flex items-center justify-between px-4 py-2">
+          <p class="text-lg font-semibold">Chào Minh</p>
+          <span class="w-10 h-10 rounded-full bg-slate-200 flex items-center justify-center font-semibold">M</span>
+        </div>
+        <div class="scroll">
+          <div class="rounded-2xl bg-emerald-50 border border-emerald-200 p-5 flex flex-col items-center gap-2 text-center">
+            <span class="w-14 h-14 rounded-full bg-orange-400 text-white text-xl font-bold flex items-center justify-center">13</span>
+            <p class="text-lg font-semibold">Xong hôm nay!</p>
+            <p class="text-sm text-slate-600">Chuỗi 13 ngày. Ngày mai khoảng 18 thẻ, 6 phút.</p>
+          </div>
+          <span class="h-12 rounded-xl bg-brand-600 text-white font-semibold flex items-center justify-center">Học thêm 5 từ mới</span>
+          <span class="h-12 rounded-xl border border-slate-300 font-medium flex items-center justify-center">Luyện thêm</span>
+          <div class="wf-note">Học thêm từ mới dùng hàng Sắp học, vượt giới hạn/ngày chỉ khi người dùng chủ động bấm.</div>
+        </div>
+        <span class="fab">+</span>
+        <nav class="bottomnav"><span class="on"><i></i>Hôm nay</span><span><i></i>Từ của tôi</span><span><i></i>Luyện tập</span><span><i></i>Thống kê</span></nav>
+      </div>
+    </div>
+  </section>
+
+  <!-- Trạng thái 4: quay lại nhẹ nhàng -->
+  <section class="wf-state">
+    <div class="wf-label">4 · Quay lại sau 5 ngày nghỉ</div>
+    <div class="phone">
+      <div class="statusbar"><span>8:20</span><span>●●● 4G</span></div>
+      <div class="screen">
+        <div class="flex items-center justify-between px-4 py-2">
+          <p class="text-lg font-semibold">Chào mừng trở lại, Minh</p>
+          <span class="text-[11px] px-2 py-1 rounded-full bg-amber-50 text-amber-700">◐ Đang đồng bộ</span>
+        </div>
+        <div class="scroll">
+          <div class="rounded-xl bg-sky-50 border border-sky-200 p-3 text-sm">
+            <b>Chế độ quay lại nhẹ nhàng</b><br>
+            Hôm nay chỉ ôn 40 thẻ quan trọng nhất. Phần còn lại được dàn đều trong 4 ngày tới. Từ mới tạm dừng.
+          </div>
+          <div class="rounded-2xl bg-brand-600 text-white p-4 flex flex-col gap-3">
+            <p class="text-sm opacity-90">Ôn hôm nay</p>
+            <div class="flex gap-6 tnum">
+              <div><p class="text-3xl font-bold">40</p><p class="text-xs opacity-90">thẻ cần ôn</p></div>
+              <div><p class="text-3xl font-bold">0</p><p class="text-xs opacity-90">từ mới</p></div>
+              <div><p class="text-3xl font-bold">~12</p><p class="text-xs opacity-90">phút</p></div>
+            </div>
+            <span class="h-12 rounded-xl bg-white text-brand-700 font-semibold flex items-center justify-center">Bắt đầu</span>
+            <span class="text-xs text-center opacity-90 underline">Phiên ngắn 5 phút</span>
+          </div>
+          <div class="wf-note"><b>Ghi chú:</b> không nói "bạn đã bỏ lỡ 214 thẻ". Chuỗi ngày học: dùng ngày nghỉ nếu còn, nếu không thì bắt đầu lại từ 1 kèm "Kỷ lục: 12 ngày".</div>
+        </div>
+        <span class="fab">+</span>
+        <nav class="bottomnav"><span class="on"><i></i>Hôm nay</span><span><i></i>Từ của tôi</span><span><i></i>Luyện tập</span><span><i></i>Thống kê</span></nav>
+      </div>
+    </div>
+  </section>
+
+</main>
+</body>
+</html>

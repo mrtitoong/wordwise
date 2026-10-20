@@ -1,0 +1,120 @@
+<!doctype html>
+<html lang="vi">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Từ của tôi · Wireframe WordWise</title>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Be+Vietnam+Pro:wght@400;500;600;700&display=swap">
+<script src="https://cdn.tailwindcss.com/3.4.17"></script>
+<script>tailwind.config={theme:{extend:{colors:{brand:{50:'#eef7fa',100:'#d5ecf3',500:'#2b8bb0',600:'#1f7396',700:'#195d7a'}}}}}</script>
+<link rel="stylesheet" href="wf.css">
+</head>
+<body>
+<header class="wf-head">
+  <a href="index.html">← Tất cả wireframe</a>
+  <h1>Màn 3 · Từ của tôi (danh sách sổ tay)</h1>
+  <p>Xem và quản lý sổ tay. Route <code>/notebooks</code>, tab Từ của tôi. Gồm: danh sách, form tạo sổ (bottom sheet), trạng thái mới dùng.</p>
+</header>
+
+<main class="wf-row">
+
+  <section class="wf-state">
+    <div class="wf-label">1 · Danh sách sổ tay</div>
+    <div class="phone">
+      <div class="statusbar"><span>9:41</span><span>●●● 4G</span></div>
+      <div class="screen">
+        <div class="px-4 pt-2 pb-1 flex items-center justify-between">
+          <p class="text-xl font-semibold">Từ của tôi</p>
+          <span class="h-10 px-3 rounded-lg border border-slate-300 flex items-center text-sm font-medium">+ Sổ tay mới</span>
+        </div>
+        <div class="scroll">
+          <div class="h-11 rounded-xl bg-slate-100 flex items-center px-3 text-slate-500">Tìm trong 312 từ của bạn…</div>
+
+          <div class="grid grid-cols-2 gap-3">
+            <div class="rounded-xl border border-slate-200 overflow-hidden">
+              <div class="ph h-20"><span>ảnh bìa</span></div>
+              <div class="p-2.5"><p class="font-semibold text-sm">IELTS – Environment</p><p class="text-xs text-slate-500 tnum">200 từ · <span class="text-brand-700 font-medium">14 đến hạn</span></p></div>
+            </div>
+            <div class="rounded-xl border border-slate-200 overflow-hidden">
+              <div class="ph h-20"><span>ảnh bìa</span></div>
+              <div class="p-2.5"><p class="font-semibold text-sm">Đọc sách: Grit</p><p class="text-xs text-slate-500 tnum">38 từ · <span class="text-brand-700 font-medium">6 đến hạn</span></p></div>
+            </div>
+            <div class="rounded-xl border border-slate-200 overflow-hidden">
+              <div class="ph h-20"><span>ảnh bìa</span></div>
+              <div class="p-2.5"><p class="font-semibold text-sm">Email công việc</p><p class="text-xs text-slate-500 tnum">52 từ · 0 đến hạn</p></div>
+            </div>
+            <div class="rounded-xl border border-slate-200 overflow-hidden">
+              <div class="ph h-20"><span>ảnh bìa</span></div>
+              <div class="p-2.5"><p class="font-semibold text-sm">Sổ của tôi</p><p class="text-xs text-slate-500 tnum">22 từ · <span class="text-brand-700 font-medium">4 đến hạn</span></p></div>
+            </div>
+          </div>
+
+          <div class="rounded-xl bg-brand-50 border border-brand-100 p-3 flex items-center justify-between">
+            <div class="text-sm"><b>Thư viện</b><br><span class="text-slate-600">Bộ từ có sẵn: IELTS, TOEIC, công việc…</span></div>
+            <span class="text-brand-700 font-medium">Mở</span>
+          </div>
+
+          <div class="flex items-center justify-between text-sm text-slate-500 border-t border-slate-200 pt-3">
+            <span>Đã lưu trữ (2)</span><span>▾</span>
+          </div>
+        </div>
+        <span class="fab">+</span>
+        <nav class="bottomnav"><span><i></i>Hôm nay</span><span class="on"><i></i>Từ của tôi</span><span><i></i>Luyện tập</span><span><i></i>Thống kê</span></nav>
+      </div>
+    </div>
+    <div class="wf-note">Một từ có thể nằm ở nhiều sổ, nên tổng số từ ở ô tìm kiếm (312) nhỏ hơn tổng các sổ cộng lại.</div>
+  </section>
+
+  <section class="wf-state">
+    <div class="wf-label">2 · Tạo sổ tay mới (bottom sheet)</div>
+    <div class="phone">
+      <div class="statusbar"><span>9:41</span><span>●●● 4G</span></div>
+      <div class="screen bg-slate-900/40">
+        <div class="flex-1"></div>
+        <div class="bg-white rounded-t-3xl p-4 flex flex-col gap-3">
+          <div class="mx-auto w-10 h-1.5 rounded-full bg-slate-300"></div>
+          <p class="text-lg font-semibold">Sổ tay mới</p>
+          <label class="text-sm font-medium">Tên sổ *</label>
+          <div class="h-12 rounded-xl border-2 border-brand-600 px-3 flex items-center">Từ trong phim|</div>
+          <label class="text-sm font-medium">Ngôn ngữ</label>
+          <div class="h-12 rounded-xl border border-slate-300 px-3 flex items-center justify-between"><span>Tiếng Anh</span><span>▾</span></div>
+          <label class="text-sm font-medium">Mô tả <span class="text-slate-400 font-normal">(tùy chọn)</span></label>
+          <div class="h-12 rounded-xl border border-slate-300 px-3 flex items-center text-slate-400">Từ gặp khi xem Netflix</div>
+          <label class="text-sm font-medium">Tag</label>
+          <div class="flex flex-wrap gap-2">
+            <span class="h-9 px-3 rounded-full bg-brand-100 text-brand-700 flex items-center text-sm">phim ×</span>
+            <span class="h-9 px-3 rounded-full border border-dashed border-slate-300 flex items-center text-sm text-slate-500">+ tag</span>
+          </div>
+          <div class="flex items-center gap-3">
+            <div class="ph w-16 h-12 rounded-lg"><span>bìa</span></div>
+            <span class="text-sm text-brand-700">Chọn ảnh bìa</span>
+          </div>
+          <span class="h-12 rounded-xl bg-brand-600 text-white font-semibold flex items-center justify-center">Tạo sổ tay</span>
+        </div>
+      </div>
+    </div>
+    <div class="wf-note"><b>Lỗi:</b> tên trống → viền đỏ "Hãy đặt tên cho sổ". Trùng tên → "Bạn đã có sổ này. Đặt tên khác, hoặc dùng 'Từ trong phim (2)'".</div>
+  </section>
+
+  <section class="wf-state">
+    <div class="wf-label">3 · Người mới: chỉ có sổ mặc định</div>
+    <div class="phone short" style="min-height:560px">
+      <div class="statusbar"><span>9:41</span><span>●●● 4G</span></div>
+      <div class="screen">
+        <div class="px-4 pt-2 pb-1"><p class="text-xl font-semibold">Từ của tôi</p></div>
+        <div class="scroll">
+          <div class="rounded-xl border border-slate-200 overflow-hidden">
+            <div class="ph h-20"><span>ảnh bìa mặc định</span></div>
+            <div class="p-3"><p class="font-semibold">Sổ của tôi</p><p class="text-xs text-slate-500">0 từ · tạo sẵn để bạn thêm từ ngay</p></div>
+          </div>
+          <span class="h-12 rounded-xl bg-brand-600 text-white font-semibold flex items-center justify-center">+ Thêm từ</span>
+          <span class="h-12 rounded-xl border border-slate-300 font-medium flex items-center justify-center">Lấy bộ từ từ Thư viện</span>
+        </div>
+        <nav class="bottomnav"><span><i></i>Hôm nay</span><span class="on"><i></i>Từ của tôi</span><span><i></i>Luyện tập</span><span><i></i>Thống kê</span></nav>
+      </div>
+    </div>
+  </section>
+
+</main>
+</body>
+</html>

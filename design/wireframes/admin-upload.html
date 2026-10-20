@@ -1,0 +1,144 @@
+<!doctype html>
+<html lang="vi">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Admin tải danh sách · Wireframe WordWise</title>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Be+Vietnam+Pro:wght@400;500;600;700&display=swap">
+<script src="https://cdn.tailwindcss.com/3.4.17"></script>
+<script>tailwind.config={theme:{extend:{colors:{brand:{50:'#eef7fa',100:'#d5ecf3',500:'#2b8bb0',600:'#1f7396',700:'#195d7a'}}}}}</script>
+<link rel="stylesheet" href="wf.css">
+<style>
+  .side { background: #f4f7f9; border-right: 1px solid var(--wf-line); padding: 16px 12px; display: flex; flex-direction: column; gap: 4px; }
+  .side span { min-height: 40px; display: flex; align-items: center; padding: 0 12px; border-radius: 8px; color: var(--wf-muted); }
+  .side span.on { background: #d5ecf3; color: #195d7a; font-weight: 600; }
+  .pill { display: inline-flex; align-items: center; height: 24px; padding: 0 10px; border-radius: 999px; font-size: 12px; font-weight: 500; }
+</style>
+</head>
+<body>
+<header class="wf-head">
+  <a href="index.html">← Tất cả wireframe</a>
+  <h1>Màn 13 · Admin: Danh sách &amp; Tải lên (desktop 1280px)</h1>
+  <p>Route <code>/admin</code>, <code>/admin/lists/new</code>. Chỉ vai trò admin (kiểm tra ở server và RLS). Trên điện thoại, cuộn ngang trong từng khung để xem hết.</p>
+</header>
+
+<main class="wf-row">
+
+  <!-- Danh sách -->
+  <section class="wf-state desk">
+    <div class="wf-label">1 · Danh sách curated_lists</div>
+    <div class="desk-scroll">
+      <div class="desktop">
+        <aside class="side">
+          <p class="font-bold text-lg px-3 pb-3">WordWise <span class="text-xs font-medium text-slate-500">Admin</span></p>
+          <span class="on">Danh sách từ</span><span>Báo lỗi nội dung <b class="ml-auto text-xs text-red-600">7</b></span><span>Thống kê</span><span>Kho từ</span>
+        </aside>
+        <div class="p-8 flex flex-col gap-5">
+          <div class="flex items-center justify-between">
+            <div><p class="text-2xl font-semibold">Danh sách từ có chủ đích</p><p class="text-slate-500 text-sm">12 danh sách · 3 đang chờ duyệt</p></div>
+            <span class="h-11 px-5 rounded-lg bg-brand-600 text-white font-semibold flex items-center">+ Tạo danh sách</span>
+          </div>
+          <div class="flex gap-2 text-sm">
+            <span class="h-9 px-4 rounded-full bg-slate-900 text-white flex items-center">Tất cả 12</span>
+            <span class="h-9 px-4 rounded-full border border-slate-300 flex items-center">Nháp 2</span>
+            <span class="h-9 px-4 rounded-full border border-slate-300 flex items-center">Đang xử lý 1</span>
+            <span class="h-9 px-4 rounded-full border border-slate-300 flex items-center">Chờ duyệt 3</span>
+            <span class="h-9 px-4 rounded-full border border-slate-300 flex items-center">Đã xuất bản 6</span>
+          </div>
+          <table class="w-full text-sm">
+            <thead class="text-left text-slate-500 border-b border-slate-200"><tr><th class="py-2 font-medium">Tên</th><th class="font-medium">Trạng thái</th><th class="font-medium text-right">Số từ</th><th class="font-medium text-right">Người học</th><th class="font-medium text-right">Phiên bản</th><th class="font-medium text-right">Cập nhật</th></tr></thead>
+            <tbody class="divide-y divide-slate-100 tnum">
+              <tr><td class="py-3 font-medium">IELTS Band 7 – Environment</td><td><span class="pill bg-emerald-50 text-emerald-700">Đã xuất bản</span></td><td class="text-right">200</td><td class="text-right">1.284</td><td class="text-right">v2</td><td class="text-right text-slate-500">12/10</td></tr>
+              <tr><td class="py-3 font-medium">IELTS Band 7 – Education</td><td><span class="pill bg-amber-50 text-amber-800">Chờ duyệt · 14 cảnh báo</span></td><td class="text-right">180</td><td class="text-right">—</td><td class="text-right">v1</td><td class="text-right text-slate-500">19/10</td></tr>
+              <tr><td class="py-3 font-medium">Bài đọc: Urban Heat Islands</td><td><span class="pill bg-sky-50 text-sky-700">Đang xử lý · 62%</span></td><td class="text-right">47</td><td class="text-right">—</td><td class="text-right">v1</td><td class="text-right text-slate-500">hôm nay</td></tr>
+              <tr><td class="py-3 font-medium">TOEIC Part 5 – Từ hay gặp</td><td><span class="pill bg-emerald-50 text-emerald-700">Đã xuất bản</span></td><td class="text-right">300</td><td class="text-right">2.017</td><td class="text-right">v3</td><td class="text-right text-slate-500">02/10</td></tr>
+              <tr><td class="py-3 font-medium">Email công việc thiết yếu</td><td><span class="pill bg-slate-100 text-slate-600">Nháp</span></td><td class="text-right">—</td><td class="text-right">—</td><td class="text-right">v1</td><td class="text-right text-slate-500">18/10</td></tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Form tạo -->
+  <section class="wf-state desk">
+    <div class="wf-label">2 · Tạo danh sách: khai báo + nguồn từ</div>
+    <div class="desk-scroll">
+      <div class="desktop">
+        <aside class="side">
+          <p class="font-bold text-lg px-3 pb-3">WordWise <span class="text-xs font-medium text-slate-500">Admin</span></p>
+          <span class="on">Danh sách từ</span><span>Báo lỗi nội dung</span><span>Thống kê</span><span>Kho từ</span>
+        </aside>
+        <div class="p-8 grid grid-cols-[1fr_1.3fr] gap-8">
+          <div class="flex flex-col gap-3">
+            <p class="text-2xl font-semibold">Danh sách mới</p>
+            <label class="text-sm font-medium">Tên *</label>
+            <div class="h-11 rounded-lg border border-slate-300 px-3 flex items-center">Bài đọc: Urban Heat Islands</div>
+            <div class="grid grid-cols-2 gap-3">
+              <div class="flex flex-col gap-1"><label class="text-sm font-medium">Ngôn ngữ</label><div class="h-11 rounded-lg border border-slate-300 px-3 flex items-center justify-between">Tiếng Anh <span>▾</span></div></div>
+              <div class="flex flex-col gap-1"><label class="text-sm font-medium">CEFR mục tiêu</label><div class="h-11 rounded-lg border border-slate-300 px-3 flex items-center justify-between">B2–C1 <span>▾</span></div></div>
+              <div class="flex flex-col gap-1"><label class="text-sm font-medium">Chủ đề</label><div class="h-11 rounded-lg border border-slate-300 px-3 flex items-center">Môi trường đô thị</div></div>
+              <div class="flex flex-col gap-1"><label class="text-sm font-medium">Số ngày gợi ý</label><div class="h-11 rounded-lg border border-slate-300 px-3 flex items-center tnum">21</div></div>
+            </div>
+            <label class="text-sm font-medium">Mục đích</label>
+            <div class="h-20 rounded-lg border border-slate-300 p-3 text-slate-700">Luyện IELTS Reading: từ vựng học thuật trong bài về hiện tượng đảo nhiệt đô thị.</div>
+            <div class="flex items-center gap-3"><div class="ph w-24 h-16 rounded-lg"><span>ảnh bìa</span></div><span class="text-sm text-brand-700">Tải ảnh bìa</span></div>
+          </div>
+          <div class="flex flex-col gap-3">
+            <p class="text-sm font-medium">Nguồn từ</p>
+            <div class="grid grid-cols-3 gap-1 bg-slate-100 p-1 rounded-lg text-sm">
+              <span class="h-10 rounded-md flex items-center justify-center text-slate-500">CSV / Excel</span>
+              <span class="h-10 rounded-md flex items-center justify-center text-slate-500">Dán văn bản</span>
+              <span class="h-10 rounded-md flex items-center justify-center bg-white font-semibold shadow-sm">Bài đọc / đề thi</span>
+            </div>
+            <div class="rounded-xl border-2 border-dashed border-slate-300 p-6 flex flex-col items-center gap-2 text-center">
+              <p class="font-medium">urban-heat-islands.pdf</p>
+              <p class="text-sm text-slate-500 tnum">4 trang · 1.840 từ · đã đọc xong văn bản</p>
+              <span class="text-sm text-brand-700">Đổi file</span>
+            </div>
+            <label class="flex items-center gap-2 text-sm min-h-[44px]"><span class="w-5 h-5 rounded bg-brand-600 text-white text-xs flex items-center justify-center">✓</span>Chỉ lấy từ cấp B2 trở lên</label>
+            <label class="flex items-center gap-2 text-sm min-h-[44px]"><span class="w-5 h-5 rounded bg-brand-600 text-white text-xs flex items-center justify-center">✓</span>Nhận cụm động từ và collocation</label>
+            <div class="rounded-lg bg-slate-50 p-3 text-sm text-slate-600">Bài đọc chỉ dùng để trích từ và câu ngữ cảnh; toàn văn không được hiển thị cho người học.</div>
+            <div class="flex justify-end gap-2 pt-2">
+              <span class="h-11 px-5 rounded-lg border border-slate-300 flex items-center">Lưu nháp</span>
+              <span class="h-11 px-5 rounded-lg bg-brand-600 text-white font-semibold flex items-center">Phân tích</span>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Đang xử lý -->
+  <section class="wf-state desk">
+    <div class="wf-label">3 · Đang xử lý: tiến độ thời gian thực</div>
+    <div class="desk-scroll">
+      <div class="desktop" style="min-height:560px">
+        <aside class="side">
+          <p class="font-bold text-lg px-3 pb-3">WordWise <span class="text-xs font-medium text-slate-500">Admin</span></p>
+          <span class="on">Danh sách từ</span><span>Báo lỗi nội dung</span><span>Thống kê</span><span>Kho từ</span>
+        </aside>
+        <div class="p-8 flex flex-col gap-5 max-w-3xl">
+          <div class="flex items-center gap-3"><p class="text-2xl font-semibold">Bài đọc: Urban Heat Islands</p><span class="pill bg-sky-50 text-sky-700">Đang xử lý</span></div>
+          <div class="h-3 rounded-full bg-slate-100"><div class="h-3 rounded-full bg-brand-600" style="width:62%"></div></div>
+          <ol class="flex flex-col gap-2 text-sm tnum">
+            <li class="flex items-center gap-3"><span class="w-6 h-6 rounded-full bg-emerald-500 text-white text-xs flex items-center justify-center">✓</span><b>1. Trích xuất</b><span class="text-slate-500">58 từ/cụm từ, giữ câu chứa từ</span></li>
+            <li class="flex items-center gap-3"><span class="w-6 h-6 rounded-full bg-emerald-500 text-white text-xs flex items-center justify-center">✓</span><b>2. Chuẩn hóa</b><span class="text-slate-500">gộp trùng còn 47, lọc ≥ B2</span></li>
+            <li class="flex items-center gap-3"><span class="w-6 h-6 rounded-full bg-emerald-500 text-white text-xs flex items-center justify-center">✓</span><b>3. Chọn nghĩa</b><span class="text-slate-500">9 từ nhiều nghĩa chọn theo ngữ cảnh</span></li>
+            <li class="flex items-center gap-3"><span class="w-6 h-6 rounded-full border-2 border-brand-600 text-brand-700 text-xs flex items-center justify-center">4</span><b>4. Nội dung</b><span class="text-slate-500">29/47 xong · 31 dùng lại từ kho</span></li>
+            <li class="flex items-center gap-3 text-slate-400"><span class="w-6 h-6 rounded-full border-2 border-slate-300 text-xs flex items-center justify-center">5</span><b>5. Sắp xếp</b></li>
+            <li class="flex items-center gap-3 text-slate-400"><span class="w-6 h-6 rounded-full border-2 border-slate-300 text-xs flex items-center justify-center">6</span><b>6. Cảnh báo</b></li>
+          </ol>
+          <div class="rounded-lg bg-red-50 border border-red-200 p-3 text-sm flex items-center justify-between">
+            <span><b>Lỗi ở bước 4</b> với 2 từ (hết hạn mức tạo nội dung). Các từ khác vẫn chạy tiếp.</span>
+            <span class="h-10 px-4 rounded-lg border border-red-300 bg-white flex items-center">Chạy lại bước 4</span>
+          </div>
+          <p class="text-sm text-slate-500 tnum">Chi phí ước tính: 41.200 token · bắt đầu 10:02 · có thể rời trang, việc vẫn chạy nền.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+</main>
+</body>
+</html>

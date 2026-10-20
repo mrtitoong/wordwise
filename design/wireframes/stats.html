@@ -1,0 +1,120 @@
+<!doctype html>
+<html lang="vi">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Thống kê · Wireframe WordWise</title>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Be+Vietnam+Pro:wght@400;500;600;700&display=swap">
+<script src="https://cdn.tailwindcss.com/3.4.17"></script>
+<script>tailwind.config={theme:{extend:{colors:{brand:{50:'#eef7fa',100:'#d5ecf3',500:'#2b8bb0',600:'#1f7396',700:'#195d7a'}}}}}</script>
+<link rel="stylesheet" href="wf.css">
+<style>
+  .heat { display: grid; grid-auto-flow: column; grid-template-rows: repeat(7, 10px); grid-auto-columns: 10px; gap: 3px; }
+  .heat i { border-radius: 2px; background: #eef2f4; }
+  .heat i.l1 { background: #c3e1ec; } .heat i.l2 { background: #7fbdd4; } .heat i.l3 { background: #2b8bb0; } .heat i.l4 { background: #195d7a; }
+  .bars { display: flex; align-items: flex-end; gap: 3px; height: 96px; }
+  .bars span { flex: 1; background: #7fbdd4; border-radius: 2px 2px 0 0; }
+</style>
+</head>
+<body>
+<header class="wf-head">
+  <a href="index.html">← Tất cả wireframe</a>
+  <h1>Màn 11 · Thống kê</h1>
+  <p>Route <code>/stats</code>. Tính trên dữ liệu trong máy nên mở được khi offline. Số liệu là dữ liệu giả của người dùng mẫu "Minh".</p>
+</header>
+
+<main class="wf-row">
+
+  <section class="wf-state">
+    <div class="wf-label">1 · Bảng điều khiển</div>
+    <div class="phone" style="min-height:1180px">
+      <div class="statusbar"><span>9:41</span><span>●●● 4G</span></div>
+      <div class="screen">
+        <div class="px-4 pt-2 flex justify-between items-center"><p class="text-xl font-semibold">Thống kê</p><span class="h-9 px-3 rounded-full border border-slate-300 flex items-center text-sm">30 ngày ▾</span></div>
+        <div class="scroll">
+          <div class="grid grid-cols-2 gap-2 tnum">
+            <div class="rounded-xl border border-slate-200 p-3"><p class="text-xs text-slate-500">Chuỗi ngày học</p><p class="text-2xl font-bold">12</p><p class="text-xs text-slate-500">kỷ lục 31</p></div>
+            <div class="rounded-xl border border-slate-200 p-3"><p class="text-xs text-slate-500">Đã thuộc</p><p class="text-2xl font-bold">146</p><p class="text-xs text-emerald-700">+18 tháng này</p></div>
+            <div class="rounded-xl border border-slate-200 p-3"><p class="text-xs text-slate-500">Tỉ lệ nhớ 30 ngày</p><p class="text-2xl font-bold">89%</p><p class="text-xs text-slate-500">mục tiêu 90%</p></div>
+            <div class="rounded-xl border border-slate-200 p-3"><p class="text-xs text-slate-500">Phút học tuần này</p><p class="text-2xl font-bold">74</p><p class="text-xs text-emerald-700">+12 so với tuần trước</p></div>
+          </div>
+
+          <div class="flex flex-col gap-2">
+            <p class="text-sm font-semibold">Phút học mỗi ngày</p>
+            <div class="overflow-x-auto pb-1"><div class="heat"><i class="l1"></i><i></i><i class="l2"></i><i></i><i class="l2"></i><i class="l1"></i><i></i><i class="l2"></i><i></i><i class="l2"></i><i></i><i></i><i class="l2"></i><i class="l3"></i><i></i><i class="l1"></i><i class="l2"></i><i class="l4"></i><i class="l2"></i><i class="l1"></i><i class="l4"></i><i></i><i class="l3"></i><i class="l1"></i><i></i><i></i><i class="l1"></i><i class="l3"></i><i class="l1"></i><i class="l2"></i><i class="l2"></i><i class="l1"></i><i class="l2"></i><i></i><i></i><i class="l1"></i><i class="l2"></i><i class="l2"></i><i class="l1"></i><i class="l2"></i><i class="l2"></i><i class="l1"></i><i class="l3"></i><i class="l2"></i><i class="l1"></i><i class="l2"></i><i class="l2"></i><i class="l3"></i><i class="l3"></i><i class="l1"></i><i class="l4"></i><i></i><i class="l2"></i><i class="l3"></i><i></i><i class="l2"></i><i></i><i class="l2"></i><i class="l3"></i><i class="l2"></i><i class="l3"></i><i class="l1"></i><i class="l2"></i><i class="l2"></i><i class="l2"></i><i class="l2"></i><i class="l3"></i><i class="l4"></i><i class="l2"></i><i class="l2"></i><i></i><i class="l3"></i><i class="l2"></i><i class="l4"></i><i class="l3"></i><i class="l1"></i><i class="l1"></i><i class="l2"></i><i></i><i class="l2"></i><i></i><i></i><i></i><i class="l3"></i><i></i><i class="l1"></i><i class="l1"></i><i class="l3"></i><i></i><i class="l2"></i><i class="l2"></i><i class="l3"></i><i class="l3"></i><i class="l3"></i><i class="l1"></i><i class="l2"></i><i class="l1"></i><i class="l3"></i><i class="l4"></i><i></i><i></i><i class="l1"></i><i class="l1"></i><i class="l2"></i><i class="l2"></i><i class="l1"></i><i></i><i class="l2"></i><i class="l1"></i><i class="l2"></i><i class="l4"></i><i class="l2"></i><i class="l2"></i><i class="l2"></i><i class="l2"></i><i></i><i class="l3"></i><i class="l3"></i><i class="l3"></i><i class="l3"></i><i class="l1"></i><i class="l1"></i><i></i><i class="l2"></i><i></i><i></i><i class="l1"></i><i></i><i class="l1"></i><i></i><i></i><i></i><i></i><i class="l1"></i><i></i><i class="l3"></i><i class="l2"></i><i></i><i class="l1"></i><i class="l1"></i><i class="l1"></i><i></i><i class="l3"></i><i class="l4"></i><i class="l2"></i><i class="l2"></i><i></i><i></i><i class="l1"></i><i class="l1"></i><i class="l3"></i><i></i><i></i><i class="l4"></i><i class="l2"></i><i></i><i class="l2"></i><i></i><i class="l2"></i><i class="l4"></i><i class="l3"></i><i class="l2"></i><i class="l1"></i><i class="l1"></i><i></i><i class="l3"></i><i class="l2"></i><i class="l3"></i><i class="l1"></i><i class="l1"></i><i class="l3"></i><i class="l4"></i><i class="l3"></i><i class="l3"></i><i class="l3"></i><i class="l3"></i><i class="l1"></i><i class="l2"></i><i class="l1"></i><i></i><i></i><i class="l1"></i></div></div>
+            <div class="flex items-center gap-1 text-[11px] text-slate-500 justify-end">Ít <i class="w-2.5 h-2.5 rounded-sm bg-[#eef2f4]"></i><i class="w-2.5 h-2.5 rounded-sm bg-[#c3e1ec]"></i><i class="w-2.5 h-2.5 rounded-sm bg-[#7fbdd4]"></i><i class="w-2.5 h-2.5 rounded-sm bg-[#2b8bb0]"></i><i class="w-2.5 h-2.5 rounded-sm bg-[#195d7a]"></i> Nhiều</div>
+          </div>
+
+          <div class="flex flex-col gap-2">
+            <p class="text-sm font-semibold">Từ theo trạng thái</p>
+            <div class="flex items-end gap-2 h-28">
+              <div class="flex-1 flex flex-col"><span class="bg-slate-200" style="height:24px"></span><span class="bg-[#7fbdd4]" style="height:30px"></span><span class="bg-[#2b8bb0]" style="height:10px"></span></div>
+              <div class="flex-1 flex flex-col"><span class="bg-slate-200" style="height:22px"></span><span class="bg-[#7fbdd4]" style="height:34px"></span><span class="bg-[#2b8bb0]" style="height:18px"></span></div>
+              <div class="flex-1 flex flex-col"><span class="bg-slate-200" style="height:20px"></span><span class="bg-[#7fbdd4]" style="height:36px"></span><span class="bg-[#2b8bb0]" style="height:28px"></span><span class="bg-[#195d7a]" style="height:4px"></span></div>
+              <div class="flex-1 flex flex-col"><span class="bg-slate-200" style="height:18px"></span><span class="bg-[#7fbdd4]" style="height:38px"></span><span class="bg-[#2b8bb0]" style="height:36px"></span><span class="bg-[#195d7a]" style="height:10px"></span></div>
+            </div>
+            <div class="flex justify-between text-[11px] text-slate-500"><span>T7</span><span>T8</span><span>T9</span><span>T10</span></div>
+            <div class="flex flex-wrap gap-3 text-[11px] text-slate-600"><span>■ Mới</span><span class="text-[#4f9fbf]">■ Đang học</span><span class="text-[#2b8bb0]">■ Đã thuộc</span><span class="text-[#195d7a]">■ Thành thạo</span></div>
+          </div>
+
+          <div class="flex flex-col gap-2">
+            <p class="text-sm font-semibold">Dự báo số thẻ 30 ngày tới</p>
+            <div class="bars">
+              <span style="height:40%"></span><span style="height:55%"></span><span style="height:35%"></span><span style="height:60%"></span><span style="height:48%"></span><span style="height:30%"></span><span style="height:52%"></span><span style="height:44%"></span><span style="height:38%"></span><span style="height:58%"></span><span style="height:46%"></span><span style="height:33%"></span><span style="height:50%"></span><span style="height:42%"></span><span style="height:36%"></span><span style="height:47%"></span><span style="height:40%"></span><span style="height:31%"></span><span style="height:45%"></span><span style="height:39%"></span><span style="height:35%"></span><span style="height:43%"></span><span style="height:37%"></span><span style="height:30%"></span><span style="height:41%"></span><span style="height:34%"></span><span style="height:38%"></span><span style="height:32%"></span><span style="height:36%"></span><span style="height:33%"></span>
+            </div>
+            <div class="flex justify-between text-[11px] text-slate-500 tnum"><span>hôm nay</span><span>+15</span><span>+30 ngày</span></div>
+          </div>
+
+          <div class="flex flex-col gap-2">
+            <p class="text-sm font-semibold">Độ chính xác theo kỹ năng</p>
+            <div class="flex flex-col gap-1.5 text-sm tnum">
+              <div class="flex items-center gap-2"><span class="w-20 text-slate-600">Nghĩa</span><div class="flex-1 h-3 rounded bg-slate-100"><div class="h-3 rounded bg-[#2b8bb0]" style="width:91%"></div></div><span class="w-10 text-right">91%</span></div>
+              <div class="flex items-center gap-2"><span class="w-20 text-slate-600">Viết</span><div class="flex-1 h-3 rounded bg-slate-100"><div class="h-3 rounded bg-[#2b8bb0]" style="width:78%"></div></div><span class="w-10 text-right">78%</span></div>
+              <div class="flex items-center gap-2"><span class="w-20 text-slate-600">Nghe</span><div class="flex-1 h-3 rounded bg-slate-100"><div class="h-3 rounded bg-[#2b8bb0]" style="width:84%"></div></div><span class="w-10 text-right">84%</span></div>
+              <div class="flex items-center gap-2"><span class="w-20 text-slate-600">Nói</span><div class="flex-1 h-3 rounded bg-slate-100"><div class="h-3 rounded bg-amber-500" style="width:63%"></div></div><span class="w-10 text-right">63%</span></div>
+            </div>
+          </div>
+
+          <div class="flex flex-col gap-2">
+            <p class="text-sm font-semibold">Từ hay quên</p>
+            <ul class="rounded-xl border border-slate-200 divide-y divide-slate-100 text-sm">
+              <li class="px-3 py-2 flex items-center justify-between gap-2"><span><b>mitigate</b> <span class="text-slate-500 tnum">· quên 7 lần</span></span><span class="text-brand-700 text-xs min-h-[44px] flex items-center">Thêm ghi chú</span></li>
+              <li class="px-3 py-2 flex items-center justify-between gap-2"><span><b>resilient</b> <span class="text-slate-500 tnum">· quên 4 lần</span></span><span class="text-brand-700 text-xs min-h-[44px] flex items-center">Thêm ảnh</span></li>
+              <li class="px-3 py-2 flex items-center justify-between gap-2"><span><b>adversity</b> <span class="text-slate-500 tnum">· quên 4 lần</span></span><span class="text-brand-700 text-xs min-h-[44px] flex items-center">Thêm ghi chú</span></li>
+            </ul>
+            <span class="h-12 rounded-xl bg-brand-600 text-white font-semibold flex items-center justify-center">Ôn ngay 10 từ hay quên</span>
+          </div>
+        </div>
+        <nav class="bottomnav"><span><i></i>Hôm nay</span><span><i></i>Từ của tôi</span><span><i></i>Luyện tập</span><span class="on"><i></i>Thống kê</span></nav>
+      </div>
+    </div>
+    <div class="wf-note">Heatmap mobile hiển thị 26 tuần gần nhất, cuộn ngang để xem đủ 365 ngày. "Mitigate" quên 7 lần (≥ 6) là leech: gợi ý mẹo nhớ do AI tạo.</div>
+  </section>
+
+  <section class="wf-state">
+    <div class="wf-label">2 · Rỗng: chưa có lượt ôn</div>
+    <div class="phone short" style="min-height:560px">
+      <div class="statusbar"><span>9:41</span><span>●●● 4G</span></div>
+      <div class="screen">
+        <div class="px-4 pt-2"><p class="text-xl font-semibold">Thống kê</p></div>
+        <div class="scroll">
+          <div class="relative">
+            <div class="opacity-30 flex flex-col gap-2">
+              <div class="grid grid-cols-2 gap-2"><div class="h-20 rounded-xl bg-slate-200"></div><div class="h-20 rounded-xl bg-slate-200"></div></div>
+              <div class="bars"><span style="height:40%"></span><span style="height:60%"></span><span style="height:30%"></span><span style="height:70%"></span><span style="height:50%"></span><span style="height:45%"></span><span style="height:65%"></span></div>
+            </div>
+            <div class="absolute inset-0 flex flex-col items-center justify-center text-center gap-2 p-4">
+              <p class="font-semibold">Hoàn thành phiên đầu tiên để thấy tiến bộ</p>
+              <span class="h-12 px-5 rounded-xl bg-brand-600 text-white font-semibold flex items-center">Ôn ngay</span>
+            </div>
+          </div>
+          <div class="wf-note">Khi có dưới 7 ngày dữ liệu: tỉ lệ nhớ hiện "—" kèm "cần thêm vài ngày dữ liệu".</div>
+        </div>
+        <nav class="bottomnav"><span><i></i>Hôm nay</span><span><i></i>Từ của tôi</span><span><i></i>Luyện tập</span><span class="on"><i></i>Thống kê</span></nav>
+      </div>
+    </div>
+  </section>
+
+</main>
+</body>
+</html>

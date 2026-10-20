@@ -1,0 +1,181 @@
+<!doctype html>
+<html lang="vi">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Thư viện · Wireframe WordWise</title>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Be+Vietnam+Pro:wght@400;500;600;700&display=swap">
+<script src="https://cdn.tailwindcss.com/3.4.17"></script>
+<script>tailwind.config={theme:{extend:{colors:{brand:{50:'#eef7fa',100:'#d5ecf3',500:'#2b8bb0',600:'#1f7396',700:'#195d7a'}}}}}</script>
+<link rel="stylesheet" href="wf.css">
+</head>
+<body>
+<header class="wf-head">
+  <a href="index.html">← Tất cả wireframe</a>
+  <h1>Màn 8 · Thư viện danh sách có chủ đích</h1>
+  <p>Route <code>/library</code> và <code>/library/[id]</code>. Luồng: danh sách → chi tiết → chọn sổ + ngày mục tiêu → kiểm tra đầu vào → tóm tắt.</p>
+</header>
+
+<main class="wf-row">
+
+  <section class="wf-state">
+    <div class="wf-label">1 · Danh sách + bộ lọc</div>
+    <div class="phone">
+      <div class="statusbar"><span>9:41</span><span>●●● 4G</span></div>
+      <div class="screen">
+        <div class="h-12 px-2 flex items-center gap-2"><span class="w-11 h-11 flex items-center justify-center text-xl">←</span><b class="text-lg">Thư viện</b></div>
+        <div class="scroll">
+          <div class="flex gap-2 overflow-x-auto pb-1 text-sm">
+            <span class="h-9 px-3 rounded-full bg-slate-900 text-white flex items-center whitespace-nowrap">Tất cả</span>
+            <span class="h-9 px-3 rounded-full border border-slate-300 flex items-center whitespace-nowrap">IELTS</span>
+            <span class="h-9 px-3 rounded-full border border-slate-300 flex items-center whitespace-nowrap">TOEIC</span>
+            <span class="h-9 px-3 rounded-full border border-slate-300 flex items-center whitespace-nowrap">Công việc</span>
+            <span class="h-9 px-3 rounded-full border border-slate-300 flex items-center whitespace-nowrap">Trình độ ▾</span>
+          </div>
+          <div class="rounded-xl border border-slate-200 overflow-hidden flex">
+            <div class="ph w-24 flex-none"><span>bìa</span></div>
+            <div class="p-3 flex flex-col gap-1 min-w-0">
+              <p class="font-semibold">IELTS Band 7 – Environment</p>
+              <p class="text-xs text-slate-500 tnum">200 từ · B2–C1 · gợi ý 60 ngày</p>
+              <p class="text-xs text-slate-500 tnum">1.284 người học</p>
+            </div>
+          </div>
+          <div class="rounded-xl border border-slate-200 overflow-hidden flex">
+            <div class="ph w-24 flex-none"><span>bìa</span></div>
+            <div class="p-3 flex flex-col gap-1 min-w-0">
+              <p class="font-semibold">Email công việc thiết yếu</p>
+              <p class="text-xs text-slate-500 tnum">120 từ · B1 · gợi ý 30 ngày</p>
+              <p class="text-xs text-slate-500 tnum">860 người học</p>
+            </div>
+          </div>
+          <div class="rounded-xl border border-slate-200 overflow-hidden flex">
+            <div class="ph w-24 flex-none"><span>bìa</span></div>
+            <div class="p-3 flex flex-col gap-1 min-w-0">
+              <p class="font-semibold">TOEIC Part 5 – Từ hay gặp</p>
+              <p class="text-xs text-slate-500 tnum">300 từ · B1–B2 · gợi ý 45 ngày</p>
+              <p class="text-xs text-emerald-700">Đã thêm vào sổ "TOEIC"</p>
+            </div>
+          </div>
+          <div class="rounded-xl border border-slate-200 overflow-hidden flex">
+            <div class="ph w-24 flex-none"><span>bìa</span></div>
+            <div class="p-3 flex flex-col gap-1 min-w-0">
+              <p class="font-semibold">Từ vựng về sức khỏe tinh thần</p>
+              <p class="text-xs text-slate-500 tnum">80 từ · B2 · gợi ý 21 ngày</p>
+            </div>
+          </div>
+        </div>
+        <nav class="bottomnav"><span><i></i>Hôm nay</span><span class="on"><i></i>Từ của tôi</span><span><i></i>Luyện tập</span><span><i></i>Thống kê</span></nav>
+      </div>
+    </div>
+  </section>
+
+  <section class="wf-state">
+    <div class="wf-label">2 · Chi tiết danh sách</div>
+    <div class="phone">
+      <div class="statusbar"><span>9:41</span><span>●●● 4G</span></div>
+      <div class="screen">
+        <div class="ph h-32"><span>ảnh bìa</span></div>
+        <div class="scroll">
+          <div>
+            <p class="text-xl font-semibold">IELTS Band 7 – Environment</p>
+            <p class="text-sm text-slate-500 tnum">200 từ · B2–C1 · gợi ý 60 ngày · phiên bản 2</p>
+          </div>
+          <p class="text-sm text-slate-700">Từ vựng chủ đề môi trường hay gặp trong IELTS Reading và Writing Task 2, sắp theo tần suất.</p>
+          <div class="flex flex-wrap gap-1.5 text-xs">
+            <span class="px-2 py-1 rounded-full bg-slate-100">Biến đổi khí hậu · 48</span>
+            <span class="px-2 py-1 rounded-full bg-slate-100">Ô nhiễm · 41</span>
+            <span class="px-2 py-1 rounded-full bg-slate-100">Năng lượng · 37</span>
+            <span class="px-2 py-1 rounded-full bg-slate-100">Bảo tồn · 74</span>
+          </div>
+          <p class="text-xs font-semibold uppercase tracking-wider text-slate-500">20 từ đầu</p>
+          <ul class="text-sm divide-y divide-slate-100">
+            <li class="py-2 flex justify-between"><span><b>sustainable</b> adj</span><span class="text-slate-500">bền vững</span></li>
+            <li class="py-2 flex justify-between"><span><b>emission</b> n</span><span class="text-slate-500">khí thải</span></li>
+            <li class="py-2 flex justify-between"><span><b>biodiversity</b> n</span><span class="text-slate-500">đa dạng sinh học</span></li>
+            <li class="py-2 flex justify-between"><span><b>resilient</b> adj</span><span class="text-slate-500">kiên cường, phục hồi</span></li>
+            <li class="py-2 flex justify-between"><span><b>mitigate</b> v</span><span class="text-slate-500">giảm nhẹ</span></li>
+            <li class="py-2 text-slate-500">Xem thêm 15 từ</li>
+          </ul>
+        </div>
+        <div class="p-3 border-t border-slate-200 grid grid-cols-[auto_1fr] gap-2">
+          <span class="h-12 px-4 rounded-xl border border-slate-300 flex items-center">Chọn lọc</span>
+          <span class="h-12 rounded-xl bg-brand-600 text-white font-semibold flex items-center justify-center">Thêm vào sổ tay</span>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section class="wf-state">
+    <div class="wf-label">3 · Chọn sổ + ngày mục tiêu</div>
+    <div class="phone">
+      <div class="statusbar"><span>9:41</span><span>●●● 4G</span></div>
+      <div class="screen bg-slate-900/40">
+        <div class="flex-1"></div>
+        <div class="bg-white rounded-t-3xl p-4 flex flex-col gap-3">
+          <div class="mx-auto w-10 h-1.5 rounded-full bg-slate-300"></div>
+          <p class="text-xs text-slate-500">Bước 1/3</p>
+          <p class="text-lg font-semibold">Thêm vào sổ nào?</p>
+          <label class="min-h-[52px] rounded-xl border-2 border-brand-600 bg-brand-50 px-3 flex items-center gap-2"><span class="w-5 h-5 rounded-full border-[6px] border-brand-600"></span>Sổ mới: "IELTS Band 7 – Environment"</label>
+          <label class="min-h-[52px] rounded-xl border border-slate-300 px-3 flex items-center gap-2"><span class="w-5 h-5 rounded-full border-2 border-slate-300"></span>Sổ có sẵn…</label>
+          <p class="text-lg font-semibold pt-2">Bạn muốn học xong trước ngày nào?</p>
+          <div class="h-12 rounded-xl border border-slate-300 px-3 flex items-center justify-between"><span class="tnum">15/12/2026 <span class="text-slate-500">(56 ngày)</span></span><span class="text-slate-500">Đổi</span></div>
+          <div class="rounded-xl bg-slate-50 p-3 text-sm flex flex-col gap-1">
+            <p><b class="tnum">5 từ mới/ngày</b> trong 42 ngày</p>
+            <p class="text-slate-600">14 ngày cuối chỉ ôn lại, không thêm từ mới.</p>
+          </div>
+          <div class="rounded-xl bg-amber-50 border border-amber-200 p-3 text-sm text-amber-900">Nếu chọn 20 ngày: 33 từ mới/ngày, quá nhiều để nhớ. Hãy lùi ngày hoặc chọn lọc bớt từ.</div>
+          <span class="h-12 rounded-xl bg-brand-600 text-white font-semibold flex items-center justify-center">Tiếp</span>
+        </div>
+      </div>
+    </div>
+    <div class="wf-note">Công thức: số từ mới/ngày = từ còn lại ÷ (ngày còn lại − 14). Cảnh báo khi &gt; 30.</div>
+  </section>
+
+  <section class="wf-state">
+    <div class="wf-label">4 · Kiểm tra đầu vào</div>
+    <div class="phone">
+      <div class="statusbar"><span>9:41</span><span>●●● 4G</span></div>
+      <div class="screen">
+        <div class="px-4 pt-2 flex flex-col gap-2">
+          <div class="flex justify-between text-sm"><span class="text-slate-500">Bước 2/3 · Kiểm tra nhanh</span><span class="tnum">12/30</span></div>
+          <div class="h-1.5 rounded-full bg-slate-100"><div class="h-1.5 rounded-full bg-brand-600" style="width:40%"></div></div>
+          <span class="text-sm text-brand-700 self-end min-h-[44px] flex items-center">Bỏ qua kiểm tra</span>
+        </div>
+        <div class="scroll justify-center items-center text-center">
+          <p class="text-sm text-slate-500">Bạn biết từ này không?</p>
+          <p class="text-4xl font-bold">mitigate</p>
+          <p class="text-slate-500">/ˈmɪt.ɪ.ɡeɪt/</p>
+        </div>
+        <div class="p-4 flex flex-col gap-2">
+          <span class="h-12 rounded-xl bg-emerald-600 text-white font-semibold flex items-center justify-center">Biết</span>
+          <span class="h-12 rounded-xl border border-slate-300 flex items-center justify-center">Không chắc</span>
+          <span class="h-12 rounded-xl border border-slate-300 flex items-center justify-center">Chưa biết</span>
+        </div>
+      </div>
+    </div>
+    <div class="wf-note">Chọn "Biết" → hiện ngay 1 câu trắc nghiệm kiểm chứng: "mitigate nghĩa là? · giảm nhẹ / khuếch đại / di cư / trì hoãn". Sai thì tính là chưa biết.</div>
+  </section>
+
+  <section class="wf-state">
+    <div class="wf-label">5 · Tóm tắt sau kiểm tra</div>
+    <div class="phone short" style="min-height:600px">
+      <div class="statusbar"><span>9:41</span><span>●●● 4G</span></div>
+      <div class="screen">
+        <div class="scroll">
+          <p class="text-xs text-slate-500">Bước 3/3</p>
+          <p class="text-xl font-semibold">Bạn đã biết khoảng 35% danh sách</p>
+          <div class="grid grid-cols-2 gap-2 tnum">
+            <div class="rounded-xl bg-emerald-50 p-3"><p class="text-2xl font-bold">70</p><p class="text-xs text-slate-600">từ đã biết · ôn thưa</p></div>
+            <div class="rounded-xl bg-brand-50 p-3"><p class="text-2xl font-bold">130</p><p class="text-xs text-slate-600">từ cần học</p></div>
+          </div>
+          <div class="rounded-xl bg-slate-50 p-3 text-sm">Lộ trình mới: <b class="tnum">4 từ mới/ngày</b>, xong trước 15/12.</div>
+          <p class="text-sm text-slate-600">Từ đã biết vẫn được ôn lại vài lần để chắc chắn; nếu bạn trả lời sai, từ sẽ được học lại.</p>
+          <span class="h-12 rounded-xl bg-brand-600 text-white font-semibold flex items-center justify-center">Bắt đầu học</span>
+        </div>
+      </div>
+    </div>
+  </section>
+
+</main>
+</body>
+</html>

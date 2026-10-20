@@ -1,0 +1,137 @@
+<!doctype html>
+<html lang="vi">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Chi tiết sổ tay · Wireframe WordWise</title>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Be+Vietnam+Pro:wght@400;500;600;700&display=swap">
+<script src="https://cdn.tailwindcss.com/3.4.17"></script>
+<script>tailwind.config={theme:{extend:{colors:{brand:{50:'#eef7fa',100:'#d5ecf3',500:'#2b8bb0',600:'#1f7396',700:'#195d7a'}}}}}</script>
+<link rel="stylesheet" href="wf.css">
+</head>
+<body>
+<header class="wf-head">
+  <a href="index.html">← Tất cả wireframe</a>
+  <h1>Màn 4 · Chi tiết sổ tay</h1>
+  <p>Xem từ trong một sổ, theo dõi tiến độ so với kế hoạch, thao tác hàng loạt. Route <code>/notebooks/[id]</code>.</p>
+</header>
+
+<main class="wf-row">
+
+  <section class="wf-state">
+    <div class="wf-label">1 · Sổ từ danh sách có thời hạn</div>
+    <div class="phone">
+      <div class="statusbar"><span>9:41</span><span>●●● 4G</span></div>
+      <div class="screen">
+        <div class="ph h-28 relative"><span>ảnh bìa: rừng nhiệt đới</span></div>
+        <div class="px-4 pt-3 flex items-start justify-between gap-2">
+          <div>
+            <p class="text-xl font-semibold">IELTS – Environment</p>
+            <p class="text-xs text-slate-500">Từ Thư viện · phiên bản 2 · <span class="tnum">200 từ</span></p>
+          </div>
+          <span class="w-11 h-11 rounded-lg border border-slate-300 flex items-center justify-center">⋯</span>
+        </div>
+        <div class="scroll">
+          <div class="rounded-xl border border-emerald-200 bg-emerald-50 p-3 flex flex-col gap-2">
+            <div class="flex justify-between text-sm"><b>Đúng kế hoạch</b><span class="tnum">thi 15/12 · còn 56 ngày</span></div>
+            <div class="h-2 rounded-full bg-white"><div class="h-2 rounded-full bg-emerald-500" style="width:42%"></div></div>
+            <p class="text-xs text-slate-600 tnum">84/200 từ đã học · 3 từ mới/ngày · 14 ngày cuối chỉ ôn</p>
+          </div>
+          <span class="h-12 rounded-xl bg-brand-600 text-white font-semibold flex items-center justify-center">Ôn sổ này · 14 thẻ</span>
+
+          <div class="flex gap-2 overflow-x-auto pb-1 text-sm">
+            <span class="h-9 px-3 rounded-full bg-slate-900 text-white flex items-center whitespace-nowrap">Tất cả 200</span>
+            <span class="h-9 px-3 rounded-full border border-slate-300 flex items-center whitespace-nowrap">Sắp học 116</span>
+            <span class="h-9 px-3 rounded-full border border-slate-300 flex items-center whitespace-nowrap">Đang học 61</span>
+            <span class="h-9 px-3 rounded-full border border-slate-300 flex items-center whitespace-nowrap">Đã thuộc 23</span>
+            <span class="h-9 px-3 rounded-full border border-slate-300 flex items-center whitespace-nowrap">Lọc ▾</span>
+          </div>
+
+          <ul class="flex flex-col divide-y divide-slate-100">
+            <li class="py-2.5 flex items-center gap-3">
+              <div class="flex-1 min-w-0"><p class="font-semibold">resilient <span class="text-xs font-normal text-slate-500">adj</span></p><p class="text-sm text-slate-600 truncate">kiên cường, mau phục hồi</p></div>
+              <span class="text-xs text-slate-400" title="Nhập bằng ảnh">ảnh</span>
+              <span class="flex gap-0.5" title="Mức thuộc 2/4"><i class="w-2 h-2 rounded-full bg-brand-600"></i><i class="w-2 h-2 rounded-full bg-brand-600"></i><i class="w-2 h-2 rounded-full bg-slate-200"></i><i class="w-2 h-2 rounded-full bg-slate-200"></i></span>
+            </li>
+            <li class="py-2.5 flex items-center gap-3">
+              <div class="flex-1 min-w-0"><p class="font-semibold">biodiversity <span class="text-xs font-normal text-slate-500">n</span></p><p class="text-sm text-slate-600 truncate">đa dạng sinh học</p></div>
+              <span class="text-xs text-slate-400">ds</span>
+              <span class="flex gap-0.5"><i class="w-2 h-2 rounded-full bg-brand-600"></i><i class="w-2 h-2 rounded-full bg-brand-600"></i><i class="w-2 h-2 rounded-full bg-brand-600"></i><i class="w-2 h-2 rounded-full bg-slate-200"></i></span>
+            </li>
+            <li class="py-2.5 flex items-center gap-3">
+              <div class="flex-1 min-w-0"><p class="font-semibold">deforestation <span class="text-xs font-normal text-slate-500">n</span></p><p class="text-sm text-slate-600 truncate">nạn phá rừng</p></div>
+              <span class="text-xs text-slate-400">ds</span>
+              <span class="flex gap-0.5"><i class="w-2 h-2 rounded-full bg-brand-600"></i><i class="w-2 h-2 rounded-full bg-slate-200"></i><i class="w-2 h-2 rounded-full bg-slate-200"></i><i class="w-2 h-2 rounded-full bg-slate-200"></i></span>
+            </li>
+            <li class="py-2.5 flex items-center gap-3">
+              <div class="flex-1 min-w-0"><p class="font-semibold">mitigate <span class="text-xs font-normal text-slate-500">v</span></p><p class="text-sm text-slate-600 truncate">giảm nhẹ, làm dịu</p></div>
+              <span class="text-[10px] px-1.5 py-0.5 rounded bg-red-50 text-red-700">hay quên</span>
+              <span class="flex gap-0.5"><i class="w-2 h-2 rounded-full bg-brand-600"></i><i class="w-2 h-2 rounded-full bg-slate-200"></i><i class="w-2 h-2 rounded-full bg-slate-200"></i><i class="w-2 h-2 rounded-full bg-slate-200"></i></span>
+            </li>
+            <li class="py-2.5 flex items-center gap-3 opacity-60">
+              <div class="flex-1 min-w-0"><p class="font-semibold">sustainable <span class="text-xs font-normal text-slate-500">adj</span></p><p class="text-sm text-slate-600 truncate">bền vững</p></div>
+              <span class="text-[10px] px-1.5 py-0.5 rounded bg-slate-100">Sắp học</span>
+            </li>
+          </ul>
+        </div>
+        <span class="fab">+</span>
+        <nav class="bottomnav"><span><i></i>Hôm nay</span><span class="on"><i></i>Từ của tôi</span><span><i></i>Luyện tập</span><span><i></i>Thống kê</span></nav>
+      </div>
+    </div>
+    <div class="wf-note">Chấm tròn = mức thuộc 0–4. Nhãn nhỏ = cách nhập (gõ, nói, ảnh, file, ds = danh sách). Chạm giữ một dòng để vào chế độ chọn nhiều.</div>
+  </section>
+
+  <section class="wf-state">
+    <div class="wf-label">2 · Chọn nhiều + xác nhận xóa</div>
+    <div class="phone">
+      <div class="statusbar"><span>9:41</span><span>●●● 4G</span></div>
+      <div class="screen">
+        <div class="h-14 px-4 flex items-center justify-between bg-brand-50 border-b border-brand-100">
+          <span class="font-semibold">Đã chọn 2</span><span class="text-brand-700">Hủy</span>
+        </div>
+        <div class="scroll">
+          <ul class="flex flex-col divide-y divide-slate-100">
+            <li class="py-2.5 flex items-center gap-3"><span class="w-6 h-6 rounded-md bg-brand-600 text-white text-xs flex items-center justify-center">✓</span><div class="flex-1"><p class="font-semibold">resilient</p><p class="text-sm text-slate-600">kiên cường, mau phục hồi</p></div></li>
+            <li class="py-2.5 flex items-center gap-3"><span class="w-6 h-6 rounded-md border-2 border-slate-300"></span><div class="flex-1"><p class="font-semibold">biodiversity</p><p class="text-sm text-slate-600">đa dạng sinh học</p></div></li>
+            <li class="py-2.5 flex items-center gap-3"><span class="w-6 h-6 rounded-md bg-brand-600 text-white text-xs flex items-center justify-center">✓</span><div class="flex-1"><p class="font-semibold">mitigate</p><p class="text-sm text-slate-600">giảm nhẹ, làm dịu</p></div></li>
+          </ul>
+          <div class="rounded-2xl border border-slate-200 shadow-lg p-4 flex flex-col gap-3 mt-4">
+            <p class="font-semibold">Xóa 2 từ khỏi sổ này?</p>
+            <p class="text-sm text-slate-600"><b>resilient</b> vẫn còn trong sổ "Đọc sách: Grit" nên lịch ôn được giữ.<br><b>mitigate</b> chỉ có ở sổ này: lịch ôn của từ sẽ bị xóa.</p>
+            <div class="grid grid-cols-2 gap-2">
+              <span class="h-11 rounded-lg border border-slate-300 flex items-center justify-center">Giữ lại</span>
+              <span class="h-11 rounded-lg bg-red-600 text-white flex items-center justify-center font-medium">Xóa 2 từ</span>
+            </div>
+          </div>
+        </div>
+        <div class="grid grid-cols-4 border-t border-slate-200 text-xs text-center">
+          <span class="h-14 flex items-center justify-center">Chuyển</span>
+          <span class="h-14 flex items-center justify-center">Sao chép</span>
+          <span class="h-14 flex items-center justify-center">Tạm ngưng</span>
+          <span class="h-14 flex items-center justify-center text-red-600">Xóa</span>
+        </div>
+      </div>
+    </div>
+    <div class="wf-note">Sau khi xóa: toast "Đã xóa 2 từ · Hoàn tác" trong 5 giây.</div>
+  </section>
+
+  <section class="wf-state">
+    <div class="wf-label">3 · Rỗng: sổ mới tạo</div>
+    <div class="phone short" style="min-height:560px">
+      <div class="statusbar"><span>9:41</span><span>●●● 4G</span></div>
+      <div class="screen">
+        <div class="px-4 pt-3"><p class="text-xl font-semibold">Từ trong phim</p><p class="text-xs text-slate-500">0 từ</p></div>
+        <div class="scroll items-center justify-center text-center">
+          <div class="ph w-32 h-24 rounded-xl"><span>minh họa</span></div>
+          <p class="font-semibold">Sổ chưa có từ nào</p>
+          <span class="w-full h-12 rounded-xl bg-brand-600 text-white font-semibold flex items-center justify-center">+ Thêm từ vào sổ này</span>
+          <span class="w-full h-12 rounded-xl border border-slate-300 flex items-center justify-center">Lấy từ Thư viện</span>
+        </div>
+        <nav class="bottomnav"><span><i></i>Hôm nay</span><span class="on"><i></i>Từ của tôi</span><span><i></i>Luyện tập</span><span><i></i>Thống kê</span></nav>
+      </div>
+    </div>
+  </section>
+
+</main>
+</body>
+</html>

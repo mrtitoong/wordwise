@@ -1,0 +1,130 @@
+/* WordWise wireframes – khung dùng chung.
+   Wireframe cố ý chỉ có một giao diện sáng, màu xám + một màu nhấn. */
+:root {
+  --wf-ground: #e7ebee;
+  --wf-paper: #ffffff;
+  --wf-ink: #1d2830;
+  --wf-muted: #5f6f7a;
+  --wf-line: #cfd8de;
+  --wf-note: #fff6c9;
+  --wf-note-ink: #5b4a00;
+  color-scheme: light;
+}
+* { box-sizing: border-box; }
+html { -webkit-text-size-adjust: 100%; }
+body {
+  margin: 0;
+  background: var(--wf-ground);
+  color: var(--wf-ink);
+  font-family: "Be Vietnam Pro", system-ui, -apple-system, "Segoe UI", Roboto, sans-serif;
+  font-size: 14px;
+  line-height: 1.45;
+}
+
+/* Đầu trang wireframe (không thuộc giao diện app) */
+.wf-head {
+  padding-block: 20px 8px;
+  padding-left: max(16px, env(safe-area-inset-left, 0px));
+  padding-right: max(16px, env(safe-area-inset-right, 0px));
+  max-width: 1360px;
+  margin: 0 auto;
+}
+.wf-head a { color: var(--wf-muted); text-decoration: none; font-size: 13px; }
+.wf-head a:hover { text-decoration: underline; }
+.wf-head h1 { margin: 6px 0 4px; font-size: 22px; font-weight: 700; text-wrap: balance; }
+.wf-head p { margin: 0; color: var(--wf-muted); max-width: 70ch; }
+
+/* Dải các khung màn hình */
+.wf-row {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 32px 28px;
+  align-items: flex-start;
+  justify-content: center;
+  padding-block: 16px 48px;
+  padding-left: max(16px, env(safe-area-inset-left, 0px));
+  padding-right: max(16px, env(safe-area-inset-right, 0px));
+  max-width: 1360px;
+  margin: 0 auto;
+}
+.wf-state { display: flex; flex-direction: column; gap: 8px; width: min(375px, 100%); }
+.wf-state.desk { width: 100%; }
+.wf-label {
+  font-size: 11px; font-weight: 600; letter-spacing: .06em; text-transform: uppercase;
+  color: var(--wf-muted);
+}
+.wf-note {
+  background: var(--wf-note); color: var(--wf-note-ink);
+  border-radius: 6px; padding: 8px 10px; font-size: 12.5px;
+}
+.wf-note b { font-weight: 600; }
+
+/* Khung điện thoại 375px */
+.phone {
+  width: 100%;
+  min-height: 740px;
+  background: var(--wf-paper);
+  border: 1px solid var(--wf-line);
+  border-radius: 28px;
+  overflow: hidden;
+  display: flex;
+  flex-direction: column;
+  box-shadow: 0 1px 2px rgba(20, 40, 55, .06), 0 8px 24px rgba(20, 40, 55, .06);
+  position: relative;
+}
+.phone.short { min-height: 0; }
+.statusbar {
+  height: 28px; flex: none; display: flex; align-items: center; justify-content: space-between;
+  padding: 0 20px; font-size: 11px; font-weight: 600; color: var(--wf-ink);
+}
+.screen { flex: 1; display: flex; flex-direction: column; min-height: 0; }
+.scroll { flex: 1; padding: 12px 16px 20px; display: flex; flex-direction: column; gap: 14px; }
+
+/* Thanh điều hướng dưới */
+.bottomnav {
+  flex: none; display: grid; grid-template-columns: repeat(4, 1fr);
+  border-top: 1px solid var(--wf-line); background: var(--wf-paper);
+  padding-bottom: 6px;
+}
+.bottomnav span {
+  min-height: 56px; display: flex; flex-direction: column; align-items: center; justify-content: center;
+  gap: 3px; font-size: 11px; color: var(--wf-muted);
+}
+.bottomnav span i {
+  width: 22px; height: 22px; border-radius: 6px; border: 2px solid currentColor; display: block;
+}
+.bottomnav span.on { color: #1f7396; font-weight: 600; }
+.bottomnav span.on i { background: #d5ecf3; }
+
+/* Nút tròn + Thêm từ */
+.fab {
+  position: absolute; right: 16px; bottom: 80px;
+  width: 56px; height: 56px; border-radius: 50%;
+  background: #1f7396; color: #fff; font-size: 28px; font-weight: 300;
+  display: flex; align-items: center; justify-content: center;
+  box-shadow: 0 4px 12px rgba(31, 115, 150, .35);
+}
+
+/* Khung desktop 1280px cho Admin */
+.desk-scroll { width: 100%; overflow-x: auto; border-radius: 12px; }
+.desktop {
+  width: 1280px; min-height: 760px; background: var(--wf-paper);
+  border: 1px solid var(--wf-line); border-radius: 12px; overflow: hidden;
+  display: grid; grid-template-columns: 220px 1fr;
+}
+
+/* Ô ảnh giữ chỗ */
+.ph {
+  background:
+    linear-gradient(135deg, transparent 49.5%, var(--wf-line) 49.5%, var(--wf-line) 50.5%, transparent 50.5%),
+    linear-gradient(45deg, transparent 49.5%, var(--wf-line) 49.5%, var(--wf-line) 50.5%, transparent 50.5%),
+    #f3f6f8;
+  border: 1px solid var(--wf-line);
+  color: var(--wf-muted);
+  display: flex; align-items: center; justify-content: center; text-align: center;
+  font-size: 11px; padding: 6px;
+}
+.ph span { background: #f3f6f8; padding: 2px 6px; border-radius: 4px; }
+
+.tnum { font-variant-numeric: tabular-nums; }
+.hl { font-weight: 700; color: #195d7a; }

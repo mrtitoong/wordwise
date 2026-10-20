@@ -1,0 +1,107 @@
+<!doctype html>
+<html lang="vi">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Kết quả phiên · Wireframe WordWise</title>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Be+Vietnam+Pro:wght@400;500;600;700&display=swap">
+<script src="https://cdn.tailwindcss.com/3.4.17"></script>
+<script>tailwind.config={theme:{extend:{colors:{brand:{50:'#eef7fa',100:'#d5ecf3',500:'#2b8bb0',600:'#1f7396',700:'#195d7a'}}}}}</script>
+<link rel="stylesheet" href="wf.css">
+</head>
+<body>
+<header class="wf-head">
+  <a href="index.html">← Tất cả wireframe</a>
+  <h1>Kết quả phiên (trạng thái cuối của Phiên ôn)</h1>
+  <p>Ghi nhận nỗ lực, cho biết cần chú ý gì, khuyến khích quay lại ngày mai.</p>
+</header>
+
+<main class="wf-row">
+
+  <section class="wf-state">
+    <div class="wf-label">1 · Phiên bình thường</div>
+    <div class="phone">
+      <div class="statusbar"><span>9:58</span><span>●●● 4G</span></div>
+      <div class="screen">
+        <div class="scroll">
+          <div class="flex flex-col items-center gap-2 pt-4 text-center">
+            <span class="w-16 h-16 rounded-full bg-orange-400 text-white text-2xl font-bold flex items-center justify-center">13</span>
+            <p class="text-xl font-semibold">Chuỗi 13 ngày!</p>
+            <p class="text-sm text-slate-500">Hoàn thành phiên hôm nay</p>
+          </div>
+          <div class="grid grid-cols-3 gap-2 text-center tnum">
+            <div class="rounded-xl bg-slate-50 p-3"><p class="text-2xl font-bold">32</p><p class="text-xs text-slate-500">câu</p></div>
+            <div class="rounded-xl bg-slate-50 p-3"><p class="text-2xl font-bold">88%</p><p class="text-xs text-slate-500">đúng</p></div>
+            <div class="rounded-xl bg-slate-50 p-3"><p class="text-2xl font-bold">11'</p><p class="text-xs text-slate-500">thời gian</p></div>
+          </div>
+          <div class="rounded-xl bg-emerald-50 p-3 text-sm"><b class="tnum">5 từ</b> lên mức thuộc mới, trong đó <b>biodiversity</b> đã lên "Vận dụng".</div>
+          <div class="flex flex-col gap-2">
+            <p class="text-xs font-semibold uppercase tracking-wider text-slate-500">Cần chú ý</p>
+            <ul class="rounded-xl border border-slate-200 divide-y divide-slate-100 text-sm">
+              <li class="px-3 py-2.5 flex justify-between"><span><b>mitigate</b> · giảm nhẹ</span><span class="text-red-600 tnum">sai 2 lần</span></li>
+              <li class="px-3 py-2.5 flex justify-between"><span><b>resilient</b> · nhầm với resistant</span><span class="text-amber-700">sai 1</span></li>
+              <li class="px-3 py-2.5 flex justify-between"><span><b>setback</b> · phát âm 58</span><span class="text-amber-700">nói</span></li>
+            </ul>
+          </div>
+          <p class="text-sm text-slate-600 text-center tnum">Ngày mai: khoảng 18 thẻ, 6 phút</p>
+        </div>
+        <div class="p-3 border-t border-slate-200 flex flex-col gap-2">
+          <span class="h-12 rounded-xl bg-brand-600 text-white font-semibold flex items-center justify-center">Xong</span>
+          <div class="grid grid-cols-2 gap-2 text-sm">
+            <span class="h-11 rounded-xl border border-slate-300 flex items-center justify-center">Ôn lại từ sai</span>
+            <span class="h-11 rounded-xl border border-slate-300 flex items-center justify-center">Học thêm 5 từ</span>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section class="wf-state">
+    <div class="wf-label">2 · Phiên đầu tiên (onboarding)</div>
+    <div class="phone short" style="min-height:620px">
+      <div class="statusbar"><span>9:41</span><span>●●● 4G</span></div>
+      <div class="screen">
+        <div class="scroll">
+          <div class="flex flex-col items-center gap-2 pt-4 text-center">
+            <span class="w-16 h-16 rounded-full bg-orange-400 text-white text-2xl font-bold flex items-center justify-center">1</span>
+            <p class="text-xl font-semibold">Ngày 1 của chuỗi</p>
+            <p class="text-sm text-slate-600">Bạn vừa học 5 từ đầu tiên.</p>
+          </div>
+          <div class="rounded-xl bg-brand-50 p-4 text-sm flex flex-col gap-1">
+            <p class="font-semibold">Điều gì xảy ra tiếp theo?</p>
+            <p>Ngày mai bạn sẽ ôn lại 5 từ này, khoảng 2 phút. Càng nhớ tốt, lần ôn sau càng giãn xa.</p>
+          </div>
+          <div class="rounded-xl border border-slate-200 p-4 flex flex-col gap-2">
+            <p class="font-semibold text-sm">Nhắc bạn lúc 20:00 mỗi ngày?</p>
+            <div class="grid grid-cols-2 gap-2 text-sm">
+              <span class="h-11 rounded-lg bg-brand-600 text-white flex items-center justify-center">Bật nhắc học</span>
+              <span class="h-11 rounded-lg border border-slate-300 flex items-center justify-center">Để sau</span>
+            </div>
+          </div>
+          <span class="h-12 rounded-xl border border-slate-300 flex items-center justify-center">Thêm từ của riêng tôi</span>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section class="wf-state">
+    <div class="wf-label">3 · Không sai câu nào</div>
+    <div class="phone short" style="min-height:420px">
+      <div class="statusbar"><span>9:41</span><span>●●● 4G</span></div>
+      <div class="screen">
+        <div class="scroll">
+          <div class="grid grid-cols-3 gap-2 text-center tnum">
+            <div class="rounded-xl bg-slate-50 p-3"><p class="text-2xl font-bold">20</p><p class="text-xs text-slate-500">câu</p></div>
+            <div class="rounded-xl bg-slate-50 p-3"><p class="text-2xl font-bold">100%</p><p class="text-xs text-slate-500">đúng</p></div>
+            <div class="rounded-xl bg-slate-50 p-3"><p class="text-2xl font-bold">6'</p><p class="text-xs text-slate-500">thời gian</p></div>
+          </div>
+          <div class="rounded-xl bg-emerald-50 p-4 text-center"><p class="font-semibold">Không sai câu nào!</p><p class="text-sm text-slate-600">Các từ này sẽ được giãn lịch ôn xa hơn.</p></div>
+          <span class="h-12 rounded-xl bg-brand-600 text-white font-semibold flex items-center justify-center">Xong</span>
+        </div>
+      </div>
+    </div>
+  </section>
+
+</main>
+</body>
+</html>

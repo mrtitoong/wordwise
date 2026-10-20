@@ -1,0 +1,276 @@
+<!doctype html>
+<html lang="vi">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Phiên ôn · Wireframe WordWise</title>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Be+Vietnam+Pro:wght@400;500;600;700&display=swap">
+<script src="https://cdn.tailwindcss.com/3.4.17"></script>
+<script>tailwind.config={theme:{extend:{colors:{brand:{50:'#eef7fa',100:'#d5ecf3',500:'#2b8bb0',600:'#1f7396',700:'#195d7a'}}}}}</script>
+<link rel="stylesheet" href="wf.css">
+<style>
+  .tile { width: 40px; height: 48px; border-radius: 8px; display: flex; align-items: center; justify-content: center; font-size: 20px; font-weight: 600; }
+  .ph-ok { color: #047857; } .ph-mid { color: #b45309; } .ph-bad { color: #b91c1c; text-decoration: underline; text-underline-offset: 4px; }
+</style>
+</head>
+<body>
+<header class="wf-head">
+  <a href="index.html">← Tất cả wireframe</a>
+  <h1>Màn 10 · Phiên ôn (5 chế độ) + Màn 9 · Luyện tập</h1>
+  <p>Route <code>/review/session</code>. Mọi chế độ dùng chung khung: thanh tiến độ, nút đóng, menu nhanh; câu trả lời ghi vào máy ngay. Khung đầu là màn Luyện tập (<code>/practice</code>) để chọn phạm vi luyện thêm.</p>
+</header>
+
+<main class="wf-row">
+
+  <!-- Luyện tập -->
+  <section class="wf-state" id="practice">
+    <div class="wf-label">0 · Luyện tập (màn 9)</div>
+    <div class="phone">
+      <div class="statusbar"><span>9:41</span><span>●●● 4G</span></div>
+      <div class="screen">
+        <div class="px-4 pt-2"><p class="text-xl font-semibold">Luyện tập</p></div>
+        <div class="scroll">
+          <p class="text-sm font-semibold">Phạm vi</p>
+          <div class="flex flex-wrap gap-2 text-sm">
+            <span class="h-10 px-3 rounded-full bg-slate-900 text-white flex items-center">Sổ: Đọc sách: Grit</span>
+            <span class="h-10 px-3 rounded-full border border-slate-300 flex items-center">Danh sách</span>
+            <span class="h-10 px-3 rounded-full border border-slate-300 flex items-center">Chủ đề</span>
+            <span class="h-10 px-3 rounded-full border border-slate-300 flex items-center">Tag</span>
+            <span class="h-10 px-3 rounded-full border border-slate-300 flex items-center">Từ hay quên</span>
+          </div>
+          <p class="text-sm font-semibold">Chế độ</p>
+          <div class="grid grid-cols-2 gap-2 text-sm">
+            <span class="h-12 rounded-xl border-2 border-brand-600 bg-brand-50 flex items-center justify-center font-medium">Trộn tự động</span>
+            <span class="h-12 rounded-xl border border-slate-300 flex items-center justify-center">Flashcard</span>
+            <span class="h-12 rounded-xl border border-slate-300 flex items-center justify-center">Trắc nghiệm</span>
+            <span class="h-12 rounded-xl border border-slate-300 flex items-center justify-center">Tập viết</span>
+            <span class="h-12 rounded-xl border border-slate-300 flex items-center justify-center">Tập nghe</span>
+            <span class="h-12 rounded-xl border border-slate-300 flex items-center justify-center">Tập phát âm</span>
+          </div>
+          <p class="text-sm font-semibold">Số câu</p>
+          <div class="grid grid-cols-3 gap-2 text-sm">
+            <span class="h-11 rounded-lg border border-slate-300 flex items-center justify-center">10</span>
+            <span class="h-11 rounded-lg border-2 border-brand-600 bg-brand-50 flex items-center justify-center font-medium">20</span>
+            <span class="h-11 rounded-lg border border-slate-300 flex items-center justify-center">30</span>
+          </div>
+          <p class="text-xs text-slate-500">Luyện thêm không làm thay đổi lịch ôn, trừ khi bạn trả lời sai.</p>
+          <span class="h-12 rounded-xl bg-brand-600 text-white font-semibold flex items-center justify-center">Bắt đầu · 20 câu</span>
+        </div>
+        <nav class="bottomnav"><span><i></i>Hôm nay</span><span><i></i>Từ của tôi</span><span class="on"><i></i>Luyện tập</span><span><i></i>Thống kê</span></nav>
+      </div>
+    </div>
+  </section>
+
+  <!-- Flashcard -->
+  <section class="wf-state" id="flashcard">
+    <div class="wf-label">1 · Flashcard (mặt sau, đã lật)</div>
+    <div class="phone">
+      <div class="statusbar"><span>9:41</span><span>●●● 4G</span></div>
+      <div class="screen">
+        <div class="h-12 px-2 flex items-center gap-2">
+          <span class="w-11 h-11 flex items-center justify-center text-xl">×</span>
+          <div class="flex-1 h-2 rounded-full bg-slate-100"><div class="h-2 rounded-full bg-brand-600" style="width:30%"></div></div>
+          <span class="text-xs text-slate-500 tnum w-10">6/20</span>
+          <span class="w-11 h-11 flex items-center justify-center">⋯</span>
+        </div>
+        <div class="scroll">
+          <div class="flex-1 rounded-2xl border border-slate-200 shadow-sm p-5 flex flex-col items-center justify-center gap-3 text-center">
+            <p class="text-3xl font-bold">resilient</p>
+            <p class="text-slate-500">/rɪˈzɪl.jənt/ · adj</p>
+            <span class="h-10 px-3 rounded-full border border-slate-300 flex items-center text-sm">▶ Nghe lại</span>
+            <div class="w-full border-t border-slate-200 my-2"></div>
+            <div class="ph w-28 h-20 rounded-lg"><span>cây tre</span></div>
+            <p class="text-xl font-semibold">kiên cường, mau phục hồi</p>
+            <p class="text-sm text-slate-600"><i>Resilient people see failure as a lesson, not a verdict.</i></p>
+            <span class="mine text-[10px] font-semibold px-2 py-0.5 rounded-full bg-amber-100 text-amber-800">câu bạn gặp</span>
+          </div>
+        </div>
+        <div class="p-3 grid grid-cols-4 gap-2 text-center">
+          <span class="h-16 rounded-xl bg-red-50 text-red-700 flex flex-col items-center justify-center"><b class="text-sm">Quên</b><span class="text-[11px] tnum">10 phút</span></span>
+          <span class="h-16 rounded-xl bg-amber-50 text-amber-800 flex flex-col items-center justify-center"><b class="text-sm">Khó</b><span class="text-[11px] tnum">2 ngày</span></span>
+          <span class="h-16 rounded-xl bg-emerald-50 text-emerald-700 flex flex-col items-center justify-center"><b class="text-sm">Được</b><span class="text-[11px] tnum">5 ngày</span></span>
+          <span class="h-16 rounded-xl bg-sky-50 text-sky-700 flex flex-col items-center justify-center"><b class="text-sm">Dễ</b><span class="text-[11px] tnum">12 ngày</span></span>
+        </div>
+      </div>
+    </div>
+    <div class="wf-note">Mặt trước: chỉ có từ + audio tự phát (hoặc nghĩa nếu ôn chiều ngược). Chạm/Space để lật. Phím 1–4; vuốt trái = Quên, phải = Được.</div>
+  </section>
+
+  <!-- Trắc nghiệm -->
+  <section class="wf-state" id="mcq">
+    <div class="wf-label">2 · Trắc nghiệm (trả lời sai)</div>
+    <div class="phone">
+      <div class="statusbar"><span>9:41</span><span>●●● 4G</span></div>
+      <div class="screen">
+        <div class="h-12 px-2 flex items-center gap-2">
+          <span class="w-11 h-11 flex items-center justify-center text-xl">×</span>
+          <div class="flex-1 h-2 rounded-full bg-slate-100"><div class="h-2 rounded-full bg-brand-600" style="width:35%"></div></div>
+          <span class="text-xs text-slate-500 tnum w-10">7/20</span>
+        </div>
+        <div class="scroll">
+          <p class="text-sm text-slate-500 text-center">Chọn nghĩa đúng</p>
+          <p class="text-3xl font-bold text-center">resilient</p>
+          <div class="flex flex-col gap-2 pt-2">
+            <span class="min-h-[52px] rounded-xl border-2 border-red-500 bg-red-50 px-3 flex items-center justify-between"><span>chống chịu, không bị tác động</span><span class="text-red-600">✗</span></span>
+            <span class="min-h-[52px] rounded-xl border-2 border-emerald-500 bg-emerald-50 px-3 flex items-center justify-between"><span>kiên cường, mau phục hồi</span><span class="text-emerald-600">✓</span></span>
+            <span class="min-h-[52px] rounded-xl border border-slate-200 px-3 flex items-center text-slate-400">phụ thuộc, dựa dẫm</span>
+            <span class="min-h-[52px] rounded-xl border border-slate-200 px-3 flex items-center text-slate-400">thận trọng, dè dặt</span>
+          </div>
+          <div class="rounded-xl bg-slate-50 p-3 text-sm flex flex-col gap-1">
+            <p><b>resilient</b> ≠ <b>resistant</b>: resistant là không bị tác động; resilient là bị tác động nhưng hồi phục.</p>
+            <p class="text-slate-600"><i>Children are often more resilient than adults think.</i> <span class="text-brand-700">▶</span></p>
+          </div>
+        </div>
+        <div class="p-3 border-t border-slate-200"><span class="h-12 rounded-xl bg-brand-600 text-white font-semibold flex items-center justify-center">Tiếp</span></div>
+      </div>
+    </div>
+    <div class="wf-note">Đáp án nhiễu: cùng loại từ (adj), ưu tiên từ dễ nhầm (resistant, reliant). Sai → Again, thẻ quay lại sau 3–5 câu.</div>
+  </section>
+
+  <!-- Tập viết -->
+  <section class="wf-state" id="writing">
+    <div class="wf-label">3 · Tập viết (cấp 2: điền chữ khuyết)</div>
+    <div class="phone">
+      <div class="statusbar"><span>9:41</span><span>●●● 4G</span></div>
+      <div class="screen">
+        <div class="h-12 px-2 flex items-center gap-2">
+          <span class="w-11 h-11 flex items-center justify-center text-xl">×</span>
+          <div class="flex-1 h-2 rounded-full bg-slate-100"><div class="h-2 rounded-full bg-brand-600" style="width:40%"></div></div>
+          <span class="text-xs text-slate-500 tnum w-10">8/20</span>
+        </div>
+        <div class="scroll">
+          <p class="text-sm text-slate-500">Viết từ tiếng Anh</p>
+          <p class="text-xl font-semibold">kiên cường, mau phục hồi <span class="text-sm font-normal text-slate-500">(adj)</span></p>
+          <div class="flex flex-wrap gap-1.5 justify-center py-3">
+            <span class="tile bg-slate-100">r</span><span class="tile border-2 border-brand-600">e</span><span class="tile bg-slate-100">s</span><span class="tile border-2 border-dashed border-slate-300"></span><span class="tile bg-slate-100">l</span><span class="tile border-2 border-dashed border-slate-300"></span><span class="tile bg-slate-100">e</span><span class="tile border-2 border-dashed border-slate-300"></span><span class="tile bg-slate-100">t</span>
+          </div>
+          <div class="flex justify-between text-sm">
+            <span class="min-h-[44px] flex items-center text-brand-700">Gợi ý (hạ cấp)</span>
+            <span class="min-h-[44px] flex items-center text-slate-500">Cấp 2/4</span>
+          </div>
+          <div class="rounded-xl border border-slate-200 p-3 text-xs text-slate-600 flex flex-col gap-1.5">
+            <p class="font-semibold text-slate-700">4 cấp gợi ý</p>
+            <p>1 · Xếp chữ: <span class="font-mono">[t][i][r][e][l][s][n][e][i]</span></p>
+            <p>2 · Điền chữ khuyết: <span class="font-mono">r e s _ l _ e _ t</span></p>
+            <p>3 · Chữ đầu + số ô: <span class="font-mono">r _ _ _ _ _ _ _ _</span> (9 chữ)</p>
+            <p>4 · Ô trống, không gợi ý</p>
+          </div>
+        </div>
+        <div class="p-3 border-t border-slate-200 flex flex-col gap-2">
+          <div class="h-12 rounded-xl border-2 border-brand-600 px-3 flex items-center font-mono">resi|</div>
+          <span class="h-12 rounded-xl bg-brand-600 text-white font-semibold flex items-center justify-center">Kiểm tra</span>
+        </div>
+      </div>
+    </div>
+    <div class="wf-note">Bàn phím: tắt tự sửa, tự gợi ý. Đã dùng gợi ý → tối đa chấm Khó.</div>
+  </section>
+
+  <!-- Tập viết: kết quả -->
+  <section class="wf-state">
+    <div class="wf-label">3b · Tập viết: sai 1 chữ</div>
+    <div class="phone short" style="min-height:560px">
+      <div class="statusbar"><span>9:41</span><span>●●● 4G</span></div>
+      <div class="screen">
+        <div class="scroll">
+          <p class="text-xl font-semibold">kiên cường, mau phục hồi</p>
+          <div class="rounded-xl bg-amber-50 border border-amber-200 p-4 flex flex-col gap-2">
+            <p class="text-sm text-amber-800 font-semibold">Gần đúng! Sai 1 chữ</p>
+            <p class="font-mono text-2xl tracking-wider">res<span class="bg-red-200 text-red-800 px-0.5 rounded">e</span>lient</p>
+            <p class="font-mono text-2xl tracking-wider">res<span class="bg-emerald-200 text-emerald-800 px-0.5 rounded">i</span>lient</p>
+            <p class="text-sm text-slate-600">Chấm: Khó. <span class="text-brand-700">▶ Nghe</span></p>
+          </div>
+          <span class="h-12 rounded-xl border border-slate-300 flex items-center justify-center">Gõ lại cho nhớ</span>
+          <span class="h-12 rounded-xl bg-brand-600 text-white font-semibold flex items-center justify-center">Tiếp</span>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Tập nghe -->
+  <section class="wf-state" id="listening">
+    <div class="wf-label">4 · Tập nghe (nghe câu, điền từ)</div>
+    <div class="phone">
+      <div class="statusbar"><span>9:41</span><span>●●● 4G</span></div>
+      <div class="screen">
+        <div class="h-12 px-2 flex items-center gap-2">
+          <span class="w-11 h-11 flex items-center justify-center text-xl">×</span>
+          <div class="flex-1 h-2 rounded-full bg-slate-100"><div class="h-2 rounded-full bg-brand-600" style="width:50%"></div></div>
+          <span class="text-xs text-slate-500 tnum w-10">10/20</span>
+        </div>
+        <div class="scroll items-center">
+          <p class="text-sm text-slate-500">Nghe và điền từ còn thiếu</p>
+          <span class="w-28 h-28 rounded-full bg-brand-600 text-white flex items-center justify-center text-4xl shadow-lg mt-4">▶</span>
+          <div class="flex gap-2 text-sm">
+            <span class="h-10 px-3 rounded-full border border-slate-300 flex items-center tnum">Nghe lại · 1 lần</span>
+            <span class="h-10 px-3 rounded-full border border-slate-300 flex items-center">0.75x</span>
+            <span class="h-10 px-3 rounded-full bg-slate-100 flex items-center text-xs">Giọng UK</span>
+          </div>
+          <p class="text-lg text-center pt-4">The local economy proved remarkably <span class="inline-block w-24 border-b-2 border-brand-600"></span> during the crisis.</p>
+        </div>
+        <div class="p-3 border-t border-slate-200 flex flex-col gap-2">
+          <div class="h-12 rounded-xl border-2 border-brand-600 px-3 flex items-center font-mono">|</div>
+          <span class="h-12 rounded-xl bg-brand-600 text-white font-semibold flex items-center justify-center">Kiểm tra</span>
+        </div>
+      </div>
+    </div>
+    <div class="wf-note">3 dạng theo mức thuộc: nghe → chọn nghĩa (mức 1), nghe → gõ lại từ (mức 2–3), nghe câu → điền từ (mức 3–4). Nghe lại &gt; 3 lần tính là dùng gợi ý.</div>
+  </section>
+
+  <!-- Tập phát âm -->
+  <section class="wf-state" id="speaking">
+    <div class="wf-label">5 · Tập phát âm (sau khi chấm)</div>
+    <div class="phone">
+      <div class="statusbar"><span>9:41</span><span>●●● 4G</span></div>
+      <div class="screen">
+        <div class="h-12 px-2 flex items-center gap-2">
+          <span class="w-11 h-11 flex items-center justify-center text-xl">×</span>
+          <div class="flex-1 h-2 rounded-full bg-slate-100"><div class="h-2 rounded-full bg-brand-600" style="width:55%"></div></div>
+          <span class="text-xs text-slate-500 tnum w-10">11/20</span>
+          <span class="w-11 h-11 flex items-center justify-center">⋯</span>
+        </div>
+        <div class="scroll items-center text-center">
+          <p class="text-3xl font-bold">resilient</p>
+          <div class="flex gap-2 text-sm">
+            <span class="h-10 px-3 rounded-full border border-slate-300 flex items-center">▶ Mẫu</span>
+            <span class="h-10 px-3 rounded-full border border-slate-300 flex items-center">▶ Chậm</span>
+          </div>
+          <div class="w-full rounded-2xl bg-slate-50 p-4 flex flex-col items-center gap-2">
+            <p class="text-5xl font-bold text-amber-600 tnum">72</p>
+            <p class="text-xs text-slate-500">điểm chỉ mang tính tham khảo</p>
+            <p class="text-2xl font-mono tracking-wide">/<span class="ph-ok">r</span><span class="ph-ok">ɪ</span><span class="ph-mid">ˈz</span><span class="ph-ok">ɪ</span><span class="ph-ok">l</span><span class="ph-ok">j</span><span class="ph-ok">ə</span><span class="ph-ok">n</span><span class="ph-bad">t</span>/</p>
+            <div class="flex gap-3 text-[11px]"><span class="ph-ok">● ≥ 80</span><span class="ph-mid">● 60–79</span><span class="text-red-700">● &lt; 60</span></div>
+          </div>
+          <div class="w-full rounded-xl border border-red-200 bg-red-50 p-3 text-sm text-left">
+            <b>Âm cuối /t/ bị mất.</b> Người Việt hay nuốt âm cuối. Chạm lưỡi vào chân răng trên và bật hơi nhẹ ở cuối từ.
+          </div>
+          <span class="h-11 px-4 rounded-full border border-slate-300 flex items-center text-sm">▶ Nghe bản của bạn rồi đến mẫu</span>
+        </div>
+        <div class="p-3 border-t border-slate-200 grid grid-cols-[1fr_auto] gap-2 items-center">
+          <span class="h-12 rounded-xl border border-slate-300 flex items-center justify-center">Thu lại</span>
+          <span class="h-12 px-6 rounded-xl bg-brand-600 text-white font-semibold flex items-center">Tiếp</span>
+        </div>
+      </div>
+    </div>
+    <div class="wf-note">Trước khi thu: nút micro tròn lớn + sóng âm khi đang thu, tự dừng khi im lặng 1,2 giây. Menu ⋯ có "Tắt phát âm trong phiên này" (nơi công cộng). Điểm 72 → Khó, chỉ vào lịch kỹ năng nói.</div>
+  </section>
+
+  <!-- Thoát giữa chừng -->
+  <section class="wf-state">
+    <div class="wf-label">6 · Thoát giữa chừng</div>
+    <div class="phone short" style="min-height:460px">
+      <div class="statusbar"><span>9:41</span><span>●●● 4G</span></div>
+      <div class="screen bg-slate-900/40">
+        <div class="flex-1"></div>
+        <div class="bg-white rounded-t-3xl p-4 flex flex-col gap-3">
+          <p class="text-lg font-semibold">Dừng phiên ôn?</p>
+          <p class="text-sm text-slate-600 tnum">Đã lưu 11/20 câu. Bạn có thể tiếp tục từ màn Hôm nay.</p>
+          <span class="h-12 rounded-xl bg-brand-600 text-white font-semibold flex items-center justify-center">Ôn tiếp</span>
+          <span class="h-12 rounded-xl border border-slate-300 flex items-center justify-center">Dừng, tiếp tục sau</span>
+        </div>
+      </div>
+    </div>
+  </section>
+
+</main>
+</body>
+</html>

@@ -1,0 +1,202 @@
+<!doctype html>
+<html lang="vi">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Thêm từ · Wireframe WordWise</title>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Be+Vietnam+Pro:wght@400;500;600;700&display=swap">
+<script src="https://cdn.tailwindcss.com/3.4.17"></script>
+<script>tailwind.config={theme:{extend:{colors:{brand:{50:'#eef7fa',100:'#d5ecf3',500:'#2b8bb0',600:'#1f7396',700:'#195d7a'}}}}}</script>
+<link rel="stylesheet" href="wf.css">
+<style>
+  .seg { display: grid; grid-template-columns: repeat(4, 1fr); gap: 4px; background: #eef2f4; border-radius: 12px; padding: 4px; }
+  .seg span { min-height: 40px; display: flex; align-items: center; justify-content: center; border-radius: 9px; font-size: 13px; color: var(--wf-muted); }
+  .seg span.on { background: #fff; color: var(--wf-ink); font-weight: 600; box-shadow: 0 1px 2px rgba(0,0,0,.08); }
+</style>
+</head>
+<body>
+<header class="wf-head">
+  <a href="index.html">← Tất cả wireframe</a>
+  <h1>Màn 6 · Thêm từ (Gõ · Nói · Ảnh · File)</h1>
+  <p>Route <code>/add</code>, mở từ nút + ở mọi màn chính. Mục tiêu: thêm một từ đã có trong kho dưới 10 giây. Mọi tab kết thúc ở cùng bước chuẩn hóa và thanh tóm tắt.</p>
+</header>
+
+<main class="wf-row">
+
+  <!-- Gõ -->
+  <section class="wf-state">
+    <div class="wf-label">1 · Tab Gõ: gợi ý + chọn nghĩa</div>
+    <div class="phone">
+      <div class="statusbar"><span>9:41</span><span>●●● 4G</span></div>
+      <div class="screen">
+        <div class="h-12 px-2 flex items-center justify-between"><span class="w-11 h-11 flex items-center justify-center text-xl">×</span><b>Thêm từ</b><span class="w-11"></span></div>
+        <div class="px-4 flex flex-col gap-3">
+          <div class="h-11 rounded-xl border border-slate-300 px-3 flex items-center justify-between text-sm"><span><span class="text-slate-500">Vào sổ:</span> <b>Đọc sách: Grit</b></span><span>▾</span></div>
+          <div class="seg"><span class="on">Gõ</span><span>Nói</span><span>Ảnh</span><span>File</span></div>
+        </div>
+        <div class="scroll">
+          <div class="h-14 rounded-xl border-2 border-brand-600 px-3 flex items-center text-lg">resil|</div>
+          <ul class="rounded-xl border border-slate-200 divide-y divide-slate-100">
+            <li class="px-3 py-2.5 bg-brand-50"><b>resilient</b> <span class="text-xs text-slate-500">adj</span><br><span class="text-sm text-slate-600">kiên cường, mau phục hồi</span></li>
+            <li class="px-3 py-2.5"><b>resilience</b> <span class="text-xs text-slate-500">n</span><br><span class="text-sm text-slate-600">sự kiên cường, khả năng phục hồi</span></li>
+            <li class="px-3 py-2.5 text-sm text-slate-500">Không thấy? Thêm "resil" làm từ mới</li>
+          </ul>
+          <div class="rounded-xl border border-slate-200 p-3 flex flex-col gap-2">
+            <p class="text-sm font-semibold">"resilient" có 2 nghĩa. Bạn gặp nghĩa nào?</p>
+            <label class="flex items-start gap-2 min-h-[44px] text-sm"><span class="mt-0.5 w-5 h-5 rounded-full border-[6px] border-brand-600 flex-none"></span>kiên cường, mau phục hồi (sau khó khăn)</label>
+            <label class="flex items-start gap-2 min-h-[44px] text-sm"><span class="mt-0.5 w-5 h-5 rounded-full border-2 border-slate-300 flex-none"></span>đàn hồi (vật liệu)</label>
+          </div>
+          <div class="h-12 rounded-xl border border-slate-300 px-3 flex items-center text-sm text-slate-400">Câu bạn gặp từ này (tùy chọn)</div>
+          <p class="text-xs text-slate-500">Mẹo: dán nhiều dòng để thêm cả danh sách.</p>
+        </div>
+        <div class="p-3 border-t border-slate-200 flex items-center gap-3">
+          <p class="flex-1 text-sm text-slate-600">1 từ · học hôm nay</p>
+          <span class="h-12 px-6 rounded-xl bg-brand-600 text-white font-semibold flex items-center">Thêm</span>
+        </div>
+      </div>
+    </div>
+    <div class="wf-note">Enter = chọn gợi ý đầu. Từ chỉ có 1 nghĩa thì bỏ qua bước chọn nghĩa: gõ → Enter → Thêm = 3 thao tác.</div>
+  </section>
+
+  <!-- Gõ hàng loạt -->
+  <section class="wf-state">
+    <div class="wf-label">2 · Tab Gõ: dán nhiều dòng</div>
+    <div class="phone">
+      <div class="statusbar"><span>9:41</span><span>●●● 4G</span></div>
+      <div class="screen">
+        <div class="h-12 px-2 flex items-center justify-between"><span class="w-11 h-11 flex items-center justify-center text-xl">×</span><b>Thêm từ</b><span class="w-11"></span></div>
+        <div class="px-4 flex flex-col gap-3"><div class="seg"><span class="on">Gõ</span><span>Nói</span><span>Ảnh</span><span>File</span></div></div>
+        <div class="scroll">
+          <p class="text-sm font-semibold">Đã dán 12 dòng</p>
+          <ul class="rounded-xl border border-slate-200 divide-y divide-slate-100 text-sm">
+            <li class="px-3 py-2 flex justify-between"><span>resilient</span><span class="text-slate-500">kiên cường</span></li>
+            <li class="px-3 py-2 flex justify-between"><span>running <span class="text-slate-400">→ run</span></span><span class="text-slate-500">chạy</span></li>
+            <li class="px-3 py-2 flex justify-between"><span>persevere</span><span class="text-slate-500">kiên trì</span></li>
+            <li class="px-3 py-2 flex justify-between text-slate-400"><span>grit</span><span>đã có trong sổ, bỏ qua</span></li>
+            <li class="px-3 py-2 flex justify-between"><span>setback</span><span class="text-amber-700">2 nghĩa · chọn</span></li>
+            <li class="px-3 py-2 text-slate-500">+ 7 từ khác</li>
+          </ul>
+          <div class="rounded-xl bg-slate-50 p-3 text-sm">
+            <p><b class="tnum">11 từ sẽ thêm</b></p>
+            <p class="text-slate-600 tnum">2 học hôm nay · 9 vào Sắp học (mở dần 10 từ/ngày) · 1 trùng bỏ qua</p>
+          </div>
+        </div>
+        <div class="p-3 border-t border-slate-200"><span class="h-12 rounded-xl bg-brand-600 text-white font-semibold flex items-center justify-center">Thêm 11 từ</span></div>
+      </div>
+    </div>
+    <div class="wf-note">"running → run": bước chuẩn hóa đưa về từ gốc, hiển thị để người dùng thấy và sửa nếu cần.</div>
+  </section>
+
+  <!-- Nói -->
+  <section class="wf-state">
+    <div class="wf-label">3 · Tab Nói: 3 phương án</div>
+    <div class="phone">
+      <div class="statusbar"><span>9:41</span><span>●●● 4G</span></div>
+      <div class="screen">
+        <div class="h-12 px-2 flex items-center justify-between"><span class="w-11 h-11 flex items-center justify-center text-xl">×</span><b>Thêm từ</b><span class="w-11"></span></div>
+        <div class="px-4 flex flex-col gap-3"><div class="seg"><span>Gõ</span><span class="on">Nói</span><span>Ảnh</span><span>File</span></div></div>
+        <div class="scroll">
+          <div class="flex gap-2 text-sm">
+            <span class="flex-1 h-10 rounded-lg border border-slate-300 flex items-center justify-center">Nói tiếng Anh</span>
+            <span class="flex-1 h-10 rounded-lg border border-slate-300 flex items-center justify-center text-slate-500">Tra ngược (tiếng Việt)</span>
+          </div>
+          <p class="text-sm font-semibold">Bạn đã nói:</p>
+          <div class="flex flex-col gap-2">
+            <span class="min-h-[52px] rounded-xl border-2 border-brand-600 bg-brand-50 px-3 flex items-center justify-between"><span><b>resilient</b> · kiên cường</span><span class="text-brand-700">✓</span></span>
+            <span class="min-h-[52px] rounded-xl border border-slate-300 px-3 flex items-center"><b>resilience</b>&nbsp;· sự kiên cường</span>
+            <span class="min-h-[52px] rounded-xl border border-slate-300 px-3 flex items-center"><b>reliant</b>&nbsp;· phụ thuộc</span>
+          </div>
+          <div class="flex-1"></div>
+          <div class="flex flex-col items-center gap-2 py-2">
+            <span class="w-24 h-24 rounded-full bg-brand-600 text-white flex items-center justify-center text-sm font-semibold shadow-lg">Giữ để nói</span>
+            <label class="text-xs text-slate-500 flex items-center gap-2 min-h-[44px]"><span class="w-9 h-5 rounded-full bg-slate-300"></span>Nói liên tục nhiều từ</label>
+          </div>
+        </div>
+        <div class="p-3 border-t border-slate-200"><span class="h-12 rounded-xl bg-brand-600 text-white font-semibold flex items-center justify-center">Thêm "resilient"</span></div>
+      </div>
+    </div>
+    <div class="wf-note"><b>Tra ngược:</b> nói "kiên cường" → resilient (phục hồi), tenacious (bám riết), steadfast (kiên định)… kèm sắc thái.<br><b>Lỗi:</b> từ chối micro → hướng dẫn bật lại + nút "Gõ thay thế". Ồn/không nhận ra → "Chưa nghe rõ, thử nói chậm hơn".</div>
+  </section>
+
+  <!-- Ảnh -->
+  <section class="wf-state">
+    <div class="wf-label">4 · Tab Ảnh: chụp hoặc chọn</div>
+    <div class="phone">
+      <div class="statusbar"><span>9:41</span><span>●●● 4G</span></div>
+      <div class="screen">
+        <div class="h-12 px-2 flex items-center justify-between"><span class="w-11 h-11 flex items-center justify-center text-xl">×</span><b>Thêm từ</b><span class="w-11"></span></div>
+        <div class="px-4 flex flex-col gap-3"><div class="seg"><span>Gõ</span><span>Nói</span><span class="on">Ảnh</span><span>File</span></div></div>
+        <div class="scroll">
+          <div class="ph h-64 rounded-2xl"><span>khung xem camera</span></div>
+          <div class="rounded-xl bg-amber-50 border border-amber-200 p-3 text-sm">Ảnh hơi tối. Bật đèn hoặc đưa gần ánh sáng để nhận chữ chính xác hơn.</div>
+          <div class="grid grid-cols-2 gap-2">
+            <span class="h-12 rounded-xl bg-brand-600 text-white font-semibold flex items-center justify-center">Chụp ảnh</span>
+            <span class="h-12 rounded-xl border border-slate-300 flex items-center justify-center">Chọn từ thư viện ảnh</span>
+          </div>
+          <p class="text-xs text-slate-500">Ảnh không được lưu trên máy chủ, trừ khi bạn chọn giữ làm ngữ cảnh. Còn 27/30 ảnh hôm nay.</p>
+        </div>
+      </div>
+    </div>
+    <div class="wf-note">Sau khi chụp: xoay/cắt → "Đang đọc chữ…" → chuyển sang màn <a class="underline" href="photo-picker.html">Chọn từ trên ảnh</a>.</div>
+  </section>
+
+  <!-- File -->
+  <section class="wf-state">
+    <div class="wf-label">5 · Tab File: ánh xạ cột + dòng lỗi</div>
+    <div class="phone">
+      <div class="statusbar"><span>9:41</span><span>●●● 4G</span></div>
+      <div class="screen">
+        <div class="h-12 px-2 flex items-center justify-between"><span class="w-11 h-11 flex items-center justify-center text-xl">×</span><b>Thêm từ</b><span class="w-11"></span></div>
+        <div class="px-4 flex flex-col gap-3"><div class="seg"><span>Gõ</span><span>Nói</span><span>Ảnh</span><span class="on">File</span></div></div>
+        <div class="scroll">
+          <div class="rounded-xl border border-slate-200 p-3 text-sm flex justify-between"><span><b>ielts_vocab.xlsx</b><br><span class="text-slate-500 tnum">Trang tính 1 · 148 dòng</span></span><span class="text-brand-700">Đổi file</span></div>
+          <p class="text-sm font-semibold">Cột nào là gì?</p>
+          <div class="grid grid-cols-2 gap-2 text-sm">
+            <span class="h-11 rounded-lg bg-slate-50 px-3 flex items-center">A: "Word"</span><span class="h-11 rounded-lg border border-slate-300 px-3 flex items-center justify-between">Từ <span>▾</span></span>
+            <span class="h-11 rounded-lg bg-slate-50 px-3 flex items-center">B: "Nghĩa"</span><span class="h-11 rounded-lg border border-slate-300 px-3 flex items-center justify-between">Nghĩa <span>▾</span></span>
+            <span class="h-11 rounded-lg bg-slate-50 px-3 flex items-center">C: "Example"</span><span class="h-11 rounded-lg border border-slate-300 px-3 flex items-center justify-between">Ví dụ <span>▾</span></span>
+            <span class="h-11 rounded-lg bg-slate-50 px-3 flex items-center">D: "Ghi chú"</span><span class="h-11 rounded-lg border border-slate-300 px-3 flex items-center justify-between text-slate-400">Bỏ qua <span>▾</span></span>
+          </div>
+          <p class="text-sm font-semibold">Xem trước</p>
+          <div class="overflow-x-auto rounded-xl border border-slate-200">
+            <table class="w-full text-xs">
+              <thead class="bg-slate-50 text-slate-500"><tr><th class="text-left px-2 py-1.5">#</th><th class="text-left px-2">Từ</th><th class="text-left px-2">Nghĩa</th></tr></thead>
+              <tbody class="divide-y divide-slate-100">
+                <tr><td class="px-2 py-1.5 tnum">2</td><td class="px-2">resilient</td><td class="px-2">kiên cường</td></tr>
+                <tr class="bg-red-50 text-red-800"><td class="px-2 py-1.5 tnum">17</td><td class="px-2 text-red-400">(trống)</td><td class="px-2">bền vững · thiếu cột Từ</td></tr>
+                <tr><td class="px-2 py-1.5 tnum">18</td><td class="px-2">mitigate</td><td class="px-2">giảm nhẹ</td></tr>
+                <tr class="bg-red-50 text-red-800"><td class="px-2 py-1.5 tnum">40</td><td class="px-2">enviroment</td><td class="px-2">nghi sai chính tả → environment?</td></tr>
+              </tbody>
+            </table>
+          </div>
+          <p class="text-xs text-slate-500 tnum">146 dòng hợp lệ · 2 dòng lỗi (17, 40) · 5 trùng bỏ qua</p>
+        </div>
+        <div class="p-3 border-t border-slate-200"><span class="h-12 rounded-xl bg-brand-600 text-white font-semibold flex items-center justify-center">Nhập 141 từ</span></div>
+      </div>
+    </div>
+    <div class="wf-note">Hỗ trợ CSV, Excel (.xlsx), Anki (.apkg). Trên 500 dòng: chạy nền, có thanh tiến độ, người dùng rời màn được. Tối đa 10 MB.</div>
+  </section>
+
+  <!-- Tóm tắt sau khi thêm -->
+  <section class="wf-state">
+    <div class="wf-label">6 · Sau khi thêm (toast)</div>
+    <div class="phone short" style="min-height:420px">
+      <div class="statusbar"><span>9:41</span><span>●●● 4G</span></div>
+      <div class="screen">
+        <div class="scroll justify-end">
+          <div class="rounded-2xl bg-slate-900 text-white p-4 flex flex-col gap-3 shadow-xl">
+            <p class="text-sm">Đã thêm <b>resilient</b> vào "Đọc sách: Grit"</p>
+            <div class="flex gap-4 text-sm"><span class="text-sky-300 min-h-[44px] flex items-center">Xem thẻ</span><span class="text-sky-300 min-h-[44px] flex items-center">Thêm tiếp</span></div>
+          </div>
+          <div class="rounded-2xl bg-slate-900 text-white p-4 flex flex-col gap-1 shadow-xl">
+            <p class="text-sm">"resilient" đã có trong sổ "IELTS – Environment"</p>
+            <p class="text-xs text-slate-300">Đã thêm vào sổ này, giữ nguyên lịch ôn.</p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+</main>
+</body>
+</html>

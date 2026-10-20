@@ -1,0 +1,380 @@
+<!doctype html>
+<html lang="vi">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Thẻ từ · Wireframe WordWise</title>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Be+Vietnam+Pro:wght@400;500;600;700&display=swap">
+<script src="https://cdn.tailwindcss.com/3.4.17"></script>
+<script>tailwind.config={theme:{extend:{colors:{brand:{50:'#eef7fa',100:'#d5ecf3',500:'#2b8bb0',600:'#1f7396',700:'#195d7a'}}}}}</script>
+<link rel="stylesheet" href="wf.css">
+<style>
+  .tabs { display: flex; gap: 4px; overflow-x: auto; padding: 0 12px; border-bottom: 1px solid var(--wf-line); scrollbar-width: none; }
+  .tabs span { flex: none; min-height: 44px; padding: 0 10px; display: flex; align-items: center; font-size: 13px; color: var(--wf-muted); border-bottom: 2px solid transparent; white-space: nowrap; }
+  .tabs span.on { color: #195d7a; font-weight: 600; border-bottom-color: #1f7396; }
+  .mine { font-size: 10px; font-weight: 600; padding: 2px 6px; border-radius: 999px; background: #fdecc8; color: #7a4b00; }
+  .layer-foot { display: flex; justify-content: space-between; font-size: 13px; padding-top: 4px; }
+  .layer-foot .add { color: #195d7a; font-weight: 500; min-height: 44px; display: flex; align-items: center; }
+  .layer-foot .report { color: var(--wf-muted); min-height: 44px; display: flex; align-items: center; }
+</style>
+</head>
+<body>
+<header class="wf-head">
+  <a href="index.html">← Tất cả wireframe</a>
+  <h1>Màn 5 · Thẻ từ "resilient" (8 lớp)</h1>
+  <p>Route <code>/words/[id]</code>. Khung 1 là thẻ đầy đủ ở tab Cơ bản; các khung sau là nội dung từng tab (đầu thẻ thu gọn khi cuộn). Nhãn vàng "Của bạn" là nội dung người dùng tự thêm, luôn đứng trước nội dung gốc.</p>
+</header>
+
+<main class="wf-row">
+
+  <!-- 1 · Cơ bản -->
+  <section class="wf-state">
+    <div class="wf-label">1 · Tab Cơ bản (đầu thẻ đầy đủ)</div>
+    <div class="phone">
+      <div class="statusbar"><span>9:41</span><span>●●● 4G</span></div>
+      <div class="screen">
+        <div class="h-12 px-2 flex items-center justify-between">
+          <span class="w-11 h-11 flex items-center justify-center text-xl">←</span>
+          <div class="flex items-center gap-1 text-xs">
+            <span class="h-9 px-3 rounded-full bg-slate-900 text-white flex items-center">Đầy đủ</span>
+            <span class="h-9 px-3 rounded-full border border-slate-300 flex items-center">Xem nhanh</span>
+          </div>
+          <span class="w-11 h-11 flex items-center justify-center">⋯</span>
+        </div>
+        <div class="px-4 flex flex-col gap-2 pb-3">
+          <div class="flex gap-3">
+            <div class="flex-1 min-w-0">
+              <p class="text-3xl font-bold">resilient</p>
+              <p class="text-sm text-slate-500">adjective · <span class="px-1.5 py-0.5 rounded bg-slate-100 text-slate-700 text-xs font-semibold">C1</span> · thường gặp</p>
+            </div>
+            <div class="ph w-24 h-20 rounded-xl"><span>cây tre uốn cong trong gió</span></div>
+          </div>
+          <div class="flex flex-wrap gap-2 text-sm">
+            <span class="h-10 pl-2 pr-3 rounded-full border border-slate-300 flex items-center gap-2"><span class="w-7 h-7 rounded-full bg-brand-600 text-white text-xs flex items-center justify-center">▶</span>US /rɪˈzɪl.jənt/</span>
+            <span class="h-10 pl-2 pr-3 rounded-full border border-slate-300 flex items-center gap-2"><span class="w-7 h-7 rounded-full bg-slate-700 text-white text-xs flex items-center justify-center">▶</span>UK /rɪˈzɪl.i.ənt/</span>
+          </div>
+          <div class="flex flex-wrap gap-1.5 text-xs">
+            <span class="text-slate-500 py-1">Trong sổ:</span>
+            <span class="px-2 py-1 rounded-full bg-slate-100">Đọc sách: Grit</span>
+            <span class="px-2 py-1 rounded-full bg-slate-100">IELTS – Environment</span>
+          </div>
+        </div>
+        <div class="tabs"><span class="on">Cơ bản</span><span>Ví dụ</span><span>Từ liên quan</span><span>Collocations</span><span>Thành ngữ &amp; Slang</span><span>Ngữ pháp</span><span>Ghi nhớ &amp; Phân biệt</span><span>Hình thái</span></div>
+        <div class="scroll">
+          <div class="flex flex-col gap-1.5">
+            <p class="text-xs font-semibold uppercase tracking-wider text-slate-500">Nghĩa 1</p>
+            <p class="text-lg font-semibold">kiên cường, mau phục hồi <span class="text-xs font-normal text-slate-400">(sau khó khăn)</span></p>
+            <p class="text-sm text-slate-600">able to recover quickly from difficult conditions or setbacks</p>
+          </div>
+          <div class="flex flex-col gap-1.5 border-t border-slate-100 pt-3">
+            <p class="text-xs font-semibold uppercase tracking-wider text-slate-500">Nghĩa 2</p>
+            <p class="font-semibold">đàn hồi <span class="text-xs font-normal text-slate-400">(vật liệu)</span></p>
+            <p class="text-sm text-slate-600">able to return to its original shape after being bent, stretched or pressed</p>
+          </div>
+          <div class="rounded-xl bg-slate-50 p-3 text-sm flex flex-col gap-1">
+            <p><span class="text-slate-500">Trang trọng:</span> trung tính, hơi trang trọng</p>
+            <p><span class="text-slate-500">Tần suất:</span> <span class="tnum">#8.420</span> trong tiếng Anh hiện đại</p>
+          </div>
+          <div class="flex flex-wrap gap-2 text-sm">
+            <span class="h-10 px-3 rounded-lg border border-slate-300 flex items-center">Đổi nghĩa hiển thị</span>
+            <span class="h-10 px-3 rounded-lg border border-slate-300 flex items-center">Đổi ảnh</span>
+          </div>
+          <div class="layer-foot"><span class="add">+ Thêm của bạn</span><span class="report">⚑ Báo lỗi</span></div>
+        </div>
+        <div class="grid grid-cols-2 gap-2 p-3 border-t border-slate-200">
+          <span class="h-12 rounded-xl border border-slate-300 flex items-center justify-center font-medium">+ Thêm vào sổ</span>
+          <span class="h-12 rounded-xl bg-brand-600 text-white flex items-center justify-center font-semibold">Ôn từ này</span>
+        </div>
+      </div>
+    </div>
+    <div class="wf-note">Chế độ Xem nhanh chỉ giữ đầu thẻ + nghĩa. Nút "Thêm vào sổ" đổi thành "Đã có trong 2 sổ" khi từ đã có trong kho.</div>
+  </section>
+
+  <!-- 2 · Ví dụ -->
+  <section class="wf-state">
+    <div class="wf-label">2 · Tab Ví dụ</div>
+    <div class="phone">
+      <div class="statusbar"><span>9:41</span><span>●●● 4G</span></div>
+      <div class="screen">
+        <div class="h-12 px-2 flex items-center gap-2"><span class="w-11 h-11 flex items-center justify-center text-xl">←</span><b>resilient</b><span class="text-sm text-slate-500">/rɪˈzɪl.jənt/</span></div>
+        <div class="tabs"><span>Cơ bản</span><span class="on">Ví dụ</span><span>Từ liên quan</span><span>Collocations</span><span>Thành ngữ &amp; Slang</span><span>Ngữ pháp</span><span>Ghi nhớ &amp; Phân biệt</span><span>Hình thái</span></div>
+        <div class="scroll">
+          <div class="rounded-xl border border-amber-200 bg-amber-50/60 p-3 flex flex-col gap-2">
+            <div class="flex items-center gap-2"><span class="mine">Câu bạn gặp</span><span class="text-xs text-slate-500">ảnh chụp · sách "Grit" · 12/10</span></div>
+            <div class="ph h-16 rounded-lg"><span>ảnh gốc: trang sách</span></div>
+            <p><span class="hl">Resilient</span> people see failure as a lesson, not a verdict.</p>
+            <p class="text-sm text-slate-500">Người kiên cường xem thất bại là bài học, không phải bản án.</p>
+            <div class="flex gap-4 text-sm text-brand-700"><span class="min-h-[44px] flex items-center">▶ Nghe</span><span class="min-h-[44px] flex items-center">Sửa</span></div>
+          </div>
+
+          <p class="text-xs font-semibold uppercase tracking-wider text-slate-500">Nghĩa 1 · kiên cường</p>
+          <div class="flex flex-col gap-1 border-b border-slate-100 pb-3">
+            <p>Children are often more <span class="hl">resilient</span> than adults think.</p>
+            <p class="text-sm text-slate-500">Trẻ em thường kiên cường hơn người lớn nghĩ.</p>
+            <div class="flex gap-4 text-sm text-brand-700"><span class="min-h-[44px] flex items-center">▶ Nghe</span><span class="min-h-[44px] flex items-center">Ẩn bản dịch</span></div>
+          </div>
+          <div class="flex flex-col gap-1 border-b border-slate-100 pb-3">
+            <p>The local economy proved remarkably <span class="hl">resilient</span> during the crisis.</p>
+            <p class="text-sm text-slate-400 italic">Chạm để hiện bản dịch</p>
+            <div class="flex gap-4 text-sm text-brand-700"><span class="min-h-[44px] flex items-center">▶ Nghe</span></div>
+          </div>
+          <p class="text-xs font-semibold uppercase tracking-wider text-slate-500">Nghĩa 2 · đàn hồi</p>
+          <div class="flex flex-col gap-1">
+            <p>This foam is light, <span class="hl">resilient</span> and easy to clean.</p>
+            <p class="text-sm text-slate-500">Loại mút này nhẹ, đàn hồi và dễ vệ sinh.</p>
+          </div>
+          <div class="layer-foot"><span class="add">+ Thêm câu của bạn</span><span class="report">⚑ Báo lỗi</span></div>
+        </div>
+      </div>
+    </div>
+    <div class="wf-note">Câu gốc người dùng gặp luôn đứng đầu và được ưu tiên trong câu hỏi điền từ.</div>
+  </section>
+
+  <!-- 3 · Từ liên quan -->
+  <section class="wf-state">
+    <div class="wf-label">3 · Tab Từ liên quan</div>
+    <div class="phone">
+      <div class="statusbar"><span>9:41</span><span>●●● 4G</span></div>
+      <div class="screen">
+        <div class="h-12 px-2 flex items-center gap-2"><span class="w-11 h-11 flex items-center justify-center text-xl">←</span><b>resilient</b></div>
+        <div class="tabs"><span>Cơ bản</span><span>Ví dụ</span><span class="on">Từ liên quan</span><span>Collocations</span><span>Thành ngữ &amp; Slang</span><span>Ngữ pháp</span><span>Ghi nhớ &amp; Phân biệt</span><span>Hình thái</span></div>
+        <div class="scroll">
+          <p class="text-xs font-semibold uppercase tracking-wider text-slate-500">Đồng nghĩa · khác nhau thế nào</p>
+          <ul class="flex flex-col gap-2.5 text-sm">
+            <li class="flex gap-3"><span class="h-10 px-3 rounded-full border border-brand-600 text-brand-700 flex items-center font-medium flex-none">tough</span><span class="text-slate-600">chung chung, nhấn vào sức chịu đựng hơn là khả năng hồi phục</span></li>
+            <li class="flex gap-3"><span class="h-10 px-3 rounded-full border border-brand-600 text-brand-700 flex items-center font-medium flex-none">tenacious</span><span class="text-slate-600">bám riết, không bỏ cuộc; nói về sự kiên trì theo đuổi</span></li>
+            <li class="flex gap-3"><span class="h-10 px-3 rounded-full border border-brand-600 text-brand-700 flex items-center font-medium flex-none">hardy</span><span class="text-slate-600">chịu được điều kiện khắc nghiệt; hay dùng cho cây, động vật</span></li>
+            <li class="flex gap-3"><span class="h-10 px-3 rounded-full border border-brand-600 text-brand-700 flex items-center font-medium flex-none">robust</span><span class="text-slate-600">chắc chắn; hay dùng cho hệ thống, nền kinh tế, vật thể</span></li>
+          </ul>
+          <p class="text-xs font-semibold uppercase tracking-wider text-slate-500 pt-2">Trái nghĩa</p>
+          <div class="flex flex-wrap gap-2 text-sm">
+            <span class="h-10 px-3 rounded-full border border-slate-300 flex items-center">fragile</span>
+            <span class="h-10 px-3 rounded-full border border-slate-300 flex items-center">vulnerable</span>
+          </div>
+          <p class="text-xs font-semibold uppercase tracking-wider text-slate-500 pt-2">Họ từ</p>
+          <div class="flex flex-wrap gap-2 text-sm">
+            <span class="h-10 px-3 rounded-full bg-slate-100 flex items-center">resilience <span class="text-slate-400 ml-1">n</span></span>
+            <span class="h-10 px-3 rounded-full bg-slate-100 flex items-center">resiliency <span class="text-slate-400 ml-1">n, Mỹ</span></span>
+            <span class="h-10 px-3 rounded-full bg-slate-100 flex items-center">resiliently <span class="text-slate-400 ml-1">adv</span></span>
+          </div>
+          <div class="rounded-xl border border-slate-200 shadow-md p-3 flex flex-col gap-2 text-sm">
+            <p class="text-xs text-slate-500">Khi chạm chip "tenacious":</p>
+            <div class="grid grid-cols-2 gap-2">
+              <span class="h-11 rounded-lg border border-slate-300 flex items-center justify-center">Mở thẻ</span>
+              <span class="h-11 rounded-lg bg-brand-600 text-white flex items-center justify-center">+ Thêm vào sổ</span>
+            </div>
+          </div>
+          <div class="layer-foot"><span class="add">+ Thêm của bạn</span><span class="report">⚑ Báo lỗi</span></div>
+        </div>
+      </div>
+    </div>
+    <div class="wf-note">Đồng âm khác nghĩa (homonyms) của "resilient" rỗng nên mục đó không hiện. Mục rỗng bị ẩn, tab chỉ ẩn khi mọi mục đều rỗng.</div>
+  </section>
+
+  <!-- 4 · Collocations -->
+  <section class="wf-state">
+    <div class="wf-label">4 · Tab Collocations</div>
+    <div class="phone short" style="min-height:640px">
+      <div class="statusbar"><span>9:41</span><span>●●● 4G</span></div>
+      <div class="screen">
+        <div class="h-12 px-2 flex items-center gap-2"><span class="w-11 h-11 flex items-center justify-center text-xl">←</span><b>resilient</b></div>
+        <div class="tabs"><span>Cơ bản</span><span>Ví dụ</span><span>Từ liên quan</span><span class="on">Collocations</span><span>Thành ngữ &amp; Slang</span><span>Ngữ pháp</span><span>Ghi nhớ &amp; Phân biệt</span><span>Hình thái</span></div>
+        <div class="scroll">
+          <div class="rounded-xl border border-amber-200 bg-amber-50/60 p-3 text-sm flex flex-col gap-1">
+            <span class="mine self-start">Của bạn</span>
+            <p><b>emotionally resilient</b> · vững vàng về cảm xúc</p>
+          </div>
+          <div class="flex flex-col gap-1">
+            <p class="text-xs font-semibold uppercase tracking-wider text-slate-500">trạng từ + resilient</p>
+            <p><b>remarkably / incredibly / highly</b> resilient</p>
+            <p class="text-sm text-slate-500">The species is <i>remarkably resilient</i> to drought.</p>
+          </div>
+          <div class="flex flex-col gap-1 border-t border-slate-100 pt-3">
+            <p class="text-xs font-semibold uppercase tracking-wider text-slate-500">resilient + danh từ</p>
+            <p>resilient <b>economy / community / system</b></p>
+            <p class="text-sm text-slate-500">We need a more <i>resilient energy system</i>.</p>
+          </div>
+          <div class="flex flex-col gap-1 border-t border-slate-100 pt-3">
+            <p class="text-xs font-semibold uppercase tracking-wider text-slate-500">động từ + resilient</p>
+            <p><b>prove / remain</b> resilient</p>
+            <p class="text-sm text-slate-500">Sales <i>remained resilient</i> despite the recession.</p>
+          </div>
+          <div class="flex flex-col gap-1 border-t border-slate-100 pt-3">
+            <p class="text-xs font-semibold uppercase tracking-wider text-slate-500">resilient + giới từ</p>
+            <p>resilient <b>to / against</b> something</p>
+            <p class="text-sm text-slate-500">Coral reefs are less <i>resilient to</i> rising temperatures.</p>
+          </div>
+          <div class="layer-foot"><span class="add">+ Thêm collocation của bạn</span><span class="report">⚑ Báo lỗi</span></div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- 5 · Thành ngữ & Slang -->
+  <section class="wf-state">
+    <div class="wf-label">5 · Tab Thành ngữ &amp; Slang</div>
+    <div class="phone short" style="min-height:640px">
+      <div class="statusbar"><span>9:41</span><span>●●● 4G</span></div>
+      <div class="screen">
+        <div class="h-12 px-2 flex items-center gap-2"><span class="w-11 h-11 flex items-center justify-center text-xl">←</span><b>resilient</b></div>
+        <div class="tabs"><span>Cơ bản</span><span>Ví dụ</span><span>Từ liên quan</span><span>Collocations</span><span class="on">Thành ngữ &amp; Slang</span><span>Ngữ pháp</span><span>Ghi nhớ &amp; Phân biệt</span><span>Hình thái</span></div>
+        <div class="scroll">
+          <p class="text-xs font-semibold uppercase tracking-wider text-slate-500">Thành ngữ, cụm động từ cùng ý</p>
+          <div class="flex flex-col gap-1">
+            <p class="font-semibold">bounce back <span class="ml-1 text-[11px] font-medium px-1.5 py-0.5 rounded bg-slate-100">trung tính</span></p>
+            <p class="text-sm text-slate-600">hồi phục nhanh sau thất bại, bệnh tật</p>
+            <p class="text-sm text-slate-500">She <i>bounced back</i> quickly after losing her job.</p>
+          </div>
+          <div class="flex flex-col gap-1 border-t border-slate-100 pt-3">
+            <p class="font-semibold">roll with the punches <span class="ml-1 text-[11px] font-medium px-1.5 py-0.5 rounded bg-amber-50 text-amber-800">thân mật</span></p>
+            <p class="text-sm text-slate-600">thích nghi, chịu đựng khó khăn mà không gục ngã</p>
+          </div>
+          <div class="flex flex-col gap-1 border-t border-slate-100 pt-3">
+            <p class="font-semibold">(as) tough as old boots <span class="ml-1 text-[11px] font-medium px-1.5 py-0.5 rounded bg-amber-50 text-amber-800">thân mật · Anh</span></p>
+            <p class="text-sm text-slate-600">cực kỳ cứng cỏi, khó bị quật ngã</p>
+          </div>
+          <div class="rounded-lg bg-slate-50 p-3 text-sm text-slate-500">Slang: chưa có tiếng lóng phổ biến cho từ này.</div>
+          <div class="layer-foot"><span class="add">+ Thêm của bạn</span><span class="report">⚑ Báo lỗi</span></div>
+        </div>
+      </div>
+    </div>
+    <div class="wf-note">Mức trang trọng dùng 5 nhãn: trang trọng, trung tính, thân mật, tiếng lóng, xúc phạm.</div>
+  </section>
+
+  <!-- 6 · Ngữ pháp -->
+  <section class="wf-state">
+    <div class="wf-label">6 · Tab Ngữ pháp</div>
+    <div class="phone short" style="min-height:600px">
+      <div class="statusbar"><span>9:41</span><span>●●● 4G</span></div>
+      <div class="screen">
+        <div class="h-12 px-2 flex items-center gap-2"><span class="w-11 h-11 flex items-center justify-center text-xl">←</span><b>resilient</b></div>
+        <div class="tabs"><span>Cơ bản</span><span>Ví dụ</span><span>Từ liên quan</span><span>Collocations</span><span>Thành ngữ &amp; Slang</span><span class="on">Ngữ pháp</span><span>Ghi nhớ &amp; Phân biệt</span><span>Hình thái</span></div>
+        <div class="scroll">
+          <div class="rounded-xl border border-slate-200 p-3 flex flex-col gap-2">
+            <p class="font-mono text-sm font-semibold">be resilient to / against + N</p>
+            <p class="text-sm">These crops are <i>resilient to</i> drought.</p>
+            <div class="text-sm rounded-lg bg-red-50 p-2"><span class="text-red-700">✗ resilient with stress</span><br><span class="text-emerald-700">✓ resilient to stress</span><br><span class="text-slate-600">Người Việt hay dịch "kiên cường với" thành "with".</span></div>
+          </div>
+          <div class="rounded-xl border border-slate-200 p-3 flex flex-col gap-2">
+            <p class="font-mono text-sm font-semibold">prove (to be) resilient</p>
+            <p class="text-sm">The team <i>proved resilient</i> under pressure.</p>
+          </div>
+          <div class="rounded-xl border border-slate-200 p-3 flex flex-col gap-2">
+            <p class="font-mono text-sm font-semibold">tính từ ↔ danh từ</p>
+            <div class="text-sm rounded-lg bg-red-50 p-2"><span class="text-red-700">✗ She has a lot of resilient.</span><br><span class="text-emerald-700">✓ She has a lot of resilience.</span></div>
+          </div>
+          <div class="layer-foot"><span class="add">+ Thêm ghi chú</span><span class="report">⚑ Báo lỗi</span></div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- 7 · Ghi nhớ & Phân biệt -->
+  <section class="wf-state">
+    <div class="wf-label">7 · Tab Ghi nhớ &amp; Phân biệt</div>
+    <div class="phone short" style="min-height:640px">
+      <div class="statusbar"><span>9:41</span><span>●●● 4G</span></div>
+      <div class="screen">
+        <div class="h-12 px-2 flex items-center gap-2"><span class="w-11 h-11 flex items-center justify-center text-xl">←</span><b>resilient</b></div>
+        <div class="tabs"><span>Cơ bản</span><span>Ví dụ</span><span>Từ liên quan</span><span>Collocations</span><span>Thành ngữ &amp; Slang</span><span>Ngữ pháp</span><span class="on">Ghi nhớ &amp; Phân biệt</span><span>Hình thái</span></div>
+        <div class="scroll">
+          <p class="text-xs font-semibold uppercase tracking-wider text-slate-500">Mẹo ghi nhớ</p>
+          <div class="rounded-xl bg-brand-50 p-3 text-sm flex flex-col gap-1">
+            <p class="text-xs font-semibold text-brand-700">Gốc từ</p>
+            <p><b>re-</b> (lại) + <b>salire</b> (nhảy): "nhảy bật trở lại" như lò xo bị nén rồi bung ra.</p>
+          </div>
+          <div class="rounded-xl bg-brand-50 p-3 text-sm flex flex-col gap-1">
+            <p class="text-xs font-semibold text-brand-700">Hình ảnh</p>
+            <p>Cây tre gặp bão cong rạp xuống, bão qua lại đứng thẳng: đó là <i>resilient</i>.</p>
+          </div>
+          <p class="text-xs font-semibold uppercase tracking-wider text-slate-500 pt-2">Dễ nhầm với</p>
+          <div class="rounded-xl border border-slate-200 p-3 text-sm flex flex-col gap-1">
+            <p><b>resilient</b> vs <b>resistant</b></p>
+            <p class="text-slate-600"><i>resistant</i>: chống lại, không bị tác động. <i>resilient</i>: bị tác động nhưng hồi phục.</p>
+          </div>
+          <div class="rounded-xl border border-slate-200 p-3 text-sm flex flex-col gap-1">
+            <p><b>resilient</b> vs <b>reliant</b></p>
+            <p class="text-slate-600">Viết gần giống. <i>reliant (on)</i>: phụ thuộc vào ai/cái gì.</p>
+          </div>
+          <div class="layer-foot"><span class="add">+ Thêm mẹo của bạn</span><span class="report">⚑ Báo lỗi</span></div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- 8 · Hình thái -->
+  <section class="wf-state">
+    <div class="wf-label">8 · Tab Hình thái &amp; ngữ dụng</div>
+    <div class="phone short" style="min-height:560px">
+      <div class="statusbar"><span>9:41</span><span>●●● 4G</span></div>
+      <div class="screen">
+        <div class="h-12 px-2 flex items-center gap-2"><span class="w-11 h-11 flex items-center justify-center text-xl">←</span><b>resilient</b></div>
+        <div class="tabs"><span>Cơ bản</span><span>Ví dụ</span><span>Từ liên quan</span><span>Collocations</span><span>Thành ngữ &amp; Slang</span><span>Ngữ pháp</span><span>Ghi nhớ &amp; Phân biệt</span><span class="on">Hình thái</span></div>
+        <div class="scroll">
+          <table class="w-full text-sm">
+            <tbody class="divide-y divide-slate-100">
+              <tr><td class="py-2 text-slate-500 w-32">So sánh hơn</td><td class="py-2">more resilient</td></tr>
+              <tr><td class="py-2 text-slate-500">So sánh nhất</td><td class="py-2">most resilient</td></tr>
+              <tr><td class="py-2 text-slate-500">Anh–Mỹ</td><td class="py-2">Mỹ hay dùng danh từ <i>resiliency</i>, Anh dùng <i>resilience</i></td></tr>
+              <tr><td class="py-2 text-slate-500">Trang trọng</td><td class="py-2">trung tính, hơi trang trọng; hay gặp trong báo chí, học thuật</td></tr>
+            </tbody>
+          </table>
+          <div class="rounded-xl bg-slate-50 p-3 text-sm flex flex-col gap-1">
+            <p class="text-xs font-semibold uppercase tracking-wider text-slate-500">Nguồn gốc</p>
+            <p>Từ tiếng Latin <i>resilire</i> "nhảy ngược lại", vào tiếng Anh thế kỷ 17.</p>
+          </div>
+          <div class="layer-foot"><span class="add">+ Thêm ghi chú</span><span class="report">⚑ Báo lỗi</span></div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- 9 · Thêm của bạn -->
+  <section class="wf-state">
+    <div class="wf-label">9 · "+ Thêm câu của bạn" (bottom sheet)</div>
+    <div class="phone short" style="min-height:560px">
+      <div class="statusbar"><span>9:41</span><span>●●● 4G</span></div>
+      <div class="screen bg-slate-900/40">
+        <div class="flex-1"></div>
+        <div class="bg-white rounded-t-3xl p-4 flex flex-col gap-3">
+          <div class="mx-auto w-10 h-1.5 rounded-full bg-slate-300"></div>
+          <p class="text-lg font-semibold">Thêm câu ví dụ của bạn</p>
+          <div class="min-h-[88px] rounded-xl border-2 border-brand-600 p-3">My grandmother is the most resilient person I know.|</div>
+          <div class="h-12 rounded-xl border border-slate-300 px-3 flex items-center text-slate-400">Bản dịch (tùy chọn)</div>
+          <label class="flex items-center gap-2 text-sm min-h-[44px]"><span class="w-6 h-6 rounded-md bg-brand-600 text-white text-xs flex items-center justify-center">✓</span>Tạo audio cho câu này</label>
+          <p class="text-xs text-slate-500">Câu của bạn được ưu tiên trong bài điền từ khi luyện tập.</p>
+          <span class="h-12 rounded-xl bg-brand-600 text-white font-semibold flex items-center justify-center">Lưu</span>
+        </div>
+      </div>
+    </div>
+    <div class="wf-note"><b>Lỗi:</b> câu không chứa từ "resilient" (hay dạng của nó) → nhắc "Câu nên chứa từ đang học để dùng cho bài điền từ", vẫn cho lưu.</div>
+  </section>
+
+  <!-- 10 · Đang tạo nội dung -->
+  <section class="wf-state">
+    <div class="wf-label">10 · Đang chuẩn bị nội dung (từ mới)</div>
+    <div class="phone short" style="min-height:560px">
+      <div class="statusbar"><span>9:41</span><span>●●● 4G</span></div>
+      <div class="screen">
+        <div class="h-12 px-2 flex items-center"><span class="w-11 h-11 flex items-center justify-center text-xl">←</span></div>
+        <div class="px-4 flex flex-col gap-2 pb-3">
+          <p class="text-3xl font-bold">tenacious</p>
+          <div class="h-4 w-40 rounded bg-slate-200 animate-pulse"></div>
+          <div class="h-10 w-56 rounded-full bg-slate-200 animate-pulse"></div>
+        </div>
+        <div class="tabs"><span class="on">Cơ bản</span><span>Ví dụ</span><span class="opacity-40">…</span></div>
+        <div class="scroll">
+          <div class="rounded-xl bg-sky-50 border border-sky-200 p-3 text-sm">Đang chuẩn bị nội dung. Bạn có thể rời màn này, từ đã được lưu vào sổ.</div>
+          <div class="h-6 w-3/4 rounded bg-slate-200 animate-pulse"></div>
+          <div class="h-4 w-full rounded bg-slate-100 animate-pulse"></div>
+          <div class="h-4 w-5/6 rounded bg-slate-100 animate-pulse"></div>
+          <div class="h-20 w-full rounded-xl bg-slate-100 animate-pulse"></div>
+        </div>
+      </div>
+    </div>
+    <div class="wf-note">Tab nào có nội dung thì hiện tab đó. Nếu gói miễn phí bị giới hạn tốc độ, giữ nguyên trạng thái này, không báo lỗi.</div>
+  </section>
+
+</main>
+</body>
+</html>

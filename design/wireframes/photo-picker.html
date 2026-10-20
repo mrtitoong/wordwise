@@ -1,0 +1,123 @@
+<!doctype html>
+<html lang="vi">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Chọn từ trên ảnh · Wireframe WordWise</title>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Be+Vietnam+Pro:wght@400;500;600;700&family=Source+Serif+4:wght@400&display=swap">
+<script src="https://cdn.tailwindcss.com/3.4.17"></script>
+<script>tailwind.config={theme:{extend:{colors:{brand:{50:'#eef7fa',100:'#d5ecf3',500:'#2b8bb0',600:'#1f7396',700:'#195d7a'}}}}}</script>
+<link rel="stylesheet" href="wf.css">
+<style>
+  /* Trang sách giả lập: chữ thật, khung từ vẽ bằng viền */
+  .page {
+    background: #f6f1e4; color: #2a2620;
+    font-family: "Source Serif 4", Georgia, serif; font-size: 13.5px; line-height: 1.9;
+    padding: 14px 14px 18px; border-radius: 6px;
+    transform: rotate(-1.2deg);
+    box-shadow: 0 2px 10px rgba(0,0,0,.18);
+  }
+  .w { border-radius: 3px; padding: 0 1px; box-shadow: inset 0 0 0 1px rgba(31,115,150,.28); }
+  .w.known { box-shadow: inset 0 0 0 1px rgba(120,130,140,.35); color: #8a8378; }
+  .w.sel { background: rgba(31,115,150,.18); box-shadow: inset 0 0 0 2px #1f7396; }
+  .w.sel-phrase { background: rgba(31,115,150,.18); box-shadow: inset 0 0 0 2px #1f7396; border-radius: 3px; }
+</style>
+</head>
+<body>
+<header class="wf-head">
+  <a href="index.html">← Tất cả wireframe</a>
+  <h1>Màn 7 · Chọn từ trên ảnh</h1>
+  <p>Route <code>/add/photo</code>, sau bước OCR. Khung xanh nhạt = từ nhận dạng được; khung đậm = đã chọn; chữ xám = đã có trong kho của bạn.</p>
+</header>
+
+<main class="wf-row">
+
+  <section class="wf-state">
+    <div class="wf-label">1 · Chạm để chọn, kéo để chọn cụm</div>
+    <div class="phone">
+      <div class="statusbar"><span>9:41</span><span>●●● 4G</span></div>
+      <div class="screen bg-slate-800">
+        <div class="h-12 px-2 flex items-center justify-between text-white"><span class="w-11 h-11 flex items-center justify-center text-xl">←</span><b>Chọn từ</b><span class="text-sm px-2">Chụp lại</span></div>
+        <div class="flex-1 p-4 flex items-center">
+          <div class="page">
+            <span class="w known">The</span> <span class="w sel">resilient</span> <span class="w known">person</span> <span class="w known">does</span> <span class="w known">not</span> <span class="w known">see</span> <span class="w sel">setbacks</span> <span class="w known">as</span> <span class="w known">proof</span> <span class="w known">of</span> <span class="w known">failure.</span>
+            <span class="w">Resilient</span> <span class="w known">people</span> <span class="w known">see</span> <span class="w known">failure</span> <span class="w known">as</span> <span class="w known">a</span> <span class="w known">lesson,</span> <span class="w known">not</span> <span class="w known">a</span> <span class="w sel">verdict.</span>
+            <span class="w known">They</span> <span class="sel-phrase"><span class="w known">bounce</span> <span class="w known">back</span></span> <span class="w known">because</span> <span class="w known">they</span> <span class="w">persevere</span> <span class="w known">through</span> <span class="w">adversity</span> <span class="w known">with</span> <span class="w">grit</span> <span class="w known">and</span> <span class="w">patience.</span>
+          </div>
+        </div>
+        <div class="bg-white rounded-t-3xl p-4 flex flex-col gap-3">
+          <div class="mx-auto w-10 h-1.5 rounded-full bg-slate-300"></div>
+          <div class="flex items-center justify-between">
+            <p class="font-semibold">Đã chọn 4</p>
+            <span class="h-10 px-3 rounded-lg border border-brand-600 text-brand-700 text-sm flex items-center font-medium">✦ Tự chọn từ mới</span>
+          </div>
+          <div class="flex flex-wrap gap-2 text-sm">
+            <span class="h-9 px-3 rounded-full bg-brand-100 text-brand-700 flex items-center">resilient ×</span>
+            <span class="h-9 px-3 rounded-full bg-brand-100 text-brand-700 flex items-center">setback ×</span>
+            <span class="h-9 px-3 rounded-full bg-brand-100 text-brand-700 flex items-center">verdict ×</span>
+            <span class="h-9 px-3 rounded-full bg-brand-100 text-brand-700 flex items-center">bounce back ×</span>
+          </div>
+          <label class="flex items-center gap-2 text-sm min-h-[44px]"><span class="w-9 h-5 rounded-full bg-slate-300"></span>Giữ ảnh làm ngữ cảnh</label>
+          <span class="h-12 rounded-xl bg-brand-600 text-white font-semibold flex items-center justify-center">Tiếp: kiểm tra 4 từ</span>
+        </div>
+      </div>
+    </div>
+    <div class="wf-note">"setbacks" được đưa về "setback". Nút "Tự chọn từ mới" bỏ từ đã có trong kho, từ quá dễ so với trình độ B1 của bạn, tên riêng và số, rồi đánh dấu sẵn phần còn lại (tối đa 15).</div>
+  </section>
+
+  <section class="wf-state">
+    <div class="wf-label">2 · Kiểm tra chính tả trước khi lưu</div>
+    <div class="phone">
+      <div class="statusbar"><span>9:41</span><span>●●● 4G</span></div>
+      <div class="screen">
+        <div class="h-12 px-2 flex items-center justify-between"><span class="w-11 h-11 flex items-center justify-center text-xl">←</span><b>Kiểm tra 4 từ</b><span class="w-11"></span></div>
+        <div class="scroll">
+          <p class="text-sm text-slate-600">Sửa nếu máy đọc nhầm. Mỗi từ giữ câu gốc làm ví dụ của bạn.</p>
+          <div class="rounded-xl border border-slate-200 p-3 flex flex-col gap-1.5">
+            <div class="h-11 rounded-lg border border-slate-300 px-3 flex items-center font-semibold">resilient</div>
+            <p class="text-sm text-slate-500">"The <b>resilient</b> person does not see setbacks as proof of failure."</p>
+          </div>
+          <div class="rounded-xl border border-slate-200 p-3 flex flex-col gap-1.5">
+            <div class="h-11 rounded-lg border border-slate-300 px-3 flex items-center font-semibold">setback <span class="ml-2 text-xs font-normal text-slate-400">từ "setbacks"</span></div>
+            <p class="text-sm text-slate-500">"…does not see <b>setbacks</b> as proof of failure."</p>
+          </div>
+          <div class="rounded-xl border border-amber-300 bg-amber-50 p-3 flex flex-col gap-1.5">
+            <div class="h-11 rounded-lg border border-amber-400 bg-white px-3 flex items-center font-semibold">verdlct</div>
+            <p class="text-sm text-amber-800">Có phải <b class="underline">verdict</b>? Chạm để sửa.</p>
+          </div>
+          <div class="rounded-xl border border-slate-200 p-3 flex flex-col gap-1.5">
+            <div class="h-11 rounded-lg border border-slate-300 px-3 flex items-center font-semibold">bounce back <span class="ml-2 text-xs font-normal text-slate-400">cụm động từ</span></div>
+          </div>
+          <div class="rounded-xl bg-slate-50 p-3 text-sm tnum">4 từ · 2 học hôm nay · 2 vào Sắp học</div>
+        </div>
+        <div class="p-3 border-t border-slate-200"><span class="h-12 rounded-xl bg-brand-600 text-white font-semibold flex items-center justify-center">Thêm 4 từ</span></div>
+      </div>
+    </div>
+  </section>
+
+  <section class="wf-state">
+    <div class="wf-label">3 · Đang đọc chữ / không tìm thấy chữ</div>
+    <div class="phone short" style="min-height:600px">
+      <div class="statusbar"><span>9:41</span><span>●●● 4G</span></div>
+      <div class="screen bg-slate-800 text-white">
+        <div class="flex-1 p-4 flex flex-col gap-4 justify-center">
+          <div class="ph h-48 rounded-xl opacity-60"><span>ảnh đang xử lý</span></div>
+          <p class="text-center">Đang đọc chữ… <span class="text-slate-400">(2–4 giây)</span></p>
+          <div class="h-px bg-slate-600 my-2"></div>
+          <div class="rounded-xl bg-white text-slate-900 p-4 flex flex-col gap-3">
+            <p class="font-semibold">Không tìm thấy chữ trên ảnh</p>
+            <p class="text-sm text-slate-600">Thử chụp gần hơn, giữ máy thẳng và đủ sáng.</p>
+            <span class="h-12 rounded-xl bg-brand-600 text-white font-semibold flex items-center justify-center">Chụp lại</span>
+          </div>
+          <div class="rounded-xl bg-white text-slate-900 p-4 flex flex-col gap-2">
+            <p class="font-semibold">Mất kết nối mạng</p>
+            <p class="text-sm text-slate-600">Ảnh đã được giữ lại. Chúng tôi sẽ đọc chữ khi có mạng.</p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+</main>
+</body>
+</html>

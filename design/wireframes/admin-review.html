@@ -1,0 +1,141 @@
+<!doctype html>
+<html lang="vi">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Admin duyệt danh sách · Wireframe WordWise</title>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Be+Vietnam+Pro:wght@400;500;600;700&display=swap">
+<script src="https://cdn.tailwindcss.com/3.4.17"></script>
+<script>tailwind.config={theme:{extend:{colors:{brand:{50:'#eef7fa',100:'#d5ecf3',500:'#2b8bb0',600:'#1f7396',700:'#195d7a'}}}}}</script>
+<link rel="stylesheet" href="wf.css">
+<style>
+  .side { background: #f4f7f9; border-right: 1px solid var(--wf-line); padding: 16px 12px; display: flex; flex-direction: column; gap: 4px; }
+  .side span { min-height: 40px; display: flex; align-items: center; padding: 0 12px; border-radius: 8px; color: var(--wf-muted); }
+  .side span.on { background: #d5ecf3; color: #195d7a; font-weight: 600; }
+  .pill { display: inline-flex; align-items: center; height: 22px; padding: 0 8px; border-radius: 999px; font-size: 11.5px; font-weight: 500; white-space: nowrap; }
+  .w-misspell { background: #fee2e2; color: #991b1b; } .w-poly { background: #fef3c7; color: #92400e; }
+  .w-above { background: #e0e7ff; color: #3730a3; } .w-rare { background: #f1f5f9; color: #475569; }
+</style>
+</head>
+<body>
+<header class="wf-head">
+  <a href="index.html">← Tất cả wireframe</a>
+  <h1>Màn 14 · Admin: Duyệt kết quả phân tích &amp; Xuất bản</h1>
+  <p>Route <code>/admin/lists/[id]/review</code>. Bảng từ bên trái, thẻ 8 lớp sửa được bên phải. Mục tiêu: Admin chỉ phải sửa ≤ 2% số từ.</p>
+</header>
+
+<main class="wf-row">
+
+  <section class="wf-state desk">
+    <div class="wf-label">1 · Bảng duyệt + khung sửa từ</div>
+    <div class="desk-scroll">
+      <div class="desktop" style="grid-template-columns:200px 1fr">
+        <aside class="side">
+          <p class="font-bold text-lg px-3 pb-3">WordWise <span class="text-xs font-medium text-slate-500">Admin</span></p>
+          <span class="on">Danh sách từ</span><span>Báo lỗi nội dung</span><span>Thống kê</span><span>Kho từ</span>
+        </aside>
+        <div class="flex flex-col min-w-0">
+          <div class="px-6 py-4 border-b border-slate-200 flex items-center justify-between gap-4">
+            <div>
+              <p class="text-xs text-slate-500">Danh sách từ ›</p>
+              <div class="flex items-center gap-2"><p class="text-xl font-semibold">IELTS Band 7 – Education</p><span class="pill bg-amber-50 text-amber-800">Chờ duyệt</span><span class="text-sm text-slate-500">v1</span></div>
+            </div>
+            <div class="flex items-center gap-2">
+              <span class="text-sm text-slate-600 tnum">Còn <b>14</b> cảnh báo / 180 từ</span>
+              <span class="h-10 px-4 rounded-lg border border-slate-300 flex items-center text-sm">Thống kê</span>
+              <span class="h-10 px-5 rounded-lg bg-brand-600 text-white font-semibold flex items-center">Xuất bản</span>
+            </div>
+          </div>
+          <div class="grid grid-cols-[1fr_400px] flex-1 min-h-0">
+            <div class="p-5 flex flex-col gap-3 min-w-0">
+              <div class="flex items-center gap-2 text-sm flex-wrap">
+                <label class="h-9 px-3 rounded-full bg-slate-900 text-white flex items-center gap-2">✓ Chỉ có cảnh báo</label>
+                <span class="h-9 px-3 rounded-full border border-slate-300 flex items-center">Loại cảnh báo ▾</span>
+                <span class="h-9 px-3 rounded-full border border-slate-300 flex items-center">Chủ đề con ▾</span>
+                <span class="ml-auto h-9 px-3 rounded-lg border border-emerald-300 text-emerald-700 flex items-center">Chấp nhận 166 từ không có cảnh báo</span>
+              </div>
+              <table class="w-full text-sm">
+                <thead class="text-left text-slate-500 border-b border-slate-200"><tr><th class="py-2 w-8"></th><th class="font-medium w-10">#</th><th class="font-medium">Từ</th><th class="font-medium">Loại</th><th class="font-medium">Nghĩa đã chọn</th><th class="font-medium">CEFR</th><th class="font-medium">Chủ đề con</th><th class="font-medium">Cảnh báo</th></tr></thead>
+                <tbody class="divide-y divide-slate-100 tnum">
+                  <tr class="bg-brand-50"><td class="py-2.5 text-slate-400">⋮⋮</td><td>12</td><td class="font-semibold">resilient</td><td>adj</td><td>kiên cường, mau phục hồi</td><td>C1</td><td>Kỹ năng sống</td><td><span class="pill w-poly">nhiều nghĩa</span></td></tr>
+                  <tr><td class="py-2.5 text-slate-400">⋮⋮</td><td>18</td><td class="font-semibold">curriculum</td><td>n</td><td>chương trình giảng dạy</td><td>B2</td><td>Nhà trường</td><td><span class="pill w-rare">số nhiều bất quy tắc</span></td></tr>
+                  <tr><td class="py-2.5 text-slate-400">⋮⋮</td><td>27</td><td class="font-semibold">pedagogy</td><td>n</td><td>sư phạm, phương pháp dạy học</td><td>C2</td><td>Phương pháp</td><td><span class="pill w-above">vượt trình độ</span></td></tr>
+                  <tr><td class="py-2.5 text-slate-400">⋮⋮</td><td>33</td><td class="font-semibold">acommodate</td><td>v</td><td>—</td><td>B2</td><td>Nhà trường</td><td><span class="pill w-misspell">sai chính tả → accommodate</span></td></tr>
+                  <tr><td class="py-2.5 text-slate-400">⋮⋮</td><td>41</td><td class="font-semibold">tuition</td><td>n</td><td>học phí</td><td>B2</td><td>Chi phí</td><td><span class="pill w-poly">nhiều nghĩa</span></td></tr>
+                  <tr><td class="py-2.5 text-slate-400">⋮⋮</td><td>58</td><td class="font-semibold">rote learning</td><td>n</td><td>học vẹt</td><td>C1</td><td>Phương pháp</td><td><span class="pill w-rare">độ tin cậy thấp</span></td></tr>
+                  <tr><td class="py-2.5 text-slate-400">⋮⋮</td><td>64</td><td class="font-semibold">affect</td><td>v</td><td>ảnh hưởng</td><td>B1</td><td>Chung</td><td><span class="pill w-rare">dễ nhầm: effect (vị trí 71)</span></td></tr>
+                </tbody>
+              </table>
+              <p class="text-xs text-slate-500">Kéo ⋮⋮ để đổi thứ tự. Cặp dễ nhầm phải cách nhau ≥ 10 vị trí: "affect" (64) và "effect" (71) chỉ cách 7 vị trí.</p>
+            </div>
+            <aside class="border-l border-slate-200 p-5 flex flex-col gap-3 bg-white">
+              <div class="flex items-center justify-between"><p class="text-xl font-bold">resilient</p><span class="text-sm text-slate-500">#12 · adj · C1</span></div>
+              <div class="rounded-lg bg-amber-50 border border-amber-200 p-3 text-sm">Từ có 2 nghĩa. Danh sách không có câu ngữ cảnh nên chọn nghĩa phổ biến nhất.</div>
+              <p class="text-sm font-medium">Nghĩa dùng cho danh sách này</p>
+              <label class="min-h-[44px] rounded-lg border-2 border-brand-600 bg-brand-50 px-3 flex items-center gap-2 text-sm"><span class="w-4 h-4 rounded-full border-[5px] border-brand-600"></span>kiên cường, mau phục hồi</label>
+              <label class="min-h-[44px] rounded-lg border border-slate-300 px-3 flex items-center gap-2 text-sm"><span class="w-4 h-4 rounded-full border-2 border-slate-300"></span>đàn hồi (vật liệu)</label>
+              <div class="flex gap-1 overflow-x-auto text-xs border-b border-slate-200">
+                <span class="px-2 py-2 border-b-2 border-brand-600 text-brand-700 font-semibold whitespace-nowrap">Cơ bản</span><span class="px-2 py-2 text-slate-500 whitespace-nowrap">Ví dụ</span><span class="px-2 py-2 text-slate-500 whitespace-nowrap">Liên quan</span><span class="px-2 py-2 text-slate-500 whitespace-nowrap">Colloc.</span><span class="px-2 py-2 text-slate-500 whitespace-nowrap">Thành ngữ</span><span class="px-2 py-2 text-slate-500 whitespace-nowrap">Ngữ pháp</span><span class="px-2 py-2 text-slate-500 whitespace-nowrap">Ghi nhớ</span><span class="px-2 py-2 text-slate-500 whitespace-nowrap">Hình thái</span>
+              </div>
+              <div class="flex flex-col gap-2 text-sm">
+                <label class="text-slate-500 text-xs">meaning_vi</label>
+                <div class="h-10 rounded-lg border border-slate-300 px-3 flex items-center">kiên cường, mau phục hồi</div>
+                <label class="text-slate-500 text-xs">definition_en</label>
+                <div class="min-h-[56px] rounded-lg border border-slate-300 p-3">able to recover quickly from difficult conditions or setbacks</div>
+                <label class="text-slate-500 text-xs">IPA (từ điển)</label>
+                <div class="h-10 rounded-lg border border-slate-300 px-3 flex items-center font-mono">/rɪˈzɪl.jənt/ · /rɪˈzɪl.i.ənt/</div>
+              </div>
+              <p class="text-xs text-slate-500">Sửa ở đây là sửa bản dùng chung, áp dụng cho mọi người học; lưu sẽ đặt reviewed = true.</p>
+              <div class="grid grid-cols-3 gap-2 text-sm mt-auto">
+                <span class="h-10 rounded-lg border border-slate-300 flex items-center justify-center">Tạo lại lớp</span>
+                <span class="h-10 rounded-lg border border-red-300 text-red-700 flex items-center justify-center">Xóa từ</span>
+                <span class="h-10 rounded-lg bg-brand-600 text-white flex items-center justify-center font-medium">Lưu &amp; chấp nhận</span>
+              </div>
+            </aside>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section class="wf-state desk">
+    <div class="wf-label">2 · Xác nhận xuất bản khi còn cảnh báo</div>
+    <div class="desk-scroll">
+      <div class="desktop relative" style="min-height:420px;grid-template-columns:200px 1fr">
+        <aside class="side"><p class="font-bold text-lg px-3 pb-3">WordWise <span class="text-xs font-medium text-slate-500">Admin</span></p><span class="on">Danh sách từ</span></aside>
+        <div class="bg-slate-900/30 flex items-center justify-center">
+          <div class="w-[480px] rounded-2xl bg-white p-6 flex flex-col gap-3 shadow-2xl">
+            <p class="text-lg font-semibold">Xuất bản khi còn 3 cảnh báo?</p>
+            <ul class="text-sm text-slate-600 list-disc pl-5"><li>pedagogy: vượt trình độ (C2)</li><li>rote learning: độ tin cậy thấp</li><li>affect/effect cách nhau 7 vị trí</li></ul>
+            <p class="text-sm text-slate-600">Danh sách sẽ xuất hiện trong Thư viện ngay, ở phiên bản v1.</p>
+            <div class="flex justify-end gap-2 pt-2"><span class="h-10 px-4 rounded-lg border border-slate-300 flex items-center">Xem lại</span><span class="h-10 px-4 rounded-lg bg-brand-600 text-white font-semibold flex items-center">Vẫn xuất bản</span></div>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="wf-note">Sửa một danh sách đã xuất bản sẽ tạo phiên bản Nháp mới; bản đang xuất bản vẫn hiển thị. Khi xuất bản v2, người học đã thêm danh sách được hỏi: "Danh sách có 12 từ mới, thêm vào sổ?".</div>
+  </section>
+
+  <section class="wf-state desk">
+    <div class="wf-label">3 · Tab Thống kê danh sách (sau xuất bản)</div>
+    <div class="desk-scroll">
+      <div class="desktop" style="min-height:360px;grid-template-columns:200px 1fr">
+        <aside class="side"><p class="font-bold text-lg px-3 pb-3">WordWise <span class="text-xs font-medium text-slate-500">Admin</span></p><span class="on">Danh sách từ</span></aside>
+        <div class="p-8 flex flex-col gap-5">
+          <p class="text-xl font-semibold">IELTS Band 7 – Environment · Thống kê</p>
+          <div class="grid grid-cols-4 gap-4 tnum">
+            <div class="rounded-xl border border-slate-200 p-4"><p class="text-xs text-slate-500">Người học</p><p class="text-2xl font-bold">1.284</p></div>
+            <div class="rounded-xl border border-slate-200 p-4"><p class="text-xs text-slate-500">Tỉ lệ hoàn thành</p><p class="text-2xl font-bold">38%</p></div>
+            <div class="rounded-xl border border-slate-200 p-4"><p class="text-xs text-slate-500">Tỉ lệ thuộc trung bình</p><p class="text-2xl font-bold">71%</p></div>
+            <div class="rounded-xl border border-slate-200 p-4"><p class="text-xs text-slate-500">Báo lỗi nội dung</p><p class="text-2xl font-bold">3</p></div>
+          </div>
+          <p class="text-sm font-semibold">10 từ hay quên nhất</p>
+          <p class="text-sm text-slate-600">mitigate · anthropogenic · desertification · resilient · emission · depletion · sequestration · biodegradable · habitat · erosion</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+</main>
+</body>
+</html>

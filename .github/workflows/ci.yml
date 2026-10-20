@@ -1,9 +1,9 @@
 name: CI
 
+# Mỗi prompt là một nhánh riêng nên chạy CI cho mọi nhánh được đẩy lên.
 on:
   push:
-    branches: [main]
-  pull_request:
+    branches: ["**"]
 
 concurrency:
   group: ci-${{ github.ref }}

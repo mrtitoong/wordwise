@@ -103,7 +103,7 @@ test.describe("Đăng nhập bằng email (Supabase cục bộ)", () => {
   test("link hỏng hoặc hết hạn → báo và cho gửi lại", async ({ page }) => {
     await page.goto("/auth/confirm?token_hash=khong-hop-le&type=email&next=%2F");
     await expect(page).toHaveURL("/login?error=link_expired");
-    await expect(page.getByRole("alert")).toContainText("Link đã hết hạn");
+    await expect(page.locator("main").getByRole("alert")).toContainText("Link đã hết hạn");
   });
 
   test("mã sai thì báo lỗi, không đăng nhập", async ({ page }) => {
@@ -113,7 +113,7 @@ test.describe("Đăng nhập bằng email (Supabase cục bộ)", () => {
     await page.getByRole("button", { name: "Gửi email đăng nhập" }).click();
     await page.getByLabel("Mã đăng nhập").fill("000000");
     await page.getByRole("button", { name: "Xác nhận" }).click();
-    await expect(page.getByRole("alert")).toContainText("Mã không đúng");
+    await expect(page.locator("main").getByRole("alert")).toContainText("Mã không đúng");
   });
 
   test("khách tạo tài khoản: cài đặt và 5 từ chuyển lên tài khoản", async ({ page }) => {

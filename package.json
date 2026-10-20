@@ -1,0 +1,17 @@
+{
+  "name": "wordwise",
+  "version": "0.0.0",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "test": "vitest run",
+    "typecheck": "tsc --noEmit"
+  },
+  "dependencies": {
+    "zod": "4.6.5"
+  },
+  "devDependencies": {
+    "typescript": "6.0.3",
+    "vitest": "5.0.3"
+  }
+}

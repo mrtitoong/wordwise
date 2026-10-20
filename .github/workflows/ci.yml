@@ -51,6 +51,8 @@ jobs:
             echo "NEXT_PUBLIC_SUPABASE_URL=$(jq -r '.API_URL' /tmp/sb.json)"
             echo "NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY=$(jq -r '.PUBLISHABLE_KEY // .ANON_KEY' /tmp/sb.json)"
             echo "E2E_SUPABASE_SECRET_KEY=$(jq -r '.SECRET_KEY // .SERVICE_ROLE_KEY' /tmp/sb.json)"
+            # Bật cửa test window.__wordwiseE2E (không có trong bản thật).
+            echo "NEXT_PUBLIC_E2E=1"
             echo "E2E_MAILPIT_URL=$(jq -r '.MAILPIT_URL // .INBUCKET_URL // "http://127.0.0.1:54324"' /tmp/sb.json)"
           } >> "$GITHUB_ENV"
       - run: npm run build

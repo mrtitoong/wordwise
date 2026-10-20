@@ -1,3 +1,4 @@
+import { createClient } from "@supabase/supabase-js";
 import { expect, type BrowserContext, type Page } from "@playwright/test";
 
 /** Có Supabase (cục bộ/CI) thì mới chạy được test đăng nhập. */
@@ -75,4 +76,50 @@ export async function completeOnboarding(
   );
   if (starters) await page.getByRole("button", { name: "Học 5 từ này" }).click();
   else await page.getByRole("button", { name: "Tự thêm từ của tôi" }).click();
+}
+
+/** Chủ dữ liệu của khách trong IndexedDB (khớp GUEST_OWNER ở src/lib/db/ids.ts). */
+export const GUEST_OWNER = "00000000-0000-4000-8000-000000000000";
+
+/** Đọc mọi dòng của một bảng trong IndexedDB "wordwise" (Dexie) của trang. */
+export async function readLocalStore<T = Record<string, unknown>>(
+  page: Page,
+  store: string,
+): Promise<T[]> {
+  return page.evaluate(
+    (name) =>
+      new Promise<T[]>((resolve, reject) => {
+        const request = indexedDB.open("wordwise");
+        request.onerror = () => reject(request.error);
+        request.onsuccess = () => {
+          const db = request.result;
+          if (!db.objectStoreNames.contains(name)) {
+            db.close();
+            return resolve([]);
+          }
+          const all = db.transaction(name, "readonly").objectStore(name).getAll();
+          all.onsuccess = () => {
+            resolve(all.result as T[]);
+            db.close();
+          };
+          all.onerror = () => reject(all.error);
+        };
+      }),
+    store,
+  );
+}
+
+/** Client Supabase quyền service (chỉ trong CI) để kiểm tra dữ liệu trên server. */
+export function serverAdmin() {
+  const secret = process.env.E2E_SUPABASE_SECRET_KEY;
+  if (!secret) return null;
+  return createClient(process.env.NEXT_PUBLIC_SUPABASE_URL!, secret, {
+    auth: { persistSession: false },
+  });
+}
+
+export async function userIdByEmail(email: string): Promise<string> {
+  const admin = serverAdmin()!;
+  const { data } = await admin.auth.admin.listUsers({ perPage: 1000 });
+  return data.users.find((u) => u.email === email)!.id;
 }

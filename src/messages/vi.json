@@ -44,10 +44,125 @@
     "title": "Cài đặt",
     "language": "Ngôn ngữ giao diện",
     "languageHint": "Đổi ngay, không cần tải lại trang.",
-    "saving": "Đang đổi…"
+    "saving": "Đang đổi…",
+    "account": "Tài khoản",
+    "signedInAs": "Đang đăng nhập: {email}",
+    "signOut": "Đăng xuất",
+    "guestTitle": "Bạn đang dùng thử",
+    "guestBody": "Dữ liệu chỉ nằm trên máy này. Tạo tài khoản để không mất dữ liệu và học trên nhiều thiết bị.",
+    "createAccount": "Tạo tài khoản"
   },
   "languages": {
     "vi": "Tiếng Việt",
     "en": "English"
+  },
+  "welcome": {
+    "title": "Chào mừng",
+    "tagline": "Học từ vựng tiếng Anh, nhớ lâu với lịch ôn thông minh.",
+    "tryNow": "Dùng thử ngay",
+    "tryNowHint": "Không cần tài khoản, dữ liệu lưu trên máy này.",
+    "signIn": "Đăng nhập"
+  },
+  "login": {
+    "title": "Đăng nhập",
+    "intro": "Nhập email, chúng tôi gửi link và mã đăng nhập. Chưa có tài khoản thì sẽ tự tạo.",
+    "emailLabel": "Email",
+    "emailPlaceholder": "ban@email.com",
+    "sendLink": "Gửi email đăng nhập",
+    "sending": "Đang gửi email…",
+    "or": "hoặc",
+    "google": "Tiếp tục với Google",
+    "privacyHint": "Chúng tôi chỉ dùng email để đăng nhập và đồng bộ dữ liệu học.",
+    "checkInbox": "Kiểm tra hộp thư",
+    "sentTo": "Đã gửi email tới {email}. Bấm link trong email, hoặc nhập mã trong email vào đây.",
+    "codeLabel": "Mã đăng nhập",
+    "verify": "Xác nhận",
+    "verifying": "Đang kiểm tra…",
+    "resend": "Gửi lại email",
+    "resendIn": "Gửi lại sau {seconds} giây",
+    "changeEmail": "Đổi email khác",
+    "errors": {
+      "link_expired": "Link đã hết hạn hoặc đã dùng. Hãy gửi lại email đăng nhập.",
+      "oauth": "Chưa đăng nhập được bằng Google. Hãy thử lại hoặc dùng email.",
+      "rateLimited": "Bạn yêu cầu quá nhiều lần. Hãy đợi vài phút rồi thử lại.",
+      "sendFailed": "Không gửi được email. Kiểm tra lại địa chỉ email và kết nối mạng.",
+      "invalidCode": "Mã không đúng hoặc đã hết hạn.",
+      "notConfigured": "Đăng nhập chưa sẵn sàng trên bản này. Bạn vẫn có thể dùng thử không cần tài khoản."
+    }
+  },
+  "auth": {
+    "finishing": "Đang đăng nhập…",
+    "finishFailed": "Chưa đăng nhập xong. Dữ liệu trên máy vẫn còn nguyên, hãy thử lại.",
+    "backToLogin": "Quay lại đăng nhập",
+    "needsJavascript": "Cần bật JavaScript để đăng nhập."
+  },
+  "onboarding": {
+    "title": "Bắt đầu",
+    "progress": "Bước {step}/{total}",
+    "progressLabel": "Tiến độ thiết lập",
+    "next": "Tiếp tục",
+    "skip": "Bỏ qua",
+    "saving": "Đang lưu…",
+    "saveFailed": "Chưa lưu được. Kiểm tra kết nối mạng rồi thử lại.",
+    "defaultNotebook": "Sổ của tôi",
+    "language": {
+      "title": "Bạn muốn học ngôn ngữ nào?",
+      "body": "Bạn có thể học thêm ngôn ngữ khác sau.",
+      "more": "Tiếng Nhật, Trung, Hàn, Pháp sẽ có sau.",
+      "options": {
+        "en": "Tiếng Anh"
+      }
+    },
+    "level": {
+      "title": "Trình độ hiện tại của bạn",
+      "body": "Dùng để gợi ý từ vừa sức. Không chắc thì chọn gần đúng, đổi lại được trong Cài đặt.",
+      "options": {
+        "A1": "Mới bắt đầu",
+        "A2": "Cơ bản",
+        "B1": "Trung cấp",
+        "B2": "Khá",
+        "C1": "Nâng cao"
+      }
+    },
+    "goals": {
+      "title": "Bạn học để làm gì?",
+      "options": {
+        "ielts": "IELTS",
+        "toeic": "TOEIC",
+        "communication": "Giao tiếp",
+        "work": "Công việc",
+        "travel": "Du lịch",
+        "school": "Học ở trường"
+      }
+    },
+    "daily": {
+      "title": "Mỗi ngày học bao nhiêu từ mới?",
+      "body": "Bắt đầu vừa phải để giữ được nhịp đều. Đổi lại được bất cứ lúc nào.",
+      "option": "{count} từ",
+      "estimate": "Khoảng {minutes} phút học từ mới mỗi ngày, chưa tính ôn tập."
+    },
+    "reminder": {
+      "title": "Giờ nhắc học",
+      "toggle": "Nhắc tôi học mỗi ngày",
+      "at": "Nhắc lúc"
+    },
+    "notify": {
+      "title": "Bật thông báo nhắc học?",
+      "body": "Chúng tôi sẽ nhắc bạn lúc {time} mỗi ngày, không gửi gì khác.",
+      "allow": "Bật thông báo",
+      "later": "Để sau"
+    },
+    "starter": {
+      "title": "5 từ để bắt đầu",
+      "body": "Chọn theo trình độ của bạn. Học ngay để có ngày đầu tiên của chuỗi.",
+      "listLabel": "Từ khởi đầu",
+      "learn": "Học 5 từ này",
+      "addOwn": "Tự thêm từ của tôi",
+      "emptyTitle": "Sẵn sàng rồi",
+      "emptyBody": "Hãy thêm từ đầu tiên bạn muốn nhớ."
+    }
+  },
+  "admin": {
+    "title": "Quản trị"
   }
 }

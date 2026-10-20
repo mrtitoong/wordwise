@@ -21,13 +21,40 @@ sql_paths = ["./seed/words.sql", "./seed/local-users.sql"]
 [auth]
 enabled = true
 site_url = "http://localhost:3000"
-additional_redirect_urls = ["http://localhost:3000/**"]
+# 3000: npm run dev; 3100: E2E (playwright.config.ts).
+additional_redirect_urls = ["http://localhost:3000/**", "http://localhost:3100/**"]
 jwt_expiry = 3600
 enable_signup = true
+enable_anonymous_sign_ins = false
+
+[auth.rate_limit]
+# Cục bộ/CI: E2E gửi nhiều email liên tiếp. Cloud giữ giới hạn mặc định.
+email_sent = 100
 
 [auth.email]
 enable_signup = true
 enable_confirmations = false
+otp_length = 6
+otp_expiry = 3600
+max_frequency = "1s"
+
+# Email đăng nhập gồm link (token_hash, mở được ở trình duyệt khác) và mã 6 số.
+[auth.email.template.magic_link]
+subject = "Đăng nhập WordWise"
+content_path = "./supabase/templates/magic-link.html"
+
+[auth.email.template.confirmation]
+subject = "Đăng nhập WordWise"
+content_path = "./supabase/templates/magic-link.html"
+
+[auth.external.google]
+# Cục bộ không bật Google; cloud cấu hình trên Dashboard.
+enabled = false
+
+# Hộp thư giả (Mailpit) để E2E đọc email đăng nhập.
+[inbucket]
+enabled = true
+port = 54324
 
 [studio]
 enabled = false

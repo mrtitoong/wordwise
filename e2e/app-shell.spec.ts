@@ -1,4 +1,9 @@
 import { expect, test } from "@playwright/test";
+import { asOnboardedGuest } from "./helpers";
+
+test.beforeEach(async ({ context, baseURL }) => {
+  await asOnboardedGuest(context, baseURL);
+});
 
 const tabs = [
   { name: "Hôm nay", path: "/" },
@@ -72,7 +77,9 @@ test.describe("Ngôn ngữ giao diện", () => {
     const context = await browser.newContext({ locale: "en-US" });
     const page = await context.newPage();
     await page.goto("/");
+    await expect(page).toHaveURL(/\/welcome$/);
     await expect(page.locator("html")).toHaveAttribute("lang", "en");
+    await expect(page.getByRole("button", { name: "Try it now" })).toBeVisible();
     await context.close();
   });
 });

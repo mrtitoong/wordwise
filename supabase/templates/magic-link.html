@@ -1,0 +1,31 @@
+<!-- Mẫu email đăng nhập (Magic Link và Confirm signup). Bản cloud: dán nội dung
+     này vào Supabase Dashboard → Authentication → Emails cho cả hai mẫu. -->
+<div style="font-family: Arial, sans-serif; max-width: 480px; margin: 0 auto; color: #1d2830">
+  <h2 style="color: #1f7396">Đăng nhập WordWise</h2>
+  <p>Bấm nút dưới đây để đăng nhập:</p>
+  <p>
+    <a
+      href="{{ .RedirectTo }}&token_hash={{ .TokenHash }}&type=email"
+      style="
+        display: inline-block;
+        background: #1f7396;
+        color: #ffffff;
+        padding: 12px 20px;
+        border-radius: 8px;
+        text-decoration: none;
+      "
+      >Đăng nhập</a
+    >
+  </p>
+  <p>Hoặc nhập mã này trong ứng dụng (tiện khi dùng app đã cài trên màn hình điện thoại):</p>
+  <p style="font-size: 28px; font-weight: bold; letter-spacing: 6px">{{ .Token }}</p>
+  <p style="color: #5f6f7a; font-size: 13px">
+    Link và mã có hiệu lực 1 giờ, chỉ dùng được một lần. Nếu bạn không yêu cầu đăng nhập, hãy bỏ qua
+    email này.
+  </p>
+  <hr style="border: none; border-top: 1px solid #d3dce1" />
+  <p style="color: #5f6f7a; font-size: 13px">
+    <strong>Sign in to WordWise:</strong> tap the button above or enter the code in the app. The
+    link and code expire in 1 hour.
+  </p>
+</div>

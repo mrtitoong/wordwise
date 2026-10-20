@@ -11,7 +11,7 @@ concurrency:
 
 jobs:
   check:
-    name: Lint, typecheck, test, build, E2E
+    name: Lint, typecheck, test, build
     runs-on: ubuntu-latest
     timeout-minutes: 20
     steps:
@@ -25,6 +25,34 @@ jobs:
       - run: npm run format:check
       - run: npm run typecheck
       - run: npm test
+      # Build không cần Supabase: thiếu biến môi trường thì app chạy chế độ khách.
+      - run: npm run build
+
+  e2e:
+    name: E2E (Playwright 360px + Supabase cục bộ)
+    runs-on: ubuntu-latest
+    timeout-minutes: 25
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: npm
+      - run: npm ci
+      - uses: supabase/setup-cli@v1
+        with:
+          version: 2.119.0
+      - name: Khởi động Supabase cục bộ (Auth, REST, Mailpit)
+        run: supabase start -x studio,imgproxy,edge-runtime,logflare,vector,realtime,storage-api,supavisor
+      - name: Biến môi trường từ Supabase cục bộ
+        run: |
+          supabase status -o json > /tmp/sb.json
+          {
+            echo "NEXT_PUBLIC_SUPABASE_URL=$(jq -r '.API_URL' /tmp/sb.json)"
+            echo "NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY=$(jq -r '.PUBLISHABLE_KEY // .ANON_KEY' /tmp/sb.json)"
+            echo "E2E_SUPABASE_SECRET_KEY=$(jq -r '.SECRET_KEY // .SERVICE_ROLE_KEY' /tmp/sb.json)"
+            echo "E2E_MAILPIT_URL=$(jq -r '.MAILPIT_URL // .INBUCKET_URL // "http://127.0.0.1:54324"' /tmp/sb.json)"
+          } >> "$GITHUB_ENV"
       - run: npm run build
       - run: npx playwright install --with-deps chromium
       - run: npm run test:e2e

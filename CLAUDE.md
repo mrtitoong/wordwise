@@ -114,3 +114,25 @@ Repo: https://github.com/mrtitoong/wordwise
   ap-southeast-1), đã áp 6 migration qua Supabase MCP. Mã version trên cloud
   (20261020035222…) khác tên file local (20261020010000…); trước khi dùng
   `supabase db push` phải đồng bộ lịch sử bằng `supabase migration repair`.
+- 2026-10-20 (Prompt 1.3): Đăng nhập bằng email gửi **cả link và mã 6 số**
+  (mẫu `supabase/templates/magic-link.html`, link dạng token_hash →
+  `/auth/confirm`, mở được ở trình duyệt khác) và Google OAuth (PKCE →
+  `/auth/callback`). Mọi cách đăng nhập kết thúc ở `/auth/finish` (gộp dữ liệu
+  khách, đặt cookie trạng thái). Email: tạm dùng SMTP mặc định của Supabase,
+  chuyển sang Resend trước khi có người dùng thật.
+- 2026-10-20: Chặn trang trong `src/proxy.ts` (Next 16 đổi middleware → proxy)
+  bằng hàm thuần `decideAccess()`; cookie `ww_guest`, `ww_onboarded` chỉ là
+  gợi ý điều hướng, quyền thật do Supabase Auth + RLS. `/admin` kiểm tra vai
+  trò ở server (`requireAdmin()`, không phải admin → 404).
+- 2026-10-20: Chế độ khách lưu ở **localStorage** (`wordwise.guest.v1`: cài đặt
+  onboarding + từ khởi đầu); Prompt 1.4 chuyển sang Dexie. Khi khách đăng
+  nhập: tài khoản chưa onboarding thì lấy cài đặt của khách, đã có thì giữ của
+  tài khoản; từ thì cộng thêm (trùng bỏ qua). Không dùng đăng nhập ẩn danh.
+- 2026-10-20: "Học 5 từ này" hiện chỉ thêm 5 từ vào "Sổ của tôi" rồi về Hôm
+  nay; phiên học ngắn nối vào ở GĐ3. Gợi ý khách tạo tài khoản sau 3 phiên/20
+  từ làm khi có phiên ôn (GĐ3). Câu hỏi bật thông báo chỉ xin quyền và lưu giờ
+  nhắc; gửi thông báo thật làm sau.
+- 2026-10-20: Thiếu `NEXT_PUBLIC_SUPABASE_*` thì app vẫn chạy (chỉ chế độ
+  khách, màn Đăng nhập báo chưa sẵn sàng). CI: job `e2e` chạy Supabase cục bộ
+  + Mailpit để test đăng nhập bằng email; máy dev không có Docker nên các test
+  này bị bỏ qua khi chạy ở máy.

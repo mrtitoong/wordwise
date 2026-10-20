@@ -1,11 +1,6 @@
 export type Json = string | number | boolean | null | { [key: string]: Json | undefined } | Json[];
 
 export type Database = {
-  // Allows to automatically instantiate createClient with right options
-  // instead of createClient<Database, { PostgrestVersion: 'XX' }>(URL, KEY)
-  __InternalSupabase: {
-    PostgrestVersion: "14.18";
-  };
   public: {
     Tables: {
       cards: {
@@ -81,7 +76,7 @@ export type Database = {
           sense_id: string;
           subtopic: string | null;
           updated_at: string;
-          warnings: Json;
+          warnings: NonNullable<Json>;
         };
         Insert: {
           admin_note?: string | null;
@@ -93,7 +88,7 @@ export type Database = {
           sense_id: string;
           subtopic?: string | null;
           updated_at?: string;
-          warnings?: Json;
+          warnings?: NonNullable<Json>;
         };
         Update: {
           admin_note?: string | null;
@@ -105,7 +100,7 @@ export type Database = {
           sense_id?: string;
           subtopic?: string | null;
           updated_at?: string;
-          warnings?: Json;
+          warnings?: NonNullable<Json>;
         };
         Relationships: [
           {
@@ -179,7 +174,7 @@ export type Database = {
         Row: {
           created_at: string;
           done: number;
-          errors: Json;
+          errors: NonNullable<Json>;
           id: string;
           kind: string;
           list_id: string | null;
@@ -191,7 +186,7 @@ export type Database = {
         Insert: {
           created_at?: string;
           done?: number;
-          errors?: Json;
+          errors?: NonNullable<Json>;
           id?: string;
           kind: string;
           list_id?: string | null;
@@ -203,7 +198,7 @@ export type Database = {
         Update: {
           created_at?: string;
           done?: number;
-          errors?: Json;
+          errors?: NonNullable<Json>;
           id?: string;
           kind?: string;
           list_id?: string | null;
@@ -483,7 +478,7 @@ export type Database = {
           sense_id: string;
           status: string;
           updated_at: string;
-          user_additions: Json;
+          user_additions: NonNullable<Json>;
           user_id: string;
         };
         Insert: {
@@ -496,7 +491,7 @@ export type Database = {
           sense_id: string;
           status?: string;
           updated_at?: string;
-          user_additions?: Json;
+          user_additions?: NonNullable<Json>;
           user_id: string;
         };
         Update: {
@@ -509,7 +504,7 @@ export type Database = {
           sense_id?: string;
           status?: string;
           updated_at?: string;
-          user_additions?: Json;
+          user_additions?: NonNullable<Json>;
           user_id?: string;
         };
         Relationships: [
@@ -524,36 +519,36 @@ export type Database = {
       };
       word_details: {
         Row: {
-          antonyms: Json;
-          collocations: Json;
-          common_mistakes: Json;
+          antonyms: NonNullable<Json>;
+          collocations: NonNullable<Json>;
+          common_mistakes: NonNullable<Json>;
           created_at: string;
-          examples: Json;
-          idioms: Json;
+          examples: NonNullable<Json>;
+          idioms: NonNullable<Json>;
           sense_id: string;
-          synonyms: Json;
+          synonyms: NonNullable<Json>;
           updated_at: string;
         };
         Insert: {
-          antonyms?: Json;
-          collocations?: Json;
-          common_mistakes?: Json;
+          antonyms?: NonNullable<Json>;
+          collocations?: NonNullable<Json>;
+          common_mistakes?: NonNullable<Json>;
           created_at?: string;
-          examples?: Json;
-          idioms?: Json;
+          examples?: NonNullable<Json>;
+          idioms?: NonNullable<Json>;
           sense_id: string;
-          synonyms?: Json;
+          synonyms?: NonNullable<Json>;
           updated_at?: string;
         };
         Update: {
-          antonyms?: Json;
-          collocations?: Json;
-          common_mistakes?: Json;
+          antonyms?: NonNullable<Json>;
+          collocations?: NonNullable<Json>;
+          common_mistakes?: NonNullable<Json>;
           created_at?: string;
-          examples?: Json;
-          idioms?: Json;
+          examples?: NonNullable<Json>;
+          idioms?: NonNullable<Json>;
           sense_id?: string;
-          synonyms?: Json;
+          synonyms?: NonNullable<Json>;
           updated_at?: string;
         };
         Relationships: [
@@ -619,8 +614,8 @@ export type Database = {
           audio_us_url: string | null;
           cefr: string | null;
           created_at: string;
-          details: Json;
-          forms: Json;
+          details: NonNullable<Json>;
+          forms: NonNullable<Json>;
           frequency_rank: number | null;
           generated_by: string | null;
           id: string;
@@ -640,8 +635,8 @@ export type Database = {
           audio_us_url?: string | null;
           cefr?: string | null;
           created_at?: string;
-          details?: Json;
-          forms?: Json;
+          details?: NonNullable<Json>;
+          forms?: NonNullable<Json>;
           frequency_rank?: number | null;
           generated_by?: string | null;
           id?: string;
@@ -661,8 +656,8 @@ export type Database = {
           audio_us_url?: string | null;
           cefr?: string | null;
           created_at?: string;
-          details?: Json;
-          forms?: Json;
+          details?: NonNullable<Json>;
+          forms?: NonNullable<Json>;
           frequency_rank?: number | null;
           generated_by?: string | null;
           id?: string;
@@ -709,9 +704,7 @@ export type Tables<
     ? keyof (DatabaseWithoutInternals[DefaultSchemaTableNameOrOptions["schema"]]["Tables"] &
         DatabaseWithoutInternals[DefaultSchemaTableNameOrOptions["schema"]]["Views"])
     : never) = never,
-> = DefaultSchemaTableNameOrOptions extends {
-  schema: keyof DatabaseWithoutInternals;
-}
+> = DefaultSchemaTableNameOrOptions extends { schema: keyof DatabaseWithoutInternals }
   ? (DatabaseWithoutInternals[DefaultSchemaTableNameOrOptions["schema"]]["Tables"] &
       DatabaseWithoutInternals[DefaultSchemaTableNameOrOptions["schema"]]["Views"])[TableName] extends {
       Row: infer R;
@@ -734,9 +727,7 @@ export type TablesInsert<
   }
     ? keyof DatabaseWithoutInternals[DefaultSchemaTableNameOrOptions["schema"]]["Tables"]
     : never) = never,
-> = DefaultSchemaTableNameOrOptions extends {
-  schema: keyof DatabaseWithoutInternals;
-}
+> = DefaultSchemaTableNameOrOptions extends { schema: keyof DatabaseWithoutInternals }
   ? DatabaseWithoutInternals[DefaultSchemaTableNameOrOptions["schema"]]["Tables"][TableName] extends {
       Insert: infer I;
     }
@@ -758,9 +749,7 @@ export type TablesUpdate<
   }
     ? keyof DatabaseWithoutInternals[DefaultSchemaTableNameOrOptions["schema"]]["Tables"]
     : never) = never,
-> = DefaultSchemaTableNameOrOptions extends {
-  schema: keyof DatabaseWithoutInternals;
-}
+> = DefaultSchemaTableNameOrOptions extends { schema: keyof DatabaseWithoutInternals }
   ? DatabaseWithoutInternals[DefaultSchemaTableNameOrOptions["schema"]]["Tables"][TableName] extends {
       Update: infer U;
     }
@@ -782,9 +771,7 @@ export type Enums<
   }
     ? keyof DatabaseWithoutInternals[DefaultSchemaEnumNameOrOptions["schema"]]["Enums"]
     : never) = never,
-> = DefaultSchemaEnumNameOrOptions extends {
-  schema: keyof DatabaseWithoutInternals;
-}
+> = DefaultSchemaEnumNameOrOptions extends { schema: keyof DatabaseWithoutInternals }
   ? DatabaseWithoutInternals[DefaultSchemaEnumNameOrOptions["schema"]]["Enums"][EnumName]
   : DefaultSchemaEnumNameOrOptions extends keyof DefaultSchema["Enums"]
     ? DefaultSchema["Enums"][DefaultSchemaEnumNameOrOptions]
@@ -798,9 +785,7 @@ export type CompositeTypes<
   }
     ? keyof DatabaseWithoutInternals[PublicCompositeTypeNameOrOptions["schema"]]["CompositeTypes"]
     : never) = never,
-> = PublicCompositeTypeNameOrOptions extends {
-  schema: keyof DatabaseWithoutInternals;
-}
+> = PublicCompositeTypeNameOrOptions extends { schema: keyof DatabaseWithoutInternals }
   ? DatabaseWithoutInternals[PublicCompositeTypeNameOrOptions["schema"]]["CompositeTypes"][CompositeTypeName]
   : PublicCompositeTypeNameOrOptions extends keyof DefaultSchema["CompositeTypes"]
     ? DefaultSchema["CompositeTypes"][PublicCompositeTypeNameOrOptions]

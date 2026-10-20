@@ -1,0 +1,53 @@
+{
+  "app": {
+    "name": "WordWise",
+    "description": "Học từ vựng tiếng Anh, nhớ lâu với lịch ôn thông minh."
+  },
+  "nav": {
+    "main": "Điều hướng chính",
+    "today": "Hôm nay",
+    "words": "Từ của tôi",
+    "practice": "Luyện tập",
+    "stats": "Thống kê",
+    "addWord": "Thêm từ",
+    "settings": "Cài đặt",
+    "back": "Quay lại"
+  },
+  "common": {
+    "comingSoon": "Màn hình này đang được xây dựng."
+  },
+  "today": {
+    "title": "Hôm nay",
+    "greeting": "Chào bạn",
+    "emptyTitle": "Bắt đầu với từ đầu tiên",
+    "emptyBody": "Thêm từ bạn vừa gặp, hoặc chọn một bộ từ có sẵn theo mục tiêu của bạn.",
+    "addFirst": "Thêm từ đầu tiên",
+    "browseLibrary": "Chọn bộ từ có sẵn"
+  },
+  "words": {
+    "title": "Từ của tôi",
+    "emptyTitle": "Chưa có từ nào",
+    "emptyBody": "Từ bạn thêm sẽ nằm trong các sổ tay ở đây."
+  },
+  "practice": {
+    "title": "Luyện tập",
+    "emptyBody": "Thêm vài từ để luyện theo sổ tay, chủ đề hoặc chế độ bạn thích."
+  },
+  "stats": {
+    "title": "Thống kê",
+    "emptyBody": "Hoàn thành phiên ôn đầu tiên để thấy tiến bộ của bạn."
+  },
+  "add": {
+    "title": "Thêm từ"
+  },
+  "settings": {
+    "title": "Cài đặt",
+    "language": "Ngôn ngữ giao diện",
+    "languageHint": "Đổi ngay, không cần tải lại trang.",
+    "saving": "Đang đổi…"
+  },
+  "languages": {
+    "vi": "Tiếng Việt",
+    "en": "English"
+  }
+}

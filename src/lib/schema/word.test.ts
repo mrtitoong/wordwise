@@ -137,7 +137,11 @@ describe("WordContentSchema – mở rộng ngôn ngữ", () => {
           meaning_vi: "nỗ lực",
           image_query: "student studying late night",
           examples: [
-            { sentence: "毎日努力しています。", translation_vi: "Ngày nào tôi cũng nỗ lực.", highlight: "努力" },
+            {
+              sentence: "毎日努力しています。",
+              translation_vi: "Ngày nào tôi cũng nỗ lực.",
+              highlight: "努力",
+            },
           ],
           synonyms: [],
           antonyms: [],

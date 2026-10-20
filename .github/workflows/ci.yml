@@ -67,5 +67,8 @@ jobs:
           if ! diff -u <(grep -v PostgrestVersion src/lib/db/database.types.ts) <(grep -v PostgrestVersion /tmp/database.types.formatted.ts) > /tmp/types.diff; then
             { echo '### database.types.ts lệch với schema'; echo '```diff'; head -c 60000 /tmp/types.diff; echo '```'; } >> "$GITHUB_STEP_SUMMARY"
             cat /tmp/types.diff
+            # Annotation đọc được công khai qua API check-runs (không cần đăng nhập).
+            msg=$(head -c 30000 /tmp/types.diff | sed -e 's/%/%25/g' | awk '{printf "%s%%0A", $0}')
+            echo "::error file=src/lib/db/database.types.ts,title=types diff::${msg}"
             exit 1
           fi

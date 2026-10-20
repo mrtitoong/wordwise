@@ -59,11 +59,9 @@ export function createSupabaseRemote(client: SupabaseClient<Database>): SyncRemo
           ? client
               .from(table)
               .upsert(payload as never, { onConflict: "id", ignoreDuplicates: true })
-          : client
-              .from(table)
-              .upsert(payload as never, {
-                onConflict: table === "user_settings" ? "user_id" : "id",
-              });
+          : client.from(table).upsert(payload as never, {
+              onConflict: table === "user_settings" ? "user_id" : "id",
+            });
       const { error, status } = await query;
       return classify(error, status);
     },

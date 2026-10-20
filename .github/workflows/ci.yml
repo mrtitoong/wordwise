@@ -34,3 +34,41 @@ jobs:
           name: playwright-report
           path: playwright-report
           retention-days: 7
+
+  database:
+    name: Database (migrations, RLS tests, types, seed)
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: npm
+      - run: npm ci
+      - name: Seed SQL khớp với từ mẫu JSON
+        run: |
+          npm run seed:build
+          git diff --exit-code -- supabase/seed/words.sql
+      - uses: supabase/setup-cli@v1
+        with:
+          version: 2.119.0
+      - name: Khởi động Supabase cục bộ (chỉ các dịch vụ cần)
+        run: supabase start -x studio,imgproxy,mailpit,edge-runtime,logflare,vector,realtime,storage-api,supavisor
+      - name: Lint SQL
+        run: supabase db lint --level error
+      - name: Test RLS (pgTAP)
+        run: supabase test db
+      - name: TypeScript types khớp với schema
+        run: |
+          supabase gen types typescript --local --schema public > /tmp/database.types.ts
+          npx prettier --stdin-filepath src/lib/db/database.types.ts < /tmp/database.types.ts > /tmp/database.types.formatted.ts
+          # Bỏ dòng phiên bản PostgREST vì cục bộ và cloud có thể khác nhau.
+          if ! diff -u <(grep -v PostgrestVersion src/lib/db/database.types.ts) <(grep -v PostgrestVersion /tmp/database.types.formatted.ts) > /tmp/types.diff; then
+            { echo '### database.types.ts lệch với schema'; echo '```diff'; head -c 60000 /tmp/types.diff; echo '```'; } >> "$GITHUB_STEP_SUMMARY"
+            cat /tmp/types.diff
+            # Annotation đọc được công khai qua API check-runs (không cần đăng nhập).
+            msg=$(head -c 30000 /tmp/types.diff | sed -e 's/%/%25/g' | awk '{printf "%s%%0A", $0}')
+            echo "::error file=src/lib/db/database.types.ts,title=types diff::${msg}"
+            exit 1
+          fi

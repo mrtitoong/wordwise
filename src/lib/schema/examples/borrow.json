@@ -1,0 +1,120 @@
+{
+  "schema_version": 1,
+  "language": "en",
+  "lemma": "borrow",
+  "pos": "verb",
+  "ipa": {
+    "us": "ˈbɑːr.oʊ",
+    "uk": "ˈbɒr.əʊ"
+  },
+  "cefr": "A2",
+  "register": "neutral",
+  "etymology_vi": null,
+  "forms": {
+    "inflections": [
+      {
+        "label": "third_person",
+        "form": "borrows",
+        "irregular": false
+      },
+      {
+        "label": "past",
+        "form": "borrowed",
+        "irregular": false
+      },
+      {
+        "label": "past_participle",
+        "form": "borrowed",
+        "irregular": false
+      },
+      {
+        "label": "present_participle",
+        "form": "borrowing",
+        "irregular": false
+      }
+    ],
+    "variants": []
+  },
+  "senses": [
+    {
+      "definition_en": "to take and use something that belongs to someone else, and return it later",
+      "meaning_vi": "mượn, vay",
+      "image_query": "lending book hands",
+      "examples": [
+        {
+          "sentence": "Can I borrow your pen for a minute?",
+          "translation_vi": "Cho tôi mượn cây bút một chút được không?",
+          "highlight": "borrow"
+        },
+        {
+          "sentence": "She borrowed money from her parents to buy a car.",
+          "translation_vi": "Cô ấy vay tiền bố mẹ để mua xe.",
+          "highlight": "borrowed"
+        }
+      ],
+      "synonyms": [
+        {
+          "word": "take out (a loan)",
+          "nuance_vi": "vay tiền ngân hàng, trang trọng hơn"
+        }
+      ],
+      "antonyms": [
+        {
+          "word": "lend"
+        }
+      ],
+      "collocations": [
+        {
+          "pattern": "borrow + something + from + someone",
+          "phrase": "borrow money from a friend",
+          "example": null
+        },
+        {
+          "pattern": "borrow + noun",
+          "phrase": "borrow a book / a car",
+          "example": null
+        }
+      ],
+      "idioms": [],
+      "common_mistakes": [
+        {
+          "wrong": "Can you borrow me your pen?",
+          "correct": "Can you lend me your pen?",
+          "explanation_vi": "borrow là người mượn nhận về; lend là người cho mượn đưa đi."
+        },
+        {
+          "wrong": "I borrowed him a book.",
+          "correct": "I lent him a book.",
+          "explanation_vi": "Muốn nói \"cho ai mượn\" phải dùng lend."
+        }
+      ]
+    }
+  ],
+  "homonyms": [],
+  "word_family": [
+    {
+      "word": "borrower",
+      "pos": "noun",
+      "note_vi": "người vay, người mượn"
+    }
+  ],
+  "mnemonics": [
+    {
+      "type": "image",
+      "text_vi": "BORROW có chữ \"b\" như Bring: mang về phía mình. LEND có chữ \"l\" như Leave: rời khỏi mình."
+    }
+  ],
+  "confusables": [
+    {
+      "word": "lend",
+      "difference_vi": "borrow: mượn (nhận về); lend: cho mượn (đưa đi). I borrow FROM you, you lend TO me."
+    }
+  ],
+  "confidence": {
+    "collocations": 0.85,
+    "idioms": 0.8,
+    "slang": 1,
+    "mnemonics": 0.7
+  },
+  "language_extra": null
+}

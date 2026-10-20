@@ -1,0 +1,129 @@
+{
+  "schema_version": 1,
+  "language": "en",
+  "lemma": "bank",
+  "pos": "noun",
+  "ipa": {
+    "us": "bæŋk",
+    "uk": "bæŋk"
+  },
+  "cefr": "A2",
+  "register": "neutral",
+  "etymology_vi": "Nghĩa \"ngân hàng\" từ tiếng Ý \"banca\" (cái bàn của người đổi tiền); nghĩa \"bờ\" từ gốc Bắc Âu \"banki\" (gò đất).",
+  "forms": {
+    "inflections": [
+      {
+        "label": "plural",
+        "form": "banks",
+        "irregular": false
+      }
+    ],
+    "variants": []
+  },
+  "senses": [
+    {
+      "definition_en": "an organization where people keep money and borrow money",
+      "meaning_vi": "ngân hàng",
+      "image_query": "bank building city",
+      "examples": [
+        {
+          "sentence": "I need to go to the bank to open an account.",
+          "translation_vi": "Tôi cần ra ngân hàng để mở tài khoản.",
+          "highlight": "bank"
+        },
+        {
+          "sentence": "She works for a large bank in Hanoi.",
+          "translation_vi": "Cô ấy làm cho một ngân hàng lớn ở Hà Nội.",
+          "highlight": "bank"
+        }
+      ],
+      "synonyms": [],
+      "antonyms": [],
+      "collocations": [
+        {
+          "pattern": "verb + bank",
+          "phrase": "go to / work for a bank",
+          "example": null
+        },
+        {
+          "pattern": "bank + noun",
+          "phrase": "bank account / bank card / bank loan",
+          "example": "Can I pay by bank transfer?"
+        }
+      ],
+      "idioms": [
+        {
+          "phrase": "break the bank",
+          "meaning_vi": "tốn quá nhiều tiền, vượt khả năng chi trả",
+          "register": "informal",
+          "example": "A weekend trip won't break the bank."
+        }
+      ],
+      "common_mistakes": []
+    },
+    {
+      "definition_en": "the land along the side of a river or lake",
+      "meaning_vi": "bờ (sông, hồ)",
+      "image_query": "green river bank",
+      "examples": [
+        {
+          "sentence": "We had a picnic on the bank of the river.",
+          "translation_vi": "Chúng tôi đi dã ngoại bên bờ sông.",
+          "highlight": "bank"
+        }
+      ],
+      "synonyms": [
+        {
+          "word": "shore",
+          "nuance_vi": "bờ biển, bờ hồ lớn"
+        },
+        {
+          "word": "riverside",
+          "nuance_vi": "khu vực ven sông nói chung"
+        }
+      ],
+      "antonyms": [],
+      "collocations": [
+        {
+          "pattern": "bank + of + noun",
+          "phrase": "the bank of the river",
+          "example": null
+        },
+        {
+          "pattern": "adjective + bank",
+          "phrase": "steep / muddy bank",
+          "example": null
+        }
+      ],
+      "idioms": [],
+      "common_mistakes": []
+    }
+  ],
+  "homonyms": [],
+  "word_family": [
+    {
+      "word": "banker",
+      "pos": "noun",
+      "note_vi": "nhân viên ngân hàng"
+    },
+    {
+      "word": "banking",
+      "pos": "noun",
+      "note_vi": "ngành ngân hàng"
+    }
+  ],
+  "mnemonics": [
+    {
+      "type": "image",
+      "text_vi": "Ngân hàng xưa là chiếc bàn (banca) bên bờ (bank) sông, nơi thương nhân đổi tiền."
+    }
+  ],
+  "confusables": [],
+  "confidence": {
+    "collocations": 0.85,
+    "idioms": 0.8,
+    "slang": 1,
+    "mnemonics": 0.7
+  },
+  "language_extra": null
+}

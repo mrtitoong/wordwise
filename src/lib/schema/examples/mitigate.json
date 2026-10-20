@@ -1,0 +1,122 @@
+{
+  "schema_version": 1,
+  "language": "en",
+  "lemma": "mitigate",
+  "pos": "verb",
+  "ipa": {
+    "us": "ˈmɪt̬.ə.ɡeɪt",
+    "uk": "ˈmɪt.ɪ.ɡeɪt"
+  },
+  "cefr": "C1",
+  "register": "formal",
+  "etymology_vi": "Từ tiếng Latin \"mitigare\" (làm cho mềm): mitis (mềm, dịu).",
+  "forms": {
+    "inflections": [
+      {
+        "label": "third_person",
+        "form": "mitigates",
+        "irregular": false
+      },
+      {
+        "label": "past",
+        "form": "mitigated",
+        "irregular": false
+      },
+      {
+        "label": "past_participle",
+        "form": "mitigated",
+        "irregular": false
+      },
+      {
+        "label": "present_participle",
+        "form": "mitigating",
+        "irregular": false
+      }
+    ],
+    "variants": []
+  },
+  "senses": [
+    {
+      "definition_en": "to make something bad less harmful, serious or painful",
+      "meaning_vi": "giảm nhẹ, làm dịu bớt",
+      "image_query": "sandbags against flood",
+      "examples": [
+        {
+          "sentence": "Planting trees can help mitigate the effects of climate change.",
+          "translation_vi": "Trồng cây có thể giúp giảm nhẹ tác động của biến đổi khí hậu.",
+          "highlight": "mitigate"
+        },
+        {
+          "sentence": "The new dam mitigated the risk of flooding.",
+          "translation_vi": "Con đập mới đã giảm nguy cơ lũ lụt.",
+          "highlight": "mitigated"
+        }
+      ],
+      "synonyms": [
+        {
+          "word": "reduce",
+          "nuance_vi": "chung chung, giảm số lượng hoặc mức độ"
+        },
+        {
+          "word": "alleviate",
+          "nuance_vi": "làm dịu nỗi đau, khó khăn của con người"
+        }
+      ],
+      "antonyms": [
+        {
+          "word": "worsen"
+        },
+        {
+          "word": "aggravate"
+        }
+      ],
+      "collocations": [
+        {
+          "pattern": "mitigate + noun",
+          "phrase": "mitigate the risk / impact / effects",
+          "example": null
+        },
+        {
+          "pattern": "help + mitigate",
+          "phrase": "help (to) mitigate",
+          "example": null
+        }
+      ],
+      "idioms": [],
+      "common_mistakes": [
+        {
+          "wrong": "mitigate against the risk",
+          "correct": "mitigate the risk",
+          "explanation_vi": "mitigate là ngoại động từ; \"mitigate against\" bị coi là sai trong văn viết chuẩn."
+        }
+      ]
+    }
+  ],
+  "homonyms": [],
+  "word_family": [
+    {
+      "word": "mitigation",
+      "pos": "noun",
+      "note_vi": "sự giảm nhẹ"
+    }
+  ],
+  "mnemonics": [
+    {
+      "type": "sound",
+      "text_vi": "MI-ti-GATE: dựng cái cổng (gate) chắn bớt nước lũ để giảm thiệt hại."
+    }
+  ],
+  "confusables": [
+    {
+      "word": "militate",
+      "difference_vi": "militate against: cản trở; mitigate: giảm nhẹ. Viết gần giống, nghĩa khác hẳn."
+    }
+  ],
+  "confidence": {
+    "collocations": 0.85,
+    "idioms": 0.8,
+    "slang": 1,
+    "mnemonics": 0.7
+  },
+  "language_extra": null
+}

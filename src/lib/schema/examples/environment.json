@@ -1,0 +1,133 @@
+{
+  "schema_version": 1,
+  "language": "en",
+  "lemma": "environment",
+  "pos": "noun",
+  "ipa": {
+    "us": "ɪnˈvaɪ.rən.mənt",
+    "uk": "ɪnˈvaɪ.rən.mənt"
+  },
+  "cefr": "A2",
+  "register": "neutral",
+  "etymology_vi": "Từ tiếng Pháp \"environner\" (bao quanh); \"environ\" + hậu tố -ment.",
+  "forms": {
+    "inflections": [
+      {
+        "label": "plural",
+        "form": "environments",
+        "irregular": false
+      }
+    ],
+    "variants": []
+  },
+  "senses": [
+    {
+      "definition_en": "the air, water and land in which people, animals and plants live",
+      "meaning_vi": "môi trường (tự nhiên)",
+      "image_query": "green forest river",
+      "examples": [
+        {
+          "sentence": "We must protect the environment for future generations.",
+          "translation_vi": "Chúng ta phải bảo vệ môi trường cho các thế hệ sau.",
+          "highlight": "environment"
+        },
+        {
+          "sentence": "Plastic waste is harmful to the environment.",
+          "translation_vi": "Rác thải nhựa có hại cho môi trường.",
+          "highlight": "environment"
+        }
+      ],
+      "synonyms": [
+        {
+          "word": "nature",
+          "nuance_vi": "thiên nhiên, không nhấn vào tác động của con người"
+        }
+      ],
+      "antonyms": [],
+      "collocations": [
+        {
+          "pattern": "verb + environment",
+          "phrase": "protect / damage / pollute the environment",
+          "example": null
+        },
+        {
+          "pattern": "adjective + environment",
+          "phrase": "natural / marine environment",
+          "example": null
+        }
+      ],
+      "idioms": [],
+      "common_mistakes": [
+        {
+          "wrong": "enviroment",
+          "correct": "environment",
+          "explanation_vi": "Hay quên chữ \"n\" trước \"m\": environ-ment."
+        }
+      ]
+    },
+    {
+      "definition_en": "the conditions that you live or work in",
+      "meaning_vi": "môi trường (sống, làm việc)",
+      "image_query": "bright modern office",
+      "examples": [
+        {
+          "sentence": "It's a friendly working environment.",
+          "translation_vi": "Đó là một môi trường làm việc thân thiện.",
+          "highlight": "environment"
+        }
+      ],
+      "synonyms": [
+        {
+          "word": "surroundings",
+          "nuance_vi": "không gian xung quanh, cụ thể hơn"
+        },
+        {
+          "word": "atmosphere",
+          "nuance_vi": "bầu không khí, cảm giác"
+        }
+      ],
+      "antonyms": [],
+      "collocations": [
+        {
+          "pattern": "adjective + environment",
+          "phrase": "working / learning / safe environment",
+          "example": null
+        }
+      ],
+      "idioms": [],
+      "common_mistakes": []
+    }
+  ],
+  "homonyms": [],
+  "word_family": [
+    {
+      "word": "environmental",
+      "pos": "adjective",
+      "note_vi": "thuộc về môi trường"
+    },
+    {
+      "word": "environmentally",
+      "pos": "adverb",
+      "note_vi": "environmentally friendly: thân thiện môi trường"
+    },
+    {
+      "word": "environmentalist",
+      "pos": "noun",
+      "note_vi": "nhà hoạt động môi trường"
+    }
+  ],
+  "mnemonics": [
+    {
+      "type": "etymology",
+      "text_vi": "environ (bao quanh) + ment: thứ bao quanh chúng ta. Nhớ chữ \"n\": enviro-N-ment."
+    }
+  ],
+  "confusables": [],
+  "confidence": {
+    "collocations": 0.85,
+    "idioms": 0.8,
+    "slang": 1,
+    "mnemonics": 0.7
+  },
+  "language_extra": null
+}

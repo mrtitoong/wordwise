@@ -1,0 +1,139 @@
+{
+  "schema_version": 1,
+  "language": "en",
+  "lemma": "give up",
+  "pos": "phrasal_verb",
+  "ipa": {
+    "us": "ɡɪv ʌp",
+    "uk": "ɡɪv ʌp"
+  },
+  "cefr": "B1",
+  "register": "neutral",
+  "etymology_vi": null,
+  "forms": {
+    "inflections": [
+      {
+        "label": "past",
+        "form": "gave up",
+        "irregular": true
+      },
+      {
+        "label": "past_participle",
+        "form": "given up",
+        "irregular": true
+      },
+      {
+        "label": "present_participle",
+        "form": "giving up",
+        "irregular": false
+      }
+    ],
+    "variants": []
+  },
+  "senses": [
+    {
+      "definition_en": "to stop trying to do something before you have finished",
+      "meaning_vi": "bỏ cuộc, từ bỏ",
+      "image_query": "runner stopping tired",
+      "examples": [
+        {
+          "sentence": "Don't give up now, you're almost there!",
+          "translation_vi": "Đừng bỏ cuộc lúc này, bạn sắp tới nơi rồi!",
+          "highlight": "give up"
+        },
+        {
+          "sentence": "He gave up after three failed attempts.",
+          "translation_vi": "Anh ấy bỏ cuộc sau ba lần thất bại.",
+          "highlight": "gave up"
+        }
+      ],
+      "synonyms": [
+        {
+          "word": "quit",
+          "nuance_vi": "thân mật, dứt khoát"
+        },
+        {
+          "word": "abandon",
+          "nuance_vi": "trang trọng, bỏ hẳn kế hoạch"
+        }
+      ],
+      "antonyms": [
+        {
+          "word": "persevere"
+        },
+        {
+          "word": "keep going"
+        }
+      ],
+      "collocations": [
+        {
+          "pattern": "give up + noun",
+          "phrase": "give up hope",
+          "example": "Never give up hope."
+        },
+        {
+          "pattern": "never + give up",
+          "phrase": "never give up",
+          "example": null
+        }
+      ],
+      "idioms": [],
+      "common_mistakes": []
+    },
+    {
+      "definition_en": "to stop doing or having something, especially a habit",
+      "meaning_vi": "từ bỏ (thói quen)",
+      "image_query": "broken cigarette",
+      "examples": [
+        {
+          "sentence": "My father gave up smoking last year.",
+          "translation_vi": "Bố tôi bỏ thuốc lá năm ngoái.",
+          "highlight": "gave up"
+        }
+      ],
+      "synonyms": [
+        {
+          "word": "quit",
+          "nuance_vi": "thân mật, hay dùng với thói quen"
+        }
+      ],
+      "antonyms": [],
+      "collocations": [
+        {
+          "pattern": "give up + V-ing",
+          "phrase": "give up smoking / drinking",
+          "example": null
+        }
+      ],
+      "idioms": [],
+      "common_mistakes": [
+        {
+          "wrong": "I gave up to smoke.",
+          "correct": "I gave up smoking.",
+          "explanation_vi": "Sau give up dùng V-ing."
+        }
+      ]
+    }
+  ],
+  "homonyms": [],
+  "word_family": [],
+  "mnemonics": [
+    {
+      "type": "image",
+      "text_vi": "Giơ (give) hai tay lên (up) đầu hàng: bỏ cuộc."
+    }
+  ],
+  "confusables": [
+    {
+      "word": "give in",
+      "difference_vi": "give up: tự mình bỏ cuộc; give in: chịu thua, nhượng bộ trước áp lực của người khác."
+    }
+  ],
+  "confidence": {
+    "collocations": 0.85,
+    "idioms": 0.8,
+    "slang": 1,
+    "mnemonics": 0.7
+  },
+  "language_extra": null
+}

@@ -1,0 +1,79 @@
+{
+  "schema_version": 1,
+  "language": "en",
+  "lemma": "biodiversity",
+  "pos": "noun",
+  "ipa": {
+    "us": "ˌbaɪ.oʊ.dɪˈvɝː.sə.t̬i",
+    "uk": "ˌbaɪ.əʊ.daɪˈvɜː.sə.ti"
+  },
+  "cefr": "C1",
+  "register": "formal",
+  "etymology_vi": "bio- (sự sống, gốc Hy Lạp) + diversity (sự đa dạng).",
+  "forms": {
+    "inflections": [],
+    "variants": []
+  },
+  "senses": [
+    {
+      "definition_en": "the number and variety of plants and animals that exist in a particular area",
+      "meaning_vi": "đa dạng sinh học",
+      "image_query": "coral reef many fish",
+      "examples": [
+        {
+          "sentence": "Tropical rainforests have the highest biodiversity on Earth.",
+          "translation_vi": "Rừng mưa nhiệt đới có mức đa dạng sinh học cao nhất Trái Đất.",
+          "highlight": "biodiversity"
+        },
+        {
+          "sentence": "Pollution is a major threat to marine biodiversity.",
+          "translation_vi": "Ô nhiễm là mối đe dọa lớn với đa dạng sinh học biển.",
+          "highlight": "biodiversity"
+        }
+      ],
+      "synonyms": [],
+      "antonyms": [],
+      "collocations": [
+        {
+          "pattern": "verb + biodiversity",
+          "phrase": "protect / conserve / threaten biodiversity",
+          "example": null
+        },
+        {
+          "pattern": "loss of + biodiversity",
+          "phrase": "loss of biodiversity / biodiversity loss",
+          "example": "Biodiversity loss is accelerating."
+        }
+      ],
+      "idioms": [],
+      "common_mistakes": []
+    }
+  ],
+  "homonyms": [],
+  "word_family": [
+    {
+      "word": "diverse",
+      "pos": "adjective",
+      "note_vi": "đa dạng"
+    },
+    {
+      "word": "diversity",
+      "pos": "noun",
+      "note_vi": "sự đa dạng"
+    }
+  ],
+  "mnemonics": [
+    {
+      "type": "etymology",
+      "text_vi": "bio (sinh học) + diversity (đa dạng) = đa dạng sinh học, ghép đúng như tiếng Việt."
+    }
+  ],
+  "confusables": [],
+  "confidence": {
+    "collocations": 0.85,
+    "idioms": 0.8,
+    "slang": 1,
+    "mnemonics": 0.7
+  },
+  "language_extra": null
+}

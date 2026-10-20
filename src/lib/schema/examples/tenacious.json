@@ -1,0 +1,107 @@
+{
+  "schema_version": 1,
+  "language": "en",
+  "lemma": "tenacious",
+  "pos": "adjective",
+  "ipa": {
+    "us": "təˈneɪ.ʃəs",
+    "uk": "təˈneɪ.ʃəs"
+  },
+  "cefr": "C2",
+  "register": "formal",
+  "etymology_vi": "Từ tiếng Latin \"tenax\" (bám chặt), từ \"tenere\" (giữ).",
+  "forms": {
+    "inflections": [
+      {
+        "label": "comparative",
+        "form": "more tenacious",
+        "irregular": false
+      },
+      {
+        "label": "superlative",
+        "form": "most tenacious",
+        "irregular": false
+      }
+    ],
+    "variants": []
+  },
+  "senses": [
+    {
+      "definition_en": "very determined to do something and not willing to stop trying",
+      "meaning_vi": "bền bỉ, ngoan cường, không bỏ cuộc",
+      "image_query": "climber gripping rock",
+      "examples": [
+        {
+          "sentence": "She's a tenacious negotiator who never gives up.",
+          "translation_vi": "Cô ấy là người đàm phán bền bỉ, không bao giờ bỏ cuộc.",
+          "highlight": "tenacious"
+        },
+        {
+          "sentence": "The team showed tenacious defence in the second half.",
+          "translation_vi": "Đội bóng phòng ngự ngoan cường trong hiệp hai.",
+          "highlight": "tenacious"
+        }
+      ],
+      "synonyms": [
+        {
+          "word": "determined",
+          "nuance_vi": "quyết tâm, trung tính"
+        },
+        {
+          "word": "persistent",
+          "nuance_vi": "kiên trì, đôi khi gây phiền"
+        },
+        {
+          "word": "resilient",
+          "nuance_vi": "nhấn vào khả năng hồi phục sau khó khăn"
+        }
+      ],
+      "antonyms": [
+        {
+          "word": "irresolute"
+        }
+      ],
+      "collocations": [
+        {
+          "pattern": "tenacious + noun",
+          "phrase": "tenacious grip / defence / spirit",
+          "example": null
+        }
+      ],
+      "idioms": [],
+      "common_mistakes": []
+    }
+  ],
+  "homonyms": [],
+  "word_family": [
+    {
+      "word": "tenacity",
+      "pos": "noun",
+      "note_vi": "sự bền bỉ"
+    },
+    {
+      "word": "tenaciously",
+      "pos": "adverb",
+      "note_vi": null
+    }
+  ],
+  "mnemonics": [
+    {
+      "type": "etymology",
+      "text_vi": "tenere (giữ) như trong \"retain\", \"contain\": người tenacious giữ chặt mục tiêu."
+    }
+  ],
+  "confusables": [
+    {
+      "word": "resilient",
+      "difference_vi": "tenacious: không buông bỏ khi đang gặp khó; resilient: ngã rồi đứng dậy nhanh."
+    }
+  ],
+  "confidence": {
+    "collocations": 0.85,
+    "idioms": 0.8,
+    "slang": 1,
+    "mnemonics": 0.7
+  },
+  "language_extra": null
+}

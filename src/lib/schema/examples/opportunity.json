@@ -1,0 +1,112 @@
+{
+  "schema_version": 1,
+  "language": "en",
+  "lemma": "opportunity",
+  "pos": "noun",
+  "ipa": {
+    "us": "ˌɑː.pɚˈtuː.nə.t̬i",
+    "uk": "ˌɒp.əˈtʃuː.nə.ti"
+  },
+  "cefr": "B1",
+  "register": "neutral",
+  "etymology_vi": "Từ tiếng Latin \"opportunus\": ob- (về phía) + portus (bến cảng) - gió thuận đưa thuyền vào cảng.",
+  "forms": {
+    "inflections": [
+      {
+        "label": "plural",
+        "form": "opportunities",
+        "irregular": false
+      }
+    ],
+    "variants": []
+  },
+  "senses": [
+    {
+      "definition_en": "a situation that makes it possible to do something you want to do",
+      "meaning_vi": "cơ hội",
+      "image_query": "open door bright light",
+      "examples": [
+        {
+          "sentence": "This job is a great opportunity to learn new skills.",
+          "translation_vi": "Công việc này là cơ hội tốt để học kỹ năng mới.",
+          "highlight": "opportunity"
+        },
+        {
+          "sentence": "Don't miss the opportunity to study abroad.",
+          "translation_vi": "Đừng bỏ lỡ cơ hội du học.",
+          "highlight": "opportunity"
+        }
+      ],
+      "synonyms": [
+        {
+          "word": "chance",
+          "nuance_vi": "thân mật, có thể chỉ sự may rủi"
+        },
+        {
+          "word": "opening",
+          "nuance_vi": "vị trí việc làm còn trống"
+        }
+      ],
+      "antonyms": [],
+      "collocations": [
+        {
+          "pattern": "verb + opportunity",
+          "phrase": "take / seize / miss an opportunity",
+          "example": "She seized the opportunity to speak."
+        },
+        {
+          "pattern": "adjective + opportunity",
+          "phrase": "great / golden / equal opportunity",
+          "example": null
+        },
+        {
+          "pattern": "opportunity + to V / for + noun",
+          "phrase": "an opportunity to travel / for promotion",
+          "example": null
+        }
+      ],
+      "idioms": [
+        {
+          "phrase": "a window of opportunity",
+          "meaning_vi": "khoảng thời gian ngắn để nắm cơ hội",
+          "register": "neutral",
+          "example": null
+        }
+      ],
+      "common_mistakes": [
+        {
+          "wrong": "an opportunity of studying",
+          "correct": "an opportunity to study",
+          "explanation_vi": "Thường dùng \"opportunity to + V\" hoặc \"opportunity for + danh từ\"."
+        }
+      ]
+    }
+  ],
+  "homonyms": [],
+  "word_family": [
+    {
+      "word": "opportunistic",
+      "pos": "adjective",
+      "note_vi": "cơ hội chủ nghĩa (tiêu cực)"
+    },
+    {
+      "word": "opportune",
+      "pos": "adjective",
+      "note_vi": "đúng lúc, thuận lợi"
+    }
+  ],
+  "mnemonics": [
+    {
+      "type": "etymology",
+      "text_vi": "op + port: gió thổi thuyền về cảng - đúng lúc cơ hội đến."
+    }
+  ],
+  "confusables": [],
+  "confidence": {
+    "collocations": 0.85,
+    "idioms": 0.8,
+    "slang": 1,
+    "mnemonics": 0.7
+  },
+  "language_extra": null
+}

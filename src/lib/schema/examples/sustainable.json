@@ -1,0 +1,108 @@
+{
+  "schema_version": 1,
+  "language": "en",
+  "lemma": "sustainable",
+  "pos": "adjective",
+  "ipa": {
+    "us": "səˈsteɪ.nə.bəl",
+    "uk": "səˈsteɪ.nə.bəl"
+  },
+  "cefr": "B2",
+  "register": "neutral",
+  "etymology_vi": "sustain (duy trì) + -able (có thể): có thể duy trì lâu dài.",
+  "forms": {
+    "inflections": [
+      {
+        "label": "comparative",
+        "form": "more sustainable",
+        "irregular": false
+      },
+      {
+        "label": "superlative",
+        "form": "most sustainable",
+        "irregular": false
+      }
+    ],
+    "variants": []
+  },
+  "senses": [
+    {
+      "definition_en": "causing little or no damage to the environment and therefore able to continue for a long time",
+      "meaning_vi": "bền vững",
+      "image_query": "solar panels green field",
+      "examples": [
+        {
+          "sentence": "We need more sustainable sources of energy.",
+          "translation_vi": "Chúng ta cần thêm nhiều nguồn năng lượng bền vững.",
+          "highlight": "sustainable"
+        },
+        {
+          "sentence": "The company is moving to sustainable packaging.",
+          "translation_vi": "Công ty đang chuyển sang bao bì bền vững.",
+          "highlight": "sustainable"
+        }
+      ],
+      "synonyms": [
+        {
+          "word": "eco-friendly",
+          "nuance_vi": "thân mật, dùng cho sản phẩm"
+        },
+        {
+          "word": "renewable",
+          "nuance_vi": "chỉ nguồn tái tạo được như gió, mặt trời"
+        }
+      ],
+      "antonyms": [
+        {
+          "word": "unsustainable"
+        }
+      ],
+      "collocations": [
+        {
+          "pattern": "sustainable + noun",
+          "phrase": "sustainable development / growth / tourism",
+          "example": "Sustainable tourism protects local culture."
+        },
+        {
+          "pattern": "adverb + sustainable",
+          "phrase": "environmentally / economically sustainable",
+          "example": null
+        }
+      ],
+      "idioms": [],
+      "common_mistakes": []
+    }
+  ],
+  "homonyms": [],
+  "word_family": [
+    {
+      "word": "sustain",
+      "pos": "verb",
+      "note_vi": "duy trì"
+    },
+    {
+      "word": "sustainability",
+      "pos": "noun",
+      "note_vi": "tính bền vững"
+    },
+    {
+      "word": "sustainably",
+      "pos": "adverb",
+      "note_vi": null
+    }
+  ],
+  "mnemonics": [
+    {
+      "type": "etymology",
+      "text_vi": "sustain + able = \"duy trì được\": dùng mãi mà không cạn."
+    }
+  ],
+  "confusables": [],
+  "confidence": {
+    "collocations": 0.85,
+    "idioms": 0.8,
+    "slang": 1,
+    "mnemonics": 0.7
+  },
+  "language_extra": null
+}

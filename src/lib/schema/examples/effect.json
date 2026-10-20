@@ -1,0 +1,136 @@
+{
+  "schema_version": 1,
+  "language": "en",
+  "lemma": "effect",
+  "pos": "noun",
+  "ipa": {
+    "us": "ɪˈfekt",
+    "uk": "ɪˈfekt"
+  },
+  "cefr": "B1",
+  "register": "neutral",
+  "etymology_vi": "Từ tiếng Latin \"effectus\" (kết quả): ex- (ra) + facere (làm).",
+  "forms": {
+    "inflections": [
+      {
+        "label": "plural",
+        "form": "effects",
+        "irregular": false
+      }
+    ],
+    "variants": []
+  },
+  "senses": [
+    {
+      "definition_en": "a change that is the result of an action or cause",
+      "meaning_vi": "tác động, ảnh hưởng, kết quả",
+      "image_query": "domino effect falling",
+      "examples": [
+        {
+          "sentence": "The new law had a positive effect on air quality.",
+          "translation_vi": "Luật mới có tác động tích cực đến chất lượng không khí.",
+          "highlight": "effect"
+        },
+        {
+          "sentence": "Coffee has no effect on me any more.",
+          "translation_vi": "Cà phê không còn tác dụng gì với tôi nữa.",
+          "highlight": "effect"
+        }
+      ],
+      "synonyms": [
+        {
+          "word": "impact",
+          "nuance_vi": "mạnh hơn, nhấn vào mức độ lớn"
+        },
+        {
+          "word": "consequence",
+          "nuance_vi": "thường là hậu quả, hay mang nghĩa tiêu cực"
+        },
+        {
+          "word": "result",
+          "nuance_vi": "chung chung, kết quả cuối cùng"
+        }
+      ],
+      "antonyms": [
+        {
+          "word": "cause"
+        }
+      ],
+      "collocations": [
+        {
+          "pattern": "adjective + effect",
+          "phrase": "positive / negative / side effect",
+          "example": "Headaches are a common side effect of this drug."
+        },
+        {
+          "pattern": "verb + effect",
+          "phrase": "have / take effect",
+          "example": "The new rules take effect next month."
+        },
+        {
+          "pattern": "effect + on + noun",
+          "phrase": "the effect on health",
+          "example": null
+        }
+      ],
+      "idioms": [
+        {
+          "phrase": "take effect",
+          "meaning_vi": "có hiệu lực, bắt đầu có tác dụng",
+          "register": "neutral",
+          "example": "The painkiller took effect after ten minutes."
+        },
+        {
+          "phrase": "in effect",
+          "meaning_vi": "trên thực tế, về cơ bản",
+          "register": "formal",
+          "example": null
+        }
+      ],
+      "common_mistakes": [
+        {
+          "wrong": "It has a big effect to the economy.",
+          "correct": "It has a big effect on the economy.",
+          "explanation_vi": "Danh từ effect đi với giới từ \"on\", không phải \"to\"."
+        }
+      ]
+    }
+  ],
+  "homonyms": [],
+  "word_family": [
+    {
+      "word": "effective",
+      "pos": "adjective",
+      "note_vi": "có hiệu quả"
+    },
+    {
+      "word": "effectively",
+      "pos": "adverb",
+      "note_vi": null
+    },
+    {
+      "word": "effectiveness",
+      "pos": "noun",
+      "note_vi": "tính hiệu quả"
+    }
+  ],
+  "mnemonics": [
+    {
+      "type": "sound",
+      "text_vi": "Effect bắt đầu bằng E như End: kết quả cuối cùng."
+    }
+  ],
+  "confusables": [
+    {
+      "word": "affect",
+      "difference_vi": "effect là danh từ (kết quả); affect là động từ (tác động đến)."
+    }
+  ],
+  "confidence": {
+    "collocations": 0.85,
+    "idioms": 0.8,
+    "slang": 1,
+    "mnemonics": 0.7
+  },
+  "language_extra": null
+}

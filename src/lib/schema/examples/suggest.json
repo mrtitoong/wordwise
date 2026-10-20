@@ -1,0 +1,120 @@
+{
+  "schema_version": 1,
+  "language": "en",
+  "lemma": "suggest",
+  "pos": "verb",
+  "ipa": {
+    "us": "səɡˈdʒest",
+    "uk": "səˈdʒest"
+  },
+  "cefr": "B1",
+  "register": "neutral",
+  "etymology_vi": "Từ tiếng Latin \"suggerere\" (đưa lên, gợi ra): sub- (từ dưới) + gerere (mang).",
+  "forms": {
+    "inflections": [
+      {
+        "label": "third_person",
+        "form": "suggests",
+        "irregular": false
+      },
+      {
+        "label": "past",
+        "form": "suggested",
+        "irregular": false
+      },
+      {
+        "label": "past_participle",
+        "form": "suggested",
+        "irregular": false
+      },
+      {
+        "label": "present_participle",
+        "form": "suggesting",
+        "irregular": false
+      }
+    ],
+    "variants": []
+  },
+  "senses": [
+    {
+      "definition_en": "to mention an idea or plan for someone to consider",
+      "meaning_vi": "đề xuất, gợi ý",
+      "image_query": "friends planning trip map",
+      "examples": [
+        {
+          "sentence": "I suggest going to the beach this weekend.",
+          "translation_vi": "Tôi đề xuất cuối tuần này đi biển.",
+          "highlight": "suggest"
+        },
+        {
+          "sentence": "She suggested that we leave early to avoid traffic.",
+          "translation_vi": "Cô ấy gợi ý chúng ta nên đi sớm để tránh kẹt xe.",
+          "highlight": "suggested"
+        }
+      ],
+      "synonyms": [
+        {
+          "word": "propose",
+          "nuance_vi": "trang trọng hơn, hay dùng trong công việc, cuộc họp"
+        },
+        {
+          "word": "recommend",
+          "nuance_vi": "khuyên dùng dựa trên kinh nghiệm"
+        }
+      ],
+      "antonyms": [],
+      "collocations": [
+        {
+          "pattern": "suggest + V-ing",
+          "phrase": "suggest going / suggest taking",
+          "example": null
+        },
+        {
+          "pattern": "suggest that + S + (should) V",
+          "phrase": "suggest that he call",
+          "example": "I suggest that he call her first."
+        }
+      ],
+      "idioms": [],
+      "common_mistakes": [
+        {
+          "wrong": "I suggest you to go home.",
+          "correct": "I suggest (that) you go home.",
+          "explanation_vi": "suggest không đi với cấu trúc \"somebody to do\"; dùng \"suggest (that) + S + V\" hoặc \"suggest + V-ing\"."
+        },
+        {
+          "wrong": "He suggested to visit the museum.",
+          "correct": "He suggested visiting the museum.",
+          "explanation_vi": "Sau suggest dùng V-ing, không dùng \"to V\"."
+        }
+      ]
+    }
+  ],
+  "homonyms": [],
+  "word_family": [
+    {
+      "word": "suggestion",
+      "pos": "noun",
+      "note_vi": "lời đề nghị"
+    },
+    {
+      "word": "suggestive",
+      "pos": "adjective",
+      "note_vi": "gợi ý; gợi cảm (cẩn thận ngữ cảnh)"
+    }
+  ],
+  "mnemonics": [
+    {
+      "type": "sound",
+      "text_vi": "Sờ-GIẾT: \"sờ\" vào ý tưởng rồi \"gợi\" ra cho người khác."
+    }
+  ],
+  "confusables": [],
+  "confidence": {
+    "collocations": 0.85,
+    "idioms": 0.8,
+    "slang": 1,
+    "mnemonics": 0.7
+  },
+  "language_extra": null
+}

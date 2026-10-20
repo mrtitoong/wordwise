@@ -220,6 +220,51 @@ export type Database = {
           },
         ];
       };
+      llm_call_logs: {
+        Row: {
+          attempt: number;
+          created_at: string;
+          duration_ms: number;
+          error: string | null;
+          id: string;
+          input_tokens: number | null;
+          is_fallback: boolean;
+          model: string;
+          outcome: string;
+          output_tokens: number | null;
+          provider: string;
+          task: string;
+        };
+        Insert: {
+          attempt?: number;
+          created_at?: string;
+          duration_ms: number;
+          error?: string | null;
+          id?: string;
+          input_tokens?: number | null;
+          is_fallback?: boolean;
+          model: string;
+          outcome: string;
+          output_tokens?: number | null;
+          provider: string;
+          task: string;
+        };
+        Update: {
+          attempt?: number;
+          created_at?: string;
+          duration_ms?: number;
+          error?: string | null;
+          id?: string;
+          input_tokens?: number | null;
+          is_fallback?: boolean;
+          model?: string;
+          outcome?: string;
+          output_tokens?: number | null;
+          provider?: string;
+          task?: string;
+        };
+        Relationships: [];
+      };
       notebook_entries: {
         Row: {
           added_at: string;

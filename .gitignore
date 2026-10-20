@@ -13,6 +13,7 @@ coverage/
 !.env.example
 
 # test artifacts
+scripts/out/
 playwright-report/
 test-results/
 

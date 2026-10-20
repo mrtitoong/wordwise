@@ -1,7 +1,7 @@
 /**
  * So sánh model cho tác vụ word-content (Prompt 2.0).
  *
- * Chạy: npm run compare:models -- [--models gemini-flash,claude-haiku,claude-sonnet]
+ * Chạy: npm run compare:models -- [--models claude-haiku,claude-sonnet,gemini-flash]
  *                                  [--limit 5] [--only resilient] [--report-only]
  * Khóa API đọc từ .env.local (GEMINI_API_KEY, ANTHROPIC_API_KEY, GROQ_API_KEY), chỉ dùng
  * trên máy dev. Kết quả từng từ lưu ở scripts/out/compare/<model>/ nên chạy lại sẽ tiếp tục
@@ -27,7 +27,7 @@ import { loadCompareWords, wordId, type CompareWord } from "./compare-models/wor
 
 const OUT_DIR = "scripts/out";
 const CACHE_DIR = join(OUT_DIR, "compare");
-const DEFAULT_MODELS = "gemini-flash,claude-haiku,claude-sonnet";
+const DEFAULT_MODELS = "claude-haiku,claude-sonnet";
 /** Số từ chạy song song mỗi model; gói miễn phí chạy lần lượt để đỡ bị 429. */
 const CONCURRENCY: Record<string, number> = { gemini: 1, groq: 1, claude: 4 };
 

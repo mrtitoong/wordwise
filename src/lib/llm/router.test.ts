@@ -267,6 +267,17 @@ describe("parseJson", () => {
     expect(result).toEqual({ ok: true, data: { answer: "x" } });
   });
 
+  it("lấy đối tượng JSON đầu tiên khi model viết thêm chữ trước/sau", () => {
+    const text = 'Đây là kết quả:\n{"answer":"a } { \\" b"}\n\nMình đã kiểm tra {kỹ}.';
+    expect(parseJson(text, Out)).toEqual({ ok: true, data: { answer: 'a } { " b' } });
+  });
+
+  it("không có JSON hợp lệ thì báo lỗi parse", () => {
+    const result = parseJson('{"answer": "chưa đóng', Out);
+    expect(result.ok).toBe(false);
+    if (!result.ok) expect(result.error.message).toBe("Không parse được JSON");
+  });
+
   it("liệt kê lỗi theo đường dẫn trường", () => {
     const result = parseJson('{"answer": 1}', Out);
     expect(result.ok).toBe(false);

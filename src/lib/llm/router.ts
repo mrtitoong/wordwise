@@ -183,12 +183,23 @@ export function parseJson<S extends z.ZodType>(text: string, schema: S): ParseRe
   try {
     raw = JSON.parse(stripCodeFence(text));
   } catch (error) {
-    return {
-      ok: false,
-      error: new LlmSchemaError("Không parse được JSON", text, [
-        error instanceof Error ? error.message : String(error),
-      ]),
-    };
+    // Model đôi khi viết thêm chữ trước/sau JSON → thử lấy đối tượng JSON đầu tiên.
+    const object = firstJsonObject(text);
+    if (object !== null) {
+      try {
+        raw = JSON.parse(object);
+      } catch {
+        // rơi xuống báo lỗi bên dưới
+      }
+    }
+    if (raw === undefined) {
+      return {
+        ok: false,
+        error: new LlmSchemaError("Không parse được JSON", text, [
+          error instanceof Error ? error.message : String(error),
+        ]),
+      };
+    }
   }
   const result = schema.safeParse(raw);
   if (!result.success) {
@@ -202,6 +213,26 @@ export function parseJson<S extends z.ZodType>(text: string, schema: S): ParseRe
     };
   }
   return { ok: true, data: result.data };
+}
+
+/** Đối tượng JSON đầu tiên (từ "{" đến "}" khớp, bỏ qua ngoặc trong chuỗi), hoặc null. */
+export function firstJsonObject(text: string): string | null {
+  const start = text.indexOf("{");
+  if (start < 0) return null;
+  let depth = 0;
+  let inString = false;
+  let escaped = false;
+  for (let i = start; i < text.length; i++) {
+    const char = text[i];
+    if (inString) {
+      if (escaped) escaped = false;
+      else if (char === "\\") escaped = true;
+      else if (char === '"') inString = false;
+    } else if (char === '"') inString = true;
+    else if (char === "{") depth++;
+    else if (char === "}" && --depth === 0) return text.slice(start, i + 1);
+  }
+  return null;
 }
 
 /** Một số model vẫn bọc JSON trong ```json … ``` dù đã yêu cầu trả JSON thuần. */

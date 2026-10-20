@@ -1,7 +1,8 @@
 /**
  * Cấu hình model theo tác vụ. Đổi nhà cung cấp chỉ cần sửa file này hoặc đặt biến
- * môi trường LLM_MODELS_<TÁC_VỤ> (vd LLM_MODELS_WORD_CONTENT="claude-haiku,gemini-flash"),
+ * môi trường LLM_MODELS_<TÁC_VỤ> (vd LLM_MODELS_WORD_CONTENT="claude-sonnet,claude-haiku"),
  * danh sách khóa trong MODEL_CATALOG, model đầu là chính, sau là dự phòng.
+ * Gemini và Groq không dùng mặc định nhưng vẫn giữ trong catalog để bật lại bằng cấu hình.
  *
  * Cờ freeTier gắn với từng model trong catalog, biến môi trường không đổi được cờ này,
  * nên không thể "lách" quy tắc dữ liệu người dùng bằng cấu hình.
@@ -63,16 +64,17 @@ const DEFAULT_TASKS: Record<
   LlmTask,
   { containsUserData: boolean; models: ModelKey[]; schemaMode?: SchemaMode }
 > = {
-  // Kiến thức chung, không chứa dữ liệu người dùng → gói miễn phí, dự phòng Claude Haiku.
+  // Kiến thức chung → Claude Haiku, dự phòng Sonnet (chốt 2026-10-20 sau so sánh 50 từ:
+  // Haiku 49/50 đúng schema, ~$3.8/1.000 từ; Gemini gói miễn phí chỉ ~20 lượt/ngày, 80–130 s/từ).
   // Schema thẻ từ 5 tab quá lớn để Claude/Gemini biên dịch thành structured output
-  // (thử 2026-10-20: Claude 400 "compiled grammar is too large", Gemini 400) → gửi trong prompt.
+  // (Claude 400 "compiled grammar is too large", Gemini 400) → gửi trong prompt.
   "word-content": {
     containsUserData: false,
-    models: ["gemini-flash", "claude-haiku"],
+    models: ["claude-haiku", "claude-sonnet"],
     schemaMode: "prompt",
   },
-  "example-generator": { containsUserData: false, models: ["gemini-flash", "claude-haiku"] },
-  mnemonic: { containsUserData: false, models: ["gemini-flash", "claude-haiku"] },
+  "example-generator": { containsUserData: false, models: ["claude-haiku", "claude-sonnet"] },
+  mnemonic: { containsUserData: false, models: ["claude-haiku", "claude-sonnet"] },
   // Ảnh/văn bản OCR của người dùng, bài đọc Admin → chỉ trả phí.
   "photo-word-picker": { containsUserData: true, models: ["claude-sonnet", "claude-haiku"] },
   "list-analyzer": { containsUserData: true, models: ["claude-sonnet", "claude-haiku"] },

@@ -6,7 +6,14 @@ describe("resolveLlmConfig", () => {
   it("cấu hình mặc định hợp lệ và đủ mọi tác vụ", () => {
     const config = resolveLlmConfig();
     expect(Object.keys(config).sort()).toEqual([...LLM_TASKS].sort());
-    expect(config["word-content"].models.map((m) => m.provider)).toEqual(["gemini", "claude"]);
+    expect(config["word-content"].models.map((m) => m.model)).toEqual([
+      "claude-haiku-5-5",
+      "claude-sonnet-5-5",
+    ]);
+    // Không tác vụ nào mặc định dùng gói miễn phí.
+    for (const task of LLM_TASKS) {
+      expect(config[task].models.every((m) => !m.freeTier)).toBe(true);
+    }
   });
 
   it("tác vụ chứa dữ liệu người dùng mặc định chỉ dùng model trả phí", () => {

@@ -3,14 +3,25 @@
   "language": "en",
   "lemma": "resilient",
   "pos": "adjective",
-  "ipa": { "us": "rɪˈzɪl.jənt", "uk": "rɪˈzɪl.i.ənt" },
+  "ipa": {
+    "us": "rɪˈzɪl.jənt",
+    "uk": "rɪˈzɪl.i.ənt"
+  },
   "cefr": "C1",
   "register": "neutral",
   "etymology_vi": "Từ tiếng Latin \"resilire\" (nhảy ngược lại): re- (lại) + salire (nhảy); vào tiếng Anh thế kỷ 17.",
   "forms": {
     "inflections": [
-      { "label": "comparative", "form": "more resilient", "irregular": false },
-      { "label": "superlative", "form": "most resilient", "irregular": false }
+      {
+        "label": "comparative",
+        "form": "more resilient",
+        "irregular": false
+      },
+      {
+        "label": "superlative",
+        "form": "most resilient",
+        "irregular": false
+      }
     ],
     "variants": []
   },
@@ -20,40 +31,100 @@
       "meaning_vi": "kiên cường, mau phục hồi",
       "image_query": "bamboo bending in storm",
       "examples": [
-        { "sentence": "Children are often more resilient than adults think.", "translation_vi": "Trẻ em thường kiên cường hơn người lớn nghĩ.", "highlight": "resilient" },
-        { "sentence": "The local economy proved remarkably resilient during the crisis.", "translation_vi": "Nền kinh tế địa phương tỏ ra phục hồi rất tốt trong khủng hoảng.", "highlight": "resilient" },
-        { "sentence": "She is resilient enough to bounce back from this setback.", "translation_vi": "Cô ấy đủ kiên cường để vượt qua thất bại này.", "highlight": "resilient" }
+        {
+          "sentence": "Children are often more resilient than adults think.",
+          "translation_vi": "Trẻ em thường kiên cường hơn người lớn nghĩ.",
+          "highlight": "resilient"
+        },
+        {
+          "sentence": "The local economy proved remarkably resilient during the crisis.",
+          "translation_vi": "Nền kinh tế địa phương tỏ ra phục hồi rất tốt trong khủng hoảng.",
+          "highlight": "resilient"
+        },
+        {
+          "sentence": "She is resilient enough to bounce back from this setback.",
+          "translation_vi": "Cô ấy đủ kiên cường để vượt qua thất bại này.",
+          "highlight": "resilient"
+        }
       ],
       "synonyms": [
-        { "word": "tough", "nuance_vi": "chung chung, nhấn vào sức chịu đựng hơn là khả năng hồi phục" },
-        { "word": "tenacious", "nuance_vi": "bám riết, không bỏ cuộc; nói về sự kiên trì theo đuổi" },
-        { "word": "hardy", "nuance_vi": "chịu được điều kiện khắc nghiệt; hay dùng cho cây, động vật" },
-        { "word": "robust", "nuance_vi": "chắc chắn; hay dùng cho hệ thống, nền kinh tế, vật thể" }
+        {
+          "word": "tough",
+          "nuance_vi": "chung chung, nhấn vào sức chịu đựng hơn là khả năng hồi phục"
+        },
+        {
+          "word": "tenacious",
+          "nuance_vi": "bám riết, không bỏ cuộc; nói về sự kiên trì theo đuổi"
+        },
+        {
+          "word": "hardy",
+          "nuance_vi": "chịu được điều kiện khắc nghiệt; hay dùng cho cây, động vật"
+        },
+        {
+          "word": "robust",
+          "nuance_vi": "chắc chắn; hay dùng cho hệ thống, nền kinh tế, vật thể"
+        }
       ],
-      "antonyms": [{ "word": "fragile" }, { "word": "vulnerable" }],
+      "antonyms": [
+        {
+          "word": "fragile"
+        },
+        {
+          "word": "vulnerable"
+        }
+      ],
       "collocations": [
-        { "pattern": "adverb + resilient", "phrase": "remarkably / incredibly / highly resilient", "example": "The species is remarkably resilient to drought." },
-        { "pattern": "resilient + noun", "phrase": "resilient economy / community / system", "example": "We need a more resilient energy system." },
-        { "pattern": "verb + resilient", "phrase": "prove / remain resilient", "example": "Sales remained resilient despite the recession." },
-        { "pattern": "resilient + preposition", "phrase": "resilient to / against something", "example": "Coral reefs are less resilient to rising temperatures." }
+        {
+          "pattern": "adverb + resilient",
+          "phrase": "remarkably / incredibly / highly resilient",
+          "example": "The species is remarkably resilient to drought."
+        },
+        {
+          "pattern": "resilient + noun",
+          "phrase": "resilient economy / community / system",
+          "example": "We need a more resilient energy system."
+        },
+        {
+          "pattern": "verb + resilient",
+          "phrase": "prove / remain resilient",
+          "example": "Sales remained resilient despite the recession."
+        },
+        {
+          "pattern": "resilient + preposition",
+          "phrase": "resilient to / against something",
+          "example": "Coral reefs are less resilient to rising temperatures."
+        }
       ],
       "idioms": [
-        { "phrase": "bounce back", "meaning_vi": "hồi phục nhanh sau thất bại, bệnh tật", "register": "neutral", "example": "She bounced back quickly after losing her job." },
-        { "phrase": "roll with the punches", "meaning_vi": "thích nghi, chịu đựng khó khăn mà không gục ngã", "register": "informal", "example": null },
-        { "phrase": "(as) tough as old boots", "meaning_vi": "cực kỳ cứng cỏi, khó bị quật ngã (Anh–Anh)", "register": "informal", "example": null }
-      ],
-      "slang": [],
-      "grammar_patterns": [
         {
-          "pattern": "be resilient to / against + noun",
-          "example": "These crops are resilient to drought.",
-          "common_mistake": { "wrong": "resilient with stress", "correct": "resilient to stress", "explanation_vi": "Người Việt hay dịch \"kiên cường với\" thành \"with\"; đúng là \"to\" hoặc \"against\"." }
+          "phrase": "bounce back",
+          "meaning_vi": "hồi phục nhanh sau thất bại, bệnh tật",
+          "register": "neutral",
+          "example": "She bounced back quickly after losing her job."
         },
-        { "pattern": "prove (to be) resilient", "example": "The team proved resilient under pressure.", "common_mistake": null },
         {
-          "pattern": "tính từ resilient ↔ danh từ resilience",
-          "example": "She showed great resilience after the accident.",
-          "common_mistake": { "wrong": "She has a lot of resilient.", "correct": "She has a lot of resilience.", "explanation_vi": "Sau \"a lot of\" cần danh từ resilience, không dùng tính từ." }
+          "phrase": "roll with the punches",
+          "meaning_vi": "thích nghi, chịu đựng khó khăn mà không gục ngã",
+          "register": "informal",
+          "example": null
+        },
+        {
+          "phrase": "(as) tough as old boots",
+          "meaning_vi": "cực kỳ cứng cỏi, khó bị quật ngã (Anh–Anh)",
+          "register": "informal",
+          "example": null
+        }
+      ],
+      "common_mistakes": [
+        {
+          "wrong": "resilient with stress",
+          "correct": "resilient to stress",
+          "explanation_vi": "Người Việt hay dịch \"kiên cường với\" thành \"with\"; đúng là \"to\" hoặc \"against\"."
+        },
+        {
+          "wrong": "She has a lot of resilient.",
+          "correct": "She has a lot of resilience.",
+          "explanation_vi": "Sau \"a lot of\" cần danh từ resilience, không dùng tính từ."
         }
       ]
     },
@@ -62,36 +133,88 @@
       "meaning_vi": "đàn hồi",
       "image_query": "foam mattress spring back",
       "examples": [
-        { "sentence": "This foam is light, resilient and easy to clean.", "translation_vi": "Loại mút này nhẹ, đàn hồi và dễ vệ sinh.", "highlight": "resilient" },
-        { "sentence": "Rubber is a resilient material used in many shoes.", "translation_vi": "Cao su là vật liệu đàn hồi được dùng trong nhiều loại giày.", "highlight": "resilient" }
+        {
+          "sentence": "This foam is light, resilient and easy to clean.",
+          "translation_vi": "Loại mút này nhẹ, đàn hồi và dễ vệ sinh.",
+          "highlight": "resilient"
+        },
+        {
+          "sentence": "Rubber is a resilient material used in many shoes.",
+          "translation_vi": "Cao su là vật liệu đàn hồi được dùng trong nhiều loại giày.",
+          "highlight": "resilient"
+        }
       ],
       "synonyms": [
-        { "word": "elastic", "nuance_vi": "co giãn được, nhấn vào khả năng kéo dài ra" },
-        { "word": "springy", "nuance_vi": "thân mật, nảy lên khi ấn" }
+        {
+          "word": "elastic",
+          "nuance_vi": "co giãn được, nhấn vào khả năng kéo dài ra"
+        },
+        {
+          "word": "springy",
+          "nuance_vi": "thân mật, nảy lên khi ấn"
+        }
       ],
-      "antonyms": [{ "word": "rigid" }, { "word": "brittle" }],
+      "antonyms": [
+        {
+          "word": "rigid"
+        },
+        {
+          "word": "brittle"
+        }
+      ],
       "collocations": [
-        { "pattern": "resilient + noun", "phrase": "resilient material / foam / flooring", "example": "Resilient flooring is popular in kitchens." }
+        {
+          "pattern": "resilient + noun",
+          "phrase": "resilient material / foam / flooring",
+          "example": "Resilient flooring is popular in kitchens."
+        }
       ],
       "idioms": [],
-      "slang": [],
-      "grammar_patterns": []
+      "common_mistakes": []
     }
   ],
   "homonyms": [],
   "word_family": [
-    { "word": "resilience", "pos": "noun", "note_vi": "sự kiên cường, khả năng phục hồi" },
-    { "word": "resiliency", "pos": "noun", "note_vi": "như resilience, hay dùng ở Mỹ" },
-    { "word": "resiliently", "pos": "adverb", "note_vi": null }
+    {
+      "word": "resilience",
+      "pos": "noun",
+      "note_vi": "sự kiên cường, khả năng phục hồi"
+    },
+    {
+      "word": "resiliency",
+      "pos": "noun",
+      "note_vi": "như resilience, hay dùng ở Mỹ"
+    },
+    {
+      "word": "resiliently",
+      "pos": "adverb",
+      "note_vi": null
+    }
   ],
   "mnemonics": [
-    { "type": "etymology", "text_vi": "re- (lại) + salire (nhảy): \"nhảy bật trở lại\" như lò xo bị nén rồi bung ra." },
-    { "type": "image", "text_vi": "Cây tre gặp bão cong rạp xuống, bão qua lại đứng thẳng: đó là resilient." }
+    {
+      "type": "etymology",
+      "text_vi": "re- (lại) + salire (nhảy): \"nhảy bật trở lại\" như lò xo bị nén rồi bung ra."
+    },
+    {
+      "type": "image",
+      "text_vi": "Cây tre gặp bão cong rạp xuống, bão qua lại đứng thẳng: đó là resilient."
+    }
   ],
   "confusables": [
-    { "word": "resistant", "difference_vi": "resistant: chống lại, không bị tác động; resilient: bị tác động nhưng hồi phục." },
-    { "word": "reliant", "difference_vi": "Viết gần giống; reliant (on) nghĩa là phụ thuộc vào ai, cái gì." }
+    {
+      "word": "resistant",
+      "difference_vi": "resistant: chống lại, không bị tác động; resilient: bị tác động nhưng hồi phục."
+    },
+    {
+      "word": "reliant",
+      "difference_vi": "Viết gần giống; reliant (on) nghĩa là phụ thuộc vào ai, cái gì."
+    }
   ],
-  "confidence": { "collocations": 0.92, "idioms": 0.8, "slang": 1, "mnemonics": 0.75 },
+  "confidence": {
+    "collocations": 0.92,
+    "idioms": 0.8,
+    "mnemonics": 0.75
+  },
   "language_extra": null
 }

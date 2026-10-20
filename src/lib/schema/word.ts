@@ -2,16 +2,23 @@
  * Schema nội dung một từ (WordContent) – dùng chung cho:
  *  - đầu ra LLM (prompt word-content, xuất JSON Schema bằng wordContentJsonSchema()),
  *  - dữ liệu JSONB trong database,
- *  - giao diện thẻ từ 8 lớp.
+ *  - giao diện thẻ từ 5 tab: Nghĩa · Ví dụ · Cách dùng · Từ liên quan · Ghi nhớ.
  *
  * Một WordContent ứng với một cặp (language, lemma, pos), khớp với bảng `words`
  * (unique language + lemma + pos). Nghĩa nằm trong `senses`, khớp với `word_senses`.
  *
- * Phân chia lớp:
+ * Phân chia dữ liệu:
  *  - Cấp từ (chung mọi nghĩa): ipa, cefr, forms, register, etymology_vi, homonyms,
  *    word_family, mnemonics, confusables, language_extra.
  *  - Cấp nghĩa: definition_en, meaning_vi, image_query, examples, synonyms, antonyms,
- *    collocations, idioms, slang, grammar_patterns.
+ *    collocations, idioms, common_mistakes.
+ *
+ * Tab trên thẻ từ (quyết định 2026-10-20, không có slang và tab ngữ pháp riêng):
+ *  - Nghĩa: senses + đầu thẻ (ipa, cefr, forms, register)
+ *  - Ví dụ: examples
+ *  - Cách dùng: collocations, idioms, common_mistakes
+ *  - Từ liên quan: synonyms, antonyms, homonyms, word_family
+ *  - Ghi nhớ: mnemonics, confusables, etymology_vi
  *
  * Quy ước:
  *  - Trường "nếu có" là mảng, được phép rỗng; trường cấp từ "nếu có" là nullable.
@@ -58,7 +65,7 @@ export const IpaSchema = z.object({
   uk: ipaText.nullable(),
 });
 
-/* ---------- Lớp Hình thái ---------- */
+/* ---------- Dạng từ (đầu thẻ) ---------- */
 
 export const InflectionSchema = z.object({
   label: z.enum([
@@ -86,7 +93,7 @@ export const FormsSchema = z.object({
   variants: z.array(SpellingVariantSchema).max(4),
 });
 
-/* ---------- Lớp Ví dụ ---------- */
+/* ---------- Tab Ví dụ ---------- */
 
 export const ExampleSchema = z
   .object({
@@ -100,7 +107,7 @@ export const ExampleSchema = z
     path: ["highlight"],
   });
 
-/* ---------- Lớp Quan hệ từ ---------- */
+/* ---------- Tab Từ liên quan ---------- */
 
 export const SynonymSchema = z.object({
   word: text,
@@ -124,7 +131,7 @@ export const WordFamilyMemberSchema = z.object({
   note_vi: text.nullable(),
 });
 
-/* ---------- Lớp Collocations ---------- */
+/* ---------- Tab Cách dùng ---------- */
 
 export const CollocationSchema = z.object({
   /** Mẫu cấu trúc, vd "adverb + adjective", "verb + noun". */
@@ -134,8 +141,6 @@ export const CollocationSchema = z.object({
   example: text.nullable(),
 });
 
-/* ---------- Lớp Thành ngữ & Slang ---------- */
-
 export const IdiomSchema = z.object({
   phrase: text,
   meaning_vi: text,
@@ -143,21 +148,14 @@ export const IdiomSchema = z.object({
   example: text.nullable(),
 });
 
-/* ---------- Lớp Ngữ pháp ---------- */
-
+/** Lỗi người Việt hay mắc khi dùng từ, vd "resilient with stress" → "resilient to stress". */
 export const CommonMistakeSchema = z.object({
   wrong: text,
   correct: text,
   explanation_vi: text,
 });
 
-export const GrammarPatternSchema = z.object({
-  pattern: text,
-  example: text,
-  common_mistake: CommonMistakeSchema.nullable(),
-});
-
-/* ---------- Lớp Ghi nhớ & Phân biệt ---------- */
+/* ---------- Tab Ghi nhớ ---------- */
 
 export const MnemonicSchema = z.object({
   type: z.enum(["sound", "etymology", "image", "story"]),
@@ -213,8 +211,7 @@ export const SenseSchema = z.object({
   antonyms: z.array(AntonymSchema).max(6),
   collocations: z.array(CollocationSchema).max(8),
   idioms: z.array(IdiomSchema).max(6),
-  slang: z.array(IdiomSchema).max(4),
-  grammar_patterns: z.array(GrammarPatternSchema).max(6),
+  common_mistakes: z.array(CommonMistakeSchema).max(3),
 });
 
 /* ---------- Độ tin cậy của LLM ---------- */
@@ -224,7 +221,6 @@ const score = z.number().min(0).max(1);
 export const ConfidenceSchema = z.object({
   collocations: score,
   idioms: score,
-  slang: score,
   mnemonics: score,
 });
 

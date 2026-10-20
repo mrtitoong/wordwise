@@ -33,18 +33,22 @@ describe("WordContentSchema – ví dụ mẫu", () => {
     });
   });
 
-  it("resilient đủ 8 lớp có nội dung", () => {
+  it("resilient có nội dung cho đủ 5 tab", () => {
     const word = WordContentSchema.parse(resilient);
     const sense = word.senses[0]!;
-    // Cơ bản, Ví dụ, Từ liên quan, Collocations, Thành ngữ, Ngữ pháp, Ghi nhớ & Phân biệt, Hình thái
+    // Nghĩa
     expect(sense.meaning_vi).not.toBe("");
+    expect(word.forms.inflections.length).toBeGreaterThan(0);
+    // Ví dụ
     expect(sense.examples.length).toBeGreaterThan(0);
-    expect(sense.synonyms.length + word.word_family.length).toBeGreaterThan(0);
+    // Cách dùng
     expect(sense.collocations.length).toBeGreaterThan(0);
     expect(sense.idioms.length).toBeGreaterThan(0);
-    expect(sense.grammar_patterns.length).toBeGreaterThan(0);
+    expect(sense.common_mistakes.length).toBeGreaterThan(0);
+    // Từ liên quan
+    expect(sense.synonyms.length + word.word_family.length).toBeGreaterThan(0);
+    // Ghi nhớ
     expect(word.mnemonics.length + word.confusables.length).toBeGreaterThan(0);
-    expect(word.forms.inflections.length).toBeGreaterThan(0);
   });
 });
 
@@ -103,6 +107,13 @@ describe("WordContentSchema – từ chối dữ liệu sai", () => {
     expect(issuePaths(bad)).toContain("language_extra.kind");
   });
 
+  it("quá 3 lỗi hay gặp cho một nghĩa", () => {
+    const bad = clone(resilient);
+    const mistake = bad.senses[0]!.common_mistakes[0]!;
+    bad.senses[0]!.common_mistakes = [mistake, mistake, mistake, mistake];
+    expect(issuePaths(bad)).toContain("senses.0.common_mistakes");
+  });
+
   it("bỏ qua khóa lạ thay vì báo lỗi", () => {
     const extra = { ...clone(resilient), notes: "LLM tự thêm" };
     const parsed = WordContentSchema.parse(extra);
@@ -132,8 +143,7 @@ describe("WordContentSchema – mở rộng ngôn ngữ", () => {
           antonyms: [],
           collocations: [],
           idioms: [],
-          slang: [],
-          grammar_patterns: [],
+          common_mistakes: [],
         },
       ],
       word_family: [],

@@ -324,7 +324,7 @@ flowchart TD
     I -->|"Không"| J["Trạng thái Chờ duyệt"]
     J --> K["Màn Duyệt: bảng từ<br/>lọc Chỉ có cảnh báo"]
     K --> L{"Thao tác"}
-    L -->|"Bấm một dòng"| L1["Xem thẻ 8 lớp: đổi nghĩa, sửa<br/>tạo lại một lớp, xóa từ"]
+    L -->|"Bấm một dòng"| L1["Xem thẻ từ: đổi nghĩa, sửa<br/>tạo lại một phần, xóa từ"]
     L -->|"Kéo thả"| L2["Đổi thứ tự"]
     L -->|"Hàng loạt"| L3["Chấp nhận tất cả từ không có cảnh báo"]
     L1 --> K
@@ -438,16 +438,16 @@ Quy ước trạng thái chung (áp dụng cho mọi màn, không lặp lại b�
 
 ### 3.5 Thẻ từ
 
-- **Mục đích**: học và tra một từ với đầy đủ 8 lớp; thêm nội dung riêng.
+- **Mục đích**: học và tra một từ với đầy đủ nội dung; thêm nội dung riêng.
 - **Thành phần**: đầu thẻ (từ, loại từ, IPA US/UK + nút nghe, CEFR, ảnh gợi
-  nhớ, chip các sổ chứa từ); thanh tab cuộn ngang 8 lớp: Cơ bản · Ví dụ · Từ
-  liên quan · Collocations · Thành ngữ & Slang · Ngữ pháp · Ghi nhớ & Phân
-  biệt · Hình thái (ẩn tab rỗng); câu gốc người dùng gặp ở đầu tab Ví dụ,
+  nhớ, chip các sổ chứa từ, dạng từ như more/most resilient); thanh 5 tab
+  chia đều: Nghĩa · Ví dụ · Cách dùng (collocations, thành ngữ, lỗi hay gặp) ·
+  Từ liên quan · Ghi nhớ (mẹo nhớ, từ dễ nhầm, nguồn gốc) (ẩn tab rỗng); câu gốc người dùng gặp ở đầu tab Ví dụ,
   kèm ảnh gốc nếu có; câu ví dụ tô đậm từ khóa, nút nghe, hiện/ẩn bản dịch;
   chip từ liên quan (chạm: mở thẻ hoặc "+ Thêm vào sổ"); nhãn "Của bạn" cho
-  nội dung tự thêm; nút "+ Thêm của bạn" mỗi lớp; nút "Báo lỗi" mỗi lớp
+  nội dung tự thêm; nút "+ Thêm của bạn" mỗi tab; nút "Báo lỗi" mỗi mục
   gốc; nút đổi nghĩa/ảnh hiển thị + "Dùng lại bản gốc"; công tắc Xem nhanh
-  (chỉ lớp Cơ bản) / Xem đầy đủ.
+  (chỉ tab Nghĩa) / Xem đầy đủ.
 - **Hành động chính**: nghe phát âm; thêm vào sổ (nếu chưa có); thêm nội
   dung riêng.
 - **Rỗng**: lớp không có nội dung gốc → tab ẩn; lớp chỉ có nội dung của
@@ -624,7 +624,7 @@ Quy ước trạng thái chung (áp dụng cho mọi màn, không lặp lại b�
 - **Thành phần**: đầu trang (tên, trạng thái, phiên bản, số cảnh báo còn
   lại, nút **Xuất bản**); bộ lọc "Chỉ có cảnh báo", theo chủ đề con, theo
   loại cảnh báo; bảng (thứ tự kéo thả, từ, loại từ, nghĩa đã chọn, CEFR, chủ
-  đề con, cảnh báo); khung bên phải khi chọn dòng: thẻ 8 lớp sửa được, đổi
+  đề con, cảnh báo); khung bên phải khi chọn dòng: thẻ từ 5 tab sửa được, đổi
   nghĩa, Tạo lại lớp này, Xóa khỏi danh sách; thao tác hàng loạt "Chấp nhận
   tất cả không có cảnh báo"; tab Thống kê danh sách (số người học, tỉ lệ
   hoàn thành, tỉ lệ thuộc, 10 từ hay quên).

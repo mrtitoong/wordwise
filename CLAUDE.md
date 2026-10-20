@@ -4,9 +4,9 @@
 PWA giúp người Việt học từ vựng ngoại ngữ (MVP: tiếng Anh).
 - Mỗi người có nhiều sổ tay; thêm từ bằng gõ, giọng nói, chụp ảnh
   (OCR), CSV/Excel/Anki, hoặc từ danh sách có chủ đích do Admin xuất bản.
-- Mỗi từ có 8 lớp: cơ bản (nghĩa, IPA, audio, loại từ, ảnh), ví dụ,
-  quan hệ từ, collocations, thành ngữ/slang, ngữ pháp, ghi nhớ & phân
-  biệt, hình thái & ngữ dụng.
+- Thẻ từ có 5 tab: Nghĩa (nghĩa, IPA, audio, loại từ, ảnh, dạng từ),
+  Ví dụ, Cách dùng (collocations, thành ngữ, lỗi hay gặp), Từ liên quan,
+  Ghi nhớ (mẹo nhớ, từ dễ nhầm, nguồn gốc). Schema: src/lib/schema/word.ts.
 - Luyện tập: flashcard, trắc nghiệm, tập viết (4 cấp gợi ý), tập nghe,
   tập phát âm, theo chủ đề/sổ tay. Lập lịch bằng FSRS.
 - Admin tải danh sách từ → hệ thống tự phân tích → Admin duyệt →
@@ -62,3 +62,11 @@ Repo: https://github.com/mrtitoong/wordwise
   (claude.ai); màn Phiên ôn gộp 5 chế độ trong một file.
 - 2026-10-20: Kiểm tra schema ở GĐ0 bằng package.json tối giản
   (TypeScript, Zod 4, Vitest); GĐ1 mở rộng thành dự án Next.js đầy đủ.
+- 2026-10-20: Thẻ từ gọn từ 8 lớp (docs/plan.md §2.1) xuống **5 tab**: Nghĩa ·
+  Ví dụ · Cách dùng · Từ liên quan · Ghi nhớ. **Bỏ slang**; bỏ lớp Ngữ pháp
+  riêng, chỉ giữ "lỗi hay gặp" (`common_mistakes`, tối đa 3/nghĩa) trong tab
+  Cách dùng. Quyết định này thay cho mô tả 8 lớp trong plan.md và docs/prompts.md
+  (Prompt 2.1, 2.3, word-content.md cần làm theo 5 tab).
+- 2026-10-20: Câu hỏi mở trong docs/ux-flows.md §5 áp dụng theo đề xuất: chuỗi
+  ngày có 1 ngày nghỉ/tuần; 5 từ khởi đầu do Admin soạn theo trình độ; gợi ý
+  khách tạo tài khoản sau 3 phiên hoặc 20 từ; file > 500 dòng chạy nền.

@@ -3,16 +3,35 @@
   "language": "en",
   "lemma": "run",
   "pos": "verb",
-  "ipa": { "us": "rʌn", "uk": "rʌn" },
+  "ipa": {
+    "us": "rʌn",
+    "uk": "rʌn"
+  },
   "cefr": "A1",
   "register": "neutral",
   "etymology_vi": "Từ tiếng Anh cổ \"rinnan\" (chảy, chạy); nghĩa \"vận hành, điều hành\" phát triển từ hình ảnh dòng chảy liên tục.",
   "forms": {
     "inflections": [
-      { "label": "third_person", "form": "runs", "irregular": false },
-      { "label": "past", "form": "ran", "irregular": true },
-      { "label": "past_participle", "form": "run", "irregular": true },
-      { "label": "present_participle", "form": "running", "irregular": false }
+      {
+        "label": "third_person",
+        "form": "runs",
+        "irregular": false
+      },
+      {
+        "label": "past",
+        "form": "ran",
+        "irregular": true
+      },
+      {
+        "label": "past_participle",
+        "form": "run",
+        "irregular": true
+      },
+      {
+        "label": "present_participle",
+        "form": "running",
+        "irregular": false
+      }
     ],
     "variants": []
   },
@@ -22,31 +41,77 @@
       "meaning_vi": "chạy",
       "image_query": "person running in park",
       "examples": [
-        { "sentence": "I run in the park every morning before work.", "translation_vi": "Sáng nào tôi cũng chạy bộ trong công viên trước khi đi làm.", "highlight": "run" },
-        { "sentence": "She ran to catch the last bus home.", "translation_vi": "Cô ấy chạy để bắt chuyến xe buýt cuối cùng về nhà.", "highlight": "ran" },
-        { "sentence": "The kids were running around the garden all afternoon.", "translation_vi": "Bọn trẻ chạy quanh vườn cả buổi chiều.", "highlight": "running" }
+        {
+          "sentence": "I run in the park every morning before work.",
+          "translation_vi": "Sáng nào tôi cũng chạy bộ trong công viên trước khi đi làm.",
+          "highlight": "run"
+        },
+        {
+          "sentence": "She ran to catch the last bus home.",
+          "translation_vi": "Cô ấy chạy để bắt chuyến xe buýt cuối cùng về nhà.",
+          "highlight": "ran"
+        },
+        {
+          "sentence": "The kids were running around the garden all afternoon.",
+          "translation_vi": "Bọn trẻ chạy quanh vườn cả buổi chiều.",
+          "highlight": "running"
+        }
       ],
       "synonyms": [
-        { "word": "jog", "nuance_vi": "chạy chậm, đều, thường để tập thể dục" },
-        { "word": "sprint", "nuance_vi": "chạy hết tốc lực trong quãng ngắn" },
-        { "word": "dash", "nuance_vi": "chạy vội đi đâu đó, thường vì gấp" }
+        {
+          "word": "jog",
+          "nuance_vi": "chạy chậm, đều, thường để tập thể dục"
+        },
+        {
+          "word": "sprint",
+          "nuance_vi": "chạy hết tốc lực trong quãng ngắn"
+        },
+        {
+          "word": "dash",
+          "nuance_vi": "chạy vội đi đâu đó, thường vì gấp"
+        }
       ],
-      "antonyms": [{ "word": "walk" }],
+      "antonyms": [
+        {
+          "word": "walk"
+        }
+      ],
       "collocations": [
-        { "pattern": "verb + adverb", "phrase": "run fast / run slowly", "example": "He can run fast for a big man." },
-        { "pattern": "run + noun (khoảng cách)", "phrase": "run a marathon / run 5 kilometres", "example": "She ran her first marathon last year." },
-        { "pattern": "run + preposition", "phrase": "run after / run towards", "example": "The dog ran after the ball." }
+        {
+          "pattern": "verb + adverb",
+          "phrase": "run fast / run slowly",
+          "example": "He can run fast for a big man."
+        },
+        {
+          "pattern": "run + noun (khoảng cách)",
+          "phrase": "run a marathon / run 5 kilometres",
+          "example": "She ran her first marathon last year."
+        },
+        {
+          "pattern": "run + preposition",
+          "phrase": "run after / run towards",
+          "example": "The dog ran after the ball."
+        }
       ],
       "idioms": [
-        { "phrase": "run for your life", "meaning_vi": "chạy thục mạng để thoát thân", "register": "informal", "example": "When the bull broke loose, we ran for our lives." },
-        { "phrase": "in the long run", "meaning_vi": "về lâu dài", "register": "neutral", "example": "Exercise saves you money in the long run." }
-      ],
-      "slang": [],
-      "grammar_patterns": [
         {
-          "pattern": "run + to/towards + place",
-          "example": "She ran to the station.",
-          "common_mistake": { "wrong": "She ran the station.", "correct": "She ran to the station.", "explanation_vi": "Thiếu giới từ chỉ hướng; \"run the station\" lại có nghĩa là điều hành nhà ga." }
+          "phrase": "run for your life",
+          "meaning_vi": "chạy thục mạng để thoát thân",
+          "register": "informal",
+          "example": "When the bull broke loose, we ran for our lives."
+        },
+        {
+          "phrase": "in the long run",
+          "meaning_vi": "về lâu dài",
+          "register": "neutral",
+          "example": "Exercise saves you money in the long run."
+        }
+      ],
+      "common_mistakes": [
+        {
+          "wrong": "She ran the station.",
+          "correct": "She ran to the station.",
+          "explanation_vi": "Thiếu giới từ chỉ hướng; \"run the station\" lại có nghĩa là điều hành nhà ga."
         }
       ]
     },
@@ -55,68 +120,146 @@
       "meaning_vi": "điều hành, quản lý",
       "image_query": "small cafe owner counter",
       "examples": [
-        { "sentence": "My aunt runs a small coffee shop near the market.", "translation_vi": "Dì tôi điều hành một quán cà phê nhỏ gần chợ.", "highlight": "runs" },
-        { "sentence": "Who is going to run the project while you are away?", "translation_vi": "Ai sẽ quản lý dự án khi anh vắng mặt?", "highlight": "run" },
-        { "sentence": "The festival is run entirely by volunteers.", "translation_vi": "Lễ hội hoàn toàn do tình nguyện viên tổ chức.", "highlight": "run" }
+        {
+          "sentence": "My aunt runs a small coffee shop near the market.",
+          "translation_vi": "Dì tôi điều hành một quán cà phê nhỏ gần chợ.",
+          "highlight": "runs"
+        },
+        {
+          "sentence": "Who is going to run the project while you are away?",
+          "translation_vi": "Ai sẽ quản lý dự án khi anh vắng mặt?",
+          "highlight": "run"
+        },
+        {
+          "sentence": "The festival is run entirely by volunteers.",
+          "translation_vi": "Lễ hội hoàn toàn do tình nguyện viên tổ chức.",
+          "highlight": "run"
+        }
       ],
       "synonyms": [
-        { "word": "manage", "nuance_vi": "trung tính, nhấn vào việc quản lý hằng ngày" },
-        { "word": "operate", "nuance_vi": "trang trọng hơn, hay dùng cho doanh nghiệp, dịch vụ" }
+        {
+          "word": "manage",
+          "nuance_vi": "trung tính, nhấn vào việc quản lý hằng ngày"
+        },
+        {
+          "word": "operate",
+          "nuance_vi": "trang trọng hơn, hay dùng cho doanh nghiệp, dịch vụ"
+        }
       ],
       "antonyms": [],
       "collocations": [
-        { "pattern": "run + noun", "phrase": "run a business / a company / a shop", "example": "He has run the family business for twenty years." },
-        { "pattern": "adverb + run", "phrase": "well-run / badly run", "example": "It is a well-run hotel." }
+        {
+          "pattern": "run + noun",
+          "phrase": "run a business / a company / a shop",
+          "example": "He has run the family business for twenty years."
+        },
+        {
+          "pattern": "adverb + run",
+          "phrase": "well-run / badly run",
+          "example": "It is a well-run hotel."
+        }
       ],
       "idioms": [
-        { "phrase": "run the show", "meaning_vi": "nắm quyền quyết định, cầm trịch", "register": "informal", "example": "Everyone knows his wife runs the show." }
+        {
+          "phrase": "run the show",
+          "meaning_vi": "nắm quyền quyết định, cầm trịch",
+          "register": "informal",
+          "example": "Everyone knows his wife runs the show."
+        }
       ],
-      "slang": [],
-      "grammar_patterns": [
-        { "pattern": "be run by + somebody", "example": "The school is run by a charity.", "common_mistake": null }
-      ]
+      "common_mistakes": []
     },
     {
       "definition_en": "(of a machine or system) to operate or function",
       "meaning_vi": "chạy, hoạt động (máy móc, phần mềm)",
       "image_query": "laptop running program screen",
       "examples": [
-        { "sentence": "The app runs smoothly even on old phones.", "translation_vi": "Ứng dụng chạy mượt kể cả trên điện thoại cũ.", "highlight": "runs" },
-        { "sentence": "Leave the engine running while I check the tyres.", "translation_vi": "Cứ để máy nổ trong lúc tôi kiểm tra lốp.", "highlight": "running" }
+        {
+          "sentence": "The app runs smoothly even on old phones.",
+          "translation_vi": "Ứng dụng chạy mượt kể cả trên điện thoại cũ.",
+          "highlight": "runs"
+        },
+        {
+          "sentence": "Leave the engine running while I check the tyres.",
+          "translation_vi": "Cứ để máy nổ trong lúc tôi kiểm tra lốp.",
+          "highlight": "running"
+        }
       ],
       "synonyms": [
-        { "word": "work", "nuance_vi": "thân mật, nói chung là hoạt động được" },
-        { "word": "function", "nuance_vi": "trang trọng, kỹ thuật hơn" }
+        {
+          "word": "work",
+          "nuance_vi": "thân mật, nói chung là hoạt động được"
+        },
+        {
+          "word": "function",
+          "nuance_vi": "trang trọng, kỹ thuật hơn"
+        }
       ],
-      "antonyms": [{ "word": "stop" }],
+      "antonyms": [
+        {
+          "word": "stop"
+        }
+      ],
       "collocations": [
-        { "pattern": "run + adverb", "phrase": "run smoothly / run properly", "example": "Everything is running smoothly." },
-        { "pattern": "run on + noun (nguồn năng lượng)", "phrase": "run on electricity / batteries", "example": "This car runs on electricity." }
+        {
+          "pattern": "run + adverb",
+          "phrase": "run smoothly / run properly",
+          "example": "Everything is running smoothly."
+        },
+        {
+          "pattern": "run on + noun (nguồn năng lượng)",
+          "phrase": "run on electricity / batteries",
+          "example": "This car runs on electricity."
+        }
       ],
       "idioms": [],
-      "slang": [],
-      "grammar_patterns": [
+      "common_mistakes": [
         {
-          "pattern": "run on + fuel/power source",
-          "example": "The bus runs on natural gas.",
-          "common_mistake": { "wrong": "The bus runs by natural gas.", "correct": "The bus runs on natural gas.", "explanation_vi": "Nguồn năng lượng đi với \"on\", không dùng \"by\"." }
+          "wrong": "The bus runs by natural gas.",
+          "correct": "The bus runs on natural gas.",
+          "explanation_vi": "Nguồn năng lượng đi với \"on\", không dùng \"by\"."
         }
       ]
     }
   ],
   "homonyms": [],
   "word_family": [
-    { "word": "runner", "pos": "noun", "note_vi": "người chạy" },
-    { "word": "running", "pos": "noun", "note_vi": "việc chạy bộ; sự vận hành" },
-    { "word": "runny", "pos": "adjective", "note_vi": "chảy nước (mũi, trứng lòng đào)" }
+    {
+      "word": "runner",
+      "pos": "noun",
+      "note_vi": "người chạy"
+    },
+    {
+      "word": "running",
+      "pos": "noun",
+      "note_vi": "việc chạy bộ; sự vận hành"
+    },
+    {
+      "word": "runny",
+      "pos": "adjective",
+      "note_vi": "chảy nước (mũi, trứng lòng đào)"
+    }
   ],
   "mnemonics": [
-    { "type": "sound", "text_vi": "\"run\" đọc gần như \"rần\": nghe tiếng chân chạy rần rần." },
-    { "type": "image", "text_vi": "Run – ran – run: chạy một vòng rồi quay về đúng chỗ cũ, dạng V3 giống hệt V1." }
+    {
+      "type": "sound",
+      "text_vi": "\"run\" đọc gần như \"rần\": nghe tiếng chân chạy rần rần."
+    },
+    {
+      "type": "image",
+      "text_vi": "Run – ran – run: chạy một vòng rồi quay về đúng chỗ cũ, dạng V3 giống hệt V1."
+    }
   ],
   "confusables": [
-    { "word": "ran", "difference_vi": "\"ran\" là quá khứ đơn (V2); \"run\" vừa là nguyên mẫu vừa là quá khứ phân từ (V3): I have run, không phải I have ran." }
+    {
+      "word": "ran",
+      "difference_vi": "\"ran\" là quá khứ đơn (V2); \"run\" vừa là nguyên mẫu vừa là quá khứ phân từ (V3): I have run, không phải I have ran."
+    }
   ],
-  "confidence": { "collocations": 0.9, "idioms": 0.85, "slang": 1, "mnemonics": 0.7 },
+  "confidence": {
+    "collocations": 0.9,
+    "idioms": 0.85,
+    "mnemonics": 0.7
+  },
   "language_extra": null
 }

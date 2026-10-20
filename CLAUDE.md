@@ -31,7 +31,7 @@ Mỗi prompt một nhánh git (vd gd0/ux-flows), gộp vào main khi đạt tiê
 Repo: https://github.com/mrtitoong/wordwise
 
 ## Stack
-- Next.js 15 App Router, TypeScript strict, Tailwind, shadcn/ui
+- Next.js 16 App Router, TypeScript strict, Tailwind 4, shadcn/ui
 - Supabase: Postgres, Auth, Storage, Edge Functions, Queues (pgmq),
   RLS bật cho mọi bảng
 - Dexie.js (IndexedDB) cho offline-first
@@ -83,3 +83,19 @@ Repo: https://github.com/mrtitoong/wordwise
 - Việc để sau (từ Review GĐ0): GĐ2 tự bỏ dấu "/" ở IPA trước khi validate;
   so khớp highlight theo ranh giới từ với tiếng Anh; GĐ5 thêm ký hiệu ngoài
   màu cho âm vị điểm trung bình.
+- 2026-10-20 (Prompt 1.1): Dùng **Next.js 16** (thay 15 trong plan.md), React 19,
+  Tailwind 4, shadcn/ui (style new-york), next-intl 4. ESLint 9 (chưa lên 10 vì
+  plugin của eslint-config-next chưa chắc hỗ trợ), Prettier + plugin Tailwind.
+- 2026-10-20: Ngôn ngữ giao diện **không có tiền tố URL**. Thứ tự chọn: cookie
+  `NEXT_LOCALE` → Accept-Language → `vi`. Đổi trong Cài đặt (server action
+  `setLocale` + `router.refresh()`); từ Prompt 1.3 lưu thêm vào user_settings.
+- 2026-10-20: Không dùng gói npm `cn` mà shadcn CLI tự thêm; dùng `cn()` trong
+  `src/lib/utils.ts` (clsx + tailwind-merge). Sau mỗi lần `shadcn add`, kiểm tra
+  import và package.json.
+- 2026-10-20: CI (GitHub Actions) chạy cho **mọi nhánh** được đẩy lên: lint,
+  format:check, typecheck, unit test, build, E2E Playwright (Chromium, 360px).
+- 2026-10-20: Vercel: project `mrtitoong/wordwise`, `vercel.json` khai báo
+  framework nextjs. Preview mỗi nhánh: `https://wordwise-git-<nhánh>-mrtitoong.vercel.app`
+  (dấu "/" thành "-"), có bảo vệ đăng nhập Vercel. Công cụ Vercel MCP trong
+  phiên Claude không có quyền vào scope `mrtitoong` (403); thao tác trên
+  dashboard do chủ sản phẩm làm, trạng thái build đọc qua GitHub commit status.

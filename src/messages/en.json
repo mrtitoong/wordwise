@@ -44,10 +44,125 @@
     "title": "Settings",
     "language": "App language",
     "languageHint": "Changes right away, no reload needed.",
-    "saving": "Switching…"
+    "saving": "Switching…",
+    "account": "Account",
+    "signedInAs": "Signed in as {email}",
+    "signOut": "Sign out",
+    "guestTitle": "You're trying the app",
+    "guestBody": "Your data is only on this device. Create an account to keep it safe and learn on multiple devices.",
+    "createAccount": "Create account"
   },
   "languages": {
     "vi": "Tiếng Việt",
     "en": "English"
+  },
+  "welcome": {
+    "title": "Welcome",
+    "tagline": "Learn English vocabulary and remember it with smart review scheduling.",
+    "tryNow": "Try it now",
+    "tryNowHint": "No account needed, data stays on this device.",
+    "signIn": "Sign in"
+  },
+  "login": {
+    "title": "Sign in",
+    "intro": "Enter your email and we'll send a sign-in link and code. New here? We'll create your account.",
+    "emailLabel": "Email",
+    "emailPlaceholder": "you@email.com",
+    "sendLink": "Send sign-in email",
+    "sending": "Sending email…",
+    "or": "or",
+    "google": "Continue with Google",
+    "privacyHint": "We only use your email to sign you in and sync your learning data.",
+    "checkInbox": "Check your inbox",
+    "sentTo": "We sent an email to {email}. Tap the link in it, or enter the code from it here.",
+    "codeLabel": "Sign-in code",
+    "verify": "Confirm",
+    "verifying": "Checking…",
+    "resend": "Resend email",
+    "resendIn": "Resend in {seconds}s",
+    "changeEmail": "Use a different email",
+    "errors": {
+      "link_expired": "This link has expired or was already used. Please request a new sign-in email.",
+      "oauth": "Google sign-in didn't finish. Try again or use email.",
+      "rateLimited": "Too many requests. Please wait a few minutes and try again.",
+      "sendFailed": "Couldn't send the email. Check the address and your connection.",
+      "invalidCode": "The code is wrong or has expired.",
+      "notConfigured": "Sign-in isn't available on this build yet. You can still try the app without an account."
+    }
+  },
+  "auth": {
+    "finishing": "Signing you in…",
+    "finishFailed": "Sign-in didn't finish. Your data on this device is safe, please try again.",
+    "backToLogin": "Back to sign in",
+    "needsJavascript": "JavaScript is required to sign in."
+  },
+  "onboarding": {
+    "title": "Get started",
+    "progress": "Step {step}/{total}",
+    "progressLabel": "Setup progress",
+    "next": "Continue",
+    "skip": "Skip",
+    "saving": "Saving…",
+    "saveFailed": "Couldn't save. Check your connection and try again.",
+    "defaultNotebook": "My notebook",
+    "language": {
+      "title": "Which language do you want to learn?",
+      "body": "You can add more languages later.",
+      "more": "Japanese, Chinese, Korean and French are coming later.",
+      "options": {
+        "en": "English"
+      }
+    },
+    "level": {
+      "title": "Your current level",
+      "body": "Used to suggest words that fit you. Not sure? Pick the closest, you can change it in Settings.",
+      "options": {
+        "A1": "Beginner",
+        "A2": "Elementary",
+        "B1": "Intermediate",
+        "B2": "Upper intermediate",
+        "C1": "Advanced"
+      }
+    },
+    "goals": {
+      "title": "What are you learning for?",
+      "options": {
+        "ielts": "IELTS",
+        "toeic": "TOEIC",
+        "communication": "Conversation",
+        "work": "Work",
+        "travel": "Travel",
+        "school": "School"
+      }
+    },
+    "daily": {
+      "title": "How many new words per day?",
+      "body": "Start small to keep a steady pace. You can change it anytime.",
+      "option": "{count} words",
+      "estimate": "About {minutes} minutes of new words a day, not counting reviews."
+    },
+    "reminder": {
+      "title": "Study reminder",
+      "toggle": "Remind me to study every day",
+      "at": "Remind at"
+    },
+    "notify": {
+      "title": "Turn on study reminders?",
+      "body": "We'll remind you at {time} every day, nothing else.",
+      "allow": "Turn on notifications",
+      "later": "Not now"
+    },
+    "starter": {
+      "title": "5 words to start",
+      "body": "Picked for your level. Learn them now to start day one of your streak.",
+      "listLabel": "Starter words",
+      "learn": "Learn these 5 words",
+      "addOwn": "Add my own words",
+      "emptyTitle": "You're all set",
+      "emptyBody": "Add the first word you want to remember."
+    }
+  },
+  "admin": {
+    "title": "Admin"
   }
 }

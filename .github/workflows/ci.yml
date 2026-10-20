@@ -59,3 +59,9 @@ jobs:
         run: supabase db lint --level error
       - name: Test RLS (pgTAP)
         run: supabase test db
+      - name: TypeScript types khớp với schema
+        run: |
+          supabase gen types typescript --local > /tmp/database.types.ts
+          npx prettier --stdin-filepath src/lib/db/database.types.ts < /tmp/database.types.ts > /tmp/database.types.formatted.ts
+          # Bỏ dòng phiên bản PostgREST vì cục bộ và cloud có thể khác nhau.
+          diff -u <(grep -v PostgrestVersion src/lib/db/database.types.ts) <(grep -v PostgrestVersion /tmp/database.types.formatted.ts)

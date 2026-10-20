@@ -1,0 +1,23 @@
+# dependencies
+node_modules/
+
+# build output
+.next/
+out/
+dist/
+coverage/
+
+# env & secrets
+.env
+.env.*
+!.env.example
+
+# test artifacts
+playwright-report/
+test-results/
+
+# OS / editor
+.DS_Store
+Thumbs.db
+.vscode/
+.idea/

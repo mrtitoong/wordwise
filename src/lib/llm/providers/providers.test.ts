@@ -24,6 +24,7 @@ function request(model: Partial<ModelSpec> & Pick<ModelSpec, "provider" | "model
     system: "sys",
     prompt: "hello",
     jsonSchema,
+    schemaMode: "enforce",
   } satisfies ProviderRequest;
 }
 
@@ -62,6 +63,24 @@ describe("Claude", () => {
     expect(params).not.toHaveProperty("fallbacks");
     // Không gửi kèm hàm parse của helper.
     expect((params.output_config as { format: object }).format).not.toHaveProperty("parse");
+  });
+
+  it("schemaMode prompt: không gửi format, vẫn gửi effort", async () => {
+    const { create, client } = fakeClient({
+      stop_reason: "end_turn",
+      content: [{ type: "text", text: "{}" }],
+      usage: { input_tokens: 1, output_tokens: 1 },
+    });
+    await createClaudeProvider({ client }).generate({
+      ...request({ provider: "claude", model: "claude-haiku-5-5" }),
+      schemaMode: "prompt",
+    });
+    expect((create.mock.calls[0] as unknown[])[0]).toMatchObject({
+      output_config: { effort: "low" },
+    });
+    expect(
+      ((create.mock.calls[0] as unknown[])[0] as { output_config: object }).output_config,
+    ).not.toHaveProperty("format");
   });
 
   it("Sonnet 5.5 bật server-side fallback", async () => {
@@ -203,6 +222,18 @@ describe("Gemini", () => {
     });
   });
 
+  it("schemaMode prompt: chỉ bật JSON, không gửi responseJsonSchema", async () => {
+    const generateContent = vi.fn(async () => ({ text: "{}", usageMetadata: {} }));
+    const client = { models: { generateContent } } as unknown as GoogleGenAI;
+    await createGeminiProvider({ client }).generate({
+      ...request({ provider: "gemini", model: "gemini-3.8-flash" }),
+      schemaMode: "prompt",
+    });
+    const config = ((generateContent.mock.calls[0] as unknown[])[0] as { config: object }).config;
+    expect(config).toMatchObject({ responseMimeType: "application/json" });
+    expect(config).not.toHaveProperty("responseJsonSchema");
+  });
+
   it("429 và RESOURCE_EXHAUSTED là giới hạn lượt gọi", () => {
     expect(mapGeminiError(new ApiError({ message: "quota", status: 429 }))).toMatchObject({
       rateLimited: true,
@@ -237,6 +268,18 @@ describe("Groq", () => {
       response_format: { type: "json_schema", json_schema: { name: "output", schema: jsonSchema } },
       reasoning_effort: "low",
       max_completion_tokens: 2000,
+    });
+  });
+
+  it("schemaMode prompt: dùng json_object", async () => {
+    const create = vi.fn(async () => ({ choices: [{ message: { content: "{}" } }] }));
+    const client = { chat: { completions: { create } } } as unknown as Groq;
+    await createGroqProvider({ client }).generate({
+      ...request({ provider: "groq", model: "openai/gpt-oss-120b" }),
+      schemaMode: "prompt",
+    });
+    expect((create.mock.calls[0] as unknown[])[0]).toMatchObject({
+      response_format: { type: "json_object" },
     });
   });
 

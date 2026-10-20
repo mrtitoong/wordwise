@@ -11,7 +11,7 @@
 import { existsSync, mkdirSync, readFileSync, readdirSync, writeFileSync } from "node:fs";
 import { join } from "node:path";
 import { parseArgs } from "node:util";
-import { MODEL_CATALOG, parseModelKeys, type ModelKey } from "../src/config/llm";
+import { MODEL_CATALOG, parseModelKeys, resolveLlmConfig, type ModelKey } from "../src/config/llm";
 import {
   LlmExhaustedError,
   LlmSchemaError,
@@ -61,7 +61,7 @@ async function runOne(modelKey: ModelKey, word: CompareWord): Promise<RunRecord>
   const spec = MODEL_CATALOG[modelKey];
   const logs: LlmCallLog[] = [];
   const router = createLlmRouter({
-    config: { "word-content": { containsUserData: false, models: [spec] } },
+    config: { "word-content": { ...resolveLlmConfig()["word-content"], models: [spec] } },
     providers: createProviders({ [spec.provider]: process.env[KEY_ENV[spec.provider]] }),
     logger: (entry) => {
       logs.push(entry);

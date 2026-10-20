@@ -9,7 +9,7 @@
  * Giá (USD / 1 triệu token) chỉ để ước tính chi phí; cập nhật khi nhà cung cấp đổi giá.
  */
 import { validateLlmConfig } from "@/lib/llm/policy";
-import type { LlmConfig, ModelSpec, TaskConfig } from "@/lib/llm/types";
+import type { LlmConfig, ModelSpec, SchemaMode, TaskConfig } from "@/lib/llm/types";
 
 export const MODEL_CATALOG = {
   "gemini-flash": {
@@ -59,9 +59,18 @@ export const LLM_TASKS = [
 
 export type LlmTask = (typeof LLM_TASKS)[number];
 
-const DEFAULT_TASKS: Record<LlmTask, { containsUserData: boolean; models: ModelKey[] }> = {
+const DEFAULT_TASKS: Record<
+  LlmTask,
+  { containsUserData: boolean; models: ModelKey[]; schemaMode?: SchemaMode }
+> = {
   // Kiến thức chung, không chứa dữ liệu người dùng → gói miễn phí, dự phòng Claude Haiku.
-  "word-content": { containsUserData: false, models: ["gemini-flash", "claude-haiku"] },
+  // Schema thẻ từ 5 tab quá lớn để Claude/Gemini biên dịch thành structured output
+  // (thử 2026-10-20: Claude 400 "compiled grammar is too large", Gemini 400) → gửi trong prompt.
+  "word-content": {
+    containsUserData: false,
+    models: ["gemini-flash", "claude-haiku"],
+    schemaMode: "prompt",
+  },
   "example-generator": { containsUserData: false, models: ["gemini-flash", "claude-haiku"] },
   mnemonic: { containsUserData: false, models: ["gemini-flash", "claude-haiku"] },
   // Ảnh/văn bản OCR của người dùng, bài đọc Admin → chỉ trả phí.
@@ -102,6 +111,7 @@ export function resolveLlmConfig(env: Record<string, string | undefined> = {}): 
     config[task] = {
       containsUserData: defaults.containsUserData,
       models: keys.map((key) => MODEL_CATALOG[key]),
+      ...(defaults.schemaMode ? { schemaMode: defaults.schemaMode } : {}),
     };
   }
   validateLlmConfig(config);

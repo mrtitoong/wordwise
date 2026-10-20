@@ -22,6 +22,7 @@ export function createGeminiProvider(options: { apiKey: string } | { client: Goo
       system,
       prompt,
       jsonSchema,
+      schemaMode,
     }: ProviderRequest): Promise<ProviderResponse> {
       let response;
       try {
@@ -31,7 +32,7 @@ export function createGeminiProvider(options: { apiKey: string } | { client: Goo
           config: {
             systemInstruction: system,
             responseMimeType: "application/json",
-            responseJsonSchema: jsonSchema,
+            ...(schemaMode === "enforce" ? { responseJsonSchema: jsonSchema } : {}),
             maxOutputTokens: model.maxOutputTokens,
             ...(model.reasoning
               ? { thinkingConfig: { thinkingLevel: THINKING[model.reasoning] } }

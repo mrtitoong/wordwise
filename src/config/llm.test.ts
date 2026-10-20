@@ -19,6 +19,10 @@ describe("resolveLlmConfig", () => {
     expect(config["list-analyzer"].containsUserData).toBe(true);
   });
 
+  it("word-content gửi schema trong prompt (schema quá lớn cho structured output)", () => {
+    expect(resolveLlmConfig()["word-content"].schemaMode).toBe("prompt");
+  });
+
   it("đổi model bằng biến môi trường", () => {
     const config = resolveLlmConfig({ LLM_MODELS_WORD_CONTENT: "claude-haiku, groq-gpt-oss" });
     expect(config["word-content"].models).toEqual([

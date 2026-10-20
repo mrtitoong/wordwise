@@ -21,6 +21,7 @@ export function createClaudeProvider(options: { apiKey: string } | { client: Ant
       system,
       prompt,
       jsonSchema,
+      schemaMode,
     }: ProviderRequest): Promise<ProviderResponse> {
       const serverFallback = SERVER_FALLBACK_MODELS.has(model.model);
       let response;
@@ -31,7 +32,9 @@ export function createClaudeProvider(options: { apiKey: string } | { client: Ant
           system,
           messages: [{ role: "user", content: prompt }],
           output_config: {
-            format: { type: "json_schema", schema: toClaudeJsonSchema(jsonSchema) },
+            ...(schemaMode === "enforce"
+              ? { format: { type: "json_schema", schema: toClaudeJsonSchema(jsonSchema) } }
+              : {}),
             ...(model.reasoning ? { effort: model.reasoning } : {}),
           },
           ...(serverFallback

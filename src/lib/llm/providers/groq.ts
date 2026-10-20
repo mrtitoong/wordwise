@@ -17,6 +17,7 @@ export function createGroqProvider(options: { apiKey: string } | { client: Groq 
       system,
       prompt,
       jsonSchema,
+      schemaMode,
     }: ProviderRequest): Promise<ProviderResponse> {
       let response;
       try {
@@ -26,10 +27,11 @@ export function createGroqProvider(options: { apiKey: string } | { client: Groq 
             { role: "system", content: system },
             { role: "user", content: prompt },
           ],
-          response_format: {
-            type: "json_schema",
-            json_schema: { name: "output", schema: jsonSchema },
-          },
+          // json_object yêu cầu chữ "JSON" trong tin nhắn – schemaInstruction() đã có.
+          response_format:
+            schemaMode === "enforce"
+              ? { type: "json_schema", json_schema: { name: "output", schema: jsonSchema } }
+              : { type: "json_object" },
           max_completion_tokens: model.maxOutputTokens,
           ...(model.reasoning ? { reasoning_effort: model.reasoning } : {}),
         });

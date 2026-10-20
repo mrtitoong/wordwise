@@ -30,7 +30,15 @@ export interface TaskConfig {
   containsUserData: boolean;
   /** Model chính trước, các model dự phòng theo thứ tự sau. */
   models: ModelSpec[];
+  /**
+   * "enforce" (mặc định): nhà cung cấp ép đầu ra theo JSON Schema (structured output).
+   * "prompt": schema quá lớn để nhà cung cấp biên dịch (vd thẻ từ 5 tab) → gửi schema
+   * trong prompt, chỉ bật chế độ trả JSON; Zod validate và gọi lại khi sai.
+   */
+  schemaMode?: SchemaMode;
 }
+
+export type SchemaMode = "enforce" | "prompt";
 
 export type LlmConfig<Task extends string = string> = Record<Task, TaskConfig>;
 
@@ -39,8 +47,10 @@ export interface ProviderRequest {
   model: ModelSpec;
   system: string;
   prompt: string;
-  /** JSON Schema của đầu ra (structured output), suy ra từ Zod schema. */
+  /** JSON Schema của đầu ra, suy ra từ Zod schema. */
   jsonSchema: Record<string, unknown>;
+  /** "prompt": schema đã nằm trong prompt, adapter chỉ bật chế độ JSON. */
+  schemaMode: SchemaMode;
 }
 
 export interface TokenUsage {

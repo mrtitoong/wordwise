@@ -73,6 +73,9 @@ export function createLlmRouter<Task extends string>(deps: LlmRouterDeps<Task>):
     async generateJSON(task, { system, prompt, schema, schemaRetries }) {
       const taskConfig = deps.config[task];
       const jsonSchema = toJsonSchema(schema);
+      const schemaMode = taskConfig.schemaMode ?? "enforce";
+      const fullPrompt =
+        schemaMode === "prompt" ? `${prompt}\n\n${schemaInstruction(jsonSchema)}` : prompt;
       const maxSchemaRetries = schemaRetries ?? DEFAULT_SCHEMA_RETRIES;
       let lastError: unknown = new Error("chưa gọi model nào");
 
@@ -98,7 +101,13 @@ export function createLlmRouter<Task extends string>(deps: LlmRouterDeps<Task>):
           let text: string;
           let usage: TokenUsage;
           try {
-            ({ text, usage } = await provider.generate({ model, system, prompt, jsonSchema }));
+            ({ text, usage } = await provider.generate({
+              model,
+              system,
+              prompt: fullPrompt,
+              jsonSchema,
+              schemaMode,
+            }));
           } catch (error) {
             if (error instanceof LlmPolicyError) throw error;
             const providerError = toProviderError(error, model.provider);
@@ -155,6 +164,16 @@ export function toJsonSchema(schema: z.ZodType): Record<string, unknown> {
   // Một số nhà cung cấp từ chối khóa $schema.
   delete json.$schema;
   return json;
+}
+
+/** Đoạn cuối prompt khi schemaMode = "prompt". */
+export function schemaInstruction(jsonSchema: Record<string, unknown>): string {
+  return (
+    "Trả về DUY NHẤT một đối tượng JSON hợp lệ theo JSON Schema dưới đây " +
+    "(không markdown, không giải thích). Tôn trọng mọi ràng buộc: enum, minItems/maxItems, " +
+    "minLength, giá trị null cho phép.\n" +
+    JSON.stringify(jsonSchema)
+  );
 }
 
 type ParseResult<T> = { ok: true; data: T } | { ok: false; error: LlmSchemaError };

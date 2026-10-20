@@ -213,6 +213,27 @@ describe("createLlmRouter", () => {
   });
 });
 
+describe("schemaMode", () => {
+  it("mặc định enforce: prompt giữ nguyên, adapter nhận schemaMode enforce", async () => {
+    const gemini = fakeProvider("gemini", [ok("a")]);
+    await setup({ gemini }).call();
+    expect(gemini.calls[0]).toMatchObject({ prompt: "hi", schemaMode: "enforce" });
+  });
+
+  it("prompt: nối JSON Schema vào cuối prompt", async () => {
+    const gemini = fakeProvider("gemini", [ok("a")]);
+    const router = createLlmRouter({
+      config: { task: { containsUserData: false, models: [GEMINI], schemaMode: "prompt" } },
+      providers: { gemini },
+    });
+    await router.generateJSON("task", { system: "", prompt: "hi", schema: Out });
+    const sent = gemini.calls[0]!;
+    expect(sent.schemaMode).toBe("prompt");
+    expect(sent.prompt.startsWith("hi\n\n")).toBe(true);
+    expect(sent.prompt).toContain(JSON.stringify(sent.jsonSchema));
+  });
+});
+
 describe("quy tắc dữ liệu người dùng", () => {
   it("không cho tạo router nếu tác vụ có dữ liệu người dùng dùng gói miễn phí", () => {
     expect(() => setup({}, [GEMINI], true)).toThrow(LlmPolicyError);

@@ -17,7 +17,8 @@
     "test:e2e": "playwright test",
     "format": "prettier --write .",
     "format:check": "prettier --check .",
-    "seed:build": "tsx scripts/build-seed.ts"
+    "seed:build": "tsx scripts/build-seed.ts",
+    "compare:models": "tsx --env-file-if-exists=.env.local scripts/compare-models.ts"
   },
   "dependencies": {
     "@anthropic-ai/sdk": "0.131.0",

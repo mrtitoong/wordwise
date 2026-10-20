@@ -3,7 +3,7 @@
 begin;
 create extension if not exists pgtap with schema extensions;
 
-select plan(32);
+select plan(37);
 
 -- ---------- Chuẩn bị (quyền postgres) ----------
 -- A, B: người dùng thường; C: admin.
@@ -23,6 +23,9 @@ insert into public.curated_lists (id, title, language, status) values
   ('bbbbbbbb-0000-4000-8000-000000000002', 'Published list', 'en', 'published');
 insert into public.curated_list_items (list_id, sense_id, item_order) values
   ('bbbbbbbb-0000-4000-8000-000000000001', 'aaaaaaaa-0000-4000-8000-000000000002', 0);
+
+insert into public.llm_call_logs (task, provider, model, outcome, duration_ms) values
+  ('word-content', 'gemini', 'gemini-3.8-flash', 'ok', 1200);
 
 select is(
   (select count(*) from public.profiles where user_id in (
@@ -112,6 +115,11 @@ $$, 'Người dùng sửa được tên hiển thị');
 select throws_ok($$
   insert into public.import_jobs (user_id, kind) values ('22222222-2222-4222-8222-222222222222', 'admin_list')
 $$, '42501', null, 'Người dùng thường không tạo được việc phân tích danh sách Admin');
+select is((select count(*) from public.llm_call_logs), 0::bigint, 'Người dùng thường không đọc được nhật ký gọi LLM');
+select throws_ok($$
+  insert into public.llm_call_logs (task, provider, model, outcome, duration_ms)
+  values ('word-content', 'claude', 'x', 'ok', 1)
+$$, '42501', null, 'Người dùng thường không ghi được nhật ký gọi LLM');
 
 -- ---------- Admin C ----------
 select set_config('request.jwt.claims', '{"sub": "33333333-3333-4333-8333-333333333333", "role": "authenticated"}', true);
@@ -121,6 +129,10 @@ select lives_ok($$
 $$, 'Admin tạo được curated_lists');
 select is((select count(*) from public.curated_lists where title in ('Draft list', 'Published list', 'Danh sách của admin')),
   3::bigint, 'Admin thấy cả danh sách nháp');
+select is((select count(*) from public.llm_call_logs), 1::bigint, 'Admin đọc được nhật ký gọi LLM');
+select throws_ok($$
+  delete from public.llm_call_logs
+$$, '42501', null, 'Admin cũng không xóa được nhật ký gọi LLM');
 select is((select count(*) from public.cards), 0::bigint, 'Admin cũng không đọc được thẻ ôn của người khác');
 
 -- ---------- Khách chưa đăng nhập ----------
@@ -130,6 +142,7 @@ select set_config('request.jwt.claims', '{"role": "anon"}', true);
 select is((select count(*) from public.words where id = 'aaaaaaaa-0000-4000-8000-000000000001'),
   1::bigint, 'Khách đọc được nội dung từ');
 select throws_ok($$ select count(*) from public.cards $$, '42501', null, 'Khách không đọc được bảng cards');
+select throws_ok($$ select count(*) from public.llm_call_logs $$, '42501', null, 'Khách không đọc được nhật ký gọi LLM');
 
 -- ---------- Ràng buộc xóa (postgres) ----------
 reset role;

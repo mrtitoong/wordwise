@@ -50,7 +50,12 @@
     "signOut": "Sign out",
     "guestTitle": "You're trying the app",
     "guestBody": "Your data is only on this device. Create an account to keep it safe and learn on multiple devices.",
-    "createAccount": "Create account"
+    "createAccount": "Create account",
+    "dailyNew": "New words per day",
+    "dailyNewHint": "Saved on this device right away, syncs when online.",
+    "signOutPending": "{count} changes haven't been uploaded yet. Signing out now will lose them.",
+    "signOutAnyway": "Sign out anyway",
+    "signingOut": "Signing out…"
   },
   "languages": {
     "vi": "Tiếng Việt",
@@ -164,5 +169,13 @@
   },
   "admin": {
     "title": "Admin"
+  },
+  "sync": {
+    "local": "Data is saved on this device",
+    "idle": "Synced",
+    "syncing": "Syncing…",
+    "offline": "Offline, {count} changes waiting",
+    "pending": "{count} changes waiting, tap to sync",
+    "error": "Sync failed, tap to retry"
   }
 }

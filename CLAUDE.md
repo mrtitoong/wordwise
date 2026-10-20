@@ -124,8 +124,8 @@ Repo: https://github.com/mrtitoong/wordwise
   bằng hàm thuần `decideAccess()`; cookie `ww_guest`, `ww_onboarded` chỉ là
   gợi ý điều hướng, quyền thật do Supabase Auth + RLS. `/admin` kiểm tra vai
   trò ở server (`requireAdmin()`, không phải admin → 404).
-- 2026-10-20: Chế độ khách lưu ở **localStorage** (`wordwise.guest.v1`: cài đặt
-  onboarding + từ khởi đầu); Prompt 1.4 chuyển sang Dexie. Khi khách đăng
+- 2026-10-20: Chế độ khách lưu trong Dexie với chủ `GUEST_OWNER` (Prompt 1.4
+  thay localStorage của 1.3), không gửi lên server. Khi khách đăng
   nhập: tài khoản chưa onboarding thì lấy cài đặt của khách, đã có thì giữ của
   tài khoản; từ thì cộng thêm (trùng bỏ qua). Không dùng đăng nhập ẩn danh.
 - 2026-10-20: "Học 5 từ này" hiện chỉ thêm 5 từ vào "Sổ của tôi" rồi về Hôm
@@ -136,3 +136,22 @@ Repo: https://github.com/mrtitoong/wordwise
   khách, màn Đăng nhập báo chưa sẵn sàng). CI: job `e2e` chạy Supabase cục bộ
   + Mailpit để test đăng nhập bằng email; máy dev không có Docker nên các test
   này bị bỏ qua khi chạy ở máy.
+- 2026-10-20 (Prompt 1.4): Offline-first: mọi ghi qua `src/lib/db/repo.ts` (Dexie
+  + outbox trong một transaction); `src/lib/sync/engine.ts` đẩy theo lô 50 (thứ tự
+  bảng cha → con), kéo theo `updated_at` (review_logs theo `created_at`, kéo
+  trước cards), lùi 60 giây để không sót dòng commit muộn. Đồng bộ khi mở app,
+  có mạng lại, quay lại tab, 2 giây sau mỗi ghi, mỗi 5 phút; Web Locks để chỉ
+  một tab đồng bộ. Lỗi server quá 5 lần thì gác việc đó, báo trạng thái lỗi.
+- 2026-10-20: **ID cố định (UUID v5)** cho user_words (chủ + nghĩa), cards (từ +
+  kỹ năng), notebook_entries, sổ mặc định: hai máy cùng thêm một từ ra cùng
+  ID. Khách đăng nhập thì tính lại ID theo tài khoản (`rekeyOwnedData`).
+- 2026-10-20: Xung đột thẻ: lấy bản `last_review` mới nhất; số lượt ôn không
+  khớp số review_logs thì tính lại bằng ts-fsrs từ toàn bộ lịch sử và gửi lên.
+  Database có trigger `cards_a_keep_latest_review` chặn ghi đè bằng bản cũ hơn
+  (vẫn nhận cờ xóa); server tự đặt `updated_at`/`created_at`. Xóa là xóa mềm
+  (`deleted_at` ở notebooks, user_words, notebook_entries, cards).
+- 2026-10-20: Thêm từ tạo sẵn một thẻ kỹ năng "meaning" (trạng thái New). Cài đặt
+  chỉ gửi cột đã đổi. Đăng xuất: gửi nốt thay đổi, còn sót thì cảnh báo, rồi xóa
+  dữ liệu trong máy. Cửa test `window.__wordwiseE2E` chỉ có khi build với
+  `NEXT_PUBLIC_E2E=1` (job e2e của CI). Đồng bộ khi app đã đóng (Service Worker)
+  để GĐ8.

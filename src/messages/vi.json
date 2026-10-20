@@ -50,7 +50,12 @@
     "signOut": "Đăng xuất",
     "guestTitle": "Bạn đang dùng thử",
     "guestBody": "Dữ liệu chỉ nằm trên máy này. Tạo tài khoản để không mất dữ liệu và học trên nhiều thiết bị.",
-    "createAccount": "Tạo tài khoản"
+    "createAccount": "Tạo tài khoản",
+    "dailyNew": "Số từ mới mỗi ngày",
+    "dailyNewHint": "Lưu ngay trên máy, tự đồng bộ khi có mạng.",
+    "signOutPending": "Còn {count} thay đổi chưa gửi lên. Đăng xuất bây giờ sẽ mất các thay đổi này.",
+    "signOutAnyway": "Vẫn đăng xuất",
+    "signingOut": "Đang đăng xuất…"
   },
   "languages": {
     "vi": "Tiếng Việt",
@@ -164,5 +169,13 @@
   },
   "admin": {
     "title": "Quản trị"
+  },
+  "sync": {
+    "local": "Dữ liệu đang lưu trên máy này",
+    "idle": "Đã đồng bộ",
+    "syncing": "Đang đồng bộ…",
+    "offline": "Đang offline, {count} thay đổi chờ gửi",
+    "pending": "{count} thay đổi chờ gửi, bấm để đồng bộ",
+    "error": "Đồng bộ bị lỗi, bấm để thử lại"
   }
 }

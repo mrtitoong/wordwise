@@ -4,7 +4,7 @@ import { OnboardingFlow } from "@/features/onboarding/onboarding-flow";
 import { loadStarterCandidates } from "@/features/words/starter";
 import type { StarterWord } from "@/lib/onboarding/starter-words";
 import { getSupabaseEnv } from "@/lib/supabase/env";
-import { createClient, getCurrentUser } from "@/lib/supabase/server";
+import { createClient } from "@/lib/supabase/server";
 
 export async function generateMetadata(): Promise<Metadata> {
   const t = await getTranslations("onboarding");
@@ -12,7 +12,6 @@ export async function generateMetadata(): Promise<Metadata> {
 }
 
 export default async function OnboardingPage() {
-  const user = await getCurrentUser();
   let candidates: StarterWord[] = [];
   if (getSupabaseEnv()) {
     try {
@@ -22,5 +21,5 @@ export default async function OnboardingPage() {
       console.error("onboarding: starter words", err);
     }
   }
-  return <OnboardingFlow mode={user ? "account" : "guest"} candidates={candidates} />;
+  return <OnboardingFlow candidates={candidates} />;
 }

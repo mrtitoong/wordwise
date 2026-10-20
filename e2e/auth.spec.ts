@@ -1,8 +1,11 @@
-import { createClient } from "@supabase/supabase-js";
 import { expect, test } from "@playwright/test";
 import {
+  GUEST_OWNER,
   completeOnboarding,
   hasSupabase,
+  readLocalStore,
+  serverAdmin,
+  userIdByEmail,
   readSignInEmail,
   signInWithCode,
   uniqueEmail,
@@ -32,10 +35,14 @@ test.describe("Chào mừng và chế độ khách", () => {
     // Đã xong onboarding: không quay lại onboarding, vào được các tab.
     await page.goto("/onboarding");
     await expect(page).toHaveURL("/");
-    const stored = await page.evaluate(() => localStorage.getItem("wordwise.guest.v1"));
-    expect(JSON.parse(stored!)).toMatchObject({
-      settings: { cefrLevel: null, dailyNewLimit: 10, reminderTime: null },
+    const [settings] = await readLocalStore(page, "user_settings");
+    expect(settings).toMatchObject({
+      user_id: GUEST_OWNER,
+      cefr_level: null,
+      daily_new_limit: 10,
+      reminder_time: null,
     });
+    expect(settings!.onboarded_at).toBeTruthy();
   });
 
   test("onboarding ở 360px: không cuộn ngang, vùng chạm ≥ 44px", async ({ page }) => {
@@ -63,8 +70,9 @@ test.describe("Đăng nhập bằng email (Supabase cục bộ)", () => {
     await completeOnboarding(page, { level: "B1" });
     await expect(page).toHaveURL("/");
     await expect(page.getByRole("navigation", { name: "Điều hướng chính" })).toBeVisible();
-    const stored = await page.evaluate(() => localStorage.getItem("wordwise.guest.v1"));
-    expect(JSON.parse(stored!).senseIds).toHaveLength(5);
+    const words = await readLocalStore<{ user_id: string }>(page, "user_words");
+    expect(words.filter((w) => w.user_id === GUEST_OWNER)).toHaveLength(5);
+    expect(await readLocalStore(page, "cards")).toHaveLength(5);
   });
 
   test("tài khoản mới: mã 6 số → onboarding → Hôm nay → đăng xuất", async ({ page }) => {
@@ -135,23 +143,20 @@ test.describe("Đăng nhập bằng email (Supabase cục bộ)", () => {
     // Không phải làm lại onboarding; quay về Cài đặt như ?next.
     await expect(page).toHaveURL("/settings");
     await expect(page.getByText(`Đang đăng nhập: ${email}`)).toBeVisible();
-    expect(await page.evaluate(() => localStorage.getItem("wordwise.guest.v1"))).toBeNull();
+    const localWords = await readLocalStore<{ user_id: string }>(page, "user_words");
+    expect(localWords.filter((w) => w.user_id === GUEST_OWNER)).toHaveLength(0);
 
-    const secret = process.env.E2E_SUPABASE_SECRET_KEY;
-    test.skip(!secret, "cần E2E_SUPABASE_SECRET_KEY để kiểm tra dữ liệu trên server");
-    const admin = createClient(process.env.NEXT_PUBLIC_SUPABASE_URL!, secret!, {
-      auth: { persistSession: false },
-    });
-    const { data: users } = await admin.auth.admin.listUsers({ perPage: 1000 });
-    const user = users.users.find((u) => u.email === email)!;
-    const { data: settings } = await admin
+    const admin = serverAdmin();
+    test.skip(!admin, "cần E2E_SUPABASE_SECRET_KEY để kiểm tra dữ liệu trên server");
+    const user = { id: await userIdByEmail(email) };
+    const { data: settings } = await admin!
       .from("user_settings")
       .select("cefr_level, goals, onboarded_at")
       .eq("user_id", user.id)
       .single();
     expect(settings).toMatchObject({ cefr_level: "B2", goals: ["ielts"] });
     expect(settings!.onboarded_at).not.toBeNull();
-    const { count } = await admin
+    const { count } = await admin!
       .from("notebook_entries")
       .select("id", { count: "exact", head: true })
       .eq("user_id", user.id);

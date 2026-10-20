@@ -1,6 +1,7 @@
 import Link from "next/link";
 import { ArrowLeft, Settings } from "lucide-react";
 import { getTranslations } from "next-intl/server";
+import { SyncStatusIcon } from "@/components/sync/sync-status-icon";
 
 type TopBarProps = {
   title: string;
@@ -22,6 +23,7 @@ export async function TopBar({ title, backHref }: TopBarProps) {
           </Link>
         )}
         <h1 className="flex-1 truncate text-xl font-semibold">{title}</h1>
+        <SyncStatusIcon />
         {!backHref && (
           <Link href="/settings" aria-label={t("settings")} className={`-mr-2 ${iconLink}`}>
             <Settings className="size-5" aria-hidden />

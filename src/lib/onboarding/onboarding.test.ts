@@ -1,21 +1,11 @@
 import { describe, expect, it } from "vitest";
 import {
-  emptyGuestData,
-  hasGuestContent,
-  parseGuestData,
-  planGuestMerge,
-  type GuestData,
-} from "./guest-data";
-import {
   defaultOnboardingSettings,
   normalizeTimezone,
   onboardingSettingsSchema,
   toUserSettingsUpdate,
 } from "./settings";
 import { pickStarterWords, type StarterCandidate } from "./starter-words";
-
-const SENSE_A = "60db4402-ca9b-4997-baa8-ddd85db1b21d";
-const SENSE_B = "a13fc340-7924-407d-818f-fb4c52573c3c";
 
 describe("onboarding settings", () => {
   it("giá trị mặc định khi bỏ qua hợp lệ", () => {
@@ -106,42 +96,5 @@ describe("pickStarterWords", () => {
   it("không đủ từ thì trả bấy nhiêu, từ không rõ trình độ xếp cuối", () => {
     expect(pickStarterWords(words.slice(0, 2), "C1")).toHaveLength(2);
     expect(pickStarterWords(words, "C1", 20).at(-1)?.lemma).toBe("mystery");
-  });
-});
-
-describe("guest data", () => {
-  const guest: GuestData = {
-    version: 1,
-    settings: { ...defaultOnboardingSettings(), cefrLevel: "B2" },
-    onboardedAt: "2026-10-20T02:00:00.000Z",
-    senseIds: [SENSE_A, SENSE_B, SENSE_A],
-  };
-
-  it("đọc lại được dữ liệu đã lưu, bỏ qua dữ liệu hỏng", () => {
-    expect(parseGuestData(JSON.stringify(guest))).toEqual(guest);
-    expect(parseGuestData(null)).toBeNull();
-    expect(parseGuestData("{not json")).toBeNull();
-    expect(parseGuestData(JSON.stringify({ version: 2 }))).toBeNull();
-    expect(parseGuestData(JSON.stringify({ ...guest, senseIds: ["x"] }))).toBeNull();
-  });
-
-  it("chỉ coi là có dữ liệu khi có cài đặt hoặc từ", () => {
-    expect(hasGuestContent(emptyGuestData())).toBe(false);
-    expect(hasGuestContent(null)).toBe(false);
-    expect(hasGuestContent(guest)).toBe(true);
-  });
-
-  it("tài khoản mới: lấy cài đặt của khách", () => {
-    const plan = planGuestMerge(guest, false);
-    expect(plan.settings?.cefrLevel).toBe("B2");
-    expect(plan.onboardedAt?.toISOString()).toBe("2026-10-20T02:00:00.000Z");
-    expect(plan.senseIds).toEqual([SENSE_A, SENSE_B]);
-  });
-
-  it("tài khoản đã có dữ liệu: giữ cài đặt tài khoản, chỉ cộng thêm từ", () => {
-    const plan = planGuestMerge(guest, true);
-    expect(plan.settings).toBeNull();
-    expect(plan.onboardedAt).toBeNull();
-    expect(plan.senseIds).toEqual([SENSE_A, SENSE_B]);
   });
 });

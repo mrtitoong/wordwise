@@ -1,0 +1,89 @@
+{
+  "schema_version": 1,
+  "language": "en",
+  "lemma": "deadline",
+  "pos": "noun",
+  "ipa": {
+    "us": "ˈded.laɪn",
+    "uk": "ˈded.laɪn"
+  },
+  "cefr": "B1",
+  "register": "neutral",
+  "etymology_vi": "dead (chết) + line (vạch). Theo một giải thích phổ biến, ban đầu là vạch giới hạn trong trại tù thời Nội chiến Mỹ.",
+  "forms": {
+    "inflections": [
+      {
+        "label": "plural",
+        "form": "deadlines",
+        "irregular": false
+      }
+    ],
+    "variants": []
+  },
+  "senses": [
+    {
+      "definition_en": "a time or day by which something must be done",
+      "meaning_vi": "hạn chót",
+      "image_query": "calendar red circle date",
+      "examples": [
+        {
+          "sentence": "The deadline for the report is Friday.",
+          "translation_vi": "Hạn chót nộp báo cáo là thứ Sáu.",
+          "highlight": "deadline"
+        },
+        {
+          "sentence": "We worked late to meet the deadline.",
+          "translation_vi": "Chúng tôi làm muộn để kịp hạn chót.",
+          "highlight": "deadline"
+        }
+      ],
+      "synonyms": [
+        {
+          "word": "due date",
+          "nuance_vi": "ngày đến hạn, hay dùng cho bài tập, hóa đơn"
+        },
+        {
+          "word": "time limit",
+          "nuance_vi": "giới hạn thời gian để làm xong"
+        }
+      ],
+      "antonyms": [],
+      "collocations": [
+        {
+          "pattern": "verb + deadline",
+          "phrase": "meet / miss / extend a deadline",
+          "example": "Can we extend the deadline by two days?"
+        },
+        {
+          "pattern": "adjective + deadline",
+          "phrase": "tight / strict deadline",
+          "example": null
+        }
+      ],
+      "idioms": [],
+      "common_mistakes": [
+        {
+          "wrong": "We must finish before the deadline is arrived.",
+          "correct": "We must finish before the deadline.",
+          "explanation_vi": "Không dùng bị động với arrive; nói gọn \"before the deadline\"."
+        }
+      ]
+    }
+  ],
+  "homonyms": [],
+  "word_family": [],
+  "mnemonics": [
+    {
+      "type": "story",
+      "text_vi": "Dead + line: vượt qua vạch là \"chết\" - nên nhớ nộp đúng hạn."
+    }
+  ],
+  "confusables": [],
+  "confidence": {
+    "collocations": 0.85,
+    "idioms": 0.8,
+    "slang": 1,
+    "mnemonics": 0.7
+  },
+  "language_extra": null
+}

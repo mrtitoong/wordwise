@@ -1,0 +1,125 @@
+{
+  "schema_version": 1,
+  "language": "en",
+  "lemma": "affect",
+  "pos": "verb",
+  "ipa": {
+    "us": "əˈfekt",
+    "uk": "əˈfekt"
+  },
+  "cefr": "B1",
+  "register": "neutral",
+  "etymology_vi": "Từ tiếng Latin \"afficere\" (tác động lên): ad- (vào) + facere (làm).",
+  "forms": {
+    "inflections": [
+      {
+        "label": "third_person",
+        "form": "affects",
+        "irregular": false
+      },
+      {
+        "label": "past",
+        "form": "affected",
+        "irregular": false
+      },
+      {
+        "label": "past_participle",
+        "form": "affected",
+        "irregular": false
+      },
+      {
+        "label": "present_participle",
+        "form": "affecting",
+        "irregular": false
+      }
+    ],
+    "variants": []
+  },
+  "senses": [
+    {
+      "definition_en": "to have an influence on someone or something",
+      "meaning_vi": "ảnh hưởng, tác động đến",
+      "image_query": "rain affecting crops",
+      "examples": [
+        {
+          "sentence": "The heavy rain affected the harvest this year.",
+          "translation_vi": "Mưa lớn đã ảnh hưởng đến mùa màng năm nay.",
+          "highlight": "affected"
+        },
+        {
+          "sentence": "Lack of sleep can affect your memory.",
+          "translation_vi": "Thiếu ngủ có thể ảnh hưởng đến trí nhớ của bạn.",
+          "highlight": "affect"
+        }
+      ],
+      "synonyms": [
+        {
+          "word": "influence",
+          "nuance_vi": "trung tính, tác động dần dần, thường không trực tiếp"
+        },
+        {
+          "word": "impact",
+          "nuance_vi": "nhấn mạnh tác động mạnh, hay dùng trong báo chí"
+        }
+      ],
+      "antonyms": [],
+      "collocations": [
+        {
+          "pattern": "adverb + affect",
+          "phrase": "seriously / badly / directly affect",
+          "example": "The strike badly affected local businesses."
+        },
+        {
+          "pattern": "be affected by + noun",
+          "phrase": "be affected by the change",
+          "example": "Thousands were affected by the floods."
+        }
+      ],
+      "idioms": [],
+      "common_mistakes": [
+        {
+          "wrong": "The noise affected to my sleep.",
+          "correct": "The noise affected my sleep.",
+          "explanation_vi": "affect là ngoại động từ, theo sau là tân ngữ trực tiếp, không có \"to\"."
+        },
+        {
+          "wrong": "It has a big affect on me.",
+          "correct": "It has a big effect on me.",
+          "explanation_vi": "Danh từ là effect; affect thường là động từ."
+        }
+      ]
+    }
+  ],
+  "homonyms": [],
+  "word_family": [
+    {
+      "word": "affection",
+      "pos": "noun",
+      "note_vi": "tình cảm (nghĩa khác hẳn)"
+    },
+    {
+      "word": "unaffected",
+      "pos": "adjective",
+      "note_vi": "không bị ảnh hưởng"
+    }
+  ],
+  "mnemonics": [
+    {
+      "type": "sound",
+      "text_vi": "A trước E như Action trước End: Affect (hành động, động từ) dẫn đến Effect (kết quả, danh từ)."
+    }
+  ],
+  "confusables": [
+    {
+      "word": "effect",
+      "difference_vi": "affect là động từ (tác động đến); effect là danh từ (kết quả, tác động)."
+    }
+  ],
+  "confidence": {
+    "collocations": 0.85,
+    "idioms": 0.8,
+    "slang": 1,
+    "mnemonics": 0.7
+  },
+  "language_extra": null
+}

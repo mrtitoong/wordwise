@@ -1,0 +1,94 @@
+{
+  "schema_version": 1,
+  "language": "en",
+  "lemma": "look forward to",
+  "pos": "phrasal_verb",
+  "ipa": {
+    "us": "lʊk ˈfɔːr.wɚd tuː",
+    "uk": "lʊk ˈfɔː.wəd tuː"
+  },
+  "cefr": "B1",
+  "register": "neutral",
+  "etymology_vi": null,
+  "forms": {
+    "inflections": [
+      {
+        "label": "past",
+        "form": "looked forward to",
+        "irregular": false
+      },
+      {
+        "label": "present_participle",
+        "form": "looking forward to",
+        "irregular": false
+      }
+    ],
+    "variants": []
+  },
+  "senses": [
+    {
+      "definition_en": "to feel happy and excited about something that is going to happen",
+      "meaning_vi": "mong chờ, háo hức đón chờ",
+      "image_query": "child waiting gift window",
+      "examples": [
+        {
+          "sentence": "I'm really looking forward to the holiday.",
+          "translation_vi": "Tôi rất mong đến kỳ nghỉ.",
+          "highlight": "looking forward to"
+        },
+        {
+          "sentence": "We look forward to hearing from you.",
+          "translation_vi": "Chúng tôi mong nhận được hồi âm của anh/chị.",
+          "highlight": "look forward to"
+        }
+      ],
+      "synonyms": [
+        {
+          "word": "can't wait for",
+          "nuance_vi": "thân mật, nhấn vào sự háo hức"
+        },
+        {
+          "word": "anticipate",
+          "nuance_vi": "trang trọng, có thể không mang cảm xúc vui"
+        }
+      ],
+      "antonyms": [],
+      "collocations": [
+        {
+          "pattern": "look forward to + V-ing",
+          "phrase": "look forward to seeing / meeting",
+          "example": null
+        },
+        {
+          "pattern": "adverb + look forward to",
+          "phrase": "really / eagerly look forward to",
+          "example": null
+        }
+      ],
+      "idioms": [],
+      "common_mistakes": [
+        {
+          "wrong": "I look forward to see you.",
+          "correct": "I look forward to seeing you.",
+          "explanation_vi": "\"to\" ở đây là giới từ, nên theo sau là V-ing chứ không phải động từ nguyên mẫu."
+        }
+      ]
+    }
+  ],
+  "homonyms": [],
+  "word_family": [],
+  "mnemonics": [
+    {
+      "type": "image",
+      "text_vi": "Nhìn (look) về phía trước (forward) tới (to) điều mình chờ đợi."
+    }
+  ],
+  "confusables": [],
+  "confidence": {
+    "collocations": 0.85,
+    "idioms": 0.8,
+    "slang": 1,
+    "mnemonics": 0.7
+  },
+  "language_extra": null
+}

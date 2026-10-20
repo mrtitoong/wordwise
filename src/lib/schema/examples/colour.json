@@ -1,0 +1,124 @@
+{
+  "schema_version": 1,
+  "language": "en",
+  "lemma": "colour",
+  "pos": "noun",
+  "ipa": {
+    "us": "ˈkʌl.ɚ",
+    "uk": "ˈkʌl.ə"
+  },
+  "cefr": "A1",
+  "register": "neutral",
+  "etymology_vi": "Từ tiếng Latin \"color\"; tiếng Anh-Anh giữ cách viết \"colour\" theo tiếng Pháp cổ.",
+  "forms": {
+    "inflections": [
+      {
+        "label": "plural",
+        "form": "colours",
+        "irregular": false
+      }
+    ],
+    "variants": [
+      {
+        "form": "color",
+        "region": "us",
+        "note_vi": "Anh-Mỹ bỏ chữ \"u\"; cả hai cách viết đều đúng."
+      }
+    ]
+  },
+  "senses": [
+    {
+      "definition_en": "red, blue, green, yellow, etc.",
+      "meaning_vi": "màu sắc",
+      "image_query": "colorful paint palette",
+      "examples": [
+        {
+          "sentence": "What's your favourite colour?",
+          "translation_vi": "Màu bạn thích nhất là màu gì?",
+          "highlight": "colour"
+        },
+        {
+          "sentence": "The leaves change colour in autumn.",
+          "translation_vi": "Lá cây đổi màu vào mùa thu.",
+          "highlight": "colour"
+        }
+      ],
+      "synonyms": [
+        {
+          "word": "shade",
+          "nuance_vi": "sắc độ của một màu (đậm, nhạt)"
+        },
+        {
+          "word": "hue",
+          "nuance_vi": "trang trọng, dùng trong hội họa"
+        }
+      ],
+      "antonyms": [],
+      "collocations": [
+        {
+          "pattern": "adjective + colour",
+          "phrase": "bright / dark / pale colour",
+          "example": null
+        },
+        {
+          "pattern": "verb + colour",
+          "phrase": "change colour",
+          "example": null
+        }
+      ],
+      "idioms": [
+        {
+          "phrase": "off colour",
+          "meaning_vi": "trông hơi mệt, không khỏe (Anh-Anh)",
+          "register": "informal",
+          "example": "You look a bit off colour today."
+        },
+        {
+          "phrase": "show your true colours",
+          "meaning_vi": "lộ rõ bản chất thật",
+          "register": "neutral",
+          "example": null
+        }
+      ],
+      "common_mistakes": [
+        {
+          "wrong": "What colour do you like the most is?",
+          "correct": "What colour do you like the most?",
+          "explanation_vi": "Câu hỏi không lặp lại động từ \"is\" ở cuối."
+        }
+      ]
+    }
+  ],
+  "homonyms": [],
+  "word_family": [
+    {
+      "word": "colourful",
+      "pos": "adjective",
+      "note_vi": "nhiều màu sắc"
+    },
+    {
+      "word": "colourless",
+      "pos": "adjective",
+      "note_vi": "không màu"
+    }
+  ],
+  "mnemonics": [
+    {
+      "type": "image",
+      "text_vi": "Anh-Anh có thêm \"u\" (you): màu sắc của \"bạn\"."
+    }
+  ],
+  "confusables": [
+    {
+      "word": "color",
+      "difference_vi": "Cùng một từ: colour (Anh-Anh), color (Anh-Mỹ). Chọn một kiểu và dùng nhất quán."
+    }
+  ],
+  "confidence": {
+    "collocations": 0.85,
+    "idioms": 0.8,
+    "slang": 1,
+    "mnemonics": 0.7
+  },
+  "language_extra": null
+}

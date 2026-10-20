@@ -1,0 +1,101 @@
+{
+  "schema_version": 1,
+  "language": "en",
+  "lemma": "schedule",
+  "pos": "noun",
+  "ipa": {
+    "us": "ˈskedʒ.uːl",
+    "uk": "ˈʃedʒ.uːl"
+  },
+  "cefr": "A2",
+  "register": "neutral",
+  "etymology_vi": "Từ tiếng Latin muộn \"schedula\" (mảnh giấy nhỏ).",
+  "forms": {
+    "inflections": [
+      {
+        "label": "plural",
+        "form": "schedules",
+        "irregular": false
+      }
+    ],
+    "variants": []
+  },
+  "senses": [
+    {
+      "definition_en": "a plan that lists the times when things will happen",
+      "meaning_vi": "lịch trình, thời gian biểu",
+      "image_query": "weekly planner notebook",
+      "examples": [
+        {
+          "sentence": "My schedule is very busy this week.",
+          "translation_vi": "Lịch của tôi tuần này rất kín.",
+          "highlight": "schedule"
+        },
+        {
+          "sentence": "The train left on schedule.",
+          "translation_vi": "Tàu chạy đúng giờ.",
+          "highlight": "schedule"
+        }
+      ],
+      "synonyms": [
+        {
+          "word": "timetable",
+          "nuance_vi": "Anh-Anh, hay dùng cho tàu xe, giờ học"
+        },
+        {
+          "word": "agenda",
+          "nuance_vi": "danh sách việc trong cuộc họp"
+        }
+      ],
+      "antonyms": [],
+      "collocations": [
+        {
+          "pattern": "preposition + schedule",
+          "phrase": "on / ahead of / behind schedule",
+          "example": "The project is behind schedule."
+        },
+        {
+          "pattern": "adjective + schedule",
+          "phrase": "busy / tight / flexible schedule",
+          "example": null
+        }
+      ],
+      "idioms": [
+        {
+          "phrase": "on schedule",
+          "meaning_vi": "đúng tiến độ, đúng giờ",
+          "register": "neutral",
+          "example": null
+        }
+      ],
+      "common_mistakes": []
+    }
+  ],
+  "homonyms": [],
+  "word_family": [
+    {
+      "word": "scheduled",
+      "pos": "adjective",
+      "note_vi": "theo lịch, đã lên lịch"
+    },
+    {
+      "word": "reschedule",
+      "pos": "verb",
+      "note_vi": "đổi lịch"
+    }
+  ],
+  "mnemonics": [
+    {
+      "type": "sound",
+      "text_vi": "Mỹ đọc \"SKE-dju\" như school, Anh đọc \"SHE-dju\"."
+    }
+  ],
+  "confusables": [],
+  "confidence": {
+    "collocations": 0.85,
+    "idioms": 0.8,
+    "slang": 1,
+    "mnemonics": 0.7
+  },
+  "language_extra": null
+}

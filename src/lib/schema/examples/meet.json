@@ -1,0 +1,153 @@
+{
+  "schema_version": 1,
+  "language": "en",
+  "lemma": "meet",
+  "pos": "verb",
+  "ipa": {
+    "us": "miːt",
+    "uk": "miːt"
+  },
+  "cefr": "A1",
+  "register": "neutral",
+  "etymology_vi": null,
+  "forms": {
+    "inflections": [
+      {
+        "label": "third_person",
+        "form": "meets",
+        "irregular": false
+      },
+      {
+        "label": "past",
+        "form": "met",
+        "irregular": true
+      },
+      {
+        "label": "past_participle",
+        "form": "met",
+        "irregular": true
+      },
+      {
+        "label": "present_participle",
+        "form": "meeting",
+        "irregular": false
+      }
+    ],
+    "variants": []
+  },
+  "senses": [
+    {
+      "definition_en": "to see and talk to someone for the first time, or by arrangement",
+      "meaning_vi": "gặp, gặp gỡ",
+      "image_query": "two people shaking hands",
+      "examples": [
+        {
+          "sentence": "Nice to meet you!",
+          "translation_vi": "Rất vui được gặp bạn!",
+          "highlight": "meet"
+        },
+        {
+          "sentence": "We met at a coffee shop near the office.",
+          "translation_vi": "Chúng tôi gặp nhau ở quán cà phê gần văn phòng.",
+          "highlight": "met"
+        }
+      ],
+      "synonyms": [
+        {
+          "word": "see",
+          "nuance_vi": "thân mật, gặp người quen"
+        },
+        {
+          "word": "encounter",
+          "nuance_vi": "trang trọng, tình cờ gặp"
+        }
+      ],
+      "antonyms": [],
+      "collocations": [
+        {
+          "pattern": "meet + noun",
+          "phrase": "meet a friend / a client",
+          "example": null
+        },
+        {
+          "pattern": "meet + up + with",
+          "phrase": "meet up with friends",
+          "example": "Let's meet up with Lan after work."
+        }
+      ],
+      "idioms": [],
+      "common_mistakes": [
+        {
+          "wrong": "Nice to meet you again!",
+          "correct": "Nice to see you again!",
+          "explanation_vi": "\"Nice to meet you\" chỉ dùng lần đầu gặp; gặp lại người quen thì dùng \"see\"."
+        }
+      ]
+    },
+    {
+      "definition_en": "to reach the level that is needed",
+      "meaning_vi": "đáp ứng (yêu cầu), kịp (hạn)",
+      "image_query": "checklist all ticked",
+      "examples": [
+        {
+          "sentence": "The product doesn't meet our standards.",
+          "translation_vi": "Sản phẩm không đáp ứng tiêu chuẩn của chúng tôi.",
+          "highlight": "meet"
+        }
+      ],
+      "synonyms": [
+        {
+          "word": "satisfy",
+          "nuance_vi": "trang trọng hơn"
+        },
+        {
+          "word": "fulfil",
+          "nuance_vi": "hoàn thành điều kiện, yêu cầu"
+        }
+      ],
+      "antonyms": [],
+      "collocations": [
+        {
+          "pattern": "meet + noun",
+          "phrase": "meet a deadline / requirements / expectations",
+          "example": null
+        }
+      ],
+      "idioms": [],
+      "common_mistakes": []
+    }
+  ],
+  "homonyms": [
+    {
+      "word": "meat",
+      "kind": "homophone",
+      "meaning_vi": "thịt (đọc giống meet)"
+    }
+  ],
+  "word_family": [
+    {
+      "word": "meeting",
+      "pos": "noun",
+      "note_vi": "cuộc họp"
+    }
+  ],
+  "mnemonics": [
+    {
+      "type": "sound",
+      "text_vi": "meet và meat đọc giống nhau: \"gặp nhau ăn thịt\" - hai chữ e là hai người gặp nhau."
+    }
+  ],
+  "confusables": [
+    {
+      "word": "meat",
+      "difference_vi": "meet: gặp; meat: thịt. Đọc giống, viết khác."
+    }
+  ],
+  "confidence": {
+    "collocations": 0.85,
+    "idioms": 0.8,
+    "slang": 1,
+    "mnemonics": 0.7
+  },
+  "language_extra": null
+}

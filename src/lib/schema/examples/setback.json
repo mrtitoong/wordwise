@@ -1,0 +1,96 @@
+{
+  "schema_version": 1,
+  "language": "en",
+  "lemma": "setback",
+  "pos": "noun",
+  "ipa": {
+    "us": "ˈset.bæk",
+    "uk": "ˈset.bæk"
+  },
+  "cefr": "C1",
+  "register": "neutral",
+  "etymology_vi": "Từ cụm động từ \"set back\" (làm chậm lại, đẩy lùi).",
+  "forms": {
+    "inflections": [
+      {
+        "label": "plural",
+        "form": "setbacks",
+        "irregular": false
+      }
+    ],
+    "variants": []
+  },
+  "senses": [
+    {
+      "definition_en": "something that happens that delays or prevents a process from developing",
+      "meaning_vi": "trở ngại, bước lùi, thất bại tạm thời",
+      "image_query": "runner tripping hurdle",
+      "examples": [
+        {
+          "sentence": "Losing the contract was a major setback for the company.",
+          "translation_vi": "Mất hợp đồng là một bước lùi lớn với công ty.",
+          "highlight": "setback"
+        },
+        {
+          "sentence": "She overcame many setbacks before she succeeded.",
+          "translation_vi": "Cô ấy đã vượt qua nhiều trở ngại trước khi thành công.",
+          "highlight": "setbacks"
+        }
+      ],
+      "synonyms": [
+        {
+          "word": "obstacle",
+          "nuance_vi": "vật cản, thứ chặn đường phía trước"
+        },
+        {
+          "word": "reversal",
+          "nuance_vi": "trang trọng, sự đảo chiều tình thế"
+        }
+      ],
+      "antonyms": [
+        {
+          "word": "breakthrough"
+        },
+        {
+          "word": "progress"
+        }
+      ],
+      "collocations": [
+        {
+          "pattern": "adjective + setback",
+          "phrase": "major / serious / temporary setback",
+          "example": null
+        },
+        {
+          "pattern": "verb + setback",
+          "phrase": "suffer / overcome a setback",
+          "example": null
+        }
+      ],
+      "idioms": [],
+      "common_mistakes": []
+    }
+  ],
+  "homonyms": [],
+  "word_family": [
+    {
+      "word": "set back",
+      "pos": "phrasal_verb",
+      "note_vi": "làm chậm, đẩy lùi"
+    }
+  ],
+  "mnemonics": [
+    {
+      "type": "image",
+      "text_vi": "set (đặt) + back (lùi): bị đặt lùi lại vài bước trên đường đua."
+    }
+  ],
+  "confusables": [],
+  "confidence": {
+    "collocations": 0.85,
+    "idioms": 0.8,
+    "slang": 1,
+    "mnemonics": 0.7
+  },
+  "language_extra": null
+}

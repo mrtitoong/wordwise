@@ -99,3 +99,18 @@ Repo: https://github.com/mrtitoong/wordwise
   (dấu "/" thành "-"), có bảo vệ đăng nhập Vercel. Công cụ Vercel MCP trong
   phiên Claude không có quyền vào scope `mrtitoong` (403); thao tác trên
   dashboard do chủ sản phẩm làm, trạng thái build đọc qua GitHub commit status.
+- 2026-10-20 (Prompt 1.2): 13 bảng theo plan.md §5 + cột `words.details` (JSONB).
+  Khóa ngoại kép `(id, user_id)` để không gắn được dữ liệu vào dòng của người
+  khác. `profiles.role` (user/admin/teacher) người dùng không tự sửa được.
+  `is_admin()` và `handle_new_user()` nằm ở schema `private` (không lộ qua /rpc).
+- 2026-10-20: Seed 20 từ: nguồn là JSON trong `src/lib/schema/examples/` (đã
+  validate Zod), sinh `supabase/seed/words.sql` bằng `scripts/build-seed.ts`;
+  CI báo lỗi nếu file seed cũ. Admin mẫu `supabase/seed/local-users.sql` chỉ
+  dùng ở máy/CI, không đưa lên cloud.
+- 2026-10-20: `src/lib/db/database.types.ts` lấy từ **Supabase CLI**
+  (`supabase gen types typescript --local --schema public`), không lấy từ trình
+  sinh của cloud (khác định dạng). CI so khớp file này với schema.
+- 2026-10-20: Supabase cloud: project `wordwise` (ref `jhvyyahowopzrpyenwdh`,
+  ap-southeast-1), đã áp 6 migration qua Supabase MCP. Mã version trên cloud
+  (20261020035222…) khác tên file local (20261020010000…); trước khi dùng
+  `supabase db push` phải đồng bộ lịch sử bằng `supabase migration repair`.

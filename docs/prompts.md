@@ -50,9 +50,9 @@ Cách làm việc:
 PWA giúp người Việt học từ vựng ngoại ngữ (MVP: tiếng Anh).
 - Mỗi người có nhiều sổ tay; thêm từ bằng gõ, giọng nói, chụp ảnh
   (OCR), CSV/Excel/Anki, hoặc từ danh sách có chủ đích do Admin xuất bản.
-- Mỗi từ có 8 lớp: cơ bản (nghĩa, IPA, audio, loại từ, ảnh), ví dụ,
-  quan hệ từ, collocations, thành ngữ/slang, ngữ pháp, ghi nhớ & phân
-  biệt, hình thái & ngữ dụng.
+- Thẻ từ có 5 tab: Nghĩa (nghĩa, IPA, audio, loại từ, ảnh, dạng từ),
+  Ví dụ, Cách dùng (collocations, thành ngữ, lỗi hay gặp), Từ liên quan,
+  Ghi nhớ (mẹo nhớ, từ dễ nhầm, nguồn gốc).
 - Luyện tập: flashcard, trắc nghiệm, tập viết (4 cấp gợi ý), tập nghe,
   tập phát âm, theo chủ đề/sổ tay. Lập lịch bằng FSRS.
 - Admin tải danh sách từ → hệ thống tự phân tích → Admin duyệt →
@@ -177,7 +177,7 @@ Yêu cầu:
   ghi, người dùng chỉ đọc danh sách status='published'.
 - Index: cards(user_id, due), review_logs(user_id, reviewed_at),
   notebook_entries(notebook_id).
-- Seed 20 từ mẫu đầy đủ 8 lớp theo src/lib/schema/word.ts, 1 admin mẫu.
+- Seed 20 từ mẫu đủ nội dung 5 tab theo src/lib/schema/word.ts, 1 admin mẫu.
 Sinh TypeScript types từ schema. Viết test RLS: user A không đọc được
 cards của user B; user thường không ghi được curated_lists.
 ```
@@ -212,7 +212,7 @@ Tiêu chí hoàn thành: CI xanh, test RLS và test đồng bộ đạt, triển
 
 ## GĐ2 – Sổ tay, nhập từ và nội dung AI (6 ngày)
 
-Mục tiêu: tạo sổ tay, thêm từ bằng 4 cách (gõ, nói, chụp ảnh, file) và nhận đủ 8 lớp thông tin kèm audio, ảnh.
+Mục tiêu: tạo sổ tay, thêm từ bằng 4 cách (gõ, nói, chụp ảnh, file) và nhận đủ nội dung 5 tab của thẻ từ kèm audio, ảnh.
 
 **Prompt 2.0 – Lớp nhà cung cấp AI và chọn model**
 
@@ -279,8 +279,9 @@ Speech API; hỗ trợ tốc độ 1x và 0.75x.
 Làm trang /words/[id] theo wireframe design/wireframes/word-card.html:
 - Đầu thẻ: từ, loại từ, IPA US/UK kèm nút nghe, cấp CEFR, ảnh gợi nhớ,
   các sổ tay chứa từ này.
-- 8 lớp dạng tab: Cơ bản, Ví dụ, Từ liên quan, Collocations,
-  Thành ngữ & Slang, Ngữ pháp, Ghi nhớ & Phân biệt, Hình thái. Ẩn tab rỗng
+- 5 tab: Nghĩa, Ví dụ, Cách dùng (collocations, thành ngữ, lỗi hay gặp),
+  Từ liên quan, Ghi nhớ (mẹo nhớ, từ dễ nhầm, nguồn gốc). Dạng từ nằm ở
+  đầu thẻ. Ẩn tab rỗng
   (trừ khi người dùng đã thêm nội dung riêng vào tab đó).
 - Câu ví dụ tô đậm từ khóa, có nút nghe và hiện/ẩn bản dịch. Câu gốc
   người dùng gặp (từ ảnh, file) hiển thị đầu tiên kèm ảnh gốc nếu có.
@@ -627,7 +628,7 @@ Xong → trạng thái Chờ duyệt. Test với danh sách 500 từ: hoàn thà
 Làm màn /admin/lists/[id]/review:
 - Bảng từ: thứ tự, từ, loại từ, nghĩa đã chọn, CEFR, chủ đề con,
   cảnh báo; lọc "chỉ có cảnh báo"; kéo thả đổi thứ tự.
-- Bấm một dòng → xem thẻ từ 8 lớp, đổi nghĩa, sửa nội dung (sửa bản
+- Bấm một dòng → xem thẻ từ 5 tab, đổi nghĩa, sửa nội dung (sửa bản
   dùng chung đặt reviewed=true), tạo lại riêng một lớp, xóa từ.
 - Thao tác hàng loạt: chấp nhận tất cả không có cảnh báo.
 - Xuất bản → status='published', tăng version. Sửa danh sách đã xuất
@@ -723,17 +724,19 @@ Quy tắc:
 - synonyms: kèm nuance_vi nói rõ khác biệt sắc thái hoặc ngữ cảnh.
 - collocations: chỉ cụm thực sự phổ biến (người bản ngữ hay dùng),
   nhóm theo mẫu (verb + noun, adj + noun, noun + of + noun…), tối đa 8.
-- idioms/slang: chỉ khi thực sự tồn tại; gắn register (formal, neutral,
+- idioms: chỉ khi thực sự tồn tại; gắn register (formal, neutral,
   informal, slang, offensive). Không bịa. Không có thì trả mảng rỗng.
+  Không tạo mục slang riêng.
 - homonyms: từ viết/đọc giống nhưng nghĩa khác (vd bank, bat; pair/pear).
-- grammar_patterns: cấu trúc đi kèm từ (vd suggest + V-ing) + 1 lỗi
-  người Việt hay mắc.
+- common_mistakes: tối đa 3 lỗi người Việt hay mắc khi dùng nghĩa này
+  (wrong, correct, explanation_vi), vd "resilient with stress" →
+  "resilient to stress". Không có lỗi điển hình thì trả mảng rỗng.
 - forms: dạng chia/số nhiều bất quy tắc, biến thể Anh–Mỹ nếu có.
 - etymology: 1 câu tiếng Việt về gốc từ/tiền tố/hậu tố nếu giúp dễ nhớ.
 - mnemonics: tối đa 2 mẹo ghi nhớ ngắn cho người Việt.
 - confusables: từ hay bị nhầm với từ này + cách phân biệt (difference_vi).
 - image_query: 2–4 từ tiếng Anh mô tả hình ảnh cụ thể, dễ nhớ.
-- confidence: 0–1 cho từng mục idioms/slang/collocations/mnemonics.
+- confidence: 0–1 cho từng mục idioms/collocations/mnemonics.
 Trả về ĐÚNG JSON theo schema sau, không thêm chữ nào khác:
 {json_schema}
 ```

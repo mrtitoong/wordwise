@@ -685,11 +685,13 @@ chưa ôn được gì trong ngày đầu → không có lý do quay lại ngày
 
 ---
 
-## 5. Câu hỏi mở (cần chủ sản phẩm chốt, không chặn GĐ0)
+## 5. Quyết định đã chốt (2026-10-20)
 
-1. **Streak có "ngày nghỉ"** (1 ngày/tuần không mất chuỗi)? Đề xuất: **có**,
-   giảm áp lực cho người tự học học không đều.
-2. **5 từ khởi đầu** lấy từ đâu? Đề xuất: bộ nhỏ do Admin soạn sẵn cho mỗi
-   trình độ × mục tiêu (cần có ở GĐ7; trước đó dùng 20 từ seed của GĐ1).
-3. **Gợi ý tạo tài khoản cho khách**: sau 3 phiên hoặc 20 từ là hợp lý?
-4. **Ngưỡng file lớn chạy nền**: 500 dòng là hợp lý?
+1. **Chuỗi ngày học có 1 ngày nghỉ mỗi tuần** không làm mất chuỗi, giảm áp
+   lực cho người tự học học không đều.
+2. **5 từ khởi đầu**: bộ nhỏ do Admin soạn sẵn cho mỗi trình độ × mục tiêu
+   (cần có ở GĐ7; trước đó dùng 20 từ seed của GĐ1).
+3. **Gợi ý khách tạo tài khoản** sau 3 phiên hoặc 20 từ.
+4. **File nhập trên 500 dòng** chạy nền qua import_jobs.
+5. **Thẻ từ 5 tab**: Nghĩa · Ví dụ · Cách dùng · Từ liên quan · Ghi nhớ; không
+   có slang; ngữ pháp chỉ giữ "lỗi hay gặp" trong tab Cách dùng.

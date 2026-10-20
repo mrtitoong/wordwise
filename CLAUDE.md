@@ -36,8 +36,8 @@ Repo: https://github.com/mrtitoong/wordwise
   RLS bật cho mọi bảng
 - Dexie.js (IndexedDB) cho offline-first
 - ts-fsrs cho lập lịch; Zod cho validate; next-intl cho i18n
-- LLM qua src/lib/llm: Gemini Flash (gói miễn phí) cho nội dung từ chung,
-  Claude cho tác vụ chứa dữ liệu người dùng
+- LLM qua src/lib/llm: Claude Haiku 5.5 cho nội dung từ chung, Claude Sonnet 5.5
+  cho tác vụ chứa dữ liệu người dùng (cấu hình ở src/config/llm.ts)
 - Google Cloud Vision (OCR), Web Speech API/Whisper (giọng nói),
   Azure Speech (TTS, chấm phát âm)
 - Vitest (unit), Playwright (E2E); triển khai Vercel
@@ -155,3 +155,27 @@ Repo: https://github.com/mrtitoong/wordwise
   dữ liệu trong máy. Cửa test `window.__wordwiseE2E` chỉ có khi build với
   `NEXT_PUBLIC_E2E=1` (job e2e của CI). Đồng bộ khi app đã đóng (Service Worker)
   để GĐ8.
+- 2026-10-20 (Prompt 2.0): Lớp LLM `src/lib/llm` (router + adapter Claude, Gemini,
+  Groq; SDK chính thức), cấu hình theo tác vụ ở `src/config/llm.ts`, đổi model bằng
+  biến môi trường `LLM_MODELS_<TÁC_VỤ>`. Cờ `freeTier` gắn với model trong catalog;
+  tác vụ `containsUserData` dùng model miễn phí (kể cả dự phòng) thì lỗi ngay khi
+  nạp cấu hình. 429/5xx: chờ 1–2–4–8–16 s, quá 5 lần sang dự phòng. Sai schema gọi
+  lại tối đa 2 lần. Nhật ký vào bảng `llm_call_logs` (admin đọc, service role ghi,
+  không lưu nội dung prompt).
+- 2026-10-20: **Chốt model sau so sánh 50 từ** (trang Artifact riêng tư
+  https://claude.ai/artifact/Mt64g9tWj9KWTALvtvyPjM): nội dung từ chung
+  (word-content, example-generator, mnemonic) → **Claude Haiku 5.5**, dự phòng
+  **Sonnet 5.5** (Haiku 49/50 đúng schema lần đầu, ~$3.8/1.000 từ; Sonnet 50/50,
+  ~$34/1.000 từ). Tác vụ chứa dữ liệu người dùng (photo-word-picker, list-analyzer)
+  → Sonnet 5.5, dự phòng Haiku; xem lại ở Prompt 2.6/7.2. **Bỏ Gemini** khỏi cấu hình
+  mặc định: gói miễn phí chỉ ~20 lượt/ngày và 80–130 s/từ (adapter vẫn giữ). Thay cho
+  mô tả "Gemini Flash gói miễn phí" trong plan.md và docs/prompts.md.
+- 2026-10-20: Schema thẻ từ 5 tab quá lớn cho structured output (Claude 400 "compiled
+  grammar is too large", Gemini 400) → word-content dùng `schemaMode: "prompt"`: gửi
+  JSON Schema trong prompt, chỉ bật chế độ JSON, Zod kiểm tra. Không dùng
+  `zodOutputFormat()` của SDK Anthropic (bản 0.131 biến enum/const thành mô tả); dùng
+  `toClaudeJsonSchema()`.
+- 2026-10-20: Khóa LLM: máy dev để trong `.env.local` (chỉ cho `npm run
+  compare:models`); app thật đọc từ Supabase Secrets trong Edge Functions (Prompt 2.1).
+  Prompt trong app ở `src/prompts/*.md` có `version`; word-content v1 không chứa
+  `context_sentence` của người dùng.

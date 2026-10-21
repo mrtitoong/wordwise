@@ -1,5 +1,6 @@
 import type { Grade } from "ts-fsrs";
 import { applyReview, createScheduler, newCardFields } from "@/lib/srs/scheduler";
+import { introducedToday, planIntroductions } from "@/lib/notebooks/introductions";
 import { mergeCard } from "@/lib/sync/merge";
 import { rekeyOwnedData } from "@/lib/sync/rekey";
 import type { WordContent } from "@/lib/sync/remote";
@@ -31,7 +32,7 @@ export function onLocalWrite(listener: (() => void) | null): void {
   writeListener = listener;
 }
 
-function notifyWrite() {
+export function notifyWrite() {
   writeListener?.();
 }
 
@@ -45,11 +46,11 @@ const SYNC_STORES = [
   "outbox",
 ] as const;
 
-function personalTables(db: LocalDb) {
+export function personalTables(db: LocalDb) {
   return SYNC_STORES.map((name) => db.table(name));
 }
 
-async function queue(
+export async function queue(
   db: LocalDb,
   table: SyncTable,
   rowId: string,
@@ -114,55 +115,93 @@ export async function cacheWordContent(db: LocalDb, content: WordContent): Promi
   });
 }
 
+export type InputMethod = "typed" | "voice" | "photo" | "csv" | "list";
+
+export type AddEntry = {
+  senseId: string;
+  contextSentence?: string | null;
+  tags?: string[];
+};
+
+export type AddOptions = {
+  notebookId: string;
+  inputMethod: InputMethod;
+  source?: string | null;
+};
+
+export type AddResult = {
+  /** Nghĩa mới vào kho. */
+  added: string[];
+  /** Nghĩa đã có trong kho, chỉ gắn thêm vào sổ này. */
+  linked: string[];
+  /** Đã có trong sổ này, bỏ qua. */
+  skipped: string[];
+};
+
+/** Tạo "Sổ của tôi" nếu chưa có (trong transaction đang chạy). */
+async function ensureDefaultNotebook(db: LocalDb, owner: string, name: string, iso: string) {
+  const notebookId = defaultNotebookId(owner);
+  if (!(await db.notebooks.get(notebookId))) {
+    await db.notebooks.put({
+      id: notebookId,
+      user_id: owner,
+      name,
+      language: "en",
+      description: null,
+      cover_url: null,
+      tags: [],
+      source_list_id: null,
+      target_date: null,
+      is_archived: false,
+      deleted_at: null,
+      created_at: iso,
+      updated_at: iso,
+    });
+    await queue(db, "notebooks", notebookId, owner);
+  }
+  return notebookId;
+}
+
 /**
- * Thêm các nghĩa vào sổ tay mặc định ("Sổ của tôi", tạo nếu chưa có), mỗi từ
- * kèm một thẻ ôn "nghĩa". Từ đã có thì giữ nguyên lịch ôn.
+ * Thêm các nghĩa vào một sổ, mỗi từ kèm một thẻ ôn "nghĩa". Từ mới vào hàng "Sắp học"
+ * (status queued), sau đó mở dần theo số từ mới mỗi ngày (openNewWords). Từ đã có trong kho
+ * thì giữ nguyên lịch ôn, chỉ gắn thêm vào sổ.
  */
-export async function addSensesToDefaultNotebook(
+export async function addSensesToNotebook(
   db: LocalDb,
   owner: string,
-  senseIds: readonly string[],
-  notebookName: string,
-  inputMethod: "typed" | "voice" | "photo" | "csv" | "list" = "list",
-  source: string | null = "starter",
-): Promise<void> {
-  const now = new Date();
+  items: readonly AddEntry[],
+  options: AddOptions,
+  now = new Date(),
+): Promise<AddResult> {
   const iso = now.toISOString();
+  const result: AddResult = { added: [], linked: [], skipped: [] };
   await db.transaction("rw", personalTables(db), async () => {
-    const notebookId = defaultNotebookId(owner);
-    if (!(await db.notebooks.get(notebookId))) {
-      await db.notebooks.put({
-        id: notebookId,
-        user_id: owner,
-        name: notebookName,
-        language: "en",
-        description: null,
-        cover_url: null,
-        tags: [],
-        source_list_id: null,
-        target_date: null,
-        is_archived: false,
-        deleted_at: null,
-        created_at: iso,
-        updated_at: iso,
-      });
-      await queue(db, "notebooks", notebookId, owner);
+    const notebook = await db.notebooks.get(options.notebookId);
+    if (!notebook || notebook.user_id !== owner || notebook.deleted_at) {
+      throw new Error(`Không có sổ ${options.notebookId}`);
     }
-
-    for (const senseId of new Set(senseIds)) {
-      const uwId = userWordId(owner, senseId);
+    const seen = new Set<string>();
+    for (const item of items) {
+      if (seen.has(item.senseId)) continue;
+      seen.add(item.senseId);
+      // Cách nhau 1 ms để giữ đúng thứ tự người dùng nhập (từ trên trước được mở trước).
+      const addedAt = new Date(now.getTime() + seen.size - 1).toISOString();
+      const uwId = userWordId(owner, item.senseId);
       const existing = await db.user_words.get(uwId);
-      if (!existing || existing.deleted_at) {
+      const isNew = !existing || !!existing.deleted_at;
+      if (isNew) {
         await db.user_words.put({
           id: uwId,
           user_id: owner,
-          sense_id: senseId,
+          sense_id: item.senseId,
           custom_meaning: existing?.custom_meaning ?? null,
           custom_note: existing?.custom_note ?? null,
           custom_image_url: existing?.custom_image_url ?? null,
           user_additions: existing?.user_additions ?? {},
           status: "queued",
-          added_at: existing?.added_at ?? iso,
+          introduced_at: null,
+          added_at: existing?.added_at ?? addedAt,
           deleted_at: null,
           created_at: existing?.created_at ?? iso,
           updated_at: iso,
@@ -170,24 +209,28 @@ export async function addSensesToDefaultNotebook(
         await queue(db, "user_words", uwId, owner);
       }
 
-      const entryId = notebookEntryId(notebookId, uwId);
+      const entryId = notebookEntryId(options.notebookId, uwId);
       const entry = await db.notebook_entries.get(entryId);
-      if (!entry || entry.deleted_at) {
+      if (entry && !entry.deleted_at) {
+        result.skipped.push(item.senseId);
+      } else {
         await db.notebook_entries.put({
           id: entryId,
           user_id: owner,
-          notebook_id: notebookId,
+          notebook_id: options.notebookId,
           user_word_id: uwId,
-          input_method: inputMethod,
-          context_sentence: null,
+          input_method: options.inputMethod,
+          context_sentence: item.contextSentence ?? null,
           context_image_url: null,
-          source,
-          added_at: iso,
+          source: options.source ?? null,
+          tags: item.tags ?? [],
+          added_at: addedAt,
           deleted_at: null,
           created_at: entry?.created_at ?? iso,
           updated_at: iso,
         });
         await queue(db, "notebook_entries", entryId, owner);
+        (isNew ? result.added : result.linked).push(item.senseId);
       }
 
       const meaningCardId = cardId(uwId, "meaning");
@@ -210,8 +253,85 @@ export async function addSensesToDefaultNotebook(
         await queue(db, "cards", meaningCardId, owner);
       }
     }
+    await introduce(db, owner, now);
   });
   notifyWrite();
+  return result;
+}
+
+/** Id "Sổ của tôi", tạo nếu chưa có (người dùng bỏ qua 5 từ khởi đầu). */
+export async function getOrCreateDefaultNotebook(
+  db: LocalDb,
+  owner: string,
+  name: string,
+): Promise<string> {
+  const notebookId = defaultNotebookId(owner);
+  const existing = await db.notebooks.get(notebookId);
+  if (existing && !existing.deleted_at) return notebookId;
+  await db.transaction("rw", db.notebooks, db.outbox, () =>
+    ensureDefaultNotebook(db, owner, name, new Date().toISOString()),
+  );
+  notifyWrite();
+  return notebookId;
+}
+
+/** Thêm vào "Sổ của tôi" (tạo nếu chưa có): 5 từ khởi đầu, chip từ liên quan. */
+export async function addSensesToDefaultNotebook(
+  db: LocalDb,
+  owner: string,
+  senseIds: readonly string[],
+  notebookName: string,
+  inputMethod: InputMethod = "list",
+  source: string | null = "starter",
+): Promise<AddResult> {
+  const iso = new Date().toISOString();
+  const notebookId = await db.transaction("rw", db.notebooks, db.outbox, () =>
+    ensureDefaultNotebook(db, owner, notebookName, iso),
+  );
+  return addSensesToNotebook(
+    db,
+    owner,
+    senseIds.map((senseId) => ({ senseId })),
+    { notebookId, inputMethod, source },
+  );
+}
+
+/** Mở từ "Sắp học" cho đủ số từ mới hôm nay (trong transaction đang chạy). */
+async function introduce(db: LocalDb, owner: string, now: Date): Promise<number> {
+  const settings = (await db.user_settings.get(owner)) ?? defaultSettingsRow(owner, now);
+  const userWords = await db.user_words.where("user_id").equals(owner).toArray();
+  const ids = planIntroductions(userWords, {
+    dailyLimit: settings.daily_new_limit,
+    now,
+    timeZone: settings.timezone,
+  });
+  const iso = now.toISOString();
+  for (const id of ids) {
+    const row = userWords.find((uw) => uw.id === id)!;
+    await db.user_words.put({ ...row, status: "learning", introduced_at: iso, updated_at: iso });
+    await queue(db, "user_words", id, owner);
+  }
+  return ids.length;
+}
+
+/** Mở dần từ "Sắp học" (gọi khi mở app và sau khi đồng bộ). Trả về số từ vừa mở. */
+export async function openNewWords(db: LocalDb, owner: string, now = new Date()): Promise<number> {
+  const opened = await db.transaction("rw", db.user_words, db.user_settings, db.outbox, () =>
+    introduce(db, owner, now),
+  );
+  if (opened > 0) notifyWrite();
+  return opened;
+}
+
+/** Số chỗ còn lại để mở từ mới hôm nay (cho thanh tóm tắt khi thêm từ). */
+export async function openSlotsToday(
+  db: LocalDb,
+  owner: string,
+  now = new Date(),
+): Promise<number> {
+  const settings = (await db.user_settings.get(owner)) ?? defaultSettingsRow(owner, now);
+  const userWords = await db.user_words.where("user_id").equals(owner).toArray();
+  return Math.max(0, settings.daily_new_limit - introducedToday(userWords, now, settings.timezone));
 }
 
 export type UserWordPatch = Partial<

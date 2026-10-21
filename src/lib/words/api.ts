@@ -3,6 +3,7 @@
  */
 import { z } from "zod";
 import { LanguageSchema, PosSchema, WordContentSchema } from "@/lib/schema/word";
+import { ReverseRequestSchema } from "./reverse";
 
 export const InputMethodSchema = z.enum(["typed", "voice", "photo", "csv", "list"]);
 export type InputMethod = z.infer<typeof InputMethodSchema>;
@@ -34,6 +35,7 @@ export const ResolveRequestSchema = z.object({
 export const FunctionRequestSchema = z.union([
   WorkerRequestSchema,
   ResolveRequestSchema,
+  ReverseRequestSchema,
   WordRequestSchema,
 ]);
 

@@ -17,6 +17,9 @@ import { createLlmRouter } from "@/lib/llm/router";
 import type { Database } from "@/lib/db/database.types";
 import { toLlmCallLogRow } from "@/lib/llm/log-row";
 import { createSupabaseWordStore } from "@/lib/words/supabase-store";
+import { ReverseSuggestionsSchema, buildReverseLookupPrompt } from "@/lib/llm/tasks/reverse-lookup";
+import type { LibraryMatch } from "@/lib/words/reverse";
+import reverseLookupPrompt from "@/prompts/reverse-lookup.md?raw";
 import wordContentPrompt from "@/prompts/word-content.md?raw";
 import { createHandler } from "./handler";
 
@@ -59,10 +62,38 @@ const worker = anthropicKey
 if (!worker)
   console.warn("Chưa có ANTHROPIC_API_KEY: chỉ tra kho và xếp việc, không tạo nội dung.");
 
+const reverseTemplate = parsePromptTemplate(reverseLookupPrompt);
+
 Deno.serve(
   createHandler({
     pipeline: { store, lemmatizer: englishLemmatizer },
     worker,
+    reverse: {
+      async searchByMeaning(query) {
+        const { data, error } = await supabase.rpc("search_by_meaning", { p_query: query });
+        if (error) throw new Error(`search_by_meaning: ${error.message}`);
+        return (data ?? []) as LibraryMatch[];
+      },
+      suggest: worker
+        ? async (query) => {
+            const { system, prompt } = buildReverseLookupPrompt(reverseTemplate, query);
+            const result = await worker.llm.generateJSON("reverse-lookup", {
+              system,
+              prompt,
+              schema: ReverseSuggestionsSchema,
+            });
+            return result.data.items;
+          }
+        : null,
+      async consumeUsage(userId) {
+        const { data, error } = await supabase.rpc("consume_usage", {
+          p_user_id: userId,
+          p_kind: "reverse_ai",
+        });
+        if (error) throw new Error(`consume_usage: ${error.message}`);
+        return { allowed: (data as { allowed: boolean }).allowed };
+      },
+    },
     async getUserId(authorization) {
       const token = /^Bearer\s+(.+)$/i.exec(authorization ?? "")?.[1];
       if (!token) return null;

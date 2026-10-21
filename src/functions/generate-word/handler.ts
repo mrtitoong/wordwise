@@ -4,10 +4,12 @@
  *
  *   POST { lemma, language?, pos?, notebookId? } – app xin nội dung từ (xem WordResponse).
  *   POST { action: "resolve", lemmas } – tra nhiều từ trong kho (dán nhiều dòng), không tạo việc.
+ *   POST { action: "reverse", query }  – tra ngược tiếng Việt → tiếng Anh (kho, rồi AI).
  *   POST { action: "work" }          – pg_cron gọi worker, kèm header x-worker-secret.
  */
 import { z } from "zod";
 import { FunctionRequestSchema, type WordResponse } from "@/lib/words/api";
+import { reverseLookup, type ReverseDeps } from "@/lib/words/reverse";
 import {
   requestWord,
   resolveWords,
@@ -19,6 +21,7 @@ import {
 
 export interface HandlerDeps {
   pipeline: PipelineDeps;
+  reverse: ReverseDeps;
   /** null khi chưa cấu hình khóa LLM: vẫn tra kho và xếp việc, cron xử lý sau. */
   worker: WorkerDeps | null;
   /** id người dùng từ header Authorization, null nếu là khách/khóa công khai. */
@@ -77,6 +80,7 @@ export function createHandler(deps: HandlerDeps) {
       if (body.action === "resolve") return json(await resolveWords(body, deps.pipeline));
 
       const userId = await deps.getUserId(request.headers.get("authorization"));
+      if (body.action === "reverse") return json(await reverseLookup(body, userId, deps.reverse));
       const response: WordResponse = await requestWord(body, userId, deps.pipeline);
       if (response.status === "preparing" && deps.worker) {
         // Xử lý ngay việc vừa xếp; lỗi đã được ghi vào việc, cron sẽ thử lại.

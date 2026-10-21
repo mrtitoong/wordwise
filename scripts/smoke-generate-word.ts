@@ -8,7 +8,10 @@
 import { createClient } from "@supabase/supabase-js";
 import type { Database } from "@/lib/db/database.types";
 import { SentenceAudioResponseSchema } from "@/lib/media/api";
+import { TranscribeResponseSchema } from "@/lib/voice/api";
+import { bytesToBase64, encodeWav } from "@/lib/voice/wav";
 import { ResolveResponseSchema, WordResponseSchema, type WordResponse } from "@/lib/words/api";
+import { ReverseResponseSchema } from "@/lib/words/reverse";
 
 const url = process.env.SUPABASE_URL;
 const key = process.env.SUPABASE_PUBLISHABLE_KEY;
@@ -128,6 +131,45 @@ const invalid = await call({ lemma: "" });
 expect(invalid.status === 400, "Yêu cầu sai → 400", invalid);
 
 /* ---------- word-media (Prompt 2.2) ---------- */
+
+/* ---------- Giọng nói (Prompt 2.5) ---------- */
+
+const reverse = await call({ action: "reverse", query: "kiên cường" });
+const reverseBody = reverse.status === 200 ? ReverseResponseSchema.parse(reverse.body) : null;
+expect(
+  !!reverseBody?.items.some((i) => i.word === "resilient" && i.source === "library"),
+  "reverse: tra ngược trong kho theo nghĩa tiếng Việt",
+  reverse,
+);
+
+const transcribeEndpoint = `${url}/functions/v1/transcribe`;
+async function transcribe(token: string) {
+  const response = await fetch(transcribeEndpoint, {
+    method: "POST",
+    headers: { apikey: key!, authorization: `Bearer ${token}`, "content-type": "application/json" },
+    body: JSON.stringify({
+      lang: "en-US",
+      audio: bytesToBase64(encodeWav(new Float32Array(1600))),
+    }),
+  });
+  return { status: response.status, body: (await response.json()) as unknown };
+}
+const guestVoice = await transcribe(key);
+expect(
+  guestVoice.status === 200 &&
+    TranscribeResponseSchema.parse(guestVoice.body).status === "login_required",
+  "transcribe: khách → login_required",
+  guestVoice,
+);
+const userVoice = await transcribe(session.session.access_token);
+expect(
+  userVoice.status === 200 &&
+    ["unavailable", "no_match", "ok"].includes(
+      TranscribeResponseSchema.parse(userVoice.body).status,
+    ),
+  "transcribe: người dùng gọi được (CI không có khóa Azure → unavailable)",
+  userVoice,
+);
 
 const mediaEndpoint = `${url}/functions/v1/word-media`;
 async function media(body: unknown, token = key!, headers: Record<string, string> = {}) {

@@ -2,6 +2,7 @@ import { describe, expect, it, vi } from "vitest";
 import { englishLemmatizer } from "@/lib/entry/lemmatizer-en";
 import { ResolveResponseSchema, WordResponseSchema } from "@/lib/words/api";
 import type { WordStore, WorkerDeps } from "@/lib/words/pipeline";
+import { ReverseResponseSchema, type LibraryMatch } from "@/lib/words/reverse";
 import { createHandler, type HandlerDeps } from "./handler";
 
 function emptyStore(): WordStore {
@@ -24,15 +25,23 @@ function setup(overrides: Partial<HandlerDeps> = {}) {
   const store = emptyStore();
   const waitUntil = vi.fn();
   const worker = { store } as unknown as WorkerDeps;
+  const reverse = {
+    searchByMeaning: vi.fn(async () => [] as LibraryMatch[]),
+    suggest: vi.fn(async () => [
+      { word: "resilient", pos: "adjective" as const, nuance_vi: "hồi phục nhanh" },
+    ]),
+    consumeUsage: vi.fn(async () => ({ allowed: true })),
+  };
   const deps: HandlerDeps = {
     pipeline: { store, lemmatizer: englishLemmatizer },
+    reverse,
     worker,
     getUserId: vi.fn(async (authorization) => (authorization === "Bearer user-jwt" ? "u1" : null)),
     verifyWorkerSecret: vi.fn(async (secret) => secret === "s".repeat(64)),
     waitUntil,
     ...overrides,
   };
-  return { handle: createHandler(deps), store, waitUntil, deps };
+  return { handle: createHandler(deps), store, waitUntil, deps, reverse };
 }
 
 const post = (body: unknown, headers: Record<string, string> = {}) =>
@@ -190,6 +199,62 @@ describe("generate-word handler", () => {
       (await handle(post({ action: "resolve", lemmas: Array.from({ length: 51 }, () => "a") })))
         .status,
     ).toBe(400);
+  });
+
+  it("tra ngược: kho đủ 3 từ thì không gọi AI", async () => {
+    const { handle, reverse } = setup();
+    reverse.searchByMeaning.mockResolvedValue(
+      ["resilient", "tough", "hardy"].map((lemma) => ({
+        wordId: `w-${lemma}`,
+        lemma,
+        pos: "adjective",
+        meaning: "kiên cường",
+      })),
+    );
+    const response = await handle(post({ action: "reverse", query: "kiên cường" }));
+    const body = ReverseResponseSchema.parse(await response.json());
+    expect(body.ai).toBe("skipped");
+    expect(body.items.map((i) => i.word)).toEqual(["resilient", "tough", "hardy"]);
+    expect(reverse.suggest).not.toHaveBeenCalled();
+  });
+
+  it("tra ngược: kho thiếu → khách được mời đăng nhập; người dùng có AI bổ sung, không trùng", async () => {
+    const { handle, reverse } = setup();
+    reverse.searchByMeaning.mockResolvedValue([
+      { wordId: "w1", lemma: "resilient", pos: "adjective", meaning: "kiên cường" },
+    ]);
+    const guest = ReverseResponseSchema.parse(
+      await (await handle(post({ action: "reverse", query: "kiên cường" }))).json(),
+    );
+    expect(guest).toMatchObject({ ai: "login_required" });
+    expect(reverse.suggest).not.toHaveBeenCalled();
+
+    reverse.suggest.mockResolvedValue([
+      { word: "Resilient", pos: "adjective", nuance_vi: "trùng" },
+      { word: "tenacious", pos: "adjective", nuance_vi: "bám riết" },
+    ]);
+    const user = ReverseResponseSchema.parse(
+      await (
+        await handle(
+          post({ action: "reverse", query: "kiên cường" }, { authorization: "Bearer user-jwt" }),
+        )
+      ).json(),
+    );
+    expect(user.ai).toBe("used");
+    expect(user.items.map((i) => [i.word, i.source])).toEqual([
+      ["resilient", "library"],
+      ["tenacious", "ai"],
+    ]);
+
+    reverse.consumeUsage.mockResolvedValue({ allowed: false });
+    const limited = ReverseResponseSchema.parse(
+      await (
+        await handle(
+          post({ action: "reverse", query: "kiên cường" }, { authorization: "Bearer user-jwt" }),
+        )
+      ).json(),
+    );
+    expect(limited.ai).toBe("limit_reached");
   });
 
   it("lỗi database → 500, không lộ chi tiết", async () => {

@@ -557,6 +557,27 @@ export type Database = {
           },
         ];
       };
+      usage_events: {
+        Row: {
+          created_at: string;
+          id: number;
+          kind: string;
+          user_id: string;
+        };
+        Insert: {
+          created_at?: string;
+          id?: number;
+          kind: string;
+          user_id: string;
+        };
+        Update: {
+          created_at?: string;
+          id?: number;
+          kind?: string;
+          user_id?: string;
+        };
+        Relationships: [];
+      };
       user_settings: {
         Row: {
           accent: string;
@@ -947,6 +968,7 @@ export type Database = {
       claim_media_words: { Args: { p_include_images: boolean; p_limit: number }; Returns: Json };
       claim_word_jobs: { Args: { p_job_id?: string; p_limit?: number }; Returns: Json };
       complete_word_job: { Args: { p_job_id: string; p_word_id: string }; Returns: undefined };
+      consume_usage: { Args: { p_kind: string; p_user_id: string }; Returns: Json };
       enqueue_bulk_words: { Args: { p_items: Json; p_language: string }; Returns: number };
       fail_word_job: {
         Args: { p_error: string; p_job_id: string; p_retry_at?: string };
@@ -969,6 +991,10 @@ export type Database = {
       save_generated_word: {
         Args: { p_details: Json; p_job_id: string; p_senses: Json; p_word: Json };
         Returns: string;
+      };
+      search_by_meaning: {
+        Args: { p_language?: string; p_limit?: number; p_query: string };
+        Returns: Json;
       };
       search_words: {
         Args: { p_language?: string; p_limit?: number; p_prefix: string };

@@ -56,6 +56,7 @@ export const LLM_TASKS = [
   "mnemonic",
   "photo-word-picker",
   "list-analyzer",
+  "reverse-lookup",
 ] as const;
 
 export type LlmTask = (typeof LLM_TASKS)[number];
@@ -78,6 +79,8 @@ const DEFAULT_TASKS: Record<
   // Ảnh/văn bản OCR của người dùng, bài đọc Admin → chỉ trả phí.
   "photo-word-picker": { containsUserData: true, models: ["claude-sonnet", "claude-haiku"] },
   "list-analyzer": { containsUserData: true, models: ["claude-sonnet", "claude-haiku"] },
+  // Câu tiếng Việt người dùng nói/gõ để tra ngược (Prompt 2.5) → chỉ trả phí.
+  "reverse-lookup": { containsUserData: true, models: ["claude-sonnet", "claude-haiku"] },
 };
 
 export function envKeyForTask(task: LlmTask): string {

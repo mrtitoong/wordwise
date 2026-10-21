@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, type ClipboardEvent, type FormEvent } from "react";
+import { useEffect, useState, type ClipboardEvent, type FormEvent } from "react";
 import Link from "next/link";
 import { Plus } from "lucide-react";
 import { useTranslations } from "next-intl";
@@ -13,10 +13,10 @@ import { normalizeEntry } from "@/lib/entry/normalize";
 import { createClient } from "@/lib/supabase/client";
 import { getSupabaseEnv } from "@/lib/supabase/env";
 import { cn } from "@/lib/utils";
-import { toWordSummary, type WordSummary } from "@/lib/words/api";
-import { requestWord } from "@/lib/words/request-word";
+import { toWordSummary, type InputMethod, type WordSummary } from "@/lib/words/api";
+import { requestWord, resolveWords } from "@/lib/words/request-word";
 import type { EntryContext } from "./add-word-screen";
-import { cacheSenses, useWordSuggestions } from "./word-search";
+import { cacheSenses, findExact, useWordSuggestions } from "./word-search";
 
 type Picked = { word: WordSummary; typed: string; senseId: string };
 
@@ -27,13 +27,18 @@ const inputClass =
 export function SingleEntry({
   context,
   onPasteList,
+  inputMethod = "typed",
+  prefill,
 }: {
   context: EntryContext;
   onPasteList: (text: string) => void;
+  inputMethod?: InputMethod;
+  /** Chữ có sẵn (tab Nói): tra luôn trong kho, có thì chọn nghĩa, không có thì tạo mới. */
+  prefill?: string;
 }) {
   const t = useTranslations("addWord");
   const tc = useTranslations("wordCard");
-  const [query, setQuery] = useState("");
+  const [query, setQuery] = useState(prefill ?? "");
   const [picked, setPicked] = useState<Picked | null>(null);
   const [contextSentence, setContextSentence] = useState("");
   const [busy, setBusy] = useState(false);
@@ -61,8 +66,31 @@ export function SingleEntry({
     setContextSentence("");
   }
 
-  async function requestNew() {
-    const text = query.trim();
+  // Chữ từ tab Nói: tra trong kho một lần khi mở (đổi chữ thì component được tạo lại).
+  useEffect(() => {
+    const text = prefill?.trim();
+    if (!text) return;
+    let cancelled = false;
+    void (async () => {
+      try {
+        // Khớp đúng trong kho trước (nhanh); không có thì để máy chủ đưa về từ gốc (running → run).
+        const exact = await findExact(getLocalDb(), text, context.online);
+        const word = exact ?? (await resolveWords(createClient(), [text])).items[0]?.words[0];
+        if (cancelled) return;
+        if (word) pick(word, text);
+        else void requestNew(text);
+      } catch {
+        if (!cancelled) setMessage({ text: t("failed") });
+      }
+    })();
+    return () => {
+      cancelled = true;
+    };
+    // eslint-disable-next-line react-hooks/exhaustive-deps -- chỉ chạy khi có chữ mới
+  }, [prefill]);
+
+  async function requestNew(textArg?: string) {
+    const text = (textArg ?? query).trim();
     if (!text) return;
     if (!getSupabaseEnv() || !context.online) {
       setMessage({ text: t("failed") });
@@ -75,7 +103,7 @@ export function SingleEntry({
         lemma: text,
         notebookId: context.signedIn ? context.notebookId : null,
         contextSentence: contextSentence.trim() || null,
-        inputMethod: "typed",
+        inputMethod,
       });
       switch (response.status) {
         case "ready":
@@ -110,7 +138,7 @@ export function SingleEntry({
         db,
         context.owner,
         [{ senseId: picked.senseId, contextSentence: contextSentence.trim() || null }],
-        { notebookId: context.notebookId, inputMethod: "typed" },
+        { notebookId: context.notebookId, inputMethod },
       );
       void cacheSenses(db, [picked.senseId]);
       const word = picked.word.lemma;

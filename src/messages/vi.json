@@ -594,6 +594,45 @@
       "doneToast": "Đã nhập xong {added} từ vào {notebook}",
       "waitingToast": "Hết lượt từ mới hôm nay: còn {pending} từ cho {notebook}, tự chạy tiếp ngày mai",
       "choose": "Chọn nghĩa cho “{word}”"
+    },
+    "voice": {
+      "modeLabel": "Kiểu nói",
+      "learn": "Nói tiếng Anh",
+      "reverse": "Tra ngược (tiếng Việt)",
+      "continuous": "Nói liên tục nhiều từ",
+      "holdToTalk": "Giữ để nói",
+      "tapToStop": "Đang nghe… chạm để dừng",
+      "listening": "Đang nghe…",
+      "processing": "Đang nhận dạng…",
+      "micLabel": "Micro: giữ để nói, hoặc chạm một lần",
+      "hintLearn": "Nói một từ hoặc cụm từ tiếng Anh, rồi chọn phương án đúng.",
+      "hintReverse": "Nói nghĩa tiếng Việt (vd “kiên cường”) để tìm từ tiếng Anh.",
+      "youSaid": "Bạn đã nói:",
+      "candidates": "Các phương án",
+      "suggestions": "Từ tiếng Anh gợi ý",
+      "fromLibrary": "trong kho",
+      "fromAi": "AI gợi ý",
+      "aiLogin": "Đăng nhập để AI gợi ý thêm từ khi kho chưa có.",
+      "aiLimit": "Đã dùng hết lượt AI gợi ý hôm nay.",
+      "aiUnavailable": "Chưa gợi ý thêm được bằng AI.",
+      "noSuggestions": "Chưa tìm được từ tiếng Anh cho “{query}”.",
+      "searching": "Đang tìm từ tiếng Anh…",
+      "again": "Nói lại",
+      "typeInstead": "Gõ thay thế",
+      "lines": "Các từ đã nói ({count})",
+      "removeLine": "Bỏ “{word}”",
+      "review": "Xem trước và thêm {count} từ",
+      "errors": {
+        "not-allowed": "Chưa có quyền dùng micro. Bấm biểu tượng ổ khóa trên thanh địa chỉ, cho phép Micro rồi thử lại.",
+        "no-speech": "Chưa nghe rõ, thử nói chậm và gần micro hơn.",
+        "no-microphone": "Không tìm thấy micro trên thiết bị.",
+        "network": "Mất kết nối khi nhận dạng. Kiểm tra mạng rồi thử lại.",
+        "login-required": "Trình duyệt này chưa tự nhận giọng nói được. Đăng nhập để dùng nhận dạng qua máy chủ, hoặc mở bằng Chrome.",
+        "limit-reached": "Đã dùng hết lượt nhận dạng giọng nói hôm nay. Bạn vẫn có thể gõ từ.",
+        "unavailable": "Chưa nhận dạng được giọng nói lúc này. Hãy thử lại hoặc gõ từ.",
+        "unsupported": "Trình duyệt này không hỗ trợ thu âm. Hãy dùng Chrome, Edge hoặc Safari mới."
+      },
+      "signIn": "Đăng nhập"
     }
   }
 }

@@ -106,7 +106,8 @@ var LLM_TASKS = [
   "example-generator",
   "mnemonic",
   "photo-word-picker",
-  "list-analyzer"
+  "list-analyzer",
+  "reverse-lookup"
 ];
 var DEFAULT_TASKS = {
   // Kiến thức chung → Claude Haiku, dự phòng Sonnet (chốt 2026-10-20 sau so sánh 50 từ:
@@ -122,7 +123,9 @@ var DEFAULT_TASKS = {
   mnemonic: { containsUserData: false, models: ["claude-haiku", "claude-sonnet"] },
   // Ảnh/văn bản OCR của người dùng, bài đọc Admin → chỉ trả phí.
   "photo-word-picker": { containsUserData: true, models: ["claude-sonnet", "claude-haiku"] },
-  "list-analyzer": { containsUserData: true, models: ["claude-sonnet", "claude-haiku"] }
+  "list-analyzer": { containsUserData: true, models: ["claude-sonnet", "claude-haiku"] },
+  // Câu tiếng Việt người dùng nói/gõ để tra ngược (Prompt 2.5) → chỉ trả phí.
+  "reverse-lookup": { containsUserData: true, models: ["claude-sonnet", "claude-haiku"] }
 };
 function envKeyForTask(task) {
   return `LLM_MODELS_${task.toUpperCase().replaceAll("-", "_")}`;
@@ -865,90 +868,158 @@ function fromWordRows(rows) {
 }
 
 // src/lib/words/api.ts
+import { z as z6 } from "npm:zod@4.6.5";
+
+// src/lib/words/reverse.ts
 import { z as z5 } from "npm:zod@4.6.5";
-var InputMethodSchema = z5.enum(["typed", "voice", "photo", "csv", "list"]);
-var WordRequestSchema = z5.object({
-  action: z5.literal("request").default("request"),
-  lemma: z5.string().trim().min(1).max(64),
+var REVERSE_MIN_LIBRARY = 3;
+var REVERSE_MAX_ITEMS = 5;
+var ReverseRequestSchema = z5.object({
+  action: z5.literal("reverse"),
+  query: z5.string().trim().min(2).max(60)
+});
+var ReverseItemSchema = z5.object({
+  word: z5.string(),
+  pos: PosSchema.nullable(),
+  /** Nghĩa tiếng Việt trong kho (null với gợi ý của AI chưa có trong kho). */
+  meaning: z5.string().nullable(),
+  /** Sắc thái do AI giải thích. */
+  nuance: z5.string().nullable(),
+  wordId: z5.string().nullable(),
+  source: z5.enum(["library", "ai"])
+});
+var ReverseResponseSchema = z5.object({
+  items: z5.array(ReverseItemSchema),
+  /** Trạng thái phần AI: skipped (kho đã đủ), used, login_required, limit_reached, unavailable. */
+  ai: z5.enum(["skipped", "used", "login_required", "limit_reached", "unavailable"])
+});
+async function reverseLookup(request, userId, deps) {
+  const library = (await deps.searchByMeaning(request.query)).slice(0, REVERSE_MAX_ITEMS).map((m) => {
+    const pos = PosSchema.safeParse(m.pos);
+    return {
+      word: m.lemma,
+      pos: pos.success ? pos.data : null,
+      meaning: m.meaning,
+      nuance: null,
+      wordId: m.wordId,
+      source: "library"
+    };
+  });
+  if (library.length >= REVERSE_MIN_LIBRARY) return { items: library, ai: "skipped" };
+  if (!userId) return { items: library, ai: "login_required" };
+  if (!deps.suggest) return { items: library, ai: "unavailable" };
+  const quota = await deps.consumeUsage(userId);
+  if (!quota.allowed) return { items: library, ai: "limit_reached" };
+  let suggestions;
+  try {
+    suggestions = await deps.suggest(request.query);
+  } catch (error) {
+    console.error("Tra ngược bằng AI lỗi:", error);
+    return { items: library, ai: "unavailable" };
+  }
+  const seen = new Set(library.map((i) => i.word.toLowerCase()));
+  const items = [...library];
+  for (const s of suggestions) {
+    const word = s.word.trim().toLowerCase();
+    if (!word || seen.has(word) || items.length >= REVERSE_MAX_ITEMS) continue;
+    seen.add(word);
+    items.push({
+      word,
+      pos: s.pos,
+      meaning: null,
+      nuance: s.nuance_vi,
+      wordId: null,
+      source: "ai"
+    });
+  }
+  return { items, ai: "used" };
+}
+
+// src/lib/words/api.ts
+var InputMethodSchema = z6.enum(["typed", "voice", "photo", "csv", "list"]);
+var WordRequestSchema = z6.object({
+  action: z6.literal("request").default("request"),
+  lemma: z6.string().trim().min(1).max(64),
   language: LanguageSchema.default("en"),
   pos: PosSchema.nullish(),
   /** Từ chưa có trong kho: máy chủ tự thêm nghĩa phổ biến nhất vào sổ này khi tạo xong. */
-  notebookId: z5.uuid().nullish(),
-  contextSentence: z5.string().trim().max(500).nullish(),
+  notebookId: z6.uuid().nullish(),
+  contextSentence: z6.string().trim().max(500).nullish(),
   inputMethod: InputMethodSchema.nullish(),
   /** Ghi chú riêng (cột nghĩa/ghi chú của file) → "Ghi chú của bạn" ở tab Nghĩa. */
-  note: z5.string().trim().max(500).nullish(),
+  note: z6.string().trim().max(500).nullish(),
   /** Tag của từ trong sổ (gom nhóm khi nhập file). */
-  tags: z5.array(z5.string().trim().min(1).max(30)).max(10).nullish()
+  tags: z6.array(z6.string().trim().min(1).max(30)).max(10).nullish()
 });
-var WorkerRequestSchema = z5.object({ action: z5.literal("work") });
-var ResolveRequestSchema = z5.object({
-  action: z5.literal("resolve"),
-  lemmas: z5.array(z5.string().trim().min(1).max(64)).min(1).max(50),
+var WorkerRequestSchema = z6.object({ action: z6.literal("work") });
+var ResolveRequestSchema = z6.object({
+  action: z6.literal("resolve"),
+  lemmas: z6.array(z6.string().trim().min(1).max(64)).min(1).max(50),
   language: LanguageSchema.default("en")
 });
-var FunctionRequestSchema = z5.union([
+var FunctionRequestSchema = z6.union([
   WorkerRequestSchema,
   ResolveRequestSchema,
+  ReverseRequestSchema,
   WordRequestSchema
 ]);
-var ImageCreditSchema = z5.object({
-  provider: z5.enum(["pexels", "unsplash"]),
-  author: z5.string(),
-  author_url: z5.string(),
-  source_url: z5.string()
+var ImageCreditSchema = z6.object({
+  provider: z6.enum(["pexels", "unsplash"]),
+  author: z6.string(),
+  author_url: z6.string(),
+  source_url: z6.string()
 });
-var WordMediaSchema = z5.object({
-  audio: z5.object({ us: z5.string().nullable(), uk: z5.string().nullable() }),
+var WordMediaSchema = z6.object({
+  audio: z6.object({ us: z6.string().nullable(), uk: z6.string().nullable() }),
   /** Theo đúng thứ tự `content.senses`. */
-  images: z5.array(z5.object({ url: z5.string(), credit: ImageCreditSchema }).nullable())
+  images: z6.array(z6.object({ url: z6.string(), credit: ImageCreditSchema }).nullable())
 });
-var StoredWordSchema = z5.object({
-  id: z5.string(),
+var StoredWordSchema = z6.object({
+  id: z6.string(),
   /** id các nghĩa theo đúng thứ tự `content.senses` (để tạo user_words). */
-  senseIds: z5.array(z5.string()),
+  senseIds: z6.array(z6.string()),
   content: WordContentSchema,
   media: WordMediaSchema
 });
 var base = {
   /** Dạng gốc đã chuẩn hóa ("running" → "run"). */
-  lemma: z5.string(),
+  lemma: z6.string(),
   /** Dạng gốc khác có thể đúng (vd leaves → leaf), để app hỏi lại người dùng. */
-  alternatives: z5.array(z5.string())
+  alternatives: z6.array(z6.string())
 };
-var WordResponseSchema = z5.discriminatedUnion("status", [
+var WordResponseSchema = z6.discriminatedUnion("status", [
   /** Đã có trong kho: trả ngay (một dòng cho mỗi loại từ). */
-  z5.object({ status: z5.literal("ready"), ...base, words: z5.array(StoredWordSchema).min(1) }),
+  z6.object({ status: z6.literal("ready"), ...base, words: z6.array(StoredWordSchema).min(1) }),
   /** Đang tạo nội dung: app hiện "Đang chuẩn bị nội dung" rồi hỏi lại sau. */
-  z5.object({ status: z5.literal("preparing"), ...base, jobId: z5.string() }),
+  z6.object({ status: z6.literal("preparing"), ...base, jobId: z6.string() }),
   /** Từ ngoài kho, khách chưa đăng nhập: mời đăng nhập. */
-  z5.object({ status: z5.literal("login_required"), ...base }),
+  z6.object({ status: z6.literal("login_required"), ...base }),
   /** Đã dùng hết số từ mới hôm nay. */
-  z5.object({
-    status: z5.literal("limit_reached"),
+  z6.object({
+    status: z6.literal("limit_reached"),
     ...base,
-    dailyLimit: z5.number().int(),
+    dailyLimit: z6.number().int(),
     /** Gói hiện tại: Free hết lượt thì mời nâng cấp Premium. */
-    plan: z5.enum(["free", "premium"]).default("free")
+    plan: z6.enum(["free", "premium"]).default("free")
   }),
   /** Nhập file khi chưa có Premium (máy chủ chặn, app mời nâng cấp). */
-  z5.object({ status: z5.literal("premium_required"), ...base })
+  z6.object({ status: z6.literal("premium_required"), ...base })
 ]);
-var WordSummarySchema = z5.object({
-  id: z5.string(),
-  lemma: z5.string(),
+var WordSummarySchema = z6.object({
+  id: z6.string(),
+  lemma: z6.string(),
   pos: PosSchema,
-  cefr: z5.string().nullable(),
-  senses: z5.array(z5.object({ id: z5.string(), meaning_vi: z5.string() })).min(1)
+  cefr: z6.string().nullable(),
+  senses: z6.array(z6.object({ id: z6.string(), meaning_vi: z6.string() })).min(1)
 });
-var ResolveResponseSchema = z5.object({
-  items: z5.array(
-    z5.object({
+var ResolveResponseSchema = z6.object({
+  items: z6.array(
+    z6.object({
       /** Chữ người dùng nhập (đã làm sạch). */
-      input: z5.string(),
+      input: z6.string(),
       ...base,
       /** Rỗng: chưa có trong kho. */
-      words: z5.array(WordSummarySchema)
+      words: z6.array(WordSummarySchema)
     })
   )
 });
@@ -1092,6 +1163,31 @@ function createSupabaseWordStore(client) {
     }
   };
 }
+
+// src/lib/llm/tasks/reverse-lookup.ts
+import { z as z7 } from "npm:zod@4.6.5";
+var ReverseSuggestionsSchema = z7.object({
+  items: z7.array(
+    z7.object({
+      word: z7.string().trim().min(1).max(64),
+      pos: PosSchema.nullable().catch(null),
+      nuance_vi: z7.string().trim().min(1).max(200)
+    })
+  ).max(5)
+});
+function buildReverseLookupPrompt(template, query) {
+  if (template.task !== "reverse-lookup") {
+    throw new Error(`Cần prompt reverse-lookup, nhận ${template.task}`);
+  }
+  const clean = query.replace(/["\n\r]+/g, " ").trim().slice(0, 60);
+  return {
+    system: renderTemplate(template.system, { query: clean }),
+    prompt: renderTemplate(template.user, { query: clean })
+  };
+}
+
+// raw:src/prompts/reverse-lookup.md
+var reverse_lookup_default = '---\ntask: reverse-lookup\nversion: 1\nschema: src/lib/llm/tasks/reverse-lookup.ts (ReverseSuggestionsSchema)\n---\n\n<!--\nTra ngược: người dùng nói/gõ một từ hoặc cụm tiếng Việt, gợi ý 3–5 từ tiếng Anh tương ứng kèm\nsắc thái để chọn học. Nội dung người dùng nhập nên chạy model trả phí (containsUserData).\nBiến {{query}} do buildReverseLookupPrompt() điền. Sửa prompt → tăng version.\n-->\n\n=== SYSTEM ===\nBạn là giáo viên tiếng Anh giàu kinh nghiệm dạy người Việt. Bạn gợi ý từ tiếng Anh chính xác,\nthông dụng, đúng cách người bản ngữ dùng, và giải thích khác biệt sắc thái bằng tiếng Việt ngắn\ngọn. Chỉ trả về một đối tượng JSON đúng schema, không thêm chữ nào khác.\n\n=== USER ===\nNgười học muốn biết tiếng Anh nói thế nào cho: "{{query}}".\n\n- Gợi ý 3 đến 5 từ hoặc cụm từ tiếng Anh (dạng gốc, viết thường, không mạo từ) tương ứng với\n  nghĩa này, thông dụng nhất trước.\n- pos: loại từ của gợi ý (noun, verb, adjective, adverb, phrasal_verb, phrase…).\n- nuance_vi: một câu ngắn nói rõ sắc thái hoặc ngữ cảnh dùng, để phân biệt các gợi ý với nhau.\n- Nếu "{{query}}" không phải tiếng Việt có nghĩa, trả items rỗng.\n';
 
 // raw:src/prompts/word-content.md
 var word_content_default = '---\ntask: word-content\nversion: 3\nschema: src/lib/schema/word.ts (WordContentSchema, SCHEMA_VERSION 1)\n---\n\n<!--\nPrompt tạo nội dung thẻ từ 5 tab. Phần sau dòng "=== SYSTEM ===" là system prompt,\nsau "=== USER ===" là nội dung gửi kèm từng từ. Biến dạng {{tên}} do\nbuildWordContentPrompt() điền. Nội dung từ dùng chung cho mọi người nên KHÔNG có\ncâu ngữ cảnh của người dùng (quy tắc gói miễn phí). Sửa prompt → tăng version.\n-->\n\n=== SYSTEM ===\nBạn là nhà từ điển học và giáo viên {{language_name}} giàu kinh nghiệm dạy người Việt.\nBạn tạo nội dung thẻ từ chính xác, tự nhiên, đúng cách người bản ngữ dùng. Không bịa:\nmục nào không thực sự tồn tại thì trả mảng rỗng (hoặc null với trường cho phép null).\nMọi phần giải thích viết bằng tiếng Việt tự nhiên, ngắn gọn.\nChỉ trả về một đối tượng JSON đúng schema được cung cấp, không thêm chữ nào khác.\n\n=== USER ===\nTạo nội dung học cho từ "{{lemma}}" (ngôn ngữ: {{language}}, loại từ: {{pos_label}}).\nNgười học ở trình độ {{cefr_level}}.\nNghĩa tham khảo từ Wiktionary (có thể rỗng; chỉ để tham khảo, thứ tự KHÔNG theo tần suất): {{dictionary_json}}\n\nĐầu thẻ (cấp từ):\n\n- schema_version = 1, language = "{{language}}", lemma = "{{lemma}}".\n- {{pos_rule}}\n- ipa: us và uk, KHÔNG kèm dấu "/"; tách âm tiết bằng dấu chấm nếu được (vd "rɪˈzɪl.jənt").\n  Dùng ký hiệu quen thuộc trong từ điển học tập (Cambridge, Oxford): r chứ không ɹ, dʒ/tʃ\n  không có dấu nối, không ngoặc đơn, không ký hiệu phiên âm hẹp (ɫ, ʔ, ɾ).\n- cefr: trình độ CEFR phổ biến của từ (không phải trình độ người học).\n- register: mức trang trọng chung của từ.\n- forms.inflections: dạng chia/số nhiều/so sánh của ĐÚNG loại từ trên thẻ (danh từ chỉ có\n  plural, không ghi dạng động từ); irregular = true nếu bất quy tắc. Chỉ ghi dạng dùng được với\n  các nghĩa trong senses: danh từ không đếm được hoặc đã ở số nhiều (people, news) thì không\n  ghi plural.\n  forms.variants: biến thể chính tả Anh–Mỹ của chính từ này (colour/color), không có thì [].\n- language_extra = null với tiếng Anh.\n\nTab Nghĩa (senses):\n\n- Chỉ nghĩa phổ biến, tối đa 3, sắp theo tần suất (phổ biến nhất trước).\n- definition_en ngắn, dễ hiểu; meaning_vi ngắn gọn, tự nhiên, không dịch từ-đối-từ.\n- image_query: 2–4 từ tiếng Anh mô tả một hình ảnh cụ thể, dễ nhớ cho nghĩa này.\n\nTab Ví dụ (senses[].examples):\n\n- 3 câu mỗi nghĩa, ngữ cảnh đời thường, 8–18 từ; từ vựng xung quanh dễ hơn hoặc\n  bằng {{cefr_level}}; có translation_vi.\n- highlight: đúng dạng từ xuất hiện trong câu (vd "ran"), phải có nguyên văn trong sentence.\n\nTab Cách dùng (theo từng nghĩa):\n\n- collocations: chỉ cụm người bản ngữ thực sự hay dùng, ghi pattern (vd "verb + noun",\n  "adverb + adjective"), tối đa 8.\n- idioms: chỉ khi thực sự tồn tại, gắn register; không có thì [].\n- common_mistakes: tối đa 3 lỗi người Việt hay mắc với nghĩa này (wrong, correct,\n  explanation_vi), vd "resilient with stress" → "resilient to stress". Không có lỗi\n  điển hình thì [].\n\nTab Từ liên quan:\n\n- senses[].synonyms kèm nuance_vi nói rõ khác biệt sắc thái/ngữ cảnh; senses[].antonyms.\n- homonyms (cấp từ): từ viết giống (homograph) hoặc đọc giống (homophone) nhưng khác nghĩa.\n- word_family (cấp từ): các từ cùng họ (danh/động/tính/trạng từ), note_vi nếu cần.\n\nTab Ghi nhớ (cấp từ):\n\n- mnemonics: tối đa 2 mẹo ngắn cho người Việt (type: sound, etymology, image, story).\n- confusables: từ hay bị nhầm với từ này + difference_vi chỉ ra cách phân biệt.\n- etymology_vi: 1 câu về gốc từ/tiền tố/hậu tố nếu giúp dễ nhớ, không thì null.\n\nconfidence: 0–1 cho collocations, idioms, mnemonics (bạn chắc chắn đến đâu).\nKhông tạo mục slang riêng, không tạo mục ngữ pháp riêng.\n';
@@ -1468,6 +1564,7 @@ function createHandler(deps) {
       }
       if (body.action === "resolve") return json(await resolveWords(body, deps.pipeline));
       const userId = await deps.getUserId(request.headers.get("authorization"));
+      if (body.action === "reverse") return json(await reverseLookup(body, userId, deps.reverse));
       const response = await requestWord(body, userId, deps.pipeline);
       if (response.status === "preparing" && deps.worker) {
         deps.waitUntil(
@@ -1513,10 +1610,35 @@ var worker = anthropicKey ? {
 } : null;
 if (!worker)
   console.warn("Chưa có ANTHROPIC_API_KEY: chỉ tra kho và xếp việc, không tạo nội dung.");
+var reverseTemplate = parsePromptTemplate(reverse_lookup_default);
 Deno.serve(
   createHandler({
     pipeline: { store, lemmatizer: englishLemmatizer },
     worker,
+    reverse: {
+      async searchByMeaning(query) {
+        const { data, error } = await supabase.rpc("search_by_meaning", { p_query: query });
+        if (error) throw new Error(`search_by_meaning: ${error.message}`);
+        return data ?? [];
+      },
+      suggest: worker ? async (query) => {
+        const { system, prompt } = buildReverseLookupPrompt(reverseTemplate, query);
+        const result = await worker.llm.generateJSON("reverse-lookup", {
+          system,
+          prompt,
+          schema: ReverseSuggestionsSchema
+        });
+        return result.data.items;
+      } : null,
+      async consumeUsage(userId) {
+        const { data, error } = await supabase.rpc("consume_usage", {
+          p_user_id: userId,
+          p_kind: "reverse_ai"
+        });
+        if (error) throw new Error(`consume_usage: ${error.message}`);
+        return { allowed: data.allowed };
+      }
+    },
     async getUserId(authorization) {
       const token = /^Bearer\s+(.+)$/i.exec(authorization ?? "")?.[1];
       if (!token) return null;

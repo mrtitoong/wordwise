@@ -266,3 +266,14 @@ Repo: https://github.com/mrtitoong/wordwise
   hôm sau rồi tự chạy tiếp; tiến độ ghi `import_jobs` (người dùng được cập nhật việc của mình).
 - 2026-10-21: Xuất sổ ra CSV cho mọi người (kể cả khách): BOM UTF-8, CRLF, chặn công thức Excel;
   cột word, pos, meaning, example, note, tags, status, added_at (nhập lại được vào WordWise).
+- 2026-10-21 (Prompt 2.5): Tab Nói dùng Web Speech API của trình duyệt (miễn phí, 3 phương án,
+  `en-US`/`en-GB` theo giọng trong Cài đặt, tra ngược `vi-VN`); bấm giữ hoặc chạm một lần.
+  Trình duyệt không có Web Speech → thu âm (MediaRecorder), chuyển WAV 16 kHz mono trong trình
+  duyệt, gửi Edge Function **`transcribe` (Azure Speech, dùng chung khóa với TTS)**; cần đăng
+  nhập, tối đa 10 giây/lần, 100 lần/người/ngày (`usage_events`, `consume_usage`); âm thanh không
+  lưu. Chọn phương án → luồng tab Gõ (`SingleEntry` với `prefill`, cách nhập `voice`).
+- 2026-10-21: Tra ngược tiếng Việt → tiếng Anh: hàm SQL `search_by_meaning` (bỏ dấu vẫn tìm được,
+  khớp đúng dấu xếp trước), kho dưới 3 kết quả và đã đăng nhập thì hỏi AI (tác vụ
+  `reverse-lookup`, Sonnet, dự phòng Haiku, 30 lượt/người/ngày) qua `generate-word`
+  (`action: "reverse"`). Nói liên tục chỉ có với Web Speech; câu quá 3 từ tách thành từng từ,
+  xem trước bằng bảng dán nhiều dòng.

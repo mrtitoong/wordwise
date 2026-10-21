@@ -16,6 +16,10 @@ export const WordRequestSchema = z.object({
   notebookId: z.uuid().nullish(),
   contextSentence: z.string().trim().max(500).nullish(),
   inputMethod: InputMethodSchema.nullish(),
+  /** Ghi chú riêng (cột nghĩa/ghi chú của file) → "Ghi chú của bạn" ở tab Nghĩa. */
+  note: z.string().trim().max(500).nullish(),
+  /** Tag của từ trong sổ (gom nhóm khi nhập file). */
+  tags: z.array(z.string().trim().min(1).max(30)).max(10).nullish(),
 });
 
 export const WorkerRequestSchema = z.object({ action: z.literal("work") });
@@ -86,6 +90,8 @@ export const WordResponseSchema = z.discriminatedUnion("status", [
     /** Gói hiện tại: Free hết lượt thì mời nâng cấp Premium. */
     plan: z.enum(["free", "premium"]).default("free"),
   }),
+  /** Nhập file khi chưa có Premium (máy chủ chặn, app mời nâng cấp). */
+  z.object({ status: z.literal("premium_required"), ...base }),
 ]);
 
 export type WordResponse = z.infer<typeof WordResponseSchema>;

@@ -122,6 +122,7 @@ export async function lookupWord(
   if (!getSupabaseEnv()) return { status: "unavailable" };
   try {
     const response = await requestWord(createClient(), { lemma: normalize(lemma), pos });
+    if (response.status === "premium_required") return { status: "unavailable" };
     if (response.status !== "ready") return { status: response.status };
     const word = (pos && response.words.find((w) => w.content.pos === pos)) || response.words[0]!;
     if (!(await fetchWordToLocal(db, word.id))) return { status: "unavailable" };

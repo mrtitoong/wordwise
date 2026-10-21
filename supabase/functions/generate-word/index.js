@@ -866,14 +866,28 @@ function fromWordRows(rows) {
 
 // src/lib/words/api.ts
 import { z as z5 } from "npm:zod@4.6.5";
+var InputMethodSchema = z5.enum(["typed", "voice", "photo", "csv", "list"]);
 var WordRequestSchema = z5.object({
   action: z5.literal("request").default("request"),
   lemma: z5.string().trim().min(1).max(64),
   language: LanguageSchema.default("en"),
-  pos: PosSchema.nullish()
+  pos: PosSchema.nullish(),
+  /** Từ chưa có trong kho: máy chủ tự thêm nghĩa phổ biến nhất vào sổ này khi tạo xong. */
+  notebookId: z5.uuid().nullish(),
+  contextSentence: z5.string().trim().max(500).nullish(),
+  inputMethod: InputMethodSchema.nullish()
 });
 var WorkerRequestSchema = z5.object({ action: z5.literal("work") });
-var FunctionRequestSchema = z5.union([WorkerRequestSchema, WordRequestSchema]);
+var ResolveRequestSchema = z5.object({
+  action: z5.literal("resolve"),
+  lemmas: z5.array(z5.string().trim().min(1).max(64)).min(1).max(50),
+  language: LanguageSchema.default("en")
+});
+var FunctionRequestSchema = z5.union([
+  WorkerRequestSchema,
+  ResolveRequestSchema,
+  WordRequestSchema
+]);
 var ImageCreditSchema = z5.object({
   provider: z5.enum(["pexels", "unsplash"]),
   author: z5.string(),
@@ -906,8 +920,44 @@ var WordResponseSchema = z5.discriminatedUnion("status", [
   /** Từ ngoài kho, khách chưa đăng nhập: mời đăng nhập. */
   z5.object({ status: z5.literal("login_required"), ...base }),
   /** Đã dùng hết số từ mới hôm nay. */
-  z5.object({ status: z5.literal("limit_reached"), ...base, dailyLimit: z5.number().int() })
+  z5.object({
+    status: z5.literal("limit_reached"),
+    ...base,
+    dailyLimit: z5.number().int(),
+    /** Gói hiện tại: Free hết lượt thì mời nâng cấp Premium. */
+    plan: z5.enum(["free", "premium"]).default("free")
+  })
 ]);
+var WordSummarySchema = z5.object({
+  id: z5.string(),
+  lemma: z5.string(),
+  pos: PosSchema,
+  cefr: z5.string().nullable(),
+  senses: z5.array(z5.object({ id: z5.string(), meaning_vi: z5.string() })).min(1)
+});
+var ResolveResponseSchema = z5.object({
+  items: z5.array(
+    z5.object({
+      /** Chữ người dùng nhập (đã làm sạch). */
+      input: z5.string(),
+      ...base,
+      /** Rỗng: chưa có trong kho. */
+      words: z5.array(WordSummarySchema)
+    })
+  )
+});
+function toWordSummary(word) {
+  return {
+    id: word.id,
+    lemma: word.content.lemma,
+    pos: word.content.pos,
+    cefr: word.content.cefr,
+    senses: word.content.senses.map((s, i) => ({
+      id: word.senseIds[i],
+      meaning_vi: s.meaning_vi
+    }))
+  };
+}
 
 // src/lib/words/supabase-store.ts
 var WORD_SELECT = "id, language, lemma, pos, ipa_us, ipa_uk, cefr, register, schema_version, forms, details, audio_us_url, audio_uk_url, word_senses (id, sense_order, definition_en, meaning_vi, image_query, image_url, image_credit, word_details (sense_id, examples, synonyms, antonyms, collocations, idioms, common_mistakes))";
@@ -970,18 +1020,23 @@ function createSupabaseWordStore(client) {
       );
       return data?.id ?? null;
     },
-    async requestJob(userId, language, lemma, pos) {
+    async requestJob(userId, language, lemma, pos, target) {
       const data = check(
         await client.rpc("request_word_job", {
           p_user_id: userId,
           p_language: language,
           p_lemma: lemma,
-          ...pos ? { p_pos: pos } : {}
+          ...pos ? { p_pos: pos } : {},
+          ...target ? {
+            p_notebook_id: target.notebookId,
+            p_input_method: target.inputMethod,
+            ...target.contextSentence ? { p_context_sentence: target.contextSentence } : {}
+          } : {}
         }),
         "Xếp việc"
       );
       if (data.limit_reached || !data.job_id) {
-        return { limitReached: true, dailyLimit: data.daily_limit };
+        return { limitReached: true, dailyLimit: data.daily_limit, plan: data.plan ?? "free" };
       }
       return { limitReached: false, jobId: data.job_id, dailyLimit: data.daily_limit };
     },
@@ -1199,31 +1254,67 @@ function buildWordContentPrompt(template, request) {
 }
 
 // src/lib/words/pipeline.ts
-async function requestWord(request, userId, deps) {
-  const pos = request.pos ?? null;
-  const { lemma, surface, alternatives } = toLemma(request.lemma, {
-    language: request.language,
+async function findInStore(input, language, pos, deps) {
+  const { lemma, surface, alternatives } = toLemma(input, {
+    language,
     pos,
     lemmatizer: deps.lemmatizer
   });
-  const base2 = { lemma, alternatives };
-  const words = await deps.store.findWords(request.language, lemma, pos);
-  if (words.length > 0) return { status: "ready", ...base2, words };
+  const words = await deps.store.findWords(language, lemma, pos);
+  if (words.length > 0) return { lemma, surface, alternatives, words };
   if (surface !== lemma) {
-    const asTyped = await deps.store.findWords(request.language, surface, pos);
+    const asTyped = await deps.store.findWords(language, surface, pos);
     if (asTyped.length > 0) {
       return {
-        status: "ready",
         lemma: surface,
+        surface,
         alternatives: [lemma, ...alternatives.filter((a) => a !== surface)],
         words: asTyped
       };
     }
   }
+  return { lemma, surface, alternatives, words: [] };
+}
+async function requestWord(request, userId, deps) {
+  const pos = request.pos ?? null;
+  const { lemma, alternatives, words } = await findInStore(
+    request.lemma,
+    request.language,
+    pos,
+    deps
+  );
+  const base2 = { lemma, alternatives };
+  if (words.length > 0) return { status: "ready", ...base2, words };
   if (!userId) return { status: "login_required", ...base2 };
-  const job = await deps.store.requestJob(userId, request.language, lemma, pos);
-  if (job.limitReached) return { status: "limit_reached", ...base2, dailyLimit: job.dailyLimit };
+  const target = request.notebookId ? {
+    notebookId: request.notebookId,
+    contextSentence: request.contextSentence ?? null,
+    inputMethod: request.inputMethod ?? "typed"
+  } : null;
+  const job = target ? await deps.store.requestJob(userId, request.language, lemma, pos, target) : await deps.store.requestJob(userId, request.language, lemma, pos);
+  if (job.limitReached) {
+    return {
+      status: "limit_reached",
+      ...base2,
+      dailyLimit: job.dailyLimit,
+      plan: job.plan ?? "free"
+    };
+  }
   return { status: "preparing", ...base2, jobId: job.jobId };
+}
+async function resolveWords(request, deps) {
+  const items = await Promise.all(
+    request.lemmas.map(async (input) => {
+      const found = await findInStore(input, request.language, null, deps);
+      return {
+        input: found.surface,
+        lemma: found.lemma,
+        alternatives: found.alternatives,
+        words: found.words.map(toWordSummary)
+      };
+    })
+  );
+  return { items };
 }
 function stripIpaSlashes(raw) {
   if (typeof raw !== "object" || raw === null || !("ipa" in raw)) return raw;
@@ -1361,6 +1452,7 @@ function createHandler(deps) {
         if (!deps.worker) return json({ error: "llm_not_configured" }, 503);
         return json(summarize(await runWorker(deps.worker)));
       }
+      if (body.action === "resolve") return json(await resolveWords(body, deps.pipeline));
       const userId = await deps.getUserId(request.headers.get("authorization"));
       const response = await requestWord(body, userId, deps.pipeline);
       if (response.status === "preparing" && deps.worker) {

@@ -236,3 +236,21 @@ Repo: https://github.com/mrtitoong/wordwise
   inappropriate, other; ghi chú ≤ 500), cần đăng nhập, 20 báo cáo/người/ngày
   (`private.settings.user_daily_reports`). Admin xem/xử lý ở GĐ7. Nút "Ôn từ này" và "Gợi ý mẹo
   nhớ mới" để GĐ3; nội dung tạo một lần nên các tab hiện cùng lúc (không theo từng lớp).
+- 2026-10-21 (Prompt 2.4): Chia hai nhánh: **2.4a** sổ tay + tab Gõ (`gd2/notebooks-typed`),
+  **2.4b** nhập file + xuất CSV. **Bỏ định dạng Anki** (chủ sản phẩm chốt: không phổ biến);
+  file chỉ CSV/Excel.
+- 2026-10-21: **Gói Free/Premium** (`profiles.plan`, chưa thu tiền: admin bật bằng SQL
+  `update profiles set plan = 'premium' …`). Free 50 từ mới (chưa có trong kho)/ngày, Premium 300
+  (`private.settings.premium_daily_new_words`); trần hệ thống 1.000/ngày giữ nguyên. Hết lượt →
+  màn "Nâng cấp Premium – sắp ra mắt". **Nhập file chỉ cho Premium**; khách không nhập file.
+  Dán nhiều dòng ở tab Gõ miễn phí (từ mới vẫn tính vào 50). Cổng thanh toán làm prompt riêng.
+- 2026-10-21: Từ chưa có trong kho thêm vào sổ: `word_job_requests` ghi sổ đích + câu gốc; khi tạo
+  xong, `complete_word_job` tự thêm **nghĩa phổ biến nhất** vào sổ (ID UUID v5 giống máy khách),
+  app đồng bộ về. Edge Function generate-word có thêm `action: "resolve"` (tra ≤ 50 từ, không tốn
+  lượt) cho dán nhiều dòng; gợi ý khi gõ dùng hàm SQL `search_words` (offline: từ trong máy).
+- 2026-10-21: Hàng "Sắp học": từ mới vào `status = queued`, mở dần theo `daily_new_limit` theo múi
+  giờ người dùng (`user_words.introduced_at`), chạy khi thêm từ, mở app và sau mỗi lần đồng bộ.
+  Trạng thái học: Sắp học / Đang học / Đã thuộc (ổn định ≥ 7 ngày) / Thành thạo (≥ 21 ngày) /
+  Tạm ngưng; mức thuộc 0–4. Bỏ ràng buộc unique tên sổ ở DB (kẹt đồng bộ khi offline), UI kiểm
+  tra trùng. Bìa sổ: 8 màu có sẵn hoặc ảnh tải lên (bucket user-images). Toast dùng chung
+  `showToast()` (có Hoàn tác 5 giây). Không xóa được "Sổ của tôi".

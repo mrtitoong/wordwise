@@ -6,15 +6,8 @@ import { usePathname } from "next/navigation";
 import { useTranslations } from "next-intl";
 import { Button } from "@/components/ui/button";
 import { Sheet } from "@/components/ui/sheet";
-import { GUEST_OWNER, randomId } from "@/lib/db/ids";
-import {
-  USER_IMAGES_BUCKET,
-  USER_IMAGE_MAX_BYTES,
-  fitWithin,
-  toUserImageRef,
-  userImagePath,
-  userImagePathFromRef,
-} from "@/lib/media/user-images";
+import { removeUserImage, uploadUserImage } from "@/features/media/user-images";
+import { GUEST_OWNER } from "@/lib/db/ids";
 import type { Pos } from "@/lib/schema/word";
 import { createClient } from "@/lib/supabase/client";
 import { useOnlineStatus } from "@/lib/sync/hooks";
@@ -111,27 +104,6 @@ export function MeaningSheet({
 
 /* ---------- Ảnh gợi nhớ tự tải lên ---------- */
 
-async function shrinkImage(file: File): Promise<{ blob: Blob; ext: "webp" | "jpg" }> {
-  const bitmap = await createImageBitmap(file);
-  const size = fitWithin(bitmap.width, bitmap.height);
-  const canvas = document.createElement("canvas");
-  canvas.width = size.width;
-  canvas.height = size.height;
-  canvas.getContext("2d")!.drawImage(bitmap, 0, 0, size.width, size.height);
-  bitmap.close();
-  const encode = (type: string, quality: number) =>
-    new Promise<Blob | null>((resolve) => canvas.toBlob(resolve, type, quality));
-  for (const quality of [0.82, 0.6, 0.4]) {
-    // Trình duyệt không hỗ trợ WebP sẽ trả PNG → dùng JPEG.
-    const webp = await encode("image/webp", quality);
-    const blob = webp?.type === "image/webp" ? webp : await encode("image/jpeg", quality);
-    if (blob && blob.size <= USER_IMAGE_MAX_BYTES) {
-      return { blob, ext: blob.type === "image/webp" ? "webp" : "jpg" };
-    }
-  }
-  throw new Error("Ảnh quá lớn sau khi nén");
-}
-
 export function ImageSheet({
   owner,
   currentRef,
@@ -149,41 +121,21 @@ export function ImageSheet({
   const [state, setState] = useState<"idle" | "uploading" | "failed" | "unsupported">("idle");
   const signedIn = !!owner && owner !== GUEST_OWNER;
 
-  async function removeOld() {
-    const old = owner ? userImagePathFromRef(currentRef, owner) : null;
-    if (old)
-      await createClient()
-        .storage.from(USER_IMAGES_BUCKET)
-        .remove([old])
-        .catch(() => {});
-  }
-
   async function upload(file: File) {
     if (!owner) return;
     setState("uploading");
-    let image: { blob: Blob; ext: "webp" | "jpg" };
-    try {
-      image = await shrinkImage(file);
-    } catch {
-      setState("unsupported");
+    const result = await uploadUserImage(owner, file);
+    if (!result.ok) {
+      setState(result.error);
       return;
     }
-    const path = userImagePath(owner, randomId(), image.ext);
-    const { error } = await createClient()
-      .storage.from(USER_IMAGES_BUCKET)
-      .upload(path, image.blob, { contentType: image.blob.type, upsert: false })
-      .catch(() => ({ error: new Error("network") }));
-    if (error) {
-      setState("failed");
-      return;
-    }
-    await removeOld();
-    await onSave(toUserImageRef(path));
+    await removeUserImage(owner, currentRef);
+    await onSave(result.ref);
     onClose();
   }
 
   async function restoreOriginal() {
-    await removeOld();
+    if (owner) await removeUserImage(owner, currentRef);
     await onSave(null);
     onClose();
   }

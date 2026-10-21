@@ -8,7 +8,7 @@
 import { createClient } from "@supabase/supabase-js";
 import type { Database } from "@/lib/db/database.types";
 import { SentenceAudioResponseSchema } from "@/lib/media/api";
-import { WordResponseSchema, type WordResponse } from "@/lib/words/api";
+import { ResolveResponseSchema, WordResponseSchema, type WordResponse } from "@/lib/words/api";
 
 const url = process.env.SUPABASE_URL;
 const key = process.env.SUPABASE_PUBLISHABLE_KEY;
@@ -77,6 +77,49 @@ if (preparing.status === "preparing") {
     jobs,
   );
 }
+
+/* ---------- Thêm từ (Prompt 2.4) ---------- */
+
+const resolved = await call({ action: "resolve", lemmas: ["Running", "zygote-xyz"] });
+const items = resolved.status === 200 ? ResolveResponseSchema.parse(resolved.body).items : [];
+expect(
+  items[0]?.lemma === "run" && items[0].words.length > 0 && items[1]?.words.length === 0,
+  "resolve: tra nhiều từ, đưa về dạng gốc, từ ngoài kho rỗng",
+  resolved,
+);
+
+const { data: suggestions } = await user.rpc("search_words", { p_prefix: "Resil" });
+expect(
+  Array.isArray(suggestions) &&
+    (suggestions as { lemma: string }[]).some((s) => s.lemma === "resilient"),
+  "search_words: gợi ý theo tiền tố",
+  suggestions,
+);
+
+const { data: notebook } = await user
+  .from("notebooks")
+  .insert({ user_id: session.session.user.id, name: `Smoke ${Date.now()}` })
+  .select("id")
+  .single();
+const targeted = await word(
+  {
+    lemma: "tenaciousness",
+    notebookId: notebook?.id,
+    inputMethod: "typed",
+    contextSentence: "Câu",
+  },
+  session.session.access_token,
+);
+const { data: requests } = await user
+  .from("word_job_requests")
+  .select("notebook_id, input_method, context_sentence")
+  .not("notebook_id", "is", null);
+expect(
+  targeted.status === "preparing" &&
+    !!requests?.some((r) => r.notebook_id === notebook?.id && r.input_method === "typed"),
+  "Từ mới kèm sổ đích → preparing, ghi lại sổ để tự thêm khi xong",
+  { targeted, requests },
+);
 
 const worker = await call({ action: "work" }, key, { "x-worker-secret": "sai".repeat(20) });
 expect(worker.status === 401, "Worker sai khóa → 401", worker);

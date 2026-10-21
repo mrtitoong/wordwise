@@ -6,6 +6,7 @@ import { useLiveQuery } from "dexie-react-hooks";
 import { ArrowLeft } from "lucide-react";
 import { useTranslations } from "next-intl";
 import { Tabs } from "radix-ui";
+import { showToast } from "@/components/ui/toast";
 import { getLocalDb } from "@/lib/db/local";
 import { addSensesToDefaultNotebook, updateUserWord } from "@/lib/db/repo";
 import { useOnlineStatus } from "@/lib/sync/hooks";
@@ -101,7 +102,6 @@ export function WordCardScreen({ wordId }: { wordId: string }) {
   const [quick, setQuick] = useState(() => typeof window !== "undefined" && readQuickView());
   const [tab, setTab] = useState<WordCardTab>("meaning");
   const [sheet, setSheet] = useState<SheetState | null>(null);
-  const [flash, setFlash] = useState<string | null>(null);
   const [fetchFailed, setFetchFailed] = useState(false);
 
   const word = useLiveQuery(() => readLocalWord(getLocalDb(), wordId), [wordId]);
@@ -127,12 +127,6 @@ export function WordCardScreen({ wordId }: { wordId: string }) {
     };
   }, [word, wordId, online]);
 
-  useEffect(() => {
-    if (!flash) return;
-    const timer = setTimeout(() => setFlash(null), 3000);
-    return () => clearTimeout(timer);
-  }, [flash]);
-
   const view = useMemo(
     () =>
       word ? buildWordCard(word, personal ?? { userWords: [], entries: [], notebooks: [] }) : null,
@@ -150,7 +144,7 @@ export function WordCardScreen({ wordId }: { wordId: string }) {
         notebook,
         "typed",
         "word_card",
-      ).then(() => setFlash(t("wordCard.added", { notebook })));
+      ).then(() => showToast({ text: t("wordCard.added", { notebook }) }));
     },
     [owner, t],
   );
@@ -273,21 +267,10 @@ export function WordCardScreen({ wordId }: { wordId: string }) {
           layer={sheet.layer}
           senseId={sheet.senseId}
           onClose={close}
-          onSent={() => setFlash(t("wordCard.reportSheet.sent"))}
+          onSent={() => showToast({ text: t("wordCard.reportSheet.sent") })}
         />
       )}
       {sheet?.kind === "chip" && <ChipSheet word={sheet.word} pos={sheet.pos} onClose={close} />}
-
-      <div
-        role="status"
-        aria-live="polite"
-        className={cn(
-          "pointer-events-none fixed inset-x-0 bottom-[calc(1.5rem+env(safe-area-inset-bottom,0px))] z-50 mx-auto w-fit max-w-[calc(100%-2rem)] rounded-full bg-foreground px-4 py-2.5 text-sm text-background shadow-lg transition-opacity",
-          flash ? "opacity-100" : "opacity-0",
-        )}
-      >
-        {flash}
-      </div>
     </CardProvider>
   );
 }

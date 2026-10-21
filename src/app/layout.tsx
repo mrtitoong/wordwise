@@ -3,6 +3,7 @@ import { Be_Vietnam_Pro } from "next/font/google";
 import { NextIntlClientProvider } from "next-intl";
 import { getLocale, getTranslations } from "next-intl/server";
 import { SyncProvider } from "@/components/sync/sync-provider";
+import { ToastViewport } from "@/components/ui/toast";
 import "./globals.css";
 
 const font = Be_Vietnam_Pro({
@@ -36,6 +37,7 @@ export default async function RootLayout({ children }: { children: React.ReactNo
         <NextIntlClientProvider>
           <SyncProvider />
           {children}
+          <ToastViewport />
         </NextIntlClientProvider>
       </body>
     </html>

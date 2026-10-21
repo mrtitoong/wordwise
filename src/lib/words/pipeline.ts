@@ -24,7 +24,15 @@ import type { PromptTemplate } from "@/lib/llm/prompt-template";
 import { buildWordContentPrompt } from "@/lib/llm/tasks/word-content";
 import { WordContentSchema, type Language, type Pos, type WordContent } from "@/lib/schema/word";
 import { toWordRows, type WordRows } from "@/lib/schema/word-rows";
-import type { StoredWord, WordRequest, WordResponse } from "./api";
+import {
+  toWordSummary,
+  type InputMethod,
+  type ResolveRequest,
+  type ResolveResponse,
+  type StoredWord,
+  type WordRequest,
+  type WordResponse,
+} from "./api";
 
 export interface WordJob {
   id: string;
@@ -37,9 +45,18 @@ export interface WordJob {
   frequencyRank: number | null;
 }
 
+export type Plan = "free" | "premium";
+
 export type RequestJobResult =
   | { limitReached: false; jobId: string; dailyLimit: number }
-  | { limitReached: true; dailyLimit: number };
+  | { limitReached: true; dailyLimit: number; plan?: Plan };
+
+/** Nơi nhận từ khi nội dung tạo xong (máy chủ tự thêm vào sổ). */
+export interface JobTarget {
+  notebookId: string;
+  contextSentence: string | null;
+  inputMethod: InputMethod;
+}
 
 /** Lớp truy cập database (bản thật: supabase-store.ts). */
 export interface WordStore {
@@ -51,6 +68,7 @@ export interface WordStore {
     language: Language,
     lemma: string,
     pos: Pos | null,
+    target?: JobTarget,
   ): Promise<RequestJobResult>;
   claimJobs(limit: number, jobId?: string): Promise<WordJob[]>;
   /** Lưu từ và đóng việc trong một transaction; trùng thì trả id bản đã có. */
@@ -77,41 +95,92 @@ export interface WorkerDeps {
 
 /* ---------- Yêu cầu từ app ---------- */
 
+/** Chuẩn hóa về từ gốc rồi tìm trong kho (cả dạng người dùng gõ nếu là từ riêng). */
+async function findInStore(
+  input: string,
+  language: WordRequest["language"],
+  pos: Pos | null,
+  deps: PipelineDeps,
+): Promise<{ lemma: string; surface: string; alternatives: string[]; words: StoredWord[] }> {
+  const { lemma, surface, alternatives } = toLemma(input, {
+    language,
+    pos,
+    lemmatizer: deps.lemmatizer,
+  });
+  const words = await deps.store.findWords(language, lemma, pos);
+  if (words.length > 0) return { lemma, surface, alternatives, words };
+
+  // Dạng người dùng gõ có thể đã có sẵn như một từ riêng (vd "building" được tạo trước).
+  if (surface !== lemma) {
+    const asTyped = await deps.store.findWords(language, surface, pos);
+    if (asTyped.length > 0) {
+      return {
+        lemma: surface,
+        surface,
+        alternatives: [lemma, ...alternatives.filter((a) => a !== surface)],
+        words: asTyped,
+      };
+    }
+  }
+  return { lemma, surface, alternatives, words: [] };
+}
+
 export async function requestWord(
   request: WordRequest,
   userId: string | null,
   deps: PipelineDeps,
 ): Promise<WordResponse> {
   const pos = request.pos ?? null;
-  const { lemma, surface, alternatives } = toLemma(request.lemma, {
-    language: request.language,
+  const { lemma, alternatives, words } = await findInStore(
+    request.lemma,
+    request.language,
     pos,
-    lemmatizer: deps.lemmatizer,
-  });
+    deps,
+  );
   const base = { lemma, alternatives };
-
-  const words = await deps.store.findWords(request.language, lemma, pos);
   if (words.length > 0) return { status: "ready", ...base, words };
-
-  // Dạng người dùng gõ có thể đã có sẵn như một từ riêng (vd "building" được tạo trước).
-  if (surface !== lemma) {
-    const asTyped = await deps.store.findWords(request.language, surface, pos);
-    if (asTyped.length > 0) {
-      return {
-        status: "ready",
-        lemma: surface,
-        alternatives: [lemma, ...alternatives.filter((a) => a !== surface)],
-        words: asTyped,
-      };
-    }
-  }
 
   // Khách không tạo được từ mới (không có tài khoản để đếm giới hạn, chống lạm dụng chi phí).
   if (!userId) return { status: "login_required", ...base };
 
-  const job = await deps.store.requestJob(userId, request.language, lemma, pos);
-  if (job.limitReached) return { status: "limit_reached", ...base, dailyLimit: job.dailyLimit };
+  const target: JobTarget | null = request.notebookId
+    ? {
+        notebookId: request.notebookId,
+        contextSentence: request.contextSentence ?? null,
+        inputMethod: request.inputMethod ?? "typed",
+      }
+    : null;
+  const job = target
+    ? await deps.store.requestJob(userId, request.language, lemma, pos, target)
+    : await deps.store.requestJob(userId, request.language, lemma, pos);
+  if (job.limitReached) {
+    return {
+      status: "limit_reached",
+      ...base,
+      dailyLimit: job.dailyLimit,
+      plan: job.plan ?? "free",
+    };
+  }
   return { status: "preparing", ...base, jobId: job.jobId };
+}
+
+/** Tra nhiều từ (dán nhiều dòng, nhập file): không tạo việc, không tính vào giới hạn. */
+export async function resolveWords(
+  request: ResolveRequest,
+  deps: PipelineDeps,
+): Promise<ResolveResponse> {
+  const items = await Promise.all(
+    request.lemmas.map(async (input) => {
+      const found = await findInStore(input, request.language, null, deps);
+      return {
+        input: found.surface,
+        lemma: found.lemma,
+        alternatives: found.alternatives,
+        words: found.words.map(toWordSummary),
+      };
+    }),
+  );
+  return { items };
 }
 
 /* ---------- Worker ---------- */

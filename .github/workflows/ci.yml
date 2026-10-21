@@ -138,7 +138,7 @@ jobs:
           done
           cat /tmp/functions.log
           exit 1
-      - name: Chạy thử generate-word
+      - name: Chạy thử generate-word và word-media
         run: npx tsx scripts/smoke-generate-word.ts
       - name: Nhật ký Edge Function
         if: always()

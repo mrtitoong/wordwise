@@ -11,6 +11,7 @@ import {
   type WordRequest,
   type WordResponse,
 } from "./api";
+import { ReverseResponseSchema, type ReverseResponse } from "./reverse";
 
 /** Khoảng chờ giữa các lần hỏi lại khi đang chuẩn bị nội dung (tạo một từ mất ~30 giây). */
 export const PREPARING_POLL_MS = 5_000;
@@ -36,4 +37,16 @@ export async function resolveWords(
   });
   if (error) throw error;
   return ResolveResponseSchema.parse(data);
+}
+
+/** Tra ngược tiếng Việt → tiếng Anh: kho trước, AI bổ sung khi đã đăng nhập (có giới hạn). */
+export async function reverseLookup(
+  supabase: Pick<SupabaseClient, "functions">,
+  query: string,
+): Promise<ReverseResponse> {
+  const { data, error } = await supabase.functions.invoke("generate-word", {
+    body: { action: "reverse", query },
+  });
+  if (error) throw error;
+  return ReverseResponseSchema.parse(data);
 }

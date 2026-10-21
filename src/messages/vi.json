@@ -177,5 +177,11 @@
     "offline": "Đang offline, {count} thay đổi chờ gửi",
     "pending": "{count} thay đổi chờ gửi, bấm để đồng bộ",
     "error": "Đồng bộ bị lỗi, bấm để thử lại"
+  },
+  "audio": {
+    "play": "Nghe ({voice})",
+    "voiceUs": "giọng Mỹ",
+    "voiceUk": "giọng Anh",
+    "rate": "Tốc độ {rate}x, bấm để đổi"
   }
 }

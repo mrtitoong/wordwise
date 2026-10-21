@@ -177,5 +177,11 @@
     "offline": "Offline, {count} changes waiting",
     "pending": "{count} changes waiting, tap to sync",
     "error": "Sync failed, tap to retry"
+  },
+  "audio": {
+    "play": "Listen ({voice})",
+    "voiceUs": "US voice",
+    "voiceUk": "UK voice",
+    "rate": "Speed {rate}x, tap to change"
   }
 }

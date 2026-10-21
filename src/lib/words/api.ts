@@ -17,12 +17,29 @@ export const FunctionRequestSchema = z.union([WorkerRequestSchema, WordRequestSc
 
 export type WordRequest = z.infer<typeof WordRequestSchema>;
 
+export const ImageCreditSchema = z.object({
+  provider: z.enum(["pexels", "unsplash"]),
+  author: z.string(),
+  author_url: z.string(),
+  source_url: z.string(),
+});
+
+/** Audio và ảnh (Prompt 2.2) tạo sau nội dung nên có thể chưa có (null). */
+export const WordMediaSchema = z.object({
+  audio: z.object({ us: z.string().nullable(), uk: z.string().nullable() }),
+  /** Theo đúng thứ tự `content.senses`. */
+  images: z.array(z.object({ url: z.string(), credit: ImageCreditSchema }).nullable()),
+});
+
 export const StoredWordSchema = z.object({
   id: z.string(),
   /** id các nghĩa theo đúng thứ tự `content.senses` (để tạo user_words). */
   senseIds: z.array(z.string()),
   content: WordContentSchema,
+  media: WordMediaSchema,
 });
+
+export type WordMedia = z.infer<typeof WordMediaSchema>;
 
 export type StoredWord = z.infer<typeof StoredWordSchema>;
 

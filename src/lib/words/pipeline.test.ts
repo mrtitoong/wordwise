@@ -77,6 +77,7 @@ function fakeStore(initial: WordContent[] = [], dailyLimit = 50) {
     id,
     senseIds: rows.senses.map((s) => s.id),
     content: fromWordRows(rows),
+    media: { audio: { us: null, uk: null }, images: rows.senses.map(() => null) },
   });
 
   const store: WordStore = {

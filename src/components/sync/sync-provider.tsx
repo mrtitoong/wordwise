@@ -3,7 +3,7 @@
 import { useEffect } from "react";
 import { GUEST_OWNER } from "@/lib/db/ids";
 import { getLocalDb } from "@/lib/db/local";
-import { recordReview } from "@/lib/db/repo";
+import { openNewWords, recordReview } from "@/lib/db/repo";
 import { createClient } from "@/lib/supabase/client";
 import { getSupabaseEnv } from "@/lib/supabase/env";
 import { getSyncEngine } from "@/lib/sync/client";
@@ -18,6 +18,22 @@ export function SyncProvider() {
     if (!engine) return;
     const stop = engine.start();
     let unsubscribe = () => {};
+
+    // Mở dần từ "Sắp học" khi mở app và sau mỗi lần đồng bộ xong (từ máy khác/máy chủ thêm vào).
+    let lastState = "";
+    let opening = false;
+    const stopOpening = engine.subscribe(() => {
+      const { state } = engine.getStatus();
+      const owner = engine.getOwner();
+      const settled = state === "idle" || state === "local";
+      if (settled && state !== lastState && owner && !opening) {
+        opening = true;
+        void openNewWords(getLocalDb(), owner)
+          .catch((error) => console.error("Mở từ mới lỗi:", error))
+          .finally(() => (opening = false));
+      }
+      lastState = state;
+    });
 
     if (getSupabaseEnv()) {
       const supabase = createClient();
@@ -57,6 +73,7 @@ export function SyncProvider() {
 
     return () => {
       stop();
+      stopOpening();
       unsubscribe();
     };
   }, []);

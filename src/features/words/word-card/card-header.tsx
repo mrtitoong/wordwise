@@ -1,39 +1,12 @@
 "use client";
 
-import { useEffect, useState } from "react";
 import Link from "next/link";
 import { ImageIcon, Plus } from "lucide-react";
 import { useTranslations } from "next-intl";
 import { AudioButton } from "@/components/audio-button";
 import { Button } from "@/components/ui/button";
-import { GUEST_OWNER } from "@/lib/db/ids";
-import {
-  USER_IMAGES_BUCKET,
-  USER_IMAGE_URL_TTL_S,
-  userImagePathFromRef,
-} from "@/lib/media/user-images";
-import { createClient } from "@/lib/supabase/client";
-import { getSupabaseEnv } from "@/lib/supabase/env";
+import { useUserImageUrl } from "@/features/media/user-images";
 import { MineBadge, useCard } from "./parts";
-
-/** Signed URL cho ảnh tự tải lên (bucket riêng tư); null khi offline hoặc lỗi. */
-function useUserImageUrl(ref: string | null, owner: string | null): string | null {
-  const [url, setUrl] = useState<{ ref: string; url: string | null } | null>(null);
-  useEffect(() => {
-    const path = owner && owner !== GUEST_OWNER ? userImagePathFromRef(ref, owner) : null;
-    if (!ref || !path || !getSupabaseEnv()) return;
-    let cancelled = false;
-    void createClient()
-      .storage.from(USER_IMAGES_BUCKET)
-      .createSignedUrl(path, USER_IMAGE_URL_TTL_S)
-      .then(({ data }) => !cancelled && setUrl({ ref, url: data?.signedUrl ?? null }))
-      .catch(() => !cancelled && setUrl({ ref, url: null }));
-    return () => {
-      cancelled = true;
-    };
-  }, [ref, owner]);
-  return url && url.ref === ref ? url.url : null;
-}
 
 export function CardHeader() {
   const t = useTranslations("wordCard");

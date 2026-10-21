@@ -14,7 +14,7 @@ const MAX_DEFINITIONS = 3;
 export interface DictionaryData {
   /** Chỉ IPA âm vị (trong /…/), không kèm dấu "/"; vùng lấy từ tên file audio. */
   ipa: { us: string | null; uk: string | null };
-  /** Theo thứ tự trong từ điển; loại từ đầu tiên coi là phổ biến nhất. */
+  /** Theo thứ tự trong từ điển (Wiktionary: theo nguồn gốc, KHÔNG theo tần suất). */
   meanings: { pos: Pos; definitions: string[] }[];
 }
 
@@ -106,11 +106,6 @@ export async function fetchFreeDictionary(
   } catch {
     return null;
   }
-}
-
-/** Loại từ phổ biến nhất theo từ điển (loại đầu tiên), hoặc null nếu không có dữ liệu. */
-export function primaryPos(data: DictionaryData | null): Pos | null {
-  return data?.meanings[0]?.pos ?? null;
 }
 
 /** Phần dữ liệu từ điển đưa vào prompt: chỉ loại từ đang tạo (nếu biết) và IPA. */

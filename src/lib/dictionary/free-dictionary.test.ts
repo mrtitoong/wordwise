@@ -6,7 +6,6 @@ import {
   fetchFreeDictionary,
   parseFreeDictionary,
   phonemicIpa,
-  primaryPos,
   reconcileIpa,
 } from "./free-dictionary";
 
@@ -26,7 +25,6 @@ describe("parseFreeDictionary", () => {
     const data = parseFreeDictionary(fixture("light"))!;
     expect(data.meanings.map((m) => m.pos)).toEqual(["noun", "verb", "adjective", "adverb"]);
     expect(data.meanings[0]!.definitions).toHaveLength(3);
-    expect(primaryPos(data)).toBe("noun");
   });
 
   it("không có text IPA thì để null", () => {
@@ -38,7 +36,6 @@ describe("parseFreeDictionary", () => {
   it("dữ liệu lạ → null", () => {
     expect(parseFreeDictionary({ title: "No Definitions Found" })).toBeNull();
     expect(parseFreeDictionary([])).toBeNull();
-    expect(primaryPos(null)).toBeNull();
   });
 
   it("phonemicIpa", () => {

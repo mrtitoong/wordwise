@@ -4,7 +4,7 @@
  *
  *   requestWord()  – yêu cầu từ app: chuẩn hóa → có trong kho thì trả ngay → chưa có thì
  *                    xếp việc (khách: mời đăng nhập; hết lượt ngày: báo giới hạn).
- *   processJob()   – một việc: từ điển → chọn loại từ → LLM (Zod, gọi lại khi sai) → đối
+ *   processJob()   – một việc: từ điển → LLM (Zod, gọi lại khi sai) → đối
  *                    chiếu IPA → lưu kho. Lỗi thì xếp lại, quá số lần thì thất bại hẳn.
  *   runWorker()    – nhận và xử lý việc cho đến khi hết việc hoặc sắp hết thời gian.
  *
@@ -19,7 +19,6 @@ import {
 } from "@/config/words";
 import {
   dictionaryForPrompt,
-  primaryPos,
   reconcileIpa,
   type DictionaryData,
 } from "@/lib/dictionary/free-dictionary";
@@ -162,7 +161,8 @@ export async function processJob(job: WordJob, deps: WorkerDeps): Promise<JobOut
   const now = deps.now ?? Date.now;
   try {
     const dictionary = job.language === "en" ? await deps.fetchDictionary(job.lemma) : null;
-    const pos = job.pos ?? primaryPos(dictionary);
+    // Không ghi loại từ → model chọn loại phổ biến nhất (thứ tự từ điển không theo tần suất).
+    const pos = job.pos;
 
     if (pos) {
       const existing = await deps.store.findWordId(job.language, job.lemma, pos);

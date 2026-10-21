@@ -329,7 +329,7 @@ describe("processJob", () => {
     const outcome = await processJob(claimed, deps);
     expect(outcome).toMatchObject({ status: "done", created: true });
     const saved = [...fake.words.values()][0]!.rows;
-    expect(saved.word.generated_by).toBe("claude/claude-haiku-5-5 word-content@v1");
+    expect(saved.word.generated_by).toBe("claude/claude-haiku-5-5 word-content@v2");
     expect(saved.word.reviewed).toBe(false);
     expect(saved.senses).toHaveLength(example("resilient").senses.length);
     expect(fake.jobs[0]!.status).toBe("done");
@@ -388,27 +388,33 @@ describe("processJob", () => {
     expect(saved.ipa_uk).toBe(example("resilient").ipa.uk);
   });
 
-  it("không rõ loại từ → lấy loại phổ biến nhất theo từ điển", async () => {
+  it("không rõ loại từ → model chọn loại phổ biến nhất, không theo thứ tự từ điển", async () => {
     const fake = fakeStore();
     const claimed = await queued(fake.store, "resilient", null);
+    // Từ điển liệt kê danh từ trước (như "and" trong Wiktionary) – không được dùng làm loại từ.
     const { deps, calls } = workerDeps(fake.store, [example("resilient")], {
       ipa: { us: null, uk: null },
-      meanings: [{ pos: "adjective", definitions: [] }],
-    });
-    await processJob(claimed, deps);
-    expect(calls[0]!.prompt).toContain("loại từ: adjective");
-  });
-
-  it("loại từ do từ điển chọn đã có trong kho → đóng việc, không gọi LLM", async () => {
-    const fake = fakeStore([example("resilient")]);
-    const claimed = await queued(fake.store, "resilient", null);
-    const { deps, calls } = workerDeps(fake.store, [], {
-      ipa: { us: null, uk: null },
-      meanings: [{ pos: "adjective", definitions: [] }],
+      meanings: [
+        { pos: "noun", definitions: ["A rare sense."] },
+        { pos: "adjective", definitions: ["Able to recover quickly."] },
+      ],
     });
     const outcome = await processJob(claimed, deps);
+    expect(calls[0]!.prompt).toContain("loại từ: chưa chỉ định");
+    expect(calls[0]!.prompt).toContain("chọn MỘT loại từ phổ biến nhất");
+    // Model vẫn thấy mọi loại từ trong dữ liệu từ điển để tham khảo.
+    expect(calls[0]!.prompt).toContain("A rare sense.");
+    expect(outcome).toMatchObject({ status: "done", created: true });
+    expect([...fake.words.values()][0]!.rows.word.pos).toBe("adjective");
+  });
+
+  it("loại từ model chọn đã có trong kho → đóng việc, giữ bản cũ", async () => {
+    const fake = fakeStore([example("resilient")]);
+    const claimed = await queued(fake.store, "resilient", null);
+    const { deps } = workerDeps(fake.store, [example("resilient")]);
+    const outcome = await processJob(claimed, deps);
     expect(outcome).toMatchObject({ status: "done", created: false });
-    expect(calls).toHaveLength(0);
+    expect(fake.words.size).toBe(1);
   });
 
   it("bị giới hạn lượt gọi → xếp lại để thử sau, không báo lỗi cho người dùng", async () => {

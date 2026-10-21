@@ -11,7 +11,7 @@ import { renderTemplate, type PromptTemplate } from "../prompt-template";
 export interface WordContentRequest {
   language: Language;
   lemma: string;
-  /** null: để model chọn các loại từ phổ biến. */
+  /** null: để model chọn loại từ phổ biến nhất. */
   pos: Pos | null;
   cefrLevel: Cefr;
   /** Dữ liệu từ điển mở (Wiktionary, WordNet…) nếu có. */
@@ -41,7 +41,14 @@ export function buildWordContentPrompt(
     language,
     language_name: LANGUAGE_NAMES[language],
     lemma: lemma.trim(),
-    pos: pos ?? "tất cả loại từ phổ biến",
+    pos_label: pos ?? "chưa chỉ định",
+    // Không ghi loại từ → model chọn loại phổ biến nhất. Không lấy theo thứ tự từ điển:
+    // Wiktionary xếp theo nguồn gốc, không theo tần suất ("and" ra danh từ, "by" ra cricket).
+    pos_rule: pos
+      ? `pos = "${pos}".`
+      : `pos: chọn MỘT loại từ phổ biến nhất của "${lemma.trim()}" trong tiếng Anh hiện đại ` +
+        `(vd "and" → conjunction, "find" → verb, "at" → preposition). Không chọn loại từ ` +
+        `hiếm, cổ hoặc chuyên ngành chỉ vì từ điển liệt kê trước.`,
     cefr_level: cefrLevel,
     dictionary_json: dictionary === undefined ? "{}" : JSON.stringify(dictionary),
   };

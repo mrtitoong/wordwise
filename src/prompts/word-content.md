@@ -1,6 +1,6 @@
 ---
 task: word-content
-version: 1
+version: 2
 schema: src/lib/schema/word.ts (WordContentSchema, SCHEMA_VERSION 1)
 ---
 
@@ -19,13 +19,14 @@ Mọi phần giải thích viết bằng tiếng Việt tự nhiên, ngắn gọ
 Chỉ trả về một đối tượng JSON đúng schema được cung cấp, không thêm chữ nào khác.
 
 === USER ===
-Tạo nội dung học cho từ "{{lemma}}" (ngôn ngữ: {{language}}, loại từ: {{pos}}).
+Tạo nội dung học cho từ "{{lemma}}" (ngôn ngữ: {{language}}, loại từ: {{pos_label}}).
 Người học ở trình độ {{cefr_level}}.
 Dữ liệu từ điển tham khảo (ưu tiên khi mâu thuẫn, có thể rỗng): {{dictionary_json}}
 
 Đầu thẻ (cấp từ):
 
-- schema_version = 1, language = "{{language}}", lemma = "{{lemma}}", pos = "{{pos}}".
+- schema_version = 1, language = "{{language}}", lemma = "{{lemma}}".
+- {{pos_rule}}
 - ipa: us và uk, KHÔNG kèm dấu "/"; tách âm tiết bằng dấu chấm nếu được (vd "rɪˈzɪl.jənt").
 - cefr: trình độ CEFR phổ biến của từ (không phải trình độ người học).
 - register: mức trang trọng chung của từ.

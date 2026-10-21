@@ -9,7 +9,7 @@ const template = parsePromptTemplate(markdown);
 describe("prompt word-content", () => {
   it("đọc được phần đầu, system và user", () => {
     expect(template.task).toBe("word-content");
-    expect(template.version).toBe(1);
+    expect(template.version).toBe(2);
     expect(template.system).toContain("JSON");
     expect(template.user).toContain("{{lemma}}");
     expect(template.system).not.toContain("=== USER ===");
@@ -22,7 +22,8 @@ describe("prompt word-content", () => {
       pos: "adjective",
       cefrLevel: "B1",
     });
-    expect(promptVersion).toBe(1);
+    expect(promptVersion).toBe(2);
+    expect(prompt).toContain(`pos = "adjective".`);
     expect(system).toContain("tiếng Anh");
     expect(prompt).toContain('"resilient"');
     expect(prompt).toContain("B1");
@@ -40,7 +41,7 @@ describe("prompt word-content", () => {
     });
     expect(system + prompt).not.toContain(secret);
     expect(system + prompt).not.toContain("ABC");
-    expect(prompt).toContain("tất cả loại từ phổ biến");
+    expect(prompt).toContain("chọn MỘT loại từ phổ biến nhất");
   });
 
   it("giữ ký tự đặc biệt trong dữ liệu từ điển", () => {

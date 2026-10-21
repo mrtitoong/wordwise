@@ -12,7 +12,14 @@ import {
   userWordId,
 } from "./ids";
 import type { LocalDb } from "./local";
-import type { CardRow, OutboxItem, ReviewLogRow, SyncTable, UserSettingsRow } from "./types";
+import type {
+  CardRow,
+  OutboxItem,
+  ReviewLogRow,
+  SyncTable,
+  UserSettingsRow,
+  UserWordRow,
+} from "./types";
 
 /**
  * Các thao tác ghi dữ liệu cá nhân. Mỗi thao tác ghi bản trong máy và thêm việc
@@ -205,6 +212,31 @@ export async function addSensesToDefaultNotebook(
     }
   });
   notifyWrite();
+}
+
+export type UserWordPatch = Partial<
+  Pick<UserWordRow, "custom_meaning" | "custom_image_url" | "user_additions">
+>;
+
+/** Sửa nội dung riêng của một từ trong kho (nghĩa/ảnh tự đặt, nội dung "Của bạn"). */
+export async function updateUserWord(
+  db: LocalDb,
+  owner: string,
+  userWordIdValue: string,
+  patch: UserWordPatch,
+): Promise<UserWordRow> {
+  const updated = await db.transaction("rw", db.user_words, db.outbox, async () => {
+    const current = await db.user_words.get(userWordIdValue);
+    if (!current || current.user_id !== owner || current.deleted_at) {
+      throw new Error(`Không có từ ${userWordIdValue}`);
+    }
+    const row = { ...current, ...patch, updated_at: new Date().toISOString() };
+    await db.user_words.put(row);
+    await queue(db, "user_words", row.id, owner);
+    return row;
+  });
+  notifyWrite();
+  return updated;
 }
 
 /** Ghi một lượt ôn: cập nhật thẻ và thêm review_logs (chỉ thêm), cùng một transaction. */

@@ -219,3 +219,20 @@ Repo: https://github.com/mrtitoong/wordwise
   sung. Worker `word-media` chạy mỗi phút qua pg_cron (8 từ, 3 lượt tìm ảnh mỗi lần).
 - 2026-10-21: `<AudioButton>` (src/components/audio-button.tsx) phát MP3 với tốc độ 1x/0.75x
   (giữ cao độ), lỗi hoặc chưa có file thì đọc bằng Web Speech API theo giọng Mỹ/Anh.
+- 2026-10-21 (Prompt 2.3): Thẻ từ `/words/[id]` (id = `words.id`, cả từ với mọi nghĩa) đọc
+  IndexedDB trước, thiếu thì tải từ Supabase rồi lưu lại. Chip từ liên quan →
+  `/words/lookup?lemma=` (trong máy → kho → generate-word; `add=1` thêm nghĩa 1 vào "Sổ của
+  tôi"). Trang "Từ của tôi" tạm liệt kê từ đã thêm cho tới màn sổ tay ở Prompt 2.4.
+- 2026-10-21: Nội dung "Của bạn" trong `user_words.user_additions` theo 5 tab (meaning,
+  examples, usage, related, memory; Zod ở `src/lib/words/user-additions.ts`, tối đa 20 mục/tab,
+  ≤ 64 KB). Tab Ghi nhớ lưu ở user_words của nghĩa đầu tiên người dùng có. Chỉ thêm/đổi được
+  khi từ đã nằm trong sổ. Ghi đè cả cột khi hai máy cùng sửa (bản sửa sau thắng).
+- 2026-10-21: **Câu ví dụ của người dùng (và câu gốc đã gặp) không có audio** (chủ sản phẩm
+  chốt). Bản dịch câu ví dụ mặc định ẩn, bấm để hiện.
+- 2026-10-21: Ảnh gợi nhớ tự tải lên: bucket riêng tư `user-images/{user_id}/`, thu nhỏ ≤ 800px,
+  WebP/JPEG ≤ 512 KB, hiện bằng signed URL; `custom_image_url` dạng
+  `storage://user-images/{user_id}/…` (ràng buộc DB chặn URL ngoài). Cần đăng nhập và có mạng.
+- 2026-10-21: Báo lỗi vào bảng `content_reports` (lý do: incorrect, translation, pronunciation,
+  inappropriate, other; ghi chú ≤ 500), cần đăng nhập, 20 báo cáo/người/ngày
+  (`private.settings.user_daily_reports`). Admin xem/xử lý ở GĐ7. Nút "Ôn từ này" và "Gợi ý mẹo
+  nhớ mới" để GĐ3; nội dung tạo một lần nên các tab hiện cùng lúc (không theo từng lớp).

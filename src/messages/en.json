@@ -14,7 +14,8 @@
     "back": "Back"
   },
   "common": {
-    "comingSoon": "This screen is under construction."
+    "comingSoon": "This screen is under construction.",
+    "close": "Close"
   },
   "today": {
     "title": "Today",
@@ -27,7 +28,8 @@
   "words": {
     "title": "My words",
     "emptyTitle": "No words yet",
-    "emptyBody": "Words you add will live in your notebooks here."
+    "emptyBody": "Words you add will live in your notebooks here.",
+    "listLabel": "Your words"
   },
   "practice": {
     "title": "Practice",
@@ -183,5 +185,191 @@
     "voiceUs": "US voice",
     "voiceUk": "UK voice",
     "rate": "Speed {rate}x, tap to change"
+  },
+  "wordCard": {
+    "title": "Word card",
+    "quickView": "Quick",
+    "fullView": "Full",
+    "viewMode": "View mode",
+    "tabs": {
+      "meaning": "Meaning",
+      "examples": "Examples",
+      "usage": "Usage",
+      "related": "Related",
+      "memory": "Memory"
+    },
+    "tabsLabel": "Word card content",
+    "pos": {
+      "noun": "noun",
+      "verb": "verb",
+      "adjective": "adjective",
+      "adverb": "adverb",
+      "pronoun": "pronoun",
+      "preposition": "preposition",
+      "conjunction": "conjunction",
+      "determiner": "determiner",
+      "interjection": "interjection",
+      "phrasal_verb": "phrasal verb",
+      "phrase": "phrase"
+    },
+    "posShort": {
+      "noun": "n",
+      "verb": "v",
+      "adjective": "adj",
+      "adverb": "adv",
+      "pronoun": "pron",
+      "preposition": "prep",
+      "conjunction": "conj",
+      "determiner": "det",
+      "interjection": "interj",
+      "phrasal_verb": "phr v",
+      "phrase": "phr"
+    },
+    "register": {
+      "formal": "formal",
+      "neutral": "neutral",
+      "informal": "informal",
+      "slang": "slang",
+      "offensive": "offensive"
+    },
+    "region": {
+      "us": "US",
+      "uk": "UK"
+    },
+    "variant": "{region}: {form}",
+    "inNotebooks": "In notebooks:",
+    "notInNotebook": "This word is not in your notebooks yet.",
+    "addToNotebook": "Add to notebook",
+    "addSenseToNotebook": "Add this meaning",
+    "added": "Added to {notebook}",
+    "senseN": "Meaning {number}",
+    "senseHeading": "Meaning {number} · {meaning}",
+    "mine": "Yours",
+    "original": "Original: {meaning}",
+    "useOriginal": "Use original",
+    "changeMeaning": "Change meaning",
+    "changeImage": "Change image",
+    "imageAlt": "Memory image for {word}",
+    "imageCredit": "Photo: {author} / {provider}",
+    "edit": "Edit",
+    "delete": "Delete",
+    "save": "Save",
+    "cancel": "Cancel",
+    "saving": "Saving…",
+    "report": "Report",
+    "add": {
+      "meaning": "Add your note",
+      "examples": "Add your sentence",
+      "usage": "Add your phrase",
+      "related": "Add yours",
+      "memory": "Add your tip"
+    },
+    "examples": {
+      "context": "Where you met it",
+      "contextImage": "Original image",
+      "showTranslation": "Show translation",
+      "hideTranslation": "Hide translation"
+    },
+    "usage": {
+      "collocations": "Collocations",
+      "idioms": "Idioms",
+      "mistakes": "Common mistakes",
+      "wrong": "Wrong",
+      "correct": "Correct"
+    },
+    "related": {
+      "synonyms": "Synonyms · how they differ",
+      "antonyms": "Antonyms",
+      "family": "Word family",
+      "homonyms": "Homonyms",
+      "homograph": "same spelling",
+      "homophone": "same sound"
+    },
+    "memory": {
+      "mnemonics": "Memory tips",
+      "confusables": "Easily confused",
+      "etymology": "Origin",
+      "versus": "{a} vs {b}",
+      "type": {
+        "sound": "Sound",
+        "etymology": "Word parts",
+        "image": "Picture",
+        "story": "Story"
+      }
+    },
+    "chip": {
+      "open": "Open card",
+      "add": "Add to notebook",
+      "title": "“{word}”"
+    },
+    "sheet": {
+      "meaningTitle": "Your note",
+      "examplesTitle": "Add your example",
+      "usageTitle": "Add your phrase",
+      "relatedTitle": "Add a related word",
+      "memoryTitle": "Add your memory tip",
+      "editTitle": "Edit your content",
+      "note": "Note",
+      "sentence": "Sentence",
+      "translation": "Translation (optional)",
+      "phrase": "Phrase",
+      "phraseNote": "Meaning or note (optional)",
+      "word": "Word",
+      "wordNote": "How it differs (optional)",
+      "mnemonic": "Memory tip",
+      "forSense": "For meaning",
+      "missingWord": "The sentence should contain “{word}” (or one of its forms) for fill-in exercises. You can still save it.",
+      "examplesHint": "Your sentences are preferred in fill-in exercises.",
+      "tooMany": "You can add at most {max} items per meaning in this tab.",
+      "invalid": "Please enter some text (within the length limit).",
+      "customMeaningTitle": "Change meaning",
+      "customMeaning": "Meaning you want to see",
+      "customMeaningHint": "The original is kept; you can switch back any time."
+    },
+    "image": {
+      "title": "Your memory image",
+      "pick": "Choose a photo",
+      "hint": "The photo is resized and only you can see it.",
+      "uploading": "Uploading…",
+      "failed": "Couldn't upload. Check your connection and try again.",
+      "needAccount": "Sign in to use your own images.",
+      "needOnline": "You need a connection to upload.",
+      "unsupported": "Couldn't read this image. Choose a JPG or PNG.",
+      "useOriginal": "Use original image"
+    },
+    "reportSheet": {
+      "title": "Report a problem",
+      "body": "Your report goes to the content team. The shared card isn't changed right away.",
+      "reason": "What's wrong?",
+      "reasons": {
+        "incorrect": "Incorrect content",
+        "translation": "Wrong translation",
+        "pronunciation": "Wrong pronunciation or IPA",
+        "inappropriate": "Inappropriate",
+        "other": "Other"
+      },
+      "note": "Details (optional)",
+      "send": "Send report",
+      "sending": "Sending…",
+      "sent": "Report sent. Thank you!",
+      "limit": "You've sent the maximum number of reports today.",
+      "failed": "Couldn't send. Please try again later.",
+      "needOnline": "You need a connection to send a report.",
+      "needAccount": "Sign in to send reports.",
+      "signIn": "Sign in"
+    },
+    "state": {
+      "loading": "Loading word card…",
+      "preparing": "Preparing content. You can leave and come back later.",
+      "retrying": "Content isn't ready yet, we'll keep trying.",
+      "notFound": "Word not found.",
+      "offline": "This word isn't on your device yet. Connect to load it.",
+      "loginRequired": "“{word}” isn't in the library yet. Sign in to create a card for new words.",
+      "limitReached": "You've used all new words for today. Try again tomorrow.",
+      "unavailable": "Couldn't load this word. Please try again.",
+      "retry": "Try again",
+      "signIn": "Sign in",
+      "back": "Back"
+    }
   }
 }

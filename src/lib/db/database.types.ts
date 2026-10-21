@@ -95,6 +95,60 @@ export type Database = {
           },
         ];
       };
+      content_reports: {
+        Row: {
+          created_at: string;
+          id: string;
+          layer: string;
+          note: string | null;
+          reason: string;
+          sense_id: string | null;
+          status: string;
+          updated_at: string;
+          user_id: string;
+          word_id: string;
+        };
+        Insert: {
+          created_at?: string;
+          id?: string;
+          layer: string;
+          note?: string | null;
+          reason: string;
+          sense_id?: string | null;
+          status?: string;
+          updated_at?: string;
+          user_id?: string;
+          word_id: string;
+        };
+        Update: {
+          created_at?: string;
+          id?: string;
+          layer?: string;
+          note?: string | null;
+          reason?: string;
+          sense_id?: string | null;
+          status?: string;
+          updated_at?: string;
+          user_id?: string;
+          word_id?: string;
+        };
+        Relationships: [
+          {
+            foreignKeyName: "content_reports_sense_id_fkey";
+            columns: ["sense_id"];
+            isOneToOne: false;
+            referencedRelation: "word_senses";
+            referencedColumns: ["id"];
+          },
+          {
+            foreignKeyName: "content_reports_word_id_fkey";
+            columns: ["word_id"];
+            isOneToOne: false;
+            referencedRelation: "words";
+            referencedColumns: ["id"];
+          },
+        ];
+      };
       curated_list_items: {
         Row: {
           admin_note: string | null;

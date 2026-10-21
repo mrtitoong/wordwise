@@ -14,7 +14,8 @@
     "back": "Quay lại"
   },
   "common": {
-    "comingSoon": "Màn hình này đang được xây dựng."
+    "comingSoon": "Màn hình này đang được xây dựng.",
+    "close": "Đóng"
   },
   "today": {
     "title": "Hôm nay",
@@ -27,7 +28,8 @@
   "words": {
     "title": "Từ của tôi",
     "emptyTitle": "Chưa có từ nào",
-    "emptyBody": "Từ bạn thêm sẽ nằm trong các sổ tay ở đây."
+    "emptyBody": "Từ bạn thêm sẽ nằm trong các sổ tay ở đây.",
+    "listLabel": "Các từ đã thêm"
   },
   "practice": {
     "title": "Luyện tập",
@@ -183,5 +185,191 @@
     "voiceUs": "giọng Mỹ",
     "voiceUk": "giọng Anh",
     "rate": "Tốc độ {rate}x, bấm để đổi"
+  },
+  "wordCard": {
+    "title": "Thẻ từ",
+    "quickView": "Xem nhanh",
+    "fullView": "Đầy đủ",
+    "viewMode": "Kiểu xem",
+    "tabs": {
+      "meaning": "Nghĩa",
+      "examples": "Ví dụ",
+      "usage": "Cách dùng",
+      "related": "Từ liên quan",
+      "memory": "Ghi nhớ"
+    },
+    "tabsLabel": "Nội dung thẻ từ",
+    "pos": {
+      "noun": "danh từ",
+      "verb": "động từ",
+      "adjective": "tính từ",
+      "adverb": "trạng từ",
+      "pronoun": "đại từ",
+      "preposition": "giới từ",
+      "conjunction": "liên từ",
+      "determiner": "từ hạn định",
+      "interjection": "thán từ",
+      "phrasal_verb": "cụm động từ",
+      "phrase": "cụm từ"
+    },
+    "posShort": {
+      "noun": "n",
+      "verb": "v",
+      "adjective": "adj",
+      "adverb": "adv",
+      "pronoun": "pron",
+      "preposition": "prep",
+      "conjunction": "conj",
+      "determiner": "det",
+      "interjection": "interj",
+      "phrasal_verb": "phr v",
+      "phrase": "phr"
+    },
+    "register": {
+      "formal": "trang trọng",
+      "neutral": "trung tính",
+      "informal": "thân mật",
+      "slang": "tiếng lóng",
+      "offensive": "xúc phạm"
+    },
+    "region": {
+      "us": "Mỹ",
+      "uk": "Anh"
+    },
+    "variant": "{region}: {form}",
+    "inNotebooks": "Trong sổ:",
+    "notInNotebook": "Từ này chưa có trong sổ của bạn.",
+    "addToNotebook": "Thêm vào sổ",
+    "addSenseToNotebook": "Thêm nghĩa này vào sổ",
+    "added": "Đã thêm vào {notebook}",
+    "senseN": "Nghĩa {number}",
+    "senseHeading": "Nghĩa {number} · {meaning}",
+    "mine": "Của bạn",
+    "original": "Bản gốc: {meaning}",
+    "useOriginal": "Dùng lại bản gốc",
+    "changeMeaning": "Đổi nghĩa hiển thị",
+    "changeImage": "Đổi ảnh",
+    "imageAlt": "Ảnh gợi nhớ cho {word}",
+    "imageCredit": "Ảnh: {author} / {provider}",
+    "edit": "Sửa",
+    "delete": "Xóa",
+    "save": "Lưu",
+    "cancel": "Hủy",
+    "saving": "Đang lưu…",
+    "report": "Báo lỗi",
+    "add": {
+      "meaning": "Thêm ghi chú của bạn",
+      "examples": "Thêm câu của bạn",
+      "usage": "Thêm cụm từ của bạn",
+      "related": "Thêm của bạn",
+      "memory": "Thêm mẹo của bạn"
+    },
+    "examples": {
+      "context": "Câu bạn gặp",
+      "contextImage": "Ảnh gốc",
+      "showTranslation": "Hiện bản dịch",
+      "hideTranslation": "Ẩn bản dịch"
+    },
+    "usage": {
+      "collocations": "Hay đi cùng",
+      "idioms": "Thành ngữ",
+      "mistakes": "Lỗi hay gặp",
+      "wrong": "Sai",
+      "correct": "Đúng"
+    },
+    "related": {
+      "synonyms": "Đồng nghĩa · khác nhau thế nào",
+      "antonyms": "Trái nghĩa",
+      "family": "Họ từ",
+      "homonyms": "Đồng âm khác nghĩa",
+      "homograph": "viết giống",
+      "homophone": "đọc giống"
+    },
+    "memory": {
+      "mnemonics": "Mẹo ghi nhớ",
+      "confusables": "Dễ nhầm với",
+      "etymology": "Nguồn gốc",
+      "versus": "{a} vs {b}",
+      "type": {
+        "sound": "Âm thanh",
+        "etymology": "Gốc từ",
+        "image": "Hình ảnh",
+        "story": "Câu chuyện"
+      }
+    },
+    "chip": {
+      "open": "Mở thẻ",
+      "add": "Thêm vào sổ",
+      "title": "Từ “{word}”"
+    },
+    "sheet": {
+      "meaningTitle": "Ghi chú của bạn",
+      "examplesTitle": "Thêm câu ví dụ của bạn",
+      "usageTitle": "Thêm cụm từ của bạn",
+      "relatedTitle": "Thêm từ liên quan",
+      "memoryTitle": "Thêm mẹo nhớ của bạn",
+      "editTitle": "Sửa nội dung của bạn",
+      "note": "Ghi chú",
+      "sentence": "Câu ví dụ",
+      "translation": "Bản dịch (tùy chọn)",
+      "phrase": "Cụm từ",
+      "phraseNote": "Nghĩa hoặc ghi chú (tùy chọn)",
+      "word": "Từ",
+      "wordNote": "Khác nhau thế nào (tùy chọn)",
+      "mnemonic": "Mẹo nhớ",
+      "forSense": "Cho nghĩa",
+      "missingWord": "Câu nên chứa “{word}” (hoặc dạng của nó) để dùng cho bài điền từ. Bạn vẫn có thể lưu.",
+      "examplesHint": "Câu của bạn được ưu tiên trong bài điền từ khi luyện tập.",
+      "tooMany": "Mỗi nghĩa chỉ thêm được tối đa {max} mục ở tab này.",
+      "invalid": "Hãy nhập nội dung (không quá giới hạn độ dài).",
+      "customMeaningTitle": "Đổi nghĩa hiển thị",
+      "customMeaning": "Nghĩa bạn muốn thấy",
+      "customMeaningHint": "Nội dung gốc vẫn được giữ, bạn có thể dùng lại bất cứ lúc nào."
+    },
+    "image": {
+      "title": "Ảnh gợi nhớ của bạn",
+      "pick": "Chọn ảnh từ máy",
+      "hint": "Ảnh được thu nhỏ và chỉ bạn xem được.",
+      "uploading": "Đang tải ảnh lên…",
+      "failed": "Chưa tải được ảnh. Kiểm tra kết nối mạng rồi thử lại.",
+      "needAccount": "Cần đăng nhập để dùng ảnh của riêng bạn.",
+      "needOnline": "Cần có mạng để tải ảnh lên.",
+      "unsupported": "Không đọc được ảnh này. Hãy chọn ảnh JPG hoặc PNG.",
+      "useOriginal": "Dùng lại ảnh gốc"
+    },
+    "reportSheet": {
+      "title": "Báo lỗi nội dung",
+      "body": "Báo cáo được gửi cho đội nội dung. Bản chung không bị sửa ngay.",
+      "reason": "Lỗi gì?",
+      "reasons": {
+        "incorrect": "Nội dung sai",
+        "translation": "Dịch chưa đúng",
+        "pronunciation": "Sai phát âm hoặc IPA",
+        "inappropriate": "Không phù hợp",
+        "other": "Khác"
+      },
+      "note": "Mô tả thêm (tùy chọn)",
+      "send": "Gửi báo lỗi",
+      "sending": "Đang gửi…",
+      "sent": "Đã gửi báo lỗi. Cảm ơn bạn!",
+      "limit": "Bạn đã gửi đủ số báo lỗi hôm nay. Hãy thử lại vào ngày mai.",
+      "failed": "Chưa gửi được. Hãy thử lại sau.",
+      "needOnline": "Cần có mạng để gửi báo lỗi.",
+      "needAccount": "Cần đăng nhập để gửi báo lỗi.",
+      "signIn": "Đăng nhập"
+    },
+    "state": {
+      "loading": "Đang tải thẻ từ…",
+      "preparing": "Đang chuẩn bị nội dung. Bạn có thể rời màn này và quay lại sau.",
+      "retrying": "Chưa tạo được nội dung, sẽ tự thử lại.",
+      "notFound": "Không tìm thấy từ này.",
+      "offline": "Chưa có nội dung từ này trên máy. Hãy kết nối mạng để tải.",
+      "loginRequired": "Từ “{word}” chưa có trong kho. Đăng nhập để tạo thẻ cho từ mới.",
+      "limitReached": "Bạn đã dùng hết số từ mới hôm nay. Hãy thử lại vào ngày mai.",
+      "unavailable": "Chưa tải được từ này. Hãy thử lại.",
+      "retry": "Thử lại",
+      "signIn": "Đăng nhập",
+      "back": "Quay lại"
+    }
   }
 }

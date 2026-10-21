@@ -8,16 +8,22 @@ import {
   userIdByEmail,
 } from "./helpers";
 
+/** Mở từ đầu tiên trong "Sổ của tôi". */
+async function openFirstWord(page: Page) {
+  await page.goto("/notebooks");
+  await page.getByRole("link", { name: /Sổ của tôi/ }).click();
+  const list = page.getByRole("list", { name: "Sổ của tôi" });
+  await expect(list.getByRole("link")).toHaveCount(5);
+  await list.getByRole("link").first().click();
+}
+
 /** Khách học 5 từ khởi đầu rồi mở thẻ của từ đầu tiên trong "Từ của tôi". */
 async function openFirstWordAsGuest(page: Page) {
   await page.goto("/welcome");
   await page.getByRole("button", { name: "Dùng thử ngay" }).click();
   await completeOnboarding(page, { level: "B1" });
   await expect(page).toHaveURL("/");
-  await page.goto("/notebooks");
-  const list = page.getByRole("list", { name: "Các từ đã thêm" });
-  await expect(list.getByRole("link")).toHaveCount(5);
-  await list.getByRole("link").first().click();
+  await openFirstWord(page);
   await expect(page).toHaveURL(/\/words\/[0-9a-f-]{36}$/);
   const heading = page.getByRole("heading", { level: 1 });
   await expect(heading).toBeVisible();
@@ -119,8 +125,7 @@ test.describe("Thẻ từ", () => {
     await signInWithCode(page, email);
     await completeOnboarding(page);
     await expect(page).toHaveURL("/");
-    await page.goto("/notebooks");
-    await page.getByRole("list", { name: "Các từ đã thêm" }).getByRole("link").first().click();
+    await openFirstWord(page);
     await expect(page.getByRole("tablist")).toBeVisible();
 
     await page.getByRole("button", { name: "Báo lỗi" }).first().click();

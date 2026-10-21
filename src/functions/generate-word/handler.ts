@@ -2,13 +2,15 @@
  * HTTP handler của Edge Function generate-word (chuẩn Web Request/Response, chạy được ở
  * Deno và trong Vitest).
  *
- *   POST { lemma, language?, pos? }  – app xin nội dung từ (xem WordResponse).
+ *   POST { lemma, language?, pos?, notebookId? } – app xin nội dung từ (xem WordResponse).
+ *   POST { action: "resolve", lemmas } – tra nhiều từ trong kho (dán nhiều dòng), không tạo việc.
  *   POST { action: "work" }          – pg_cron gọi worker, kèm header x-worker-secret.
  */
 import { z } from "zod";
 import { FunctionRequestSchema, type WordResponse } from "@/lib/words/api";
 import {
   requestWord,
+  resolveWords,
   runWorker,
   type JobOutcome,
   type PipelineDeps,
@@ -71,6 +73,8 @@ export function createHandler(deps: HandlerDeps) {
         if (!deps.worker) return json({ error: "llm_not_configured" }, 503);
         return json(summarize(await runWorker(deps.worker)));
       }
+
+      if (body.action === "resolve") return json(await resolveWords(body, deps.pipeline));
 
       const userId = await deps.getUserId(request.headers.get("authorization"));
       const response: WordResponse = await requestWord(body, userId, deps.pipeline);

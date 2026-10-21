@@ -1,6 +1,6 @@
 import { describe, expect, it, vi } from "vitest";
 import { englishLemmatizer } from "@/lib/entry/lemmatizer-en";
-import { WordResponseSchema } from "@/lib/words/api";
+import { ResolveResponseSchema, WordResponseSchema } from "@/lib/words/api";
 import type { WordStore, WorkerDeps } from "@/lib/words/pipeline";
 import { createHandler, type HandlerDeps } from "./handler";
 
@@ -92,6 +92,83 @@ describe("generate-word handler", () => {
     expect(response.status).toBe(200);
     expect(await response.json()).toEqual({ processed: 0, done: 0, retry: 0, failed: 0 });
     expect(store.claimJobs).toHaveBeenCalled();
+  });
+
+  it("kèm sổ đích → chuyển cho máy chủ tự thêm từ khi tạo xong", async () => {
+    const { handle, store } = setup();
+    const notebookId = "11111111-1111-4111-8111-111111111111";
+    await handle(
+      post(
+        {
+          lemma: "zygote",
+          notebookId,
+          contextSentence: "  A zygote forms. ",
+          inputMethod: "typed",
+        },
+        { authorization: "Bearer user-jwt" },
+      ),
+    );
+    expect(store.requestJob).toHaveBeenCalledWith("u1", "en", "zygote", null, {
+      notebookId,
+      contextSentence: "A zygote forms.",
+      inputMethod: "typed",
+    });
+  });
+
+  it("hết lượt → limit_reached kèm gói hiện tại", async () => {
+    const { handle, store } = setup();
+    vi.mocked(store.requestJob).mockResolvedValue({
+      limitReached: true,
+      dailyLimit: 50,
+      plan: "free",
+    });
+    const response = await handle(post({ lemma: "zygote" }, { authorization: "Bearer user-jwt" }));
+    expect(WordResponseSchema.parse(await response.json())).toMatchObject({
+      status: "limit_reached",
+      dailyLimit: 50,
+      plan: "free",
+    });
+  });
+
+  it("resolve: tra nhiều từ, không tạo việc, khách cũng dùng được", async () => {
+    const { handle, store } = setup();
+    vi.mocked(store.findWords).mockImplementation(async (_language, lemma) =>
+      lemma === "run"
+        ? [
+            {
+              id: "w-run",
+              senseIds: ["s1"],
+              content: { lemma: "run", pos: "verb", cefr: "A1", senses: [{ meaning_vi: "chạy" }] },
+              media: { audio: { us: null, uk: null }, images: [null] },
+            } as never,
+          ]
+        : [],
+    );
+    const response = await handle(post({ action: "resolve", lemmas: ["Running", "zygote"] }));
+    const body = ResolveResponseSchema.parse(await response.json());
+    expect(body.items).toEqual([
+      {
+        input: "running",
+        lemma: "run",
+        alternatives: expect.any(Array),
+        words: [
+          {
+            id: "w-run",
+            lemma: "run",
+            pos: "verb",
+            cefr: "A1",
+            senses: [{ id: "s1", meaning_vi: "chạy" }],
+          },
+        ],
+      },
+      { input: "zygote", lemma: "zygote", alternatives: [], words: [] },
+    ]);
+    expect(store.requestJob).not.toHaveBeenCalled();
+    expect((await handle(post({ action: "resolve", lemmas: [] }))).status).toBe(400);
+    expect(
+      (await handle(post({ action: "resolve", lemmas: Array.from({ length: 51 }, () => "a") })))
+        .status,
+    ).toBe(400);
   });
 
   it("lỗi database → 500, không lộ chi tiết", async () => {

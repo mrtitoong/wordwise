@@ -131,18 +131,30 @@ export function createSupabaseWordStore(client: Client): WordStore {
       return data?.id ?? null;
     },
 
-    async requestJob(userId, language, lemma, pos): Promise<RequestJobResult> {
+    async requestJob(userId, language, lemma, pos, target): Promise<RequestJobResult> {
       const data = check(
         await client.rpc("request_word_job", {
           p_user_id: userId,
           p_language: language,
           p_lemma: lemma,
           ...(pos ? { p_pos: pos } : {}),
+          ...(target
+            ? {
+                p_notebook_id: target.notebookId,
+                p_input_method: target.inputMethod,
+                ...(target.contextSentence ? { p_context_sentence: target.contextSentence } : {}),
+              }
+            : {}),
         }),
         "Xếp việc",
-      ) as { job_id: string | null; limit_reached: boolean; daily_limit: number };
+      ) as {
+        job_id: string | null;
+        limit_reached: boolean;
+        daily_limit: number;
+        plan?: "free" | "premium";
+      };
       if (data.limit_reached || !data.job_id) {
-        return { limitReached: true, dailyLimit: data.daily_limit };
+        return { limitReached: true, dailyLimit: data.daily_limit, plan: data.plan ?? "free" };
       }
       return { limitReached: false, jobId: data.job_id, dailyLimit: data.daily_limit };
     },

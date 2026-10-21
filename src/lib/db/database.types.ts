@@ -3,6 +3,33 @@ export type Json = string | number | boolean | null | { [key: string]: Json | un
 export type Database = {
   public: {
     Tables: {
+      audio_clips: {
+        Row: {
+          chars: number;
+          created_at: string;
+          created_by: string | null;
+          kind: string;
+          path: string;
+          voice: string;
+        };
+        Insert: {
+          chars: number;
+          created_at?: string;
+          created_by?: string | null;
+          kind: string;
+          path: string;
+          voice: string;
+        };
+        Update: {
+          chars?: number;
+          created_at?: string;
+          created_by?: string | null;
+          kind?: string;
+          path?: string;
+          voice?: string;
+        };
+        Relationships: [];
+      };
       cards: {
         Row: {
           created_at: string;
@@ -714,6 +741,7 @@ export type Database = {
           created_at: string;
           definition_en: string;
           id: string;
+          image_checked_at: string | null;
           image_credit: Json | null;
           image_query: string | null;
           image_url: string | null;
@@ -726,6 +754,7 @@ export type Database = {
           created_at?: string;
           definition_en: string;
           id?: string;
+          image_checked_at?: string | null;
           image_credit?: Json | null;
           image_query?: string | null;
           image_url?: string | null;
@@ -738,6 +767,7 @@ export type Database = {
           created_at?: string;
           definition_en?: string;
           id?: string;
+          image_checked_at?: string | null;
           image_credit?: Json | null;
           image_query?: string | null;
           image_url?: string | null;
@@ -772,6 +802,7 @@ export type Database = {
           is_hidden: boolean;
           language: string;
           lemma: string;
+          media_locked_at: string | null;
           pos: string;
           register: string | null;
           reviewed: boolean;
@@ -793,6 +824,7 @@ export type Database = {
           is_hidden?: boolean;
           language: string;
           lemma: string;
+          media_locked_at?: string | null;
           pos: string;
           register?: string | null;
           reviewed?: boolean;
@@ -814,6 +846,7 @@ export type Database = {
           is_hidden?: boolean;
           language?: string;
           lemma?: string;
+          media_locked_at?: string | null;
           pos?: string;
           register?: string | null;
           reviewed?: boolean;
@@ -827,6 +860,7 @@ export type Database = {
       [_ in never]: never;
     };
     Functions: {
+      claim_media_words: { Args: { p_include_images: boolean; p_limit: number }; Returns: Json };
       claim_word_jobs: { Args: { p_job_id?: string; p_limit?: number }; Returns: Json };
       complete_word_job: { Args: { p_job_id: string; p_word_id: string }; Returns: undefined };
       enqueue_bulk_words: { Args: { p_items: Json; p_language: string }; Returns: number };
@@ -842,6 +876,7 @@ export type Database = {
         Args: { p_details: Json; p_job_id: string; p_senses: Json; p_word: Json };
         Returns: string;
       };
+      sentence_audio_quota: { Args: { p_user_id: string }; Returns: Json };
       verify_worker_secret: { Args: { p_secret: string }; Returns: boolean };
     };
     Enums: {

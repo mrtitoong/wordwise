@@ -6,14 +6,15 @@ import type { SupabaseClient } from "@supabase/supabase-js";
 import type { Database, Json } from "@/lib/db/database.types";
 import { LanguageSchema, PosSchema, type Language, type Pos } from "@/lib/schema/word";
 import { fromWordRows } from "@/lib/schema/word-rows";
-import type { StoredWord } from "./api";
+import { ImageCreditSchema, type StoredWord } from "./api";
 import type { RequestJobResult, WordJob, WordStore } from "./pipeline";
 
 type Client = SupabaseClient<Database>;
 
 const WORD_SELECT =
   "id, language, lemma, pos, ipa_us, ipa_uk, cefr, register, schema_version, forms, details, " +
-  "word_senses (id, sense_order, definition_en, meaning_vi, image_query, " +
+  "audio_us_url, audio_uk_url, " +
+  "word_senses (id, sense_order, definition_en, meaning_vi, image_query, image_url, image_credit, " +
   "word_details (sense_id, examples, synonyms, antonyms, collocations, idioms, common_mistakes))";
 
 type DetailRow = {
@@ -38,12 +39,16 @@ type WordWithSenses = {
   schema_version: number;
   forms: unknown;
   details: unknown;
+  audio_us_url: string | null;
+  audio_uk_url: string | null;
   word_senses: {
     id: string;
     sense_order: number;
     definition_en: string;
     meaning_vi: string;
     image_query: string | null;
+    image_url: string | null;
+    image_credit: unknown;
     word_details: DetailRow | DetailRow[] | null;
   }[];
 };
@@ -63,7 +68,16 @@ export function toStoredWord(row: WordWithSenses): StoredWord {
     senses: senses.map((sense) => ({ ...sense, image_query: sense.image_query ?? "" })),
     details,
   });
-  return { id: row.id, senseIds: senses.map((sense) => sense.id), content };
+  const images = senses.map((sense) => {
+    const credit = ImageCreditSchema.safeParse(sense.image_credit);
+    return sense.image_url && credit.success ? { url: sense.image_url, credit: credit.data } : null;
+  });
+  return {
+    id: row.id,
+    senseIds: senses.map((sense) => sense.id),
+    content,
+    media: { audio: { us: row.audio_us_url, uk: row.audio_uk_url }, images },
+  };
 }
 
 function toJob(raw: Record<string, unknown>): WordJob {

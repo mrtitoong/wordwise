@@ -1,5 +1,5 @@
 /**
- * Chạy thử Edge Function generate-word trên Supabase cục bộ (job CI "functions"): kiểm tra
+ * Chạy thử Edge Function generate-word và word-media trên Supabase cục bộ (job CI "functions"): kiểm tra
  * bundle chạy được trong Deno thật, gọi được các hàm SQL, đăng nhập và RLS đúng.
  * Không có khóa LLM nên chỉ kiểm tra tra kho / xếp việc, không tạo nội dung.
  *
@@ -7,6 +7,7 @@
  */
 import { createClient } from "@supabase/supabase-js";
 import type { Database } from "@/lib/db/database.types";
+import { SentenceAudioResponseSchema } from "@/lib/media/api";
 import { WordResponseSchema, type WordResponse } from "@/lib/words/api";
 
 const url = process.env.SUPABASE_URL;
@@ -82,6 +83,41 @@ expect(worker.status === 401, "Worker sai khóa → 401", worker);
 
 const invalid = await call({ lemma: "" });
 expect(invalid.status === 400, "Yêu cầu sai → 400", invalid);
+
+/* ---------- word-media (Prompt 2.2) ---------- */
+
+const mediaEndpoint = `${url}/functions/v1/word-media`;
+async function media(body: unknown, token = key!, headers: Record<string, string> = {}) {
+  const response = await fetch(mediaEndpoint, {
+    method: "POST",
+    headers: {
+      apikey: key!,
+      authorization: `Bearer ${token}`,
+      "content-type": "application/json",
+      ...headers,
+    },
+    body: JSON.stringify(body),
+  });
+  return { status: response.status, body: (await response.json()) as unknown };
+}
+
+const { data: sense } = await user.from("word_senses").select("id").limit(1).single();
+if (!sense) throw new Error("Seed không có word_senses");
+const guestAudio = await media({ action: "sentence", senseId: sense.id, index: 0, voice: "us" });
+expect(
+  guestAudio.status === 200 &&
+    SentenceAudioResponseSchema.parse(guestAudio.body).status === "login_required",
+  "Khách xin audio câu chưa có → login_required",
+  guestAudio,
+);
+const missing = await media({ action: "sentence", senseId: sense.id, index: 9, voice: "us" });
+expect(
+  missing.status === 200 && SentenceAudioResponseSchema.parse(missing.body).status === "not_found",
+  "Câu không tồn tại → not_found",
+  missing,
+);
+const mediaWorker = await media({ action: "work" }, key, { "x-worker-secret": "sai".repeat(20) });
+expect(mediaWorker.status === 401, "Worker media sai khóa → 401", mediaWorker);
 
 if (failures > 0) {
   console.error(`${failures} kiểm tra lỗi`);

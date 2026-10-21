@@ -864,8 +864,53 @@ function fromWordRows(rows) {
   });
 }
 
+// src/lib/words/api.ts
+import { z as z5 } from "npm:zod@4.6.5";
+var WordRequestSchema = z5.object({
+  action: z5.literal("request").default("request"),
+  lemma: z5.string().trim().min(1).max(64),
+  language: LanguageSchema.default("en"),
+  pos: PosSchema.nullish()
+});
+var WorkerRequestSchema = z5.object({ action: z5.literal("work") });
+var FunctionRequestSchema = z5.union([WorkerRequestSchema, WordRequestSchema]);
+var ImageCreditSchema = z5.object({
+  provider: z5.enum(["pexels", "unsplash"]),
+  author: z5.string(),
+  author_url: z5.string(),
+  source_url: z5.string()
+});
+var WordMediaSchema = z5.object({
+  audio: z5.object({ us: z5.string().nullable(), uk: z5.string().nullable() }),
+  /** Theo đúng thứ tự `content.senses`. */
+  images: z5.array(z5.object({ url: z5.string(), credit: ImageCreditSchema }).nullable())
+});
+var StoredWordSchema = z5.object({
+  id: z5.string(),
+  /** id các nghĩa theo đúng thứ tự `content.senses` (để tạo user_words). */
+  senseIds: z5.array(z5.string()),
+  content: WordContentSchema,
+  media: WordMediaSchema
+});
+var base = {
+  /** Dạng gốc đã chuẩn hóa ("running" → "run"). */
+  lemma: z5.string(),
+  /** Dạng gốc khác có thể đúng (vd leaves → leaf), để app hỏi lại người dùng. */
+  alternatives: z5.array(z5.string())
+};
+var WordResponseSchema = z5.discriminatedUnion("status", [
+  /** Đã có trong kho: trả ngay (một dòng cho mỗi loại từ). */
+  z5.object({ status: z5.literal("ready"), ...base, words: z5.array(StoredWordSchema).min(1) }),
+  /** Đang tạo nội dung: app hiện "Đang chuẩn bị nội dung" rồi hỏi lại sau. */
+  z5.object({ status: z5.literal("preparing"), ...base, jobId: z5.string() }),
+  /** Từ ngoài kho, khách chưa đăng nhập: mời đăng nhập. */
+  z5.object({ status: z5.literal("login_required"), ...base }),
+  /** Đã dùng hết số từ mới hôm nay. */
+  z5.object({ status: z5.literal("limit_reached"), ...base, dailyLimit: z5.number().int() })
+]);
+
 // src/lib/words/supabase-store.ts
-var WORD_SELECT = "id, language, lemma, pos, ipa_us, ipa_uk, cefr, register, schema_version, forms, details, word_senses (id, sense_order, definition_en, meaning_vi, image_query, word_details (sense_id, examples, synonyms, antonyms, collocations, idioms, common_mistakes))";
+var WORD_SELECT = "id, language, lemma, pos, ipa_us, ipa_uk, cefr, register, schema_version, forms, details, audio_us_url, audio_uk_url, word_senses (id, sense_order, definition_en, meaning_vi, image_query, image_url, image_credit, word_details (sense_id, examples, synonyms, antonyms, collocations, idioms, common_mistakes))";
 function check(result, what) {
   if (result.error) throw new Error(`${what}: ${result.error.message}`);
   return result.data;
@@ -880,7 +925,16 @@ function toStoredWord(row) {
     senses: senses.map((sense) => ({ ...sense, image_query: sense.image_query ?? "" })),
     details
   });
-  return { id: row.id, senseIds: senses.map((sense) => sense.id), content };
+  const images = senses.map((sense) => {
+    const credit = ImageCreditSchema.safeParse(sense.image_credit);
+    return sense.image_url && credit.success ? { url: sense.image_url, credit: credit.data } : null;
+  });
+  return {
+    id: row.id,
+    senseIds: senses.map((sense) => sense.id),
+    content,
+    media: { audio: { us: row.audio_us_url, uk: row.audio_uk_url }, images }
+  };
 }
 function toJob(raw) {
   return {
@@ -975,39 +1029,6 @@ function createSupabaseWordStore(client) {
 
 // raw:src/prompts/word-content.md
 var word_content_default = '---\ntask: word-content\nversion: 3\nschema: src/lib/schema/word.ts (WordContentSchema, SCHEMA_VERSION 1)\n---\n\n<!--\nPrompt tạo nội dung thẻ từ 5 tab. Phần sau dòng "=== SYSTEM ===" là system prompt,\nsau "=== USER ===" là nội dung gửi kèm từng từ. Biến dạng {{tên}} do\nbuildWordContentPrompt() điền. Nội dung từ dùng chung cho mọi người nên KHÔNG có\ncâu ngữ cảnh của người dùng (quy tắc gói miễn phí). Sửa prompt → tăng version.\n-->\n\n=== SYSTEM ===\nBạn là nhà từ điển học và giáo viên {{language_name}} giàu kinh nghiệm dạy người Việt.\nBạn tạo nội dung thẻ từ chính xác, tự nhiên, đúng cách người bản ngữ dùng. Không bịa:\nmục nào không thực sự tồn tại thì trả mảng rỗng (hoặc null với trường cho phép null).\nMọi phần giải thích viết bằng tiếng Việt tự nhiên, ngắn gọn.\nChỉ trả về một đối tượng JSON đúng schema được cung cấp, không thêm chữ nào khác.\n\n=== USER ===\nTạo nội dung học cho từ "{{lemma}}" (ngôn ngữ: {{language}}, loại từ: {{pos_label}}).\nNgười học ở trình độ {{cefr_level}}.\nNghĩa tham khảo từ Wiktionary (có thể rỗng; chỉ để tham khảo, thứ tự KHÔNG theo tần suất): {{dictionary_json}}\n\nĐầu thẻ (cấp từ):\n\n- schema_version = 1, language = "{{language}}", lemma = "{{lemma}}".\n- {{pos_rule}}\n- ipa: us và uk, KHÔNG kèm dấu "/"; tách âm tiết bằng dấu chấm nếu được (vd "rɪˈzɪl.jənt").\n  Dùng ký hiệu quen thuộc trong từ điển học tập (Cambridge, Oxford): r chứ không ɹ, dʒ/tʃ\n  không có dấu nối, không ngoặc đơn, không ký hiệu phiên âm hẹp (ɫ, ʔ, ɾ).\n- cefr: trình độ CEFR phổ biến của từ (không phải trình độ người học).\n- register: mức trang trọng chung của từ.\n- forms.inflections: dạng chia/số nhiều/so sánh của ĐÚNG loại từ trên thẻ (danh từ chỉ có\n  plural, không ghi dạng động từ); irregular = true nếu bất quy tắc. Chỉ ghi dạng dùng được với\n  các nghĩa trong senses: danh từ không đếm được hoặc đã ở số nhiều (people, news) thì không\n  ghi plural.\n  forms.variants: biến thể chính tả Anh–Mỹ của chính từ này (colour/color), không có thì [].\n- language_extra = null với tiếng Anh.\n\nTab Nghĩa (senses):\n\n- Chỉ nghĩa phổ biến, tối đa 3, sắp theo tần suất (phổ biến nhất trước).\n- definition_en ngắn, dễ hiểu; meaning_vi ngắn gọn, tự nhiên, không dịch từ-đối-từ.\n- image_query: 2–4 từ tiếng Anh mô tả một hình ảnh cụ thể, dễ nhớ cho nghĩa này.\n\nTab Ví dụ (senses[].examples):\n\n- 3 câu mỗi nghĩa, ngữ cảnh đời thường, 8–18 từ; từ vựng xung quanh dễ hơn hoặc\n  bằng {{cefr_level}}; có translation_vi.\n- highlight: đúng dạng từ xuất hiện trong câu (vd "ran"), phải có nguyên văn trong sentence.\n\nTab Cách dùng (theo từng nghĩa):\n\n- collocations: chỉ cụm người bản ngữ thực sự hay dùng, ghi pattern (vd "verb + noun",\n  "adverb + adjective"), tối đa 8.\n- idioms: chỉ khi thực sự tồn tại, gắn register; không có thì [].\n- common_mistakes: tối đa 3 lỗi người Việt hay mắc với nghĩa này (wrong, correct,\n  explanation_vi), vd "resilient with stress" → "resilient to stress". Không có lỗi\n  điển hình thì [].\n\nTab Từ liên quan:\n\n- senses[].synonyms kèm nuance_vi nói rõ khác biệt sắc thái/ngữ cảnh; senses[].antonyms.\n- homonyms (cấp từ): từ viết giống (homograph) hoặc đọc giống (homophone) nhưng khác nghĩa.\n- word_family (cấp từ): các từ cùng họ (danh/động/tính/trạng từ), note_vi nếu cần.\n\nTab Ghi nhớ (cấp từ):\n\n- mnemonics: tối đa 2 mẹo ngắn cho người Việt (type: sound, etymology, image, story).\n- confusables: từ hay bị nhầm với từ này + difference_vi chỉ ra cách phân biệt.\n- etymology_vi: 1 câu về gốc từ/tiền tố/hậu tố nếu giúp dễ nhớ, không thì null.\n\nconfidence: 0–1 cho collocations, idioms, mnemonics (bạn chắc chắn đến đâu).\nKhông tạo mục slang riêng, không tạo mục ngữ pháp riêng.\n';
-
-// src/lib/words/api.ts
-import { z as z5 } from "npm:zod@4.6.5";
-var WordRequestSchema = z5.object({
-  action: z5.literal("request").default("request"),
-  lemma: z5.string().trim().min(1).max(64),
-  language: LanguageSchema.default("en"),
-  pos: PosSchema.nullish()
-});
-var WorkerRequestSchema = z5.object({ action: z5.literal("work") });
-var FunctionRequestSchema = z5.union([WorkerRequestSchema, WordRequestSchema]);
-var StoredWordSchema = z5.object({
-  id: z5.string(),
-  /** id các nghĩa theo đúng thứ tự `content.senses` (để tạo user_words). */
-  senseIds: z5.array(z5.string()),
-  content: WordContentSchema
-});
-var base = {
-  /** Dạng gốc đã chuẩn hóa ("running" → "run"). */
-  lemma: z5.string(),
-  /** Dạng gốc khác có thể đúng (vd leaves → leaf), để app hỏi lại người dùng. */
-  alternatives: z5.array(z5.string())
-};
-var WordResponseSchema = z5.discriminatedUnion("status", [
-  /** Đã có trong kho: trả ngay (một dòng cho mỗi loại từ). */
-  z5.object({ status: z5.literal("ready"), ...base, words: z5.array(StoredWordSchema).min(1) }),
-  /** Đang tạo nội dung: app hiện "Đang chuẩn bị nội dung" rồi hỏi lại sau. */
-  z5.object({ status: z5.literal("preparing"), ...base, jobId: z5.string() }),
-  /** Từ ngoài kho, khách chưa đăng nhập: mời đăng nhập. */
-  z5.object({ status: z5.literal("login_required"), ...base }),
-  /** Đã dùng hết số từ mới hôm nay. */
-  z5.object({ status: z5.literal("limit_reached"), ...base, dailyLimit: z5.number().int() })
-]);
 
 // src/config/words.ts
 var SHARED_CONTENT_CEFR = "B1";

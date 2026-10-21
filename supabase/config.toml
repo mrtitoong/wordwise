@@ -66,3 +66,10 @@ enabled = false
 enabled = true
 verify_jwt = false
 entrypoint = "./functions/generate-word/index.js"
+
+# Audio và ảnh cho thẻ từ (Prompt 2.2). Mã nguồn ở src/functions/word-media. Khách vẫn nghe
+# được audio đã có; pg_cron gọi worker bằng x-worker-secret nên tắt kiểm tra JWT ở cổng.
+[functions.word-media]
+enabled = true
+verify_jwt = false
+entrypoint = "./functions/word-media/index.js"

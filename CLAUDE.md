@@ -205,3 +205,17 @@ Repo: https://github.com/mrtitoong/wordwise
   khớp); thư viện npm thành `npm:tên@phiên-bản` theo package.json. Job CI `functions` chạy
   thử trên Supabase cục bộ. Tạo trước: danh sách **NGSL 1.2** (2.809 từ, CC BY-SA 4.0,
   `data/wordlists/`), `npm run pregenerate` chỉ xếp việc nguồn `bulk`, worker tự chạy dần.
+- 2026-10-21 (Prompt 2.2): Audio bằng **Azure Speech** (REST, giọng en-US-AvaNeural /
+  en-GB-SoniaNeural, MP3 24 kHz 48 kbps), khóa `AZURE_SPEECH_KEY` + `AZURE_SPEECH_REGION`.
+  Audio **của từ** (Mỹ + Anh) tạo sẵn trong nền; audio **câu ví dụ chỉ tạo khi có người bấm
+  nghe lần đầu** (khách chỉ nghe câu đã có), 100 câu mới/người/ngày; app chỉ gửi
+  (senseId, index), máy chủ tự lấy câu nên không đọc được văn bản tùy ý. File trong bucket
+  công khai `audio`: `en/{từ}/{loại từ}/{us|uk}.mp3`, câu `en/sentences/{sha-256}.mp3`; bảng
+  `audio_clips` ghi số ký tự để theo dõi chi phí.
+- 2026-10-21: Ảnh: **Pexels** trước (`PEXELS_API_KEY`, 200 lượt/giờ), Unsplash dự phòng
+  (`UNSPLASH_ACCESS_KEY`); dùng thẳng URL của nhà cung cấp, lưu ghi nguồn trong
+  `word_senses.image_credit` (provider, author, author_url, source_url). Không gắn ảnh cho
+  giới từ, liên từ, đại từ, từ hạn định. Thiếu khóa thì bỏ qua, khi có khóa worker tự bổ
+  sung. Worker `word-media` chạy mỗi phút qua pg_cron (8 từ, 3 lượt tìm ảnh mỗi lần).
+- 2026-10-21: `<AudioButton>` (src/components/audio-button.tsx) phát MP3 với tốc độ 1x/0.75x
+  (giữ cao độ), lỗi hoặc chưa có file thì đọc bằng Web Speech API theo giọng Mỹ/Anh.

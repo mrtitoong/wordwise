@@ -357,6 +357,7 @@ export type Database = {
           input_method: string;
           notebook_id: string;
           source: string | null;
+          tags: string[];
           updated_at: string;
           user_id: string;
           user_word_id: string;
@@ -371,6 +372,7 @@ export type Database = {
           input_method: string;
           notebook_id: string;
           source?: string | null;
+          tags?: string[];
           updated_at?: string;
           user_id: string;
           user_word_id: string;
@@ -385,6 +387,7 @@ export type Database = {
           input_method?: string;
           notebook_id?: string;
           source?: string | null;
+          tags?: string[];
           updated_at?: string;
           user_id?: string;
           user_word_id?: string;
@@ -466,6 +469,8 @@ export type Database = {
         Row: {
           created_at: string;
           display_name: string | null;
+          plan: string;
+          plan_updated_at: string | null;
           role: Database["public"]["Enums"]["user_role"];
           updated_at: string;
           user_id: string;
@@ -473,6 +478,8 @@ export type Database = {
         Insert: {
           created_at?: string;
           display_name?: string | null;
+          plan?: string;
+          plan_updated_at?: string | null;
           role?: Database["public"]["Enums"]["user_role"];
           updated_at?: string;
           user_id: string;
@@ -480,6 +487,8 @@ export type Database = {
         Update: {
           created_at?: string;
           display_name?: string | null;
+          plan?: string;
+          plan_updated_at?: string | null;
           role?: Database["public"]["Enums"]["user_role"];
           updated_at?: string;
           user_id?: string;
@@ -611,6 +620,7 @@ export type Database = {
           custom_note: string | null;
           deleted_at: string | null;
           id: string;
+          introduced_at: string | null;
           sense_id: string;
           status: string;
           updated_at: string;
@@ -625,6 +635,7 @@ export type Database = {
           custom_note?: string | null;
           deleted_at?: string | null;
           id?: string;
+          introduced_at?: string | null;
           sense_id: string;
           status?: string;
           updated_at?: string;
@@ -639,6 +650,7 @@ export type Database = {
           custom_note?: string | null;
           deleted_at?: string | null;
           id?: string;
+          introduced_at?: string | null;
           sense_id?: string;
           status?: string;
           updated_at?: string;
@@ -701,18 +713,30 @@ export type Database = {
       };
       word_job_requests: {
         Row: {
+          added_at: string | null;
+          context_sentence: string | null;
           created_at: string;
+          input_method: string | null;
           job_id: string;
+          notebook_id: string | null;
           user_id: string;
         };
         Insert: {
+          added_at?: string | null;
+          context_sentence?: string | null;
           created_at?: string;
+          input_method?: string | null;
           job_id: string;
+          notebook_id?: string | null;
           user_id: string;
         };
         Update: {
+          added_at?: string | null;
+          context_sentence?: string | null;
           created_at?: string;
+          input_method?: string | null;
           job_id?: string;
+          notebook_id?: string | null;
           user_id?: string;
         };
         Relationships: [
@@ -923,12 +947,24 @@ export type Database = {
         Returns: undefined;
       };
       request_word_job: {
-        Args: { p_language: string; p_lemma: string; p_pos?: string; p_user_id: string };
+        Args: {
+          p_context_sentence?: string;
+          p_input_method?: string;
+          p_language: string;
+          p_lemma: string;
+          p_notebook_id?: string;
+          p_pos?: string;
+          p_user_id: string;
+        };
         Returns: Json;
       };
       save_generated_word: {
         Args: { p_details: Json; p_job_id: string; p_senses: Json; p_word: Json };
         Returns: string;
+      };
+      search_words: {
+        Args: { p_language?: string; p_limit?: number; p_prefix: string };
+        Returns: Json;
       };
       sentence_audio_quota: { Args: { p_user_id: string }; Returns: Json };
       verify_worker_secret: { Args: { p_secret: string }; Returns: boolean };

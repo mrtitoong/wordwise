@@ -283,6 +283,13 @@ describe("parseJson", () => {
     expect(result.ok).toBe(false);
     if (!result.ok) expect(result.error.issues[0]).toMatch(/^answer:/);
   });
+
+  it("preprocess chạy trước khi validate", () => {
+    const result = parseJson('{"answer": 1}', Out, (raw) => ({
+      answer: String((raw as { answer: number }).answer),
+    }));
+    expect(result).toEqual({ ok: true, data: { answer: "1" } });
+  });
 });
 
 describe("toJsonSchema", () => {

@@ -41,6 +41,8 @@ export type WordRow = {
   ipa_us: string | null;
   ipa_uk: string | null;
   cefr: WordContent["cefr"];
+  /** Thứ hạng tần suất (danh sách NGSL) nếu biết. */
+  frequency_rank?: number | null;
   register: WordContent["register"];
   forms: z.infer<typeof FormsSchema>;
   details: z.infer<typeof WordDetailsColumnSchema>;

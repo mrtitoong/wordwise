@@ -25,6 +25,8 @@ jobs:
       - run: npm run format:check
       - run: npm run typecheck
       - run: npm test
+      - name: Bundle Edge Function khớp mã nguồn
+        run: npm run functions:build -- --check
       # Build không cần Supabase: thiếu biến môi trường thì app chạy chế độ khách.
       - run: npm run build
 
@@ -102,3 +104,42 @@ jobs:
             echo "::error file=src/lib/db/database.types.ts,title=types diff::${msg}"
             exit 1
           fi
+
+  functions:
+    name: Edge Function (Deno + Supabase cục bộ)
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: npm
+      - run: npm ci
+      - uses: supabase/setup-cli@v1
+        with:
+          version: 2.119.0
+      - name: Khởi động Supabase cục bộ (DB, Auth, REST, Edge Runtime)
+        run: supabase start -x studio,imgproxy,mailpit,logflare,vector,realtime,storage-api,supavisor
+      - name: Biến môi trường từ Supabase cục bộ
+        run: |
+          supabase status -o json > /tmp/sb.json
+          {
+            echo "SUPABASE_URL=$(jq -r '.API_URL' /tmp/sb.json)"
+            echo "SUPABASE_PUBLISHABLE_KEY=$(jq -r '.PUBLISHABLE_KEY // .ANON_KEY' /tmp/sb.json)"
+          } >> "$GITHUB_ENV"
+      - name: Chạy Edge Function
+        run: |
+          nohup supabase functions serve > /tmp/functions.log 2>&1 &
+          for i in $(seq 1 60); do
+            code=$(curl -s -o /dev/null -w '%{http_code}' -X OPTIONS "$SUPABASE_URL/functions/v1/generate-word" || true)
+            [ "$code" = "204" ] && exit 0
+            sleep 2
+          done
+          cat /tmp/functions.log
+          exit 1
+      - name: Chạy thử generate-word
+        run: npx tsx scripts/smoke-generate-word.ts
+      - name: Nhật ký Edge Function
+        if: always()
+        run: cat /tmp/functions.log || true

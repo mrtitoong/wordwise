@@ -1,0 +1,211 @@
+[
+  {
+    "word": "light",
+    "phonetic": "/lʌɪt/",
+    "phonetics": [
+      {
+        "text": "/lʌɪt/",
+        "audio": ""
+      },
+      {
+        "text": "/laɪt/",
+        "audio": "https://api.dictionaryapi.dev/media/pronunciations/en/light-uk.mp3"
+      },
+      {
+        "text": "[ɫɐɪ̯ʔ]",
+        "audio": "https://api.dictionaryapi.dev/media/pronunciations/en/light-us.mp3"
+      }
+    ],
+    "meanings": [
+      {
+        "partOfSpeech": "noun",
+        "definitions": [
+          {
+            "definition": "Visible electromagnetic radiation. The human eye can typically detect radiation (light) in the wavelength range of about 400 to 750 nanometers. Nearby shorter and longer wavelength ranges, although not visible, are commonly called ultraviolet and infrared light."
+          },
+          {
+            "definition": "A source of illumination."
+          },
+          {
+            "definition": "Spiritual or mental illumination; enlightenment, useful information."
+          },
+          {
+            "definition": "(in the plural) Facts; pieces of information; ideas, concepts."
+          }
+        ]
+      }
+    ]
+  },
+  {
+    "word": "light",
+    "phonetic": "/lʌɪt/",
+    "phonetics": [
+      {
+        "text": "/lʌɪt/",
+        "audio": ""
+      },
+      {
+        "text": "/laɪt/",
+        "audio": "https://api.dictionaryapi.dev/media/pronunciations/en/light-uk.mp3"
+      },
+      {
+        "text": "[ɫɐɪ̯ʔ]",
+        "audio": "https://api.dictionaryapi.dev/media/pronunciations/en/light-us.mp3"
+      }
+    ],
+    "meanings": [
+      {
+        "partOfSpeech": "verb",
+        "definitions": [
+          {
+            "definition": "To start (a fire)."
+          },
+          {
+            "definition": "To set fire to; to set burning."
+          },
+          {
+            "definition": "To illuminate; to provide light for when it is dark."
+          },
+          {
+            "definition": "To become ignited; to take fire."
+          }
+        ]
+      }
+    ]
+  },
+  {
+    "word": "light",
+    "phonetic": "/lʌɪt/",
+    "phonetics": [
+      {
+        "text": "/lʌɪt/",
+        "audio": ""
+      },
+      {
+        "text": "/laɪt/",
+        "audio": "https://api.dictionaryapi.dev/media/pronunciations/en/light-uk.mp3"
+      },
+      {
+        "text": "[ɫɐɪ̯ʔ]",
+        "audio": "https://api.dictionaryapi.dev/media/pronunciations/en/light-us.mp3"
+      }
+    ],
+    "meanings": [
+      {
+        "partOfSpeech": "adjective",
+        "definitions": [
+          {
+            "definition": "Having light; bright; clear; not dark or obscure."
+          },
+          {
+            "definition": "Pale or whitish in color; highly luminous and more or less deficient in chroma."
+          },
+          {
+            "definition": "(of coffee) Served with extra milk or cream."
+          }
+        ]
+      }
+    ]
+  },
+  {
+    "word": "light",
+    "phonetic": "/lʌɪt/",
+    "phonetics": [
+      {
+        "text": "/lʌɪt/",
+        "audio": ""
+      },
+      {
+        "text": "/laɪt/",
+        "audio": "https://api.dictionaryapi.dev/media/pronunciations/en/light-uk.mp3"
+      },
+      {
+        "text": "[ɫɐɪ̯ʔ]",
+        "audio": "https://api.dictionaryapi.dev/media/pronunciations/en/light-us.mp3"
+      }
+    ],
+    "meanings": [
+      {
+        "partOfSpeech": "noun",
+        "definitions": [
+          {
+            "definition": "A stone that is not thrown hard enough."
+          },
+          {
+            "definition": "See lights."
+          }
+        ]
+      },
+      {
+        "partOfSpeech": "verb",
+        "definitions": [
+          {
+            "definition": "To unload a ship, or to jettison material to make it lighter"
+          },
+          {
+            "definition": "To lighten; to ease of a burden; to take off."
+          }
+        ]
+      },
+      {
+        "partOfSpeech": "adjective",
+        "definitions": [
+          {
+            "definition": "Having little or relatively little actual weight; not cumbrous or unwieldy."
+          },
+          {
+            "definition": "Having little weight as compared with bulk; of little density or specific gravity."
+          },
+          {
+            "definition": "Of short or insufficient weight; weighing less than the legal, standard or proper amount; clipped or diminished."
+          },
+          {
+            "definition": "Lacking that which burdens or makes heavy."
+          }
+        ]
+      },
+      {
+        "partOfSpeech": "adverb",
+        "definitions": [
+          {
+            "definition": "Carrying little."
+          }
+        ]
+      }
+    ]
+  },
+  {
+    "word": "light",
+    "phonetic": "/lʌɪt/",
+    "phonetics": [
+      {
+        "text": "/lʌɪt/",
+        "audio": ""
+      },
+      {
+        "text": "/laɪt/",
+        "audio": "https://api.dictionaryapi.dev/media/pronunciations/en/light-uk.mp3"
+      },
+      {
+        "text": "[ɫɐɪ̯ʔ]",
+        "audio": "https://api.dictionaryapi.dev/media/pronunciations/en/light-us.mp3"
+      }
+    ],
+    "meanings": [
+      {
+        "partOfSpeech": "verb",
+        "definitions": [
+          {
+            "definition": "To find by chance."
+          },
+          {
+            "definition": "To stop upon (of eyes or a glance); to notice"
+          },
+          {
+            "definition": "To alight; to land or come down."
+          }
+        ]
+      }
+    ]
+  }
+]

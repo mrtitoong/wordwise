@@ -618,6 +618,97 @@ export type Database = {
           },
         ];
       };
+      word_job_requests: {
+        Row: {
+          created_at: string;
+          job_id: string;
+          user_id: string;
+        };
+        Insert: {
+          created_at?: string;
+          job_id: string;
+          user_id: string;
+        };
+        Update: {
+          created_at?: string;
+          job_id?: string;
+          user_id?: string;
+        };
+        Relationships: [
+          {
+            foreignKeyName: "word_job_requests_job_id_fkey";
+            columns: ["job_id"];
+            isOneToOne: false;
+            referencedRelation: "word_jobs";
+            referencedColumns: ["id"];
+          },
+        ];
+      };
+      word_jobs: {
+        Row: {
+          attempts: number;
+          created_at: string;
+          finished_at: string | null;
+          first_started_at: string | null;
+          frequency_rank: number | null;
+          id: string;
+          language: string;
+          last_error: string | null;
+          lemma: string;
+          locked_at: string | null;
+          pos: string | null;
+          run_after: string;
+          source: string;
+          status: string;
+          updated_at: string;
+          word_id: string | null;
+        };
+        Insert: {
+          attempts?: number;
+          created_at?: string;
+          finished_at?: string | null;
+          first_started_at?: string | null;
+          frequency_rank?: number | null;
+          id?: string;
+          language: string;
+          last_error?: string | null;
+          lemma: string;
+          locked_at?: string | null;
+          pos?: string | null;
+          run_after?: string;
+          source?: string;
+          status?: string;
+          updated_at?: string;
+          word_id?: string | null;
+        };
+        Update: {
+          attempts?: number;
+          created_at?: string;
+          finished_at?: string | null;
+          first_started_at?: string | null;
+          frequency_rank?: number | null;
+          id?: string;
+          language?: string;
+          last_error?: string | null;
+          lemma?: string;
+          locked_at?: string | null;
+          pos?: string | null;
+          run_after?: string;
+          source?: string;
+          status?: string;
+          updated_at?: string;
+          word_id?: string | null;
+        };
+        Relationships: [
+          {
+            foreignKeyName: "word_jobs_word_id_fkey";
+            columns: ["word_id"];
+            isOneToOne: false;
+            referencedRelation: "words";
+            referencedColumns: ["id"];
+          },
+        ];
+      };
       word_senses: {
         Row: {
           created_at: string;
@@ -736,7 +827,22 @@ export type Database = {
       [_ in never]: never;
     };
     Functions: {
-      [_ in never]: never;
+      claim_word_jobs: { Args: { p_job_id?: string; p_limit?: number }; Returns: Json };
+      complete_word_job: { Args: { p_job_id: string; p_word_id: string }; Returns: undefined };
+      enqueue_bulk_words: { Args: { p_items: Json; p_language: string }; Returns: number };
+      fail_word_job: {
+        Args: { p_error: string; p_job_id: string; p_retry_at?: string };
+        Returns: undefined;
+      };
+      request_word_job: {
+        Args: { p_language: string; p_lemma: string; p_pos?: string; p_user_id: string };
+        Returns: Json;
+      };
+      save_generated_word: {
+        Args: { p_details: Json; p_job_id: string; p_senses: Json; p_word: Json };
+        Returns: string;
+      };
+      verify_worker_secret: { Args: { p_secret: string }; Returns: boolean };
     };
     Enums: {
       user_role: "user" | "admin" | "teacher";

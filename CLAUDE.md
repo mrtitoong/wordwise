@@ -179,3 +179,29 @@ Repo: https://github.com/mrtitoong/wordwise
   compare:models`); app thật đọc từ Supabase Secrets trong Edge Functions (Prompt 2.1).
   Prompt trong app ở `src/prompts/*.md` có `version`; word-content v1 không chứa
   `context_sentence` của người dùng.
+- 2026-10-21 (Prompt 2.1): Edge Function `generate-word`: tra kho → chưa có thì xếp việc
+  vào bảng `word_jobs` (không dùng pgmq: cần đọc trạng thái từng việc, gộp yêu cầu trùng) và
+  xử lý ngay bằng `EdgeRuntime.waitUntil`; pg_cron mỗi phút gọi worker (khóa
+  `word_worker_secret` và `project_url` trong Vault). Haiku mất ~30 giây/từ nên từ mới luôn
+  trả `preparing` ("Đang chuẩn bị nội dung"). Logic thuần ở `src/lib/words/pipeline.ts`.
+- 2026-10-21: **Khách không tạo được từ mới** (chỉ dùng từ đã có trong kho, ngoài kho thì
+  mời đăng nhập). Giới hạn trong `private.settings` (đổi bằng SQL): 50 từ mới/người/ngày,
+  trần **1.000 từ mới/ngày** toàn hệ thống (~$4), từ tạo trước có trần riêng 1.000/ngày và
+  chỉ chạy khi không có việc của người dùng. Ngày tính theo giờ Việt Nam.
+- 2026-10-21: Từ gốc bằng `wink-lemmatizer` (WordNet, ~3 MB, chỉ dùng ở máy chủ) trong
+  `src/lib/entry/lemma.ts`; giữ nguyên từ có nghĩa riêng (building, glasses, news,
+  interesting…) và trả `alternatives` để app hỏi lại. normalizeEntry() đầy đủ làm ở Prompt
+  2.4 dựa trên hàm này. Không ghi loại từ → **model chọn loại phổ biến nhất** (prompt
+  word-content v2). Không lấy loại đầu tiên của từ điển: Wiktionary xếp theo nguồn gốc,
+  thử 100 từ ra "and"/"by" là danh từ, "at" là động từ (đã xóa 31 từ v1, tạo lại).
+- 2026-10-21: Free Dictionary API không ổn định (530/404 ngẫu nhiên) → lỗi thì chạy tiếp
+  chỉ với LLM; chỉ dùng **nghĩa** làm tham khảo. **IPA giữ bản do AI viết** (chủ sản phẩm
+  chốt sau xem mẫu): IPA từ điển hay là phiên âm kỹ thuật (ɹaɪt, d͡ʒʌst, ɡʊ(d)), không gửi
+  vào prompt, không ghi đè. Thay cho "IPA lệch → dùng từ điển" ở plan.md §6 và Prompt 2.1.
+  Prompt v3 yêu cầu ký hiệu kiểu Cambridge/Oxford. Nội dung từ chung viết ở mức B1. Dấu "/"
+  quanh IPA do LLM trả về được tự bỏ (`preprocess` của router).
+- 2026-10-21: Edge Function viết trong `src/functions/<tên>/main.ts`, đóng gói bằng esbuild
+  (`npm run functions:build`) thành `supabase/functions/<tên>/index.js` (commit; CI kiểm tra
+  khớp); thư viện npm thành `npm:tên@phiên-bản` theo package.json. Job CI `functions` chạy
+  thử trên Supabase cục bộ. Tạo trước: danh sách **NGSL 1.2** (2.809 từ, CC BY-SA 4.0,
+  `data/wordlists/`), `npm run pregenerate` chỉ xếp việc nguồn `bulk`, worker tự chạy dần.

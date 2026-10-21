@@ -741,8 +741,8 @@ export type Database = {
           created_at: string;
           definition_en: string;
           id: string;
-          image_credit: Json | null;
           image_checked_at: string | null;
+          image_credit: Json | null;
           image_query: string | null;
           image_url: string | null;
           meaning_vi: string;
@@ -754,8 +754,8 @@ export type Database = {
           created_at?: string;
           definition_en: string;
           id?: string;
-          image_credit?: Json | null;
           image_checked_at?: string | null;
+          image_credit?: Json | null;
           image_query?: string | null;
           image_url?: string | null;
           meaning_vi: string;
@@ -767,8 +767,8 @@ export type Database = {
           created_at?: string;
           definition_en?: string;
           id?: string;
-          image_credit?: Json | null;
           image_checked_at?: string | null;
+          image_credit?: Json | null;
           image_query?: string | null;
           image_url?: string | null;
           meaning_vi?: string;

@@ -89,6 +89,28 @@ describe("thêm từ vào sổ", () => {
   });
 });
 
+describe("ghi chú riêng khi nhập file", () => {
+  it("thêm vào tab Nghĩa, không trùng khi nhập lại", async () => {
+    const book = await createNotebook(db, USER, { name: "File" });
+    const add = () =>
+      addSensesToNotebook(
+        db,
+        USER,
+        [{ senseId: S1, note: "kiên cường · sách Grit", tags: ["ielts"] }],
+        {
+          notebookId: book.id,
+          inputMethod: "csv",
+        },
+      );
+    await add();
+    await add();
+    const row = (await db.user_words.get(userWordId(USER, S1)))!;
+    expect(row.user_additions).toEqual({
+      meaning: [{ id: expect.any(String), text: "kiên cường · sách Grit" }],
+    });
+  });
+});
+
 describe("sổ tay", () => {
   it("sửa, lưu trữ; không xóa được sổ mặc định", async () => {
     const book = await createNotebook(db, USER, { name: " Phim ", tags: ["Netflix", "netflix"] });

@@ -1,4 +1,5 @@
 import Dexie, { type EntityTable } from "dexie";
+import type { ImportRecord } from "@/lib/entry/import-record";
 import type {
   CardRow,
   NotebookEntryRow,
@@ -32,6 +33,8 @@ export class LocalDb extends Dexie {
   outbox!: EntityTable<OutboxItem, "seq">;
   /** Mốc kéo dữ liệu theo bảng, chủ dữ liệu hiện tại… */
   meta!: EntityTable<MetaEntry, "key">;
+  /** Việc nhập từ file đang chạy/chờ (chỉ trong máy, Prompt 2.4b). */
+  imports!: EntityTable<ImportRecord, "id">;
 
   constructor(name = "wordwise") {
     super(name);
@@ -48,6 +51,7 @@ export class LocalDb extends Dexie {
       outbox: "++seq, owner, [table+rowId]",
       meta: "key",
     });
+    this.version(2).stores({ imports: "id, owner" });
   }
 }
 

@@ -2,6 +2,7 @@ import type { Grade } from "ts-fsrs";
 import { applyReview, createScheduler, newCardFields } from "@/lib/srs/scheduler";
 import { introducedToday, planIntroductions } from "@/lib/notebooks/introductions";
 import { mergeCard } from "@/lib/sync/merge";
+import { addAddition, parseUserAdditions, serializeAdditions } from "@/lib/words/user-additions";
 import { rekeyOwnedData } from "@/lib/sync/rekey";
 import type { WordContent } from "@/lib/sync/remote";
 import {
@@ -121,6 +122,8 @@ export type AddEntry = {
   senseId: string;
   contextSentence?: string | null;
   tags?: string[];
+  /** Ghi chú riêng → "Ghi chú của bạn" ở tab Nghĩa (không thêm trùng). */
+  note?: string | null;
 };
 
 export type AddOptions = {
@@ -207,6 +210,23 @@ export async function addSensesToNotebook(
           updated_at: iso,
         });
         await queue(db, "user_words", uwId, owner);
+      }
+
+      const note = item.note?.trim();
+      if (note) {
+        const row = (await db.user_words.get(uwId))!;
+        const additions = parseUserAdditions(row.user_additions);
+        if (!additions.meaning.some((n) => n.text === note)) {
+          const next = addAddition(additions, "meaning", { text: note }, randomId());
+          if (next.ok) {
+            await db.user_words.put({
+              ...row,
+              user_additions: serializeAdditions(next.additions),
+              updated_at: iso,
+            });
+            await queue(db, "user_words", uwId, owner);
+          }
+        }
       }
 
       const entryId = notebookEntryId(options.notebookId, uwId);

@@ -195,9 +195,11 @@ Repo: https://github.com/mrtitoong/wordwise
   word-content v2). Không lấy loại đầu tiên của từ điển: Wiktionary xếp theo nguồn gốc,
   thử 100 từ ra "and"/"by" là danh từ, "at" là động từ (đã xóa 31 từ v1, tạo lại).
 - 2026-10-21: Free Dictionary API không ổn định (530/404 ngẫu nhiên) → lỗi thì chạy tiếp
-  chỉ với LLM. Chỉ lấy IPA âm vị `/…/` có vùng rõ theo file audio (-us/-uk), bỏ phiên âm
-  hẹp `[…]`. Nội dung từ chung viết ở mức B1. Dấu "/" quanh IPA do LLM trả về được tự bỏ
-  (`preprocess` của router).
+  chỉ với LLM; chỉ dùng **nghĩa** làm tham khảo. **IPA giữ bản do AI viết** (chủ sản phẩm
+  chốt sau xem mẫu): IPA từ điển hay là phiên âm kỹ thuật (ɹaɪt, d͡ʒʌst, ɡʊ(d)), không gửi
+  vào prompt, không ghi đè. Thay cho "IPA lệch → dùng từ điển" ở plan.md §6 và Prompt 2.1.
+  Prompt v3 yêu cầu ký hiệu kiểu Cambridge/Oxford. Nội dung từ chung viết ở mức B1. Dấu "/"
+  quanh IPA do LLM trả về được tự bỏ (`preprocess` của router).
 - 2026-10-21: Edge Function viết trong `src/functions/<tên>/main.ts`, đóng gói bằng esbuild
   (`npm run functions:build`) thành `supabase/functions/<tên>/index.js` (commit; CI kiểm tra
   khớp); thư viện npm thành `npm:tên@phiên-bản` theo package.json. Job CI `functions` chạy

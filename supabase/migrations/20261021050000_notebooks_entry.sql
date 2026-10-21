@@ -247,6 +247,8 @@ to service_role;
 
 /* ---------- Gợi ý khi gõ: tìm từ theo tiền tố ---------- */
 
+-- Thay index tiền tố cũ (Prompt 1.2, phân biệt hoa thường) bằng bản theo lower(lemma).
+drop index public.words_lemma_prefix_idx;
 create index words_lemma_prefix_idx on public.words (language, lower(lemma) text_pattern_ops)
   where not is_hidden;
 

@@ -5,7 +5,8 @@ async function startAsGuest(page: Page, starters = true) {
   await page.goto("/welcome");
   await page.getByRole("button", { name: "Dùng thử ngay" }).click();
   await completeOnboarding(page, { level: "B1", starters });
-  await expect(page).toHaveURL("/");
+  // "Tự thêm từ của tôi" đưa thẳng tới màn Thêm từ.
+  await expect(page).toHaveURL(starters ? "/" : "/add");
 }
 
 async function noHorizontalScroll(page: Page) {

@@ -594,6 +594,45 @@
       "doneToast": "Imported {added} words into {notebook}",
       "waitingToast": "No new words left today: {pending} words for {notebook} will continue tomorrow",
       "choose": "Choose a meaning for “{word}”"
+    },
+    "voice": {
+      "modeLabel": "Speaking mode",
+      "learn": "Speak English",
+      "reverse": "Reverse (Vietnamese)",
+      "continuous": "Say several words in a row",
+      "holdToTalk": "Hold to talk",
+      "tapToStop": "Listening… tap to stop",
+      "listening": "Listening…",
+      "processing": "Recognizing…",
+      "micLabel": "Microphone: hold to talk, or tap once",
+      "hintLearn": "Say an English word or phrase, then pick the right option.",
+      "hintReverse": "Say a Vietnamese meaning (e.g. “kiên cường”) to find English words.",
+      "youSaid": "You said:",
+      "candidates": "Options",
+      "suggestions": "Suggested English words",
+      "fromLibrary": "in library",
+      "fromAi": "AI suggestion",
+      "aiLogin": "Sign in to get AI suggestions when the library has none.",
+      "aiLimit": "No AI suggestions left today.",
+      "aiUnavailable": "AI suggestions aren't available right now.",
+      "noSuggestions": "No English words found for “{query}”.",
+      "searching": "Finding English words…",
+      "again": "Speak again",
+      "typeInstead": "Type instead",
+      "lines": "Words you said ({count})",
+      "removeLine": "Remove “{word}”",
+      "review": "Review and add {count} words",
+      "errors": {
+        "not-allowed": "Microphone access is blocked. Click the lock icon in the address bar, allow Microphone, then try again.",
+        "no-speech": "Didn't catch that. Try speaking slower and closer to the mic.",
+        "no-microphone": "No microphone found on this device.",
+        "network": "Connection lost while recognizing. Check your network and try again.",
+        "login-required": "This browser can't recognize speech by itself. Sign in to use server recognition, or open in Chrome.",
+        "limit-reached": "No speech recognition left today. You can still type words.",
+        "unavailable": "Speech recognition isn't available right now. Try again or type the word.",
+        "unsupported": "This browser can't record audio. Use Chrome, Edge or a recent Safari."
+      },
+      "signIn": "Sign in"
     }
   }
 }

@@ -12,7 +12,7 @@ import { parsePastedText } from "@/lib/entry/paste";
 import { createClient } from "@/lib/supabase/client";
 import { getSupabaseEnv } from "@/lib/supabase/env";
 import { cn } from "@/lib/utils";
-import type { ResolveResponse } from "@/lib/words/api";
+import type { InputMethod, ResolveResponse } from "@/lib/words/api";
 import { requestWord, resolveWords } from "@/lib/words/request-word";
 import type { EntryContext } from "./add-word-screen";
 import { cacheSenses } from "./word-search";
@@ -26,10 +26,13 @@ export function BulkEntry({
   text,
   context,
   onDone,
+  inputMethod = "typed",
 }: {
   text: string;
   context: EntryContext;
   onDone: () => void;
+  /** "voice" khi đến từ chế độ nói liên tục. */
+  inputMethod?: InputMethod;
 }) {
   const t = useTranslations("addWord.bulk");
   const ta = useTranslations("addWord");
@@ -100,7 +103,7 @@ export function BulkEntry({
       if (ready.length) {
         const result = await addSensesToNotebook(db, context.owner, ready, {
           notebookId: context.notebookId,
-          inputMethod: "typed",
+          inputMethod,
           source: "paste",
         });
         added = result.added.length + result.linked.length;
@@ -117,7 +120,7 @@ export function BulkEntry({
           const response = await requestWord(createClient(), {
             lemma: entry.lemma,
             notebookId: context.notebookId,
-            inputMethod: "typed",
+            inputMethod,
           });
           if (response.status === "limit_reached") {
             skipped = fresh.length - i;
@@ -129,7 +132,7 @@ export function BulkEntry({
             const senseId = response.words[0]!.senseIds[0]!;
             const result = await addSensesToNotebook(db, context.owner, [{ senseId }], {
               notebookId: context.notebookId,
-              inputMethod: "typed",
+              inputMethod,
               source: "paste",
             });
             added += result.added.length + result.linked.length;

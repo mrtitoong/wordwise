@@ -96,3 +96,15 @@ export async function cacheSenses(db: LocalDb, senseIds: string[]): Promise<void
     .catch(() => null);
   if (result && "content" in result) await cacheWordContent(db, result.content);
 }
+
+/** Từ trong kho đúng bằng chữ này (không chuẩn hóa), từ máy chủ hoặc trong máy. */
+export async function findExact(
+  db: LocalDb,
+  text: string,
+  online: boolean,
+): Promise<WordSummary | null> {
+  const q = text.trim().toLowerCase();
+  const items =
+    (online ? await searchRemote(q).catch(() => null) : null) ?? (await searchLocal(db, q));
+  return items.find((w) => w.lemma.toLowerCase() === q) ?? null;
+}

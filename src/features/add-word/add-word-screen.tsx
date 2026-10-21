@@ -13,6 +13,7 @@ import { useOwner } from "@/lib/sync/owner";
 import { cn } from "@/lib/utils";
 import { BulkEntry } from "./bulk-entry";
 import { FileEntry } from "./file-entry";
+import { VoiceEntry } from "./voice-entry";
 import { PremiumSheet } from "./premium-sheet";
 import { SingleEntry } from "./single-entry";
 
@@ -45,6 +46,8 @@ export type EntryContext = {
   inNotebookSenseIds: Set<string>;
   openSlots: number;
   dailyLimit: number;
+  /** Giọng Mỹ/Anh trong Cài đặt (nhận dạng giọng nói). */
+  accent: "us" | "uk";
   onLimit: (plan: "free" | "premium", limit: number) => void;
 };
 
@@ -57,7 +60,7 @@ export function AddWordScreen({ initialNotebookId }: { initialNotebookId: string
   const online = useOnlineStatus();
   const [chosen, setChosen] = useState<string | null>(initialNotebookId);
   const [bulkText, setBulkText] = useState<string | null>(null);
-  const [tab, setTab] = useState<"typed" | "file">("typed");
+  const [tab, setTab] = useState<"typed" | "voice" | "file">("typed");
   const [limit, setLimit] = useState<{ plan: "free" | "premium"; limit: number } | null>(null);
 
   // Người dùng bỏ qua 5 từ khởi đầu thì chưa có "Sổ của tôi".
@@ -76,7 +79,14 @@ export function AddWordScreen({ initialNotebookId }: { initialNotebookId: string
       db.user_settings.get(owner),
       openSlotsToday(db, owner),
     ]);
-    return { notebooks, userWords, entries, dailyLimit: settings?.daily_new_limit ?? 10, slots };
+    return {
+      notebooks,
+      userWords,
+      entries,
+      dailyLimit: settings?.daily_new_limit ?? 10,
+      accent: settings?.accent === "uk" ? ("uk" as const) : ("us" as const),
+      slots,
+    };
   }, [owner]);
 
   const notebooks = useMemo(
@@ -107,6 +117,7 @@ export function AddWordScreen({ initialNotebookId }: { initialNotebookId: string
       inNotebookSenseIds: new Set(live.filter((u) => inNotebook.has(u.id)).map((u) => u.sense_id)),
       openSlots: data.slots,
       dailyLimit: data.dailyLimit,
+      accent: data.accent,
       onLimit: (plan, max) => setLimit({ plan, limit: max }),
     };
   }, [owner, data, notebook, online]);
@@ -152,7 +163,7 @@ export function AddWordScreen({ initialNotebookId }: { initialNotebookId: string
         className="grid grid-cols-4 gap-1 rounded-xl bg-muted p-1"
       >
         {TABS.map((id) => {
-          const available = id === "typed" || id === "file";
+          const available = id !== "photo";
           const active = id === tab;
           return (
             <button
@@ -179,6 +190,9 @@ export function AddWordScreen({ initialNotebookId }: { initialNotebookId: string
       </div>
 
       {context && tab === "file" && <FileEntry context={context} />}
+      {context && tab === "voice" && (
+        <VoiceEntry context={context} onTypeInstead={() => setTab("typed")} />
+      )}
       {context &&
         tab === "typed" &&
         (bulkText !== null ? (

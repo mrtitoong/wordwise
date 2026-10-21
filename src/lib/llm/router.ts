@@ -28,6 +28,8 @@ export interface GenerateJsonOptions<S extends z.ZodType> {
   schema: S;
   /** Mặc định DEFAULT_SCHEMA_RETRIES; script so sánh model đặt 0 để đo tỉ lệ đúng lần đầu. */
   schemaRetries?: number;
+  /** Sửa lỗi vặt trong JSON của model trước khi validate (vd bỏ dấu "/" quanh IPA). */
+  preprocess?: (raw: unknown) => unknown;
 }
 
 export interface GenerateJsonResult<T> {
@@ -70,7 +72,7 @@ export function createLlmRouter<Task extends string>(deps: LlmRouterDeps<Task>):
   }
 
   return {
-    async generateJSON(task, { system, prompt, schema, schemaRetries }) {
+    async generateJSON(task, { system, prompt, schema, schemaRetries, preprocess }) {
       const taskConfig = deps.config[task];
       const jsonSchema = toJsonSchema(schema);
       const schemaMode = taskConfig.schemaMode ?? "enforce";
@@ -129,7 +131,7 @@ export function createLlmRouter<Task extends string>(deps: LlmRouterDeps<Task>):
           }
 
           const durationMs = now() - started;
-          const parsed = parseJson(text, schema);
+          const parsed = parseJson(text, schema, preprocess);
           if (!parsed.ok) {
             await log({
               ...base,
@@ -178,7 +180,11 @@ export function schemaInstruction(jsonSchema: Record<string, unknown>): string {
 
 type ParseResult<T> = { ok: true; data: T } | { ok: false; error: LlmSchemaError };
 
-export function parseJson<S extends z.ZodType>(text: string, schema: S): ParseResult<z.infer<S>> {
+export function parseJson<S extends z.ZodType>(
+  text: string,
+  schema: S,
+  preprocess?: (raw: unknown) => unknown,
+): ParseResult<z.infer<S>> {
   let raw: unknown;
   try {
     raw = JSON.parse(stripCodeFence(text));
@@ -201,7 +207,7 @@ export function parseJson<S extends z.ZodType>(text: string, schema: S): ParseRe
       };
     }
   }
-  const result = schema.safeParse(raw);
+  const result = schema.safeParse(preprocess ? preprocess(raw) : raw);
   if (!result.success) {
     return {
       ok: false,

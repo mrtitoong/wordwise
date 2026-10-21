@@ -191,7 +191,9 @@ Repo: https://github.com/mrtitoong/wordwise
 - 2026-10-21: Từ gốc bằng `wink-lemmatizer` (WordNet, ~3 MB, chỉ dùng ở máy chủ) trong
   `src/lib/entry/lemma.ts`; giữ nguyên từ có nghĩa riêng (building, glasses, news,
   interesting…) và trả `alternatives` để app hỏi lại. normalizeEntry() đầy đủ làm ở Prompt
-  2.4 dựa trên hàm này. Không ghi loại từ → loại phổ biến nhất theo từ điển.
+  2.4 dựa trên hàm này. Không ghi loại từ → **model chọn loại phổ biến nhất** (prompt
+  word-content v2). Không lấy loại đầu tiên của từ điển: Wiktionary xếp theo nguồn gốc,
+  thử 100 từ ra "and"/"by" là danh từ, "at" là động từ (đã xóa 31 từ v1, tạo lại).
 - 2026-10-21: Free Dictionary API không ổn định (530/404 ngẫu nhiên) → lỗi thì chạy tiếp
   chỉ với LLM. Chỉ lấy IPA âm vị `/…/` có vùng rõ theo file audio (-us/-uk), bỏ phiên âm
   hẹp `[…]`. Nội dung từ chung viết ở mức B1. Dấu "/" quanh IPA do LLM trả về được tự bỏ

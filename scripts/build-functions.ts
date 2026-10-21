@@ -9,6 +9,7 @@
  *   npm run functions:build -- --check – báo lỗi nếu file đã commit cũ hơn mã nguồn (CI)
  */
 import { readFileSync } from "node:fs";
+import { relative } from "node:path";
 import { build, type Plugin } from "esbuild";
 
 const FUNCTIONS = ["generate-word"];
@@ -56,7 +57,8 @@ const rawImports: Plugin = {
         importer: args.importer,
       });
       if (result.errors.length) return { errors: result.errors };
-      return { path: result.path, namespace: "raw" };
+      // Đường dẫn tương đối, dạng "/": bundle giống nhau trên Windows và Linux (CI so khớp).
+      return { path: relative(process.cwd(), result.path).replaceAll("\\", "/"), namespace: "raw" };
     });
     b.onLoad({ filter: /.*/, namespace: "raw" }, (args) => ({
       contents: readFileSync(args.path, "utf8").replaceAll("\r\n", "\n"),

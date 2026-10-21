@@ -827,18 +827,9 @@ export type Database = {
       [_ in never]: never;
     };
     Functions: {
-      claim_word_jobs: {
-        Args: { p_job_id?: string; p_limit?: number };
-        Returns: Json;
-      };
-      complete_word_job: {
-        Args: { p_job_id: string; p_word_id: string };
-        Returns: undefined;
-      };
-      enqueue_bulk_words: {
-        Args: { p_items: Json; p_language: string };
-        Returns: number;
-      };
+      claim_word_jobs: { Args: { p_job_id?: string; p_limit?: number }; Returns: Json };
+      complete_word_job: { Args: { p_job_id: string; p_word_id: string }; Returns: undefined };
+      enqueue_bulk_words: { Args: { p_items: Json; p_language: string }; Returns: number };
       fail_word_job: {
         Args: { p_error: string; p_job_id: string; p_retry_at?: string };
         Returns: undefined;

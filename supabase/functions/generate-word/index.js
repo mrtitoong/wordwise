@@ -162,7 +162,6 @@ var DEFAULT_TIMEOUT_MS = 8e3;
 var MAX_DEFINITIONS = 3;
 var ResponseSchema = z.array(
   z.object({
-    phonetics: z.array(z.object({ text: z.string().nullish(), audio: z.string().nullish() })).default([]),
     meanings: z.array(
       z.object({
         partOfSpeech: z.string(),
@@ -186,26 +185,11 @@ var POS_MAP = {
   phrase: "phrase",
   idiom: "phrase"
 };
-function phonemicIpa(text2) {
-  const match = /^\s*\/([^/]+)\/\s*$/.exec(text2 ?? "");
-  const ipa = match?.[1]?.trim();
-  return ipa ? ipa : null;
-}
-function regionOf(audio) {
-  const match = /-(us|uk)\.mp3$/i.exec(audio ?? "");
-  return match ? match[1].toLowerCase() : null;
-}
 function parseFreeDictionary(json2) {
   const parsed = ResponseSchema.safeParse(json2);
   if (!parsed.success || parsed.data.length === 0) return null;
-  const ipa = { us: null, uk: null };
   const meanings = /* @__PURE__ */ new Map();
   for (const entry of parsed.data) {
-    for (const phonetic of entry.phonetics) {
-      const region = regionOf(phonetic.audio);
-      const text2 = phonemicIpa(phonetic.text);
-      if (region && text2 && ipa[region] === null) ipa[region] = text2;
-    }
     for (const meaning of entry.meanings) {
       const pos = POS_MAP[meaning.partOfSpeech.toLowerCase()];
       if (!pos) continue;
@@ -216,11 +200,8 @@ function parseFreeDictionary(json2) {
       meanings.set(pos, list);
     }
   }
-  if (meanings.size === 0 && ipa.us === null && ipa.uk === null) return null;
-  return {
-    ipa,
-    meanings: [...meanings].map(([pos, definitions]) => ({ pos, definitions }))
-  };
+  if (meanings.size === 0) return null;
+  return { meanings: [...meanings].map(([pos, definitions]) => ({ pos, definitions })) };
 }
 async function fetchFreeDictionary(lemma, options = {}) {
   const doFetch = options.fetch ?? fetch;
@@ -238,25 +219,7 @@ async function fetchFreeDictionary(lemma, options = {}) {
 function dictionaryForPrompt(data, pos) {
   if (!data) return void 0;
   const meanings = pos ? data.meanings.filter((m) => m.pos === pos) : data.meanings;
-  return { ipa: data.ipa, meanings };
-}
-function sameIpa(a, b) {
-  const simplify = (s) => s.normalize("NFC").replace(/[.\s‿]/g, "");
-  return simplify(a) === simplify(b);
-}
-function reconcileIpa(content, data) {
-  if (!data) return { content, replaced: [] };
-  const replaced = [];
-  const ipa = { ...content.ipa };
-  for (const region of ["us", "uk"]) {
-    const fromDictionary = data.ipa[region];
-    if (!fromDictionary) continue;
-    const fromLlm = ipa[region];
-    if (fromLlm && sameIpa(fromLlm, fromDictionary)) continue;
-    ipa[region] = fromDictionary;
-    replaced.push(region);
-  }
-  return replaced.length ? { content: { ...content, ipa }, replaced } : { content, replaced };
+  return meanings.length ? { meanings } : void 0;
 }
 
 // src/lib/entry/lemmatizer-en.ts
@@ -1011,7 +974,7 @@ function createSupabaseWordStore(client) {
 }
 
 // raw:src/prompts/word-content.md
-var word_content_default = '---\ntask: word-content\nversion: 2\nschema: src/lib/schema/word.ts (WordContentSchema, SCHEMA_VERSION 1)\n---\n\n<!--\nPrompt tạo nội dung thẻ từ 5 tab. Phần sau dòng "=== SYSTEM ===" là system prompt,\nsau "=== USER ===" là nội dung gửi kèm từng từ. Biến dạng {{tên}} do\nbuildWordContentPrompt() điền. Nội dung từ dùng chung cho mọi người nên KHÔNG có\ncâu ngữ cảnh của người dùng (quy tắc gói miễn phí). Sửa prompt → tăng version.\n-->\n\n=== SYSTEM ===\nBạn là nhà từ điển học và giáo viên {{language_name}} giàu kinh nghiệm dạy người Việt.\nBạn tạo nội dung thẻ từ chính xác, tự nhiên, đúng cách người bản ngữ dùng. Không bịa:\nmục nào không thực sự tồn tại thì trả mảng rỗng (hoặc null với trường cho phép null).\nMọi phần giải thích viết bằng tiếng Việt tự nhiên, ngắn gọn.\nChỉ trả về một đối tượng JSON đúng schema được cung cấp, không thêm chữ nào khác.\n\n=== USER ===\nTạo nội dung học cho từ "{{lemma}}" (ngôn ngữ: {{language}}, loại từ: {{pos_label}}).\nNgười học ở trình độ {{cefr_level}}.\nDữ liệu từ điển tham khảo (ưu tiên khi mâu thuẫn, có thể rỗng): {{dictionary_json}}\n\nĐầu thẻ (cấp từ):\n\n- schema_version = 1, language = "{{language}}", lemma = "{{lemma}}".\n- {{pos_rule}}\n- ipa: us và uk, KHÔNG kèm dấu "/"; tách âm tiết bằng dấu chấm nếu được (vd "rɪˈzɪl.jənt").\n- cefr: trình độ CEFR phổ biến của từ (không phải trình độ người học).\n- register: mức trang trọng chung của từ.\n- forms.inflections: dạng chia/số nhiều/so sánh; irregular = true nếu bất quy tắc.\n  forms.variants: biến thể chính tả Anh–Mỹ của chính từ này (colour/color), không có thì [].\n- language_extra = null với tiếng Anh.\n\nTab Nghĩa (senses):\n\n- Chỉ nghĩa phổ biến, tối đa 3, sắp theo tần suất (phổ biến nhất trước).\n- definition_en ngắn, dễ hiểu; meaning_vi ngắn gọn, tự nhiên, không dịch từ-đối-từ.\n- image_query: 2–4 từ tiếng Anh mô tả một hình ảnh cụ thể, dễ nhớ cho nghĩa này.\n\nTab Ví dụ (senses[].examples):\n\n- 3 câu mỗi nghĩa, ngữ cảnh đời thường, 8–18 từ; từ vựng xung quanh dễ hơn hoặc\n  bằng {{cefr_level}}; có translation_vi.\n- highlight: đúng dạng từ xuất hiện trong câu (vd "ran"), phải có nguyên văn trong sentence.\n\nTab Cách dùng (theo từng nghĩa):\n\n- collocations: chỉ cụm người bản ngữ thực sự hay dùng, ghi pattern (vd "verb + noun",\n  "adverb + adjective"), tối đa 8.\n- idioms: chỉ khi thực sự tồn tại, gắn register; không có thì [].\n- common_mistakes: tối đa 3 lỗi người Việt hay mắc với nghĩa này (wrong, correct,\n  explanation_vi), vd "resilient with stress" → "resilient to stress". Không có lỗi\n  điển hình thì [].\n\nTab Từ liên quan:\n\n- senses[].synonyms kèm nuance_vi nói rõ khác biệt sắc thái/ngữ cảnh; senses[].antonyms.\n- homonyms (cấp từ): từ viết giống (homograph) hoặc đọc giống (homophone) nhưng khác nghĩa.\n- word_family (cấp từ): các từ cùng họ (danh/động/tính/trạng từ), note_vi nếu cần.\n\nTab Ghi nhớ (cấp từ):\n\n- mnemonics: tối đa 2 mẹo ngắn cho người Việt (type: sound, etymology, image, story).\n- confusables: từ hay bị nhầm với từ này + difference_vi chỉ ra cách phân biệt.\n- etymology_vi: 1 câu về gốc từ/tiền tố/hậu tố nếu giúp dễ nhớ, không thì null.\n\nconfidence: 0–1 cho collocations, idioms, mnemonics (bạn chắc chắn đến đâu).\nKhông tạo mục slang riêng, không tạo mục ngữ pháp riêng.\n';
+var word_content_default = '---\ntask: word-content\nversion: 3\nschema: src/lib/schema/word.ts (WordContentSchema, SCHEMA_VERSION 1)\n---\n\n<!--\nPrompt tạo nội dung thẻ từ 5 tab. Phần sau dòng "=== SYSTEM ===" là system prompt,\nsau "=== USER ===" là nội dung gửi kèm từng từ. Biến dạng {{tên}} do\nbuildWordContentPrompt() điền. Nội dung từ dùng chung cho mọi người nên KHÔNG có\ncâu ngữ cảnh của người dùng (quy tắc gói miễn phí). Sửa prompt → tăng version.\n-->\n\n=== SYSTEM ===\nBạn là nhà từ điển học và giáo viên {{language_name}} giàu kinh nghiệm dạy người Việt.\nBạn tạo nội dung thẻ từ chính xác, tự nhiên, đúng cách người bản ngữ dùng. Không bịa:\nmục nào không thực sự tồn tại thì trả mảng rỗng (hoặc null với trường cho phép null).\nMọi phần giải thích viết bằng tiếng Việt tự nhiên, ngắn gọn.\nChỉ trả về một đối tượng JSON đúng schema được cung cấp, không thêm chữ nào khác.\n\n=== USER ===\nTạo nội dung học cho từ "{{lemma}}" (ngôn ngữ: {{language}}, loại từ: {{pos_label}}).\nNgười học ở trình độ {{cefr_level}}.\nNghĩa tham khảo từ Wiktionary (có thể rỗng; chỉ để tham khảo, thứ tự KHÔNG theo tần suất): {{dictionary_json}}\n\nĐầu thẻ (cấp từ):\n\n- schema_version = 1, language = "{{language}}", lemma = "{{lemma}}".\n- {{pos_rule}}\n- ipa: us và uk, KHÔNG kèm dấu "/"; tách âm tiết bằng dấu chấm nếu được (vd "rɪˈzɪl.jənt").\n  Dùng ký hiệu quen thuộc trong từ điển học tập (Cambridge, Oxford): r chứ không ɹ, dʒ/tʃ\n  không có dấu nối, không ngoặc đơn, không ký hiệu phiên âm hẹp (ɫ, ʔ, ɾ).\n- cefr: trình độ CEFR phổ biến của từ (không phải trình độ người học).\n- register: mức trang trọng chung của từ.\n- forms.inflections: dạng chia/số nhiều/so sánh của ĐÚNG loại từ trên thẻ (danh từ chỉ có\n  plural, không ghi dạng động từ); irregular = true nếu bất quy tắc. Chỉ ghi dạng dùng được với\n  các nghĩa trong senses: danh từ không đếm được hoặc đã ở số nhiều (people, news) thì không\n  ghi plural.\n  forms.variants: biến thể chính tả Anh–Mỹ của chính từ này (colour/color), không có thì [].\n- language_extra = null với tiếng Anh.\n\nTab Nghĩa (senses):\n\n- Chỉ nghĩa phổ biến, tối đa 3, sắp theo tần suất (phổ biến nhất trước).\n- definition_en ngắn, dễ hiểu; meaning_vi ngắn gọn, tự nhiên, không dịch từ-đối-từ.\n- image_query: 2–4 từ tiếng Anh mô tả một hình ảnh cụ thể, dễ nhớ cho nghĩa này.\n\nTab Ví dụ (senses[].examples):\n\n- 3 câu mỗi nghĩa, ngữ cảnh đời thường, 8–18 từ; từ vựng xung quanh dễ hơn hoặc\n  bằng {{cefr_level}}; có translation_vi.\n- highlight: đúng dạng từ xuất hiện trong câu (vd "ran"), phải có nguyên văn trong sentence.\n\nTab Cách dùng (theo từng nghĩa):\n\n- collocations: chỉ cụm người bản ngữ thực sự hay dùng, ghi pattern (vd "verb + noun",\n  "adverb + adjective"), tối đa 8.\n- idioms: chỉ khi thực sự tồn tại, gắn register; không có thì [].\n- common_mistakes: tối đa 3 lỗi người Việt hay mắc với nghĩa này (wrong, correct,\n  explanation_vi), vd "resilient with stress" → "resilient to stress". Không có lỗi\n  điển hình thì [].\n\nTab Từ liên quan:\n\n- senses[].synonyms kèm nuance_vi nói rõ khác biệt sắc thái/ngữ cảnh; senses[].antonyms.\n- homonyms (cấp từ): từ viết giống (homograph) hoặc đọc giống (homophone) nhưng khác nghĩa.\n- word_family (cấp từ): các từ cùng họ (danh/động/tính/trạng từ), note_vi nếu cần.\n\nTab Ghi nhớ (cấp từ):\n\n- mnemonics: tối đa 2 mẹo ngắn cho người Việt (type: sound, etymology, image, story).\n- confusables: từ hay bị nhầm với từ này + difference_vi chỉ ra cách phân biệt.\n- etymology_vi: 1 câu về gốc từ/tiền tố/hậu tố nếu giúp dễ nhớ, không thì null.\n\nconfidence: 0–1 cho collocations, idioms, mnemonics (bạn chắc chắn đến đâu).\nKhông tạo mục slang riêng, không tạo mục ngữ pháp riêng.\n';
 
 // src/lib/words/api.ts
 import { z as z5 } from "npm:zod@4.6.5";
@@ -1272,7 +1235,7 @@ async function processJob(job, deps) {
       const existing = await deps.store.findWordId(job.language, job.lemma, pos);
       if (existing) {
         await deps.store.completeJob(job.id, existing);
-        return { status: "done", wordId: existing, created: false, ipaReplaced: [] };
+        return { status: "done", wordId: existing, created: false };
       }
     }
     const { system, prompt, promptVersion } = buildWordContentPrompt(deps.template, {
@@ -1288,13 +1251,12 @@ async function processJob(job, deps) {
       schema: contentSchemaFor(job, pos),
       preprocess: stripIpaSlashes
     });
-    const generated = { ...result.data, lemma: job.lemma };
-    const { content, replaced } = reconcileIpa(generated, dictionary);
+    const content = { ...result.data, lemma: job.lemma };
     if (!pos) {
       const existing = await deps.store.findWordId(job.language, job.lemma, content.pos);
       if (existing) {
         await deps.store.completeJob(job.id, existing);
-        return { status: "done", wordId: existing, created: false, ipaReplaced: [] };
+        return { status: "done", wordId: existing, created: false };
       }
     }
     const wordId = deps.newId();
@@ -1306,7 +1268,7 @@ async function processJob(job, deps) {
     });
     if (job.frequencyRank !== null) rows.word.frequency_rank = job.frequencyRank;
     const savedId = await deps.store.saveWord(job.id, rows);
-    return { status: "done", wordId: savedId, created: savedId === wordId, ipaReplaced: replaced };
+    return { status: "done", wordId: savedId, created: savedId === wordId };
   } catch (error) {
     const message = error instanceof Error ? error.message : String(error);
     if (job.attempts >= MAX_JOB_ATTEMPTS) {

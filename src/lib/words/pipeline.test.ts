@@ -329,7 +329,7 @@ describe("processJob", () => {
     const outcome = await processJob(claimed, deps);
     expect(outcome).toMatchObject({ status: "done", created: true });
     const saved = [...fake.words.values()][0]!.rows;
-    expect(saved.word.generated_by).toBe("claude/claude-haiku-5-5 word-content@v2");
+    expect(saved.word.generated_by).toBe("claude/claude-haiku-5-5 word-content@v3");
     expect(saved.word.reviewed).toBe(false);
     expect(saved.senses).toHaveLength(example("resilient").senses.length);
     expect(fake.jobs[0]!.status).toBe("done");
@@ -339,7 +339,6 @@ describe("processJob", () => {
     const fake = fakeStore();
     const claimed = await queued(fake.store, "resilient", "adjective");
     const dictionary: DictionaryData = {
-      ipa: { us: null, uk: null },
       meanings: [{ pos: "adjective", definitions: ["Able to recover quickly."] }],
     };
     const { deps, calls } = workerDeps(fake.store, [example("resilient")], dictionary);
@@ -374,18 +373,20 @@ describe("processJob", () => {
     expect(fake.words.size).toBe(0);
   });
 
-  it("IPA lệch với từ điển → dùng từ điển", async () => {
+  it("giữ IPA do model viết, không lấy IPA từ điển", async () => {
     const fake = fakeStore();
     const claimed = await queued(fake.store, "resilient", "adjective");
-    const { deps } = workerDeps(fake.store, [example("resilient")], {
-      ipa: { us: "rɪˈzɪliənt", uk: null },
-      meanings: [],
+    const { deps, calls } = workerDeps(fake.store, [example("resilient")], {
+      meanings: [{ pos: "adjective", definitions: ["Able to recover quickly."] }],
     });
-    const outcome = await processJob(claimed, deps);
-    expect(outcome).toMatchObject({ status: "done", ipaReplaced: ["us"] });
+    await processJob(claimed, deps);
     const saved = [...fake.words.values()][0]!.rows.word;
-    expect(saved.ipa_us).toBe("rɪˈzɪliənt");
+    expect(saved.ipa_us).toBe(example("resilient").ipa.us);
     expect(saved.ipa_uk).toBe(example("resilient").ipa.uk);
+    // Từ điển chỉ gửi nghĩa tham khảo, không gửi IPA.
+    expect(calls[0]!.prompt).toContain(
+      '{"meanings":[{"pos":"adjective","definitions":["Able to recover quickly."]}]}',
+    );
   });
 
   it("không rõ loại từ → model chọn loại phổ biến nhất, không theo thứ tự từ điển", async () => {
@@ -393,7 +394,6 @@ describe("processJob", () => {
     const claimed = await queued(fake.store, "resilient", null);
     // Từ điển liệt kê danh từ trước (như "and" trong Wiktionary) – không được dùng làm loại từ.
     const { deps, calls } = workerDeps(fake.store, [example("resilient")], {
-      ipa: { us: null, uk: null },
       meanings: [
         { pos: "noun", definitions: ["A rare sense."] },
         { pos: "adjective", definitions: ["Able to recover quickly."] },

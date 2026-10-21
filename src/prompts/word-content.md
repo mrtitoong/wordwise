@@ -1,6 +1,6 @@
 ---
 task: word-content
-version: 2
+version: 3
 schema: src/lib/schema/word.ts (WordContentSchema, SCHEMA_VERSION 1)
 ---
 
@@ -21,16 +21,21 @@ Chỉ trả về một đối tượng JSON đúng schema được cung cấp, k
 === USER ===
 Tạo nội dung học cho từ "{{lemma}}" (ngôn ngữ: {{language}}, loại từ: {{pos_label}}).
 Người học ở trình độ {{cefr_level}}.
-Dữ liệu từ điển tham khảo (ưu tiên khi mâu thuẫn, có thể rỗng): {{dictionary_json}}
+Nghĩa tham khảo từ Wiktionary (có thể rỗng; chỉ để tham khảo, thứ tự KHÔNG theo tần suất): {{dictionary_json}}
 
 Đầu thẻ (cấp từ):
 
 - schema_version = 1, language = "{{language}}", lemma = "{{lemma}}".
 - {{pos_rule}}
 - ipa: us và uk, KHÔNG kèm dấu "/"; tách âm tiết bằng dấu chấm nếu được (vd "rɪˈzɪl.jənt").
+  Dùng ký hiệu quen thuộc trong từ điển học tập (Cambridge, Oxford): r chứ không ɹ, dʒ/tʃ
+  không có dấu nối, không ngoặc đơn, không ký hiệu phiên âm hẹp (ɫ, ʔ, ɾ).
 - cefr: trình độ CEFR phổ biến của từ (không phải trình độ người học).
 - register: mức trang trọng chung của từ.
-- forms.inflections: dạng chia/số nhiều/so sánh; irregular = true nếu bất quy tắc.
+- forms.inflections: dạng chia/số nhiều/so sánh của ĐÚNG loại từ trên thẻ (danh từ chỉ có
+  plural, không ghi dạng động từ); irregular = true nếu bất quy tắc. Chỉ ghi dạng dùng được với
+  các nghĩa trong senses: danh từ không đếm được hoặc đã ở số nhiều (people, news) thì không
+  ghi plural.
   forms.variants: biến thể chính tả Anh–Mỹ của chính từ này (colour/color), không có thì [].
 - language_extra = null với tiếng Anh.
 

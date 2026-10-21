@@ -17,11 +17,7 @@ import {
   WORKER_MIN_REMAINING_MS,
   WORKER_TIME_BUDGET_MS,
 } from "@/config/words";
-import {
-  dictionaryForPrompt,
-  reconcileIpa,
-  type DictionaryData,
-} from "@/lib/dictionary/free-dictionary";
+import { dictionaryForPrompt, type DictionaryData } from "@/lib/dictionary/free-dictionary";
 import { toLemma, type Lemmatizer } from "@/lib/entry/lemma";
 import type { LlmRouter } from "@/lib/llm/router";
 import type { PromptTemplate } from "@/lib/llm/prompt-template";
@@ -153,7 +149,7 @@ export function retryDelayMs(attempts: number): number {
 }
 
 export type JobOutcome =
-  | { status: "done"; wordId: string; created: boolean; ipaReplaced: ("us" | "uk")[] }
+  | { status: "done"; wordId: string; created: boolean }
   | { status: "retry"; error: string; retryAt: Date }
   | { status: "failed"; error: string };
 
@@ -168,7 +164,7 @@ export async function processJob(job: WordJob, deps: WorkerDeps): Promise<JobOut
       const existing = await deps.store.findWordId(job.language, job.lemma, pos);
       if (existing) {
         await deps.store.completeJob(job.id, existing);
-        return { status: "done", wordId: existing, created: false, ipaReplaced: [] };
+        return { status: "done", wordId: existing, created: false };
       }
     }
 
@@ -186,15 +182,14 @@ export async function processJob(job: WordJob, deps: WorkerDeps): Promise<JobOut
       preprocess: stripIpaSlashes,
     });
 
-    const generated: WordContent = { ...result.data, lemma: job.lemma };
-    const { content, replaced } = reconcileIpa(generated, dictionary);
+    const content: WordContent = { ...result.data, lemma: job.lemma };
 
     // Không biết trước loại từ → model chọn; loại đó có thể đã có trong kho.
     if (!pos) {
       const existing = await deps.store.findWordId(job.language, job.lemma, content.pos);
       if (existing) {
         await deps.store.completeJob(job.id, existing);
-        return { status: "done", wordId: existing, created: false, ipaReplaced: [] };
+        return { status: "done", wordId: existing, created: false };
       }
     }
 
@@ -207,7 +202,7 @@ export async function processJob(job: WordJob, deps: WorkerDeps): Promise<JobOut
     });
     if (job.frequencyRank !== null) rows.word.frequency_rank = job.frequencyRank;
     const savedId = await deps.store.saveWord(job.id, rows);
-    return { status: "done", wordId: savedId, created: savedId === wordId, ipaReplaced: replaced };
+    return { status: "done", wordId: savedId, created: savedId === wordId };
   } catch (error) {
     const message = error instanceof Error ? error.message : String(error);
     if (job.attempts >= MAX_JOB_ATTEMPTS) {

@@ -9,7 +9,7 @@ const template = parsePromptTemplate(markdown);
 describe("prompt word-content", () => {
   it("đọc được phần đầu, system và user", () => {
     expect(template.task).toBe("word-content");
-    expect(template.version).toBe(2);
+    expect(template.version).toBe(3);
     expect(template.system).toContain("JSON");
     expect(template.user).toContain("{{lemma}}");
     expect(template.system).not.toContain("=== USER ===");
@@ -22,7 +22,7 @@ describe("prompt word-content", () => {
       pos: "adjective",
       cefrLevel: "B1",
     });
-    expect(promptVersion).toBe(2);
+    expect(promptVersion).toBe(3);
     expect(prompt).toContain(`pos = "adjective".`);
     expect(system).toContain("tiếng Anh");
     expect(prompt).toContain('"resilient"');

@@ -1,55 +1,36 @@
 import { readFileSync } from "node:fs";
 import { describe, expect, it, vi } from "vitest";
-import { loadExampleWords } from "@/lib/schema/examples";
-import {
-  dictionaryForPrompt,
-  fetchFreeDictionary,
-  parseFreeDictionary,
-  phonemicIpa,
-  reconcileIpa,
-} from "./free-dictionary";
+import { dictionaryForPrompt, fetchFreeDictionary, parseFreeDictionary } from "./free-dictionary";
 
 const fixture = (name: string): unknown =>
   JSON.parse(readFileSync(new URL(`./fixtures/${name}.json`, import.meta.url), "utf8"));
 
-const resilient = loadExampleWords().find((w) => w.lemma === "resilient")!;
-
 describe("parseFreeDictionary", () => {
-  it("lấy IPA âm vị theo vùng của file audio, bỏ phiên âm hẹp [..]", () => {
-    const data = parseFreeDictionary(fixture("light"))!;
-    // "/laɪt/" đi kèm light-uk.mp3; "[ɫɐɪ̯ʔ]" đi kèm light-us.mp3 → không dùng.
-    expect(data.ipa).toEqual({ us: null, uk: "laɪt" });
-  });
-
   it("gộp nghĩa theo loại từ, giữ thứ tự từ điển, tối đa 3 định nghĩa", () => {
     const data = parseFreeDictionary(fixture("light"))!;
     expect(data.meanings.map((m) => m.pos)).toEqual(["noun", "verb", "adjective", "adverb"]);
     expect(data.meanings[0]!.definitions).toHaveLength(3);
   });
 
-  it("không có text IPA thì để null", () => {
-    const data = parseFreeDictionary(fixture("resilient"))!;
-    expect(data.ipa).toEqual({ us: null, uk: null });
-    expect(data.meanings[0]!.pos).toBe("adjective");
+  it("không lấy IPA của từ điển (phiên âm kỹ thuật khó đọc)", () => {
+    const data = parseFreeDictionary(fixture("light"))!;
+    expect(JSON.stringify(data)).not.toContain("ɫɐɪ̯ʔ");
+    expect(data).not.toHaveProperty("ipa");
   });
 
   it("dữ liệu lạ → null", () => {
     expect(parseFreeDictionary({ title: "No Definitions Found" })).toBeNull();
     expect(parseFreeDictionary([])).toBeNull();
-  });
-
-  it("phonemicIpa", () => {
-    expect(phonemicIpa("/rʌn/")).toBe("rʌn");
-    expect(phonemicIpa("[ɹʌn]")).toBeNull();
-    expect(phonemicIpa("")).toBeNull();
-    expect(phonemicIpa(null)).toBeNull();
+    expect(parseFreeDictionary(fixture("resilient"))!.meanings[0]!.pos).toBe("adjective");
   });
 });
 
 describe("dictionaryForPrompt", () => {
-  it("chỉ giữ loại từ đang tạo", () => {
+  it("chỉ giữ loại từ đang tạo; không có thì bỏ hẳn", () => {
     const data = parseFreeDictionary(fixture("light"))!;
     expect(dictionaryForPrompt(data, "verb")!.meanings.map((m) => m.pos)).toEqual(["verb"]);
+    expect(dictionaryForPrompt(data, null)!.meanings).toHaveLength(4);
+    expect(dictionaryForPrompt(data, "pronoun")).toBeUndefined();
     expect(dictionaryForPrompt(null, "verb")).toBeUndefined();
   });
 });
@@ -68,27 +49,6 @@ describe("fetchFreeDictionary", () => {
     const ok = vi.fn().mockResolvedValue(Response.json(fixture("light")));
     const data = await fetchFreeDictionary("give up", { fetch: ok });
     expect(ok.mock.calls[0]![0]).toBe("https://api.dictionaryapi.dev/api/v2/entries/en/give%20up");
-    expect(data?.ipa.uk).toBe("laɪt");
-  });
-});
-
-describe("reconcileIpa", () => {
-  it("IPA lệch → dùng từ điển", () => {
-    const { content, replaced } = reconcileIpa(resilient, {
-      ipa: { us: "rɪˈzɪljənt", uk: "rɪˈzɪlɪənt" },
-      meanings: [],
-    });
-    // us chỉ khác dấu tách âm tiết → giữ bản LLM; uk khác thật → thay.
-    expect(content.ipa).toEqual({ us: "rɪˈzɪl.jənt", uk: "rɪˈzɪlɪənt" });
-    expect(replaced).toEqual(["uk"]);
-  });
-
-  it("từ điển thiếu vùng nào thì giữ LLM vùng đó", () => {
-    const { content, replaced } = reconcileIpa(resilient, {
-      ipa: { us: null, uk: null },
-      meanings: [],
-    });
-    expect(content).toBe(resilient);
-    expect(replaced).toEqual([]);
+    expect(data?.meanings[0]?.pos).toBe("noun");
   });
 });

@@ -12,6 +12,7 @@ import { useOnlineStatus } from "@/lib/sync/hooks";
 import { useOwner } from "@/lib/sync/owner";
 import { cn } from "@/lib/utils";
 import { BulkEntry } from "./bulk-entry";
+import { FileEntry } from "./file-entry";
 import { PremiumSheet } from "./premium-sheet";
 import { SingleEntry } from "./single-entry";
 
@@ -56,6 +57,7 @@ export function AddWordScreen({ initialNotebookId }: { initialNotebookId: string
   const online = useOnlineStatus();
   const [chosen, setChosen] = useState<string | null>(initialNotebookId);
   const [bulkText, setBulkText] = useState<string | null>(null);
+  const [tab, setTab] = useState<"typed" | "file">("typed");
   const [limit, setLimit] = useState<{ plan: "free" | "premium"; limit: number } | null>(null);
 
   // Người dùng bỏ qua 5 từ khởi đầu thì chưa có "Sổ của tôi".
@@ -149,28 +151,36 @@ export function AddWordScreen({ initialNotebookId }: { initialNotebookId: string
         aria-label={t("addWord.tabsLabel")}
         className="grid grid-cols-4 gap-1 rounded-xl bg-muted p-1"
       >
-        {TABS.map((tab) => {
-          const active = tab === "typed";
+        {TABS.map((id) => {
+          const available = id === "typed" || id === "file";
+          const active = id === tab;
           return (
             <button
-              key={tab}
+              key={id}
               type="button"
               role="tab"
               aria-selected={active}
-              disabled={!active}
+              disabled={!available}
+              onClick={() => available && setTab(id)}
               className={cn(
-                "flex min-h-11 flex-col items-center justify-center rounded-lg text-sm leading-tight",
-                active ? "bg-background font-semibold shadow-sm" : "text-muted-foreground/70",
+                "flex min-h-11 flex-col items-center justify-center rounded-lg text-sm leading-tight focus-visible:outline-2 focus-visible:outline-ring",
+                active
+                  ? "bg-background font-semibold shadow-sm"
+                  : available
+                    ? "text-foreground"
+                    : "text-muted-foreground/70",
               )}
             >
-              {t(`addWord.tabs.${tab}`)}
-              {!active && <span className="text-[10px]">{t("addWord.comingSoon")}</span>}
+              {t(`addWord.tabs.${id}`)}
+              {!available && <span className="text-[10px]">{t("addWord.comingSoon")}</span>}
             </button>
           );
         })}
       </div>
 
+      {context && tab === "file" && <FileEntry context={context} />}
       {context &&
+        tab === "typed" &&
         (bulkText !== null ? (
           <BulkEntry
             key={`${bulkText}:${context.notebookId}`}

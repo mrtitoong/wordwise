@@ -468,7 +468,9 @@
       "deleteButton": "Delete notebook",
       "deleted": "Deleted “{name}”",
       "undo": "Undo",
-      "notFound": "Notebook not found."
+      "notFound": "Notebook not found.",
+      "export": "Export CSV",
+      "exported": "Downloaded {file}"
     }
   },
   "addWord": {
@@ -530,6 +532,68 @@
       "bodyPremium": "You've created {limit} new words today. Try again tomorrow.",
       "upgrade": "Premium (coming soon): 300 new words a day and file import.",
       "ok": "Got it"
+    },
+    "file": {
+      "title": "Import from file",
+      "intro": "Upload a list of words you want to learn (CSV or Excel). Word content comes from the library; your meaning and note columns are saved as personal notes, and the tag column groups words.",
+      "pick": "Choose a CSV or Excel file",
+      "hint": "Up to 10 MB, 5,000 rows. The first row should be column headers (word, meaning, example, note, tags).",
+      "needAccount": "Sign in to import from files.",
+      "signIn": "Sign in",
+      "premiumTitle": "File import is a Premium feature",
+      "premiumBody": "Premium (coming soon) lets you import word lists from files and create 300 new words a day. You can still paste several lines in the Type tab.",
+      "needOnline": "You need a connection to import a file.",
+      "tooLarge": "The file is too large (max 10 MB).",
+      "unsupported": "Couldn't read this file. Use CSV (UTF-8) or Excel .xlsx.",
+      "empty": "The file has no rows.",
+      "reading": "Reading file…",
+      "change": "Change file",
+      "sheet": "Sheet",
+      "rows": "{count} rows",
+      "hasHeader": "First row is column headers",
+      "mappingTitle": "What is in each column?",
+      "column": "Column {name}",
+      "field": {
+        "word": "Word",
+        "meaning": "Meaning (yours)",
+        "example": "Example / sentence",
+        "note": "Note",
+        "tags": "Tags",
+        "skip": "Skip"
+      },
+      "needWordColumn": "Choose the column with the words.",
+      "check": "Check the list",
+      "checking": "Checking {done}/{total}…",
+      "previewTitle": "Preview",
+      "previewLabel": "Rows in the file",
+      "line": "Row {line}",
+      "error": {
+        "missing_word": "missing word",
+        "too_long": "word too long",
+        "not_a_word": "not a word"
+      },
+      "duplicateLine": "same as row {line}",
+      "inNotebook": "already in this notebook, skipped",
+      "newWord": "not in library · will be created",
+      "senses": "{count} meanings · choose",
+      "showErrors": "Only rows with errors ({count})",
+      "showAll": "Show all",
+      "moreRows": "… and {count} more rows",
+      "summaryTitle": "{count} words to add",
+      "summary": "{known} in library · {fresh} new words to create · {skipped} skipped (errors, duplicates)",
+      "freshLimit": "Up to {limit} new words are created per day; the rest continue automatically the next day.",
+      "start": "Add {count} words",
+      "progressTitle": "Importing “{file}” into {notebook}",
+      "progress": "{done}/{total} rows · {added} added · {preparing} being prepared",
+      "waiting": "No new words left today. {pending} words remain and will continue tomorrow.",
+      "premiumStopped": "Stopped: file import needs Premium.",
+      "doneTitle": "Finished importing “{file}”",
+      "doneBody": "{added} words added, {preparing} being prepared, {skipped} skipped.",
+      "leaveHint": "You can leave this screen; the import keeps running.",
+      "dismiss": "Close",
+      "doneToast": "Imported {added} words into {notebook}",
+      "waitingToast": "No new words left today: {pending} words for {notebook} will continue tomorrow",
+      "choose": "Choose a meaning for “{word}”"
     }
   }
 }

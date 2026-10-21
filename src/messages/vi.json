@@ -468,7 +468,9 @@
       "deleteButton": "Xóa sổ",
       "deleted": "Đã xóa sổ “{name}”",
       "undo": "Hoàn tác",
-      "notFound": "Không tìm thấy sổ này."
+      "notFound": "Không tìm thấy sổ này.",
+      "export": "Xuất CSV",
+      "exported": "Đã tải file {file}"
     }
   },
   "addWord": {
@@ -530,6 +532,68 @@
       "bodyPremium": "Bạn đã tạo {limit} từ mới hôm nay. Hãy thử lại vào ngày mai.",
       "upgrade": "Gói Premium (sắp ra mắt): 300 từ mới mỗi ngày và nhập từ file.",
       "ok": "Đã hiểu"
+    },
+    "file": {
+      "title": "Nhập từ file",
+      "intro": "Tải lên danh sách từ bạn muốn học (CSV hoặc Excel). Nội dung từ lấy từ kho; cột nghĩa, ghi chú của bạn được lưu làm ghi chú riêng, cột tag dùng để gom nhóm.",
+      "pick": "Chọn file CSV hoặc Excel",
+      "hint": "Tối đa 10 MB, 5.000 dòng. Dòng đầu nên là tiêu đề cột (word, meaning, example, note, tags).",
+      "needAccount": "Đăng nhập để nhập từ file.",
+      "signIn": "Đăng nhập",
+      "premiumTitle": "Nhập file dành cho Premium",
+      "premiumBody": "Gói Premium (sắp ra mắt) cho phép nhập danh sách từ từ file và tạo 300 từ mới mỗi ngày. Bạn vẫn có thể dán nhiều dòng ở tab Gõ.",
+      "needOnline": "Cần có mạng để nhập file.",
+      "tooLarge": "File quá lớn (tối đa 10 MB).",
+      "unsupported": "Chưa đọc được file này. Hãy dùng CSV (UTF-8) hoặc Excel .xlsx.",
+      "empty": "File không có dòng nào.",
+      "reading": "Đang đọc file…",
+      "change": "Đổi file",
+      "sheet": "Trang tính",
+      "rows": "{count} dòng",
+      "hasHeader": "Dòng đầu là tiêu đề cột",
+      "mappingTitle": "Cột nào là gì?",
+      "column": "Cột {name}",
+      "field": {
+        "word": "Từ",
+        "meaning": "Nghĩa (của bạn)",
+        "example": "Ví dụ / câu gặp",
+        "note": "Ghi chú",
+        "tags": "Tag",
+        "skip": "Bỏ qua"
+      },
+      "needWordColumn": "Hãy chọn cột chứa từ.",
+      "check": "Kiểm tra danh sách",
+      "checking": "Đang kiểm tra {done}/{total}…",
+      "previewTitle": "Xem trước",
+      "previewLabel": "Các dòng trong file",
+      "line": "Dòng {line}",
+      "error": {
+        "missing_word": "thiếu từ",
+        "too_long": "từ quá dài",
+        "not_a_word": "không phải từ"
+      },
+      "duplicateLine": "trùng dòng {line}",
+      "inNotebook": "đã có trong sổ, bỏ qua",
+      "newWord": "chưa có trong kho · tạo mới",
+      "senses": "{count} nghĩa · chọn",
+      "showErrors": "Chỉ hiện dòng lỗi ({count})",
+      "showAll": "Hiện tất cả",
+      "moreRows": "… và {count} dòng khác",
+      "summaryTitle": "{count} từ sẽ thêm",
+      "summary": "{known} từ có trong kho · {fresh} từ mới cần tạo nội dung · {skipped} bỏ qua (lỗi, trùng)",
+      "freshLimit": "Từ mới tạo tối đa {limit} từ mỗi ngày; phần còn lại tự chạy tiếp vào ngày hôm sau.",
+      "start": "Thêm {count} từ",
+      "progressTitle": "Đang nhập “{file}” vào {notebook}",
+      "progress": "{done}/{total} dòng · {added} đã thêm · {preparing} đang tạo nội dung",
+      "waiting": "Đã dùng hết lượt từ mới hôm nay. Còn {pending} từ, tự chạy tiếp vào ngày mai.",
+      "premiumStopped": "Đã dừng: nhập file cần gói Premium.",
+      "doneTitle": "Đã nhập xong “{file}”",
+      "doneBody": "{added} từ đã thêm, {preparing} từ đang tạo nội dung, {skipped} bỏ qua.",
+      "leaveHint": "Bạn có thể rời màn này, việc nhập vẫn chạy tiếp.",
+      "dismiss": "Đóng",
+      "doneToast": "Đã nhập xong {added} từ vào {notebook}",
+      "waitingToast": "Hết lượt từ mới hôm nay: còn {pending} từ cho {notebook}, tự chạy tiếp ngày mai",
+      "choose": "Chọn nghĩa cho “{word}”"
     }
   }
 }

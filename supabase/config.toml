@@ -73,3 +73,11 @@ entrypoint = "./functions/generate-word/index.js"
 enabled = true
 verify_jwt = false
 entrypoint = "./functions/word-media/index.js"
+
+# Nhận dạng giọng nói qua Azure khi trình duyệt không có Web Speech API (Prompt 2.5). Mã nguồn
+# ở src/functions/transcribe. Tự kiểm tra đăng nhập (khách nhận "login_required" thay vì lỗi 401
+# để app báo dễ hiểu) nên tắt kiểm tra JWT ở cổng.
+[functions.transcribe]
+enabled = true
+verify_jwt = false
+entrypoint = "./functions/transcribe/index.js"

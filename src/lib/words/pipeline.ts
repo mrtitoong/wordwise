@@ -49,13 +49,16 @@ export type Plan = "free" | "premium";
 
 export type RequestJobResult =
   | { limitReached: false; jobId: string; dailyLimit: number }
-  | { limitReached: true; dailyLimit: number; plan?: Plan };
+  /** premiumRequired: nhập file khi chưa có Premium (không phải hết lượt). */
+  | { limitReached: true; dailyLimit: number; plan?: Plan; premiumRequired?: boolean };
 
 /** Nơi nhận từ khi nội dung tạo xong (máy chủ tự thêm vào sổ). */
 export interface JobTarget {
   notebookId: string;
   contextSentence: string | null;
   inputMethod: InputMethod;
+  note?: string | null;
+  tags?: string[];
 }
 
 /** Lớp truy cập database (bản thật: supabase-store.ts). */
@@ -148,11 +151,14 @@ export async function requestWord(
         notebookId: request.notebookId,
         contextSentence: request.contextSentence ?? null,
         inputMethod: request.inputMethod ?? "typed",
+        ...(request.note ? { note: request.note } : {}),
+        ...(request.tags?.length ? { tags: request.tags } : {}),
       }
     : null;
   const job = target
     ? await deps.store.requestJob(userId, request.language, lemma, pos, target)
     : await deps.store.requestJob(userId, request.language, lemma, pos);
+  if (job.limitReached && job.premiumRequired) return { status: "premium_required", ...base };
   if (job.limitReached) {
     return {
       status: "limit_reached",

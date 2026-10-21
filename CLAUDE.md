@@ -254,3 +254,15 @@ Repo: https://github.com/mrtitoong/wordwise
   Tạm ngưng; mức thuộc 0–4. Bỏ ràng buộc unique tên sổ ở DB (kẹt đồng bộ khi offline), UI kiểm
   tra trùng. Bìa sổ: 8 màu có sẵn hoặc ảnh tải lên (bucket user-images). Toast dùng chung
   `showToast()` (có Hoàn tác 5 giây). Không xóa được "Sổ của tôi".
+- 2026-10-21 (Prompt 2.4b): **File chỉ là danh sách từ muốn học + gom nhóm** (chủ sản phẩm
+  chốt): nội dung từ luôn lấy từ kho; cột nghĩa/ghi chú của file thành "Ghi chú của bạn" ở tab
+  Nghĩa (riêng người đó), cột nghĩa còn dùng để chọn nghĩa khớp nhất trong kho; ví dụ → câu gặp;
+  tag → `notebook_entries.tags`. CSV (papaparse) và .xlsx (read-excel-file) đọc trong trình
+  duyệt, tối đa 10 MB/5.000 dòng; file không gửi lên máy chủ.
+- 2026-10-21: Nhập file chỉ Premium: khách mời đăng nhập, Free thấy giới thiệu Premium; máy chủ
+  trả `premium_required` khi tạo từ mới với `input_method = 'csv'` từ tài khoản Free. Việc nhập
+  chạy nền trong trình duyệt (bảng Dexie `imports`, Web Locks), lô 50 từ có trong kho, từ mới gửi
+  từng từ (ghi chú + tag đi theo `word_job_requests`); hết 300 từ mới/ngày thì chờ tới 0 giờ VN
+  hôm sau rồi tự chạy tiếp; tiến độ ghi `import_jobs` (người dùng được cập nhật việc của mình).
+- 2026-10-21: Xuất sổ ra CSV cho mọi người (kể cả khách): BOM UTF-8, CRLF, chặn công thức Excel;
+  cột word, pos, meaning, example, note, tags, status, added_at (nhập lại được vào WordWise).

@@ -143,6 +143,8 @@ export function createSupabaseWordStore(client: Client): WordStore {
                 p_notebook_id: target.notebookId,
                 p_input_method: target.inputMethod,
                 ...(target.contextSentence ? { p_context_sentence: target.contextSentence } : {}),
+                ...(target.note ? { p_note: target.note } : {}),
+                ...(target.tags?.length ? { p_tags: target.tags } : {}),
               }
             : {}),
         }),
@@ -150,9 +152,13 @@ export function createSupabaseWordStore(client: Client): WordStore {
       ) as {
         job_id: string | null;
         limit_reached: boolean;
+        premium_required?: boolean;
         daily_limit: number;
         plan?: "free" | "premium";
       };
+      if (data.premium_required) {
+        return { limitReached: true, dailyLimit: data.daily_limit, premiumRequired: true };
+      }
       if (data.limit_reached || !data.job_id) {
         return { limitReached: true, dailyLimit: data.daily_limit, plan: data.plan ?? "free" };
       }

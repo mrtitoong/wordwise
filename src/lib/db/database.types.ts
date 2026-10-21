@@ -719,7 +719,9 @@ export type Database = {
           input_method: string | null;
           job_id: string;
           notebook_id: string | null;
+          tags: string[];
           user_id: string;
+          user_note: string | null;
         };
         Insert: {
           added_at?: string | null;
@@ -728,7 +730,9 @@ export type Database = {
           input_method?: string | null;
           job_id: string;
           notebook_id?: string | null;
+          tags?: string[];
           user_id: string;
+          user_note?: string | null;
         };
         Update: {
           added_at?: string | null;
@@ -737,7 +741,9 @@ export type Database = {
           input_method?: string | null;
           job_id?: string;
           notebook_id?: string | null;
+          tags?: string[];
           user_id?: string;
+          user_note?: string | null;
         };
         Relationships: [
           {
@@ -952,8 +958,10 @@ export type Database = {
           p_input_method?: string;
           p_language: string;
           p_lemma: string;
+          p_note?: string;
           p_notebook_id?: string;
           p_pos?: string;
+          p_tags?: string[];
           p_user_id: string;
         };
         Returns: Json;

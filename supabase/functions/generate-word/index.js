@@ -875,7 +875,11 @@ var WordRequestSchema = z5.object({
   /** Từ chưa có trong kho: máy chủ tự thêm nghĩa phổ biến nhất vào sổ này khi tạo xong. */
   notebookId: z5.uuid().nullish(),
   contextSentence: z5.string().trim().max(500).nullish(),
-  inputMethod: InputMethodSchema.nullish()
+  inputMethod: InputMethodSchema.nullish(),
+  /** Ghi chú riêng (cột nghĩa/ghi chú của file) → "Ghi chú của bạn" ở tab Nghĩa. */
+  note: z5.string().trim().max(500).nullish(),
+  /** Tag của từ trong sổ (gom nhóm khi nhập file). */
+  tags: z5.array(z5.string().trim().min(1).max(30)).max(10).nullish()
 });
 var WorkerRequestSchema = z5.object({ action: z5.literal("work") });
 var ResolveRequestSchema = z5.object({
@@ -926,7 +930,9 @@ var WordResponseSchema = z5.discriminatedUnion("status", [
     dailyLimit: z5.number().int(),
     /** Gói hiện tại: Free hết lượt thì mời nâng cấp Premium. */
     plan: z5.enum(["free", "premium"]).default("free")
-  })
+  }),
+  /** Nhập file khi chưa có Premium (máy chủ chặn, app mời nâng cấp). */
+  z5.object({ status: z5.literal("premium_required"), ...base })
 ]);
 var WordSummarySchema = z5.object({
   id: z5.string(),
@@ -1030,11 +1036,16 @@ function createSupabaseWordStore(client) {
           ...target ? {
             p_notebook_id: target.notebookId,
             p_input_method: target.inputMethod,
-            ...target.contextSentence ? { p_context_sentence: target.contextSentence } : {}
+            ...target.contextSentence ? { p_context_sentence: target.contextSentence } : {},
+            ...target.note ? { p_note: target.note } : {},
+            ...target.tags?.length ? { p_tags: target.tags } : {}
           } : {}
         }),
         "Xếp việc"
       );
+      if (data.premium_required) {
+        return { limitReached: true, dailyLimit: data.daily_limit, premiumRequired: true };
+      }
       if (data.limit_reached || !data.job_id) {
         return { limitReached: true, dailyLimit: data.daily_limit, plan: data.plan ?? "free" };
       }
@@ -1289,9 +1300,12 @@ async function requestWord(request, userId, deps) {
   const target = request.notebookId ? {
     notebookId: request.notebookId,
     contextSentence: request.contextSentence ?? null,
-    inputMethod: request.inputMethod ?? "typed"
+    inputMethod: request.inputMethod ?? "typed",
+    ...request.note ? { note: request.note } : {},
+    ...request.tags?.length ? { tags: request.tags } : {}
   } : null;
   const job = target ? await deps.store.requestJob(userId, request.language, lemma, pos, target) : await deps.store.requestJob(userId, request.language, lemma, pos);
+  if (job.limitReached && job.premiumRequired) return { status: "premium_required", ...base2 };
   if (job.limitReached) {
     return {
       status: "limit_reached",

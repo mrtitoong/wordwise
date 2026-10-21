@@ -5,6 +5,7 @@ import Link from "next/link";
 import { useRouter } from "next/navigation";
 import {
   Archive,
+  Download,
   ArchiveRestore,
   CheckSquare,
   Copy,
@@ -42,7 +43,9 @@ import {
   type EntryFilter,
   type EntryRow,
 } from "@/lib/notebooks/notebooks";
+import { buildCsv, exportFileName } from "@/lib/notebooks/export-csv";
 import { LEARNING_STATUSES } from "@/lib/notebooks/progress";
+import { parseUserAdditions } from "@/lib/words/user-additions";
 import { useOwner } from "@/lib/sync/owner";
 import { cn } from "@/lib/utils";
 import { wordHref } from "@/lib/words/links";
@@ -181,6 +184,35 @@ export function NotebookDetailScreen({ notebookId }: { notebookId: string }) {
     setSheet(null);
     router.push("/notebooks");
     undoable(t("deleted", { name: notebook!.name }), snapshot);
+  }
+
+  function exportCsv() {
+    const csv = buildCsv(
+      rows.map((row) => {
+        const label = rowLabel(row, data!);
+        return {
+          word: label.lemma ?? "",
+          pos: label.pos ?? "",
+          meaning: label.meaning ?? "",
+          example: row.entry.context_sentence,
+          note:
+            parseUserAdditions(row.userWord.user_additions)
+              .meaning.map((n) => n.text)
+              .join(" · ") || null,
+          tags: row.entry.tags ?? [],
+          status: row.status,
+          addedAt: row.entry.added_at,
+        };
+      }),
+    );
+    const file = exportFileName(notebook!.name, new Date());
+    const url = URL.createObjectURL(new Blob([csv], { type: "text/csv;charset=utf-8" }));
+    const link = document.createElement("a");
+    link.href = url;
+    link.download = file;
+    link.click();
+    setTimeout(() => URL.revokeObjectURL(url), 1000);
+    showToast({ text: t("exported", { file }) });
   }
 
   const removal = sheet === "remove" ? planRemoval(data, [...selected]) : null;
@@ -461,6 +493,17 @@ export function NotebookDetailScreen({ notebookId }: { notebookId: string }) {
                 <Archive className="size-5" aria-hidden />
               )}
               {t(notebook.is_archived ? "unarchive" : "archive")}
+            </button>
+            <button
+              type="button"
+              onClick={() => {
+                exportCsv();
+                setSheet(null);
+              }}
+              className="flex min-h-12 items-center gap-3 rounded-lg px-2 hover:bg-muted"
+            >
+              <Download className="size-5" aria-hidden />
+              {t("export")}
             </button>
             {!isDefault && (
               <button

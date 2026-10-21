@@ -115,6 +115,27 @@ describe("generate-word handler", () => {
     });
   });
 
+  it("nhập file: chuyển ghi chú riêng và tag; Free → premium_required", async () => {
+    const { handle, store } = setup();
+    const notebookId = "11111111-1111-4111-8111-111111111111";
+    const body = { lemma: "zygote", notebookId, inputMethod: "csv", note: "hợp tử", tags: ["bio"] };
+    await handle(post(body, { authorization: "Bearer user-jwt" }));
+    expect(store.requestJob).toHaveBeenCalledWith("u1", "en", "zygote", null, {
+      notebookId,
+      contextSentence: null,
+      inputMethod: "csv",
+      note: "hợp tử",
+      tags: ["bio"],
+    });
+    vi.mocked(store.requestJob).mockResolvedValue({
+      limitReached: true,
+      dailyLimit: 50,
+      premiumRequired: true,
+    });
+    const response = await handle(post(body, { authorization: "Bearer user-jwt" }));
+    expect(WordResponseSchema.parse(await response.json()).status).toBe("premium_required");
+  });
+
   it("hết lượt → limit_reached kèm gói hiện tại", async () => {
     const { handle, store } = setup();
     vi.mocked(store.requestJob).mockResolvedValue({

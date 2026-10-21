@@ -58,3 +58,11 @@ port = 54324
 
 [studio]
 enabled = false
+
+# Edge Function tạo nội dung từ (Prompt 2.1). Mã nguồn ở src/functions/generate-word, file
+# index.js do `npm run functions:build` sinh ra. Tự kiểm tra đăng nhập bên trong (khách vẫn
+# tra được kho; pg_cron gọi worker bằng x-worker-secret) nên tắt kiểm tra JWT ở cổng.
+[functions.generate-word]
+enabled = true
+verify_jwt = false
+entrypoint = "./functions/generate-word/index.js"

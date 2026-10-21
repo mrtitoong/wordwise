@@ -15,6 +15,8 @@ export default defineConfig([
     "playwright-report/**",
     "test-results/**",
     "design/**",
+    // Sinh tự động bởi scripts/build-functions.ts
+    "supabase/functions/*/index.js",
     "next-env.d.ts",
   ]),
 ]);

@@ -7,3 +7,5 @@ coverage
 design
 docs
 CLAUDE.md
+# Sinh tự động bởi scripts/build-functions.ts
+supabase/functions/*/index.js

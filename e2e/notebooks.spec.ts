@@ -56,13 +56,17 @@ test.describe("Sổ tay và thêm từ", () => {
     await noHorizontalScroll(page);
 
     await page.getByLabel("Từ cần thêm").fill("resil");
-    const suggestion = page.getByRole("list", { name: "Gợi ý" }).getByRole("button", { name: /resilient/ });
+    const suggestion = page
+      .getByRole("list", { name: "Gợi ý" })
+      .getByRole("button", { name: /resilient/ });
     await expect(suggestion).toBeVisible();
     await page.getByLabel("Từ cần thêm").press("Enter");
     await expect(page.getByText(/1 từ · học hôm nay/)).toBeVisible();
     await page.getByLabel("Câu bạn gặp từ này (tùy chọn)").fill("She is resilient.");
     await page.getByRole("button", { name: "Thêm", exact: true }).click();
-    await expect(page.getByRole("status").filter({ hasText: "Đã thêm “resilient” vào IELTS" })).toBeVisible();
+    await expect(
+      page.getByRole("status").filter({ hasText: "Đã thêm “resilient” vào IELTS" }),
+    ).toBeVisible();
 
     const entries = await readLocalStore<{ input_method: string; context_sentence: string }>(
       page,
@@ -91,7 +95,10 @@ test.describe("Sổ tay và thêm từ", () => {
     await rows.nth(1).click();
     await expect(page.getByText("Đã chọn 2")).toBeVisible();
     await page.getByRole("button", { name: "Sao chép" }).click();
-    await page.getByRole("dialog").getByRole("button", { name: /Ôn thi/ }).click();
+    await page
+      .getByRole("dialog")
+      .getByRole("button", { name: /Ôn thi/ })
+      .click();
     await expect(page.getByRole("status").filter({ hasText: "Đã sao chép 2 từ" })).toBeVisible();
 
     await page.getByRole("button", { name: "Chọn", exact: true }).click();
@@ -116,7 +123,10 @@ test.describe("Sổ tay và thêm từ", () => {
     await createNotebook(page, "Tạm thời");
     await page.getByRole("button", { name: "Tùy chọn sổ" }).click();
     await page.getByRole("button", { name: "Xóa sổ" }).click();
-    await page.getByRole("dialog", { name: "Xóa sổ “Tạm thời”?" }).getByRole("button", { name: "Xóa sổ" }).click();
+    await page
+      .getByRole("dialog", { name: "Xóa sổ “Tạm thời”?" })
+      .getByRole("button", { name: "Xóa sổ" })
+      .click();
     await expect(page).toHaveURL("/notebooks");
     await expect(page.getByRole("link", { name: /Tạm thời/ })).toHaveCount(0);
     await page.getByRole("button", { name: "Hoàn tác" }).click();

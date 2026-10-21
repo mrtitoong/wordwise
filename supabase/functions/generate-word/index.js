@@ -952,7 +952,10 @@ function toWordSummary(word) {
     lemma: word.content.lemma,
     pos: word.content.pos,
     cefr: word.content.cefr,
-    senses: word.content.senses.map((s, i) => ({ id: word.senseIds[i], meaning_vi: s.meaning_vi }))
+    senses: word.content.senses.map((s, i) => ({
+      id: word.senseIds[i],
+      meaning_vi: s.meaning_vi
+    }))
   };
 }
 

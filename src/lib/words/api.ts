@@ -24,6 +24,8 @@ export const ImageCreditSchema = z.object({
   source_url: z.string(),
 });
 
+export type ImageCredit = z.infer<typeof ImageCreditSchema>;
+
 /** Audio và ảnh (Prompt 2.2) tạo sau nội dung nên có thể chưa có (null). */
 export const WordMediaSchema = z.object({
   audio: z.object({ us: z.string().nullable(), uk: z.string().nullable() }),

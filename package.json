@@ -22,6 +22,7 @@
     "pregenerate": "tsx --env-file-if-exists=.env.local scripts/pregenerate.ts",
     "compare:models": "tsx --env-file-if-exists=.env.local scripts/compare-models.ts",
     "ocr:accuracy": "tsx --env-file-if-exists=.env.local scripts/ocr-accuracy.ts",
+    "pronunciation:smoke": "tsx --env-file-if-exists=.env.local scripts/pronunciation-smoke.ts",
     "srs:simulate": "tsx scripts/simulate-srs.ts"
   },
   "dependencies": {

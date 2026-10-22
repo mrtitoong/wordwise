@@ -89,3 +89,11 @@ entrypoint = "./functions/transcribe/index.js"
 enabled = true
 verify_jwt = false
 entrypoint = "./functions/ocr-image/index.js"
+
+# Chấm phát âm bằng Azure Pronunciation Assessment (Prompt 5.2). Mã nguồn ở
+# src/functions/assess-pronunciation. Tự kiểm tra đăng nhập (khách nhận "login_required") nên tắt
+# kiểm tra JWT ở cổng.
+[functions.assess-pronunciation]
+enabled = true
+verify_jwt = false
+entrypoint = "./functions/assess-pronunciation/index.js"

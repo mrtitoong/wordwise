@@ -82,7 +82,9 @@
     "signingOut": "Signing out…",
     "practiceSpelling": "Spelling practice",
     "practiceSpellingHint": "Write words you already know the meaning of. Turn off if you only need to understand them (e.g. for reading); you'll get fewer reviews each day.",
-    "practice": "Practice"
+    "reviewSection": "Reviews",
+    "multiAccent": "Mixed accents",
+    "multiAccentHint": "Listening practice switches randomly between American and British voices."
   },
   "languages": {
     "vi": "Tiếng Việt",
@@ -806,6 +808,12 @@
     "clear": "Start over",
     "pattern": "Hint: {pattern}",
     "diffLabel": "Mistakes are highlighted",
-    "answerInput": "Your answer"
+    "answerInput": "Your answer",
+    "listen": "Play again",
+    "listenRate": "Speed {rate}x",
+    "replays": "Replayed {count} times",
+    "listenPickMeaning": "Listen and pick the meaning",
+    "listenType": "Listen and type the word",
+    "listenCloze": "Listen and fill in the missing word"
   }
 }

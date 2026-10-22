@@ -30,7 +30,9 @@ import {
   pickMode,
   type ReviewMode,
 } from "@/lib/srs/grade";
-import { masteryLevel } from "@/lib/srs/mastery";
+import { listeningVoice, spellingTaskKind } from "@/lib/review/listening";
+import { masteryLevel, type MasteryLevel } from "@/lib/srs/mastery";
+import { getSupabaseEnv } from "@/lib/supabase/env";
 import { requeue, type SessionItem } from "@/lib/srs/queue";
 import { createScheduler } from "@/lib/srs/scheduler";
 import { useOwner } from "@/lib/sync/owner";
@@ -38,7 +40,15 @@ import { Flashcard } from "./modes/flashcard";
 import { MultipleChoice } from "./modes/multiple-choice";
 import { NewWordIntro } from "./modes/new-word";
 import type { Intervals, ModeAnswer } from "./modes/types";
-import { Writing, buildWritingTask, type WritingTask } from "./modes/writing";
+import { e2eOverride } from "./e2e";
+import { canSpeak } from "./modes/listen-player";
+import {
+  Writing,
+  buildListeningTask,
+  buildWritingTask,
+  clozeOfItem,
+  type WritingTask,
+} from "./modes/writing";
 import {
   loadChoicePool,
   prepareCards,
@@ -77,12 +87,16 @@ type Run = {
 type Ask =
   | { step: "intro" }
   | { step: "flashcard"; reverse: boolean; intervals: Intervals }
-  | { step: "mcq"; mcq: Mcq }
-  | { step: "writing"; task: WritingTask };
+  | { step: "mcq"; mcq: Mcq; listen: boolean; voice: Voice }
+  | { step: "writing"; task: WritingTask; listen: boolean; voice: Voice };
 
 const MUTE_KEY = "ww_review_muted";
-/** Chế độ đã có (GĐ4 thêm tập viết; tập nghe ở Prompt 4.3, phát âm ở GĐ5). */
-const AVAILABLE_MODES: ReviewMode[] = ["flashcard", "mcq", "writing"];
+/** Chế độ đã có (GĐ4 thêm tập viết, tập nghe; phát âm ở GĐ5). */
+const AVAILABLE_MODES: ReviewMode[] = ["flashcard", "mcq", "listening", "writing"];
+
+function preferredVoice(settings: ReviewData["settings"]): Voice {
+  return settings.accent === "uk" ? "uk" : "us";
+}
 
 function readMuted(): boolean {
   try {
@@ -120,6 +134,8 @@ export function SessionScreen({ options }: { options: SessionOptions }) {
   const extraIds = useRef(new Set<string>());
 
   const scheduler = useRef<FSRS | null>(null);
+  /** Giọng trong Cài đặt và "Luyện nhiều giọng" (tập nghe đổi ngẫu nhiên Mỹ/Anh). */
+  const voices = useRef<{ preferred: Voice; multi: boolean }>({ preferred: "us", multi: false });
 
   /** Chọn cách hỏi cho câu ở vị trí `position`. */
   const setupAsk = useCallback(
@@ -134,12 +150,34 @@ export function SessionScreen({ options }: { options: SessionOptions }) {
         intervals: intervalsOf(scheduler.current!, prep.card, now),
       });
       const level = masteryLevel(prep.card);
+      const voice = listeningVoice(voices.current.preferred, voices.current.multi);
+      const can = {
+        word: !!prep.word.media.audio[voice] || canSpeak(),
+        sentence: !!clozeOfItem(prep) && (!!getSupabaseEnv() || canSpeak()),
+      };
       if (prep.card.skill === "spelling") {
-        return setAsk({ step: "writing", task: buildWritingTask(prep, level) });
+        const kind = e2eOverride("spellingKind") ?? spellingTaskKind(level, can);
+        return setAsk(
+          kind === "writing"
+            ? { step: "writing", task: buildWritingTask(prep, level), listen: false, voice }
+            : {
+                step: "writing",
+                task: buildListeningTask(prep, kind === "listen-type" ? "listen" : "listen-cloze"),
+                listen: true,
+                voice,
+              },
+        );
       }
       if (prep.card.state === 0) return setAsk(item.isNew ? { step: "intro" } : flashcard(false));
-      const mode = pickMode(level, modesForSkill("meaning", AVAILABLE_MODES));
-      if (mode === "mcq") {
+      // Thẻ Nghĩa chỉ có chế độ nhận biết: từ mức 1 trở lên trộn trắc nghiệm và nghe → chọn nghĩa.
+      const meaningModes = modesForSkill("meaning", AVAILABLE_MODES).filter(
+        (m) => m !== "listening" || can.word,
+      );
+      const mode =
+        (e2eOverride("meaningMode") as ReviewMode | undefined) ??
+        pickMode(Math.min(level, 1) as MasteryLevel, meaningModes);
+      if (mode === "mcq" || mode === "listening") {
+        const listen = mode === "listening";
         const mcq = buildMcq(
           {
             senseId: prep.senseId,
@@ -150,11 +188,12 @@ export function SessionScreen({ options }: { options: SessionOptions }) {
           },
           choices,
           {
-            direction: level >= 2 && Math.random() < 0.5 ? "meaning-to-word" : "word-to-meaning",
+            direction:
+              !listen && level >= 2 && Math.random() < 0.5 ? "meaning-to-word" : "word-to-meaning",
             confusables: prep.confusables,
           },
         );
-        if (mcq) return setAsk({ step: "mcq", mcq });
+        if (mcq) return setAsk({ step: "mcq", mcq, listen, voice });
       }
       setAsk(flashcard(level >= 2 && Math.random() < 0.3));
     },
@@ -175,6 +214,10 @@ export function SessionScreen({ options }: { options: SessionOptions }) {
         desiredRetention: fresh.settings.desired_retention,
         weights: weightsOf(fresh.settings),
       });
+      voices.current = {
+        preferred: preferredVoice(fresh.settings),
+        multi: fresh.settings.multi_accent ?? false,
+      };
       const day = localDay(now, fresh.settings.timezone);
       const learning = fresh.userWords.filter((u) => !u.deleted_at && u.status === "learning");
       const known = await readLocalWords(
@@ -276,7 +319,11 @@ export function SessionScreen({ options }: { options: SessionOptions }) {
       const db = getLocalDb();
       const now = new Date();
       const mode: ReviewMode =
-        ask.step === "mcq" ? "mcq" : ask.step === "writing" ? "writing" : "flashcard";
+        ask.step === "mcq" || ask.step === "writing"
+          ? ask.listen
+            ? "listening"
+            : ask.step
+          : "flashcard";
       const levelBefore = masteryLevel(prep.card);
       const rating = gradeFromOutcome({
         mode,
@@ -379,7 +426,7 @@ export function SessionScreen({ options }: { options: SessionOptions }) {
   const item = run?.queue[run.position];
   const prep = item && prepared.get(item.cardId);
   if (!run || !item || !prep || !ask || !data) return null;
-  const voice: Voice = data.settings.accent === "uk" ? "uk" : "us";
+  const voice = preferredVoice(data.settings);
   const total = run.queue.length;
 
   return (
@@ -441,7 +488,7 @@ export function SessionScreen({ options }: { options: SessionOptions }) {
         ) : ask.step === "writing" ? (
           <Writing
             item={prep}
-            voice={voice}
+            voice={ask.voice}
             muted={muted}
             task={ask.task}
             onAnswer={(a) => void handleAnswer(a)}
@@ -449,9 +496,10 @@ export function SessionScreen({ options }: { options: SessionOptions }) {
         ) : ask.step === "mcq" ? (
           <MultipleChoice
             item={prep}
-            voice={voice}
+            voice={ask.voice}
             muted={muted}
             mcq={ask.mcq}
+            listen={ask.listen}
             onAnswer={(a) => void handleAnswer(a)}
           />
         ) : (

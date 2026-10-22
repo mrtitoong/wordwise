@@ -5,18 +5,32 @@ import { Check, X } from "lucide-react";
 import { useTranslations } from "next-intl";
 import { Button } from "@/components/ui/button";
 import type { Mcq } from "@/lib/review/mcq";
+import { replaysAsHint } from "@/lib/review/listening";
 import { cn } from "@/lib/utils";
+import { e2eAnswer } from "../e2e";
+import { ListenPlayer } from "./listen-player";
 import type { ModeProps } from "./types";
 import { WordBack, WordHead } from "./word-face";
 
 /** Đúng thì tự chuyển câu sau chừng này ms; sai thì chờ người học bấm Tiếp. */
 const AUTO_NEXT_MS = 700;
 
-/** Trắc nghiệm 4 đáp án: chọn nghĩa của từ, hoặc chọn từ cho nghĩa (chiều ngược). */
-export function MultipleChoice({ item, voice, muted, onAnswer, mcq }: ModeProps & { mcq: Mcq }) {
+/**
+ * Trắc nghiệm 4 đáp án: chọn nghĩa của từ, hoặc chọn từ cho nghĩa (chiều ngược). `listen`: tập
+ * nghe – chỉ nghe từ (không hiện chữ) rồi chọn nghĩa; nghe lại quá 3 lần tính là dùng gợi ý.
+ */
+export function MultipleChoice({
+  item,
+  voice,
+  muted,
+  onAnswer,
+  mcq,
+  listen = false,
+}: ModeProps & { mcq: Mcq; listen?: boolean }) {
   const t = useTranslations("review");
   const [shownAt] = useState(() => Date.now());
   const [picked, setPicked] = useState<{ index: number; ms: number } | null>(null);
+  const [replays, setReplays] = useState(0);
   const correct = picked?.index === mcq.correctIndex;
 
   function choose(index: number) {
@@ -25,7 +39,12 @@ export function MultipleChoice({ item, voice, muted, onAnswer, mcq }: ModeProps 
   }
 
   function next() {
-    if (picked) onAnswer({ correct: picked.index === mcq.correctIndex, responseMs: picked.ms });
+    if (!picked) return;
+    onAnswer({
+      correct: picked.index === mcq.correctIndex,
+      responseMs: picked.ms,
+      ...(listen ? { usedHint: replaysAsHint(replays) } : {}),
+    });
   }
 
   useEffect(() => {
@@ -50,14 +69,26 @@ export function MultipleChoice({ item, voice, muted, onAnswer, mcq }: ModeProps 
     return () => window.removeEventListener("keydown", onKey);
   });
 
-  const toWord = mcq.direction === "meaning-to-word";
+  const toWord = !listen && mcq.direction === "meaning-to-word";
 
   return (
-    <div className="flex flex-1 flex-col gap-4">
+    <div className="flex flex-1 flex-col gap-4" {...e2eAnswer(item.word.content.lemma)}>
       <p className="text-center text-sm text-muted-foreground">
-        {t(toWord ? "mcqPickWord" : "mcqPickMeaning")}
+        {t(listen ? "listenPickMeaning" : toWord ? "mcqPickWord" : "mcqPickMeaning")}
       </p>
-      {toWord ? (
+      {listen ? (
+        picked ? (
+          <WordHead item={item} voice={voice} autoPlay={false} />
+        ) : (
+          <ListenPlayer
+            text={item.word.content.lemma}
+            voice={voice}
+            url={item.word.media.audio[voice]}
+            autoPlay={!muted}
+            onReplay={setReplays}
+          />
+        )
+      ) : toWord ? (
         <p className="text-center text-2xl font-semibold">{mcq.prompt}</p>
       ) : (
         <WordHead item={item} voice={voice} autoPlay={!muted} />

@@ -28,13 +28,22 @@ import {
   type WritingLevel,
 } from "@/lib/review/writing";
 import { cn } from "@/lib/utils";
+import { replaysAsHint } from "@/lib/review/listening";
 import type { PreparedCard } from "../session-content";
+import { e2eAnswer } from "../e2e";
+import { ListenPlayer, sentenceAudio } from "./listen-player";
 import type { ModeProps } from "./types";
 
 /** Câu hỏi tập viết (chọn một lần khi câu hiện ra). */
 export type WritingTask = {
   level: WritingLevel;
-  prompt: { kind: "meaning" } | { kind: "cloze"; cloze: Cloze; translation: string };
+  prompt:
+    | { kind: "meaning" }
+    | { kind: "cloze"; cloze: Cloze; translation: string }
+    /** Tập nghe: nghe từ rồi gõ lại. */
+    | { kind: "listen" }
+    /** Tập nghe: nghe câu ví dụ rồi điền từ còn thiếu. */
+    | { kind: "listen-cloze"; cloze: Cloze };
   target: string;
   options: CheckOptions;
   /** Cấp 1: ô chữ cái đã xáo. */
@@ -48,7 +57,7 @@ export function buildWritingTask(
   mastery: MasteryLevel,
   random: () => number = Math.random,
 ): WritingTask {
-  const cloze = item.example ? clozeOf(item.example.sentence, item.example.highlight) : null;
+  const cloze = clozeOfItem(item);
   const kind = promptKind(mastery, !!cloze, random);
   const { target, options } = answersForWord(
     item.word.content,
@@ -66,6 +75,39 @@ export function buildWritingTask(
     masked: maskedPositions(target, random),
   };
 }
+
+/** Câu ví dụ của thẻ khuyết được từ (để hỏi điền từ). */
+export function clozeOfItem(item: PreparedCard): Cloze | null {
+  return item.example ? clozeOf(item.example.sentence, item.example.highlight) : null;
+}
+
+/**
+ * Tập nghe dạng gõ (Prompt 4.3): nghe từ → gõ lại, hoặc nghe câu → điền từ. Bắt đầu ở ô trống;
+ * "Gợi ý" vẫn hạ cấp như tập viết.
+ */
+export function buildListeningTask(
+  item: PreparedCard,
+  kind: "listen" | "listen-cloze",
+  random: () => number = Math.random,
+): WritingTask {
+  const cloze = kind === "listen-cloze" ? clozeOfItem(item) : null;
+  const { target, options } = answersForWord(item.word.content, cloze?.answer);
+  return {
+    level: 4,
+    prompt: cloze ? { kind: "listen-cloze", cloze } : { kind: "listen" },
+    target,
+    options,
+    tiles: scrambleTiles(target, random),
+    masked: maskedPositions(target, random),
+  };
+}
+
+const PROMPT_TITLE = {
+  meaning: "writeWord",
+  cloze: "writeCloze",
+  listen: "listenType",
+  "listen-cloze": "listenCloze",
+} as const;
 
 /** Đúng (không lỗi) thì tự chuyển câu sau chừng này ms. */
 const AUTO_NEXT_MS = 1200;
@@ -89,6 +131,7 @@ export function Writing({ item, voice, muted, onAnswer, task }: ModeProps & { ta
   const [shownAt] = useState(() => Date.now());
   const [level, setLevel] = useState<WritingLevel>(task.level);
   const [hints, setHints] = useState(0);
+  const [replays, setReplays] = useState(0);
   const [placed, setPlaced] = useState<number[]>([]);
   const [text, setText] = useState("");
   const [result, setResult] = useState<(CheckResult & { ms: number; revealed: boolean }) | null>(
@@ -120,8 +163,8 @@ export function Writing({ item, voice, muted, onAnswer, task }: ModeProps & { ta
       responseMs: result.ms,
       revealed: result.revealed,
       typoCount: result.correct ? result.typoCount : undefined,
-      usedHint: hints > 0,
-      hintLevel: Math.min(MAX_HINT_LEVEL, hints),
+      usedHint: hints > 0 || replaysAsHint(replays),
+      hintLevel: Math.min(MAX_HINT_LEVEL, hints + (replaysAsHint(replays) ? 1 : 0)),
       maxRating: maxRatingFor(level),
     });
   }
@@ -192,28 +235,42 @@ export function Writing({ item, voice, muted, onAnswer, task }: ModeProps & { ta
   }, [level, result]);
 
   const lemma = item.word.content.lemma;
-  const sentence = task.prompt.kind === "cloze" ? item.example!.sentence : null;
+  const { prompt } = task;
+  const cloze = prompt.kind === "cloze" || prompt.kind === "listen-cloze" ? prompt.cloze : null;
+  const sentence = cloze ? item.example!.sentence : null;
+  const sentenceUrl = sentence ? sentenceAudio(item.senseId, 0, voice) : undefined;
 
   return (
-    <div className="flex flex-1 flex-col gap-4">
-      <p className="text-center text-sm text-muted-foreground">
-        {t(task.prompt.kind === "cloze" ? "writeCloze" : "writeWord")}
-      </p>
+    <div className="flex flex-1 flex-col gap-4" {...e2eAnswer(task.target)}>
+      <p className="text-center text-sm text-muted-foreground">{t(PROMPT_TITLE[prompt.kind])}</p>
 
-      {task.prompt.kind === "cloze" ? (
+      {(prompt.kind === "listen" || prompt.kind === "listen-cloze") && !result && (
+        <ListenPlayer
+          text={sentence ?? lemma}
+          voice={voice}
+          url={sentence ? null : item.word.media.audio[voice]}
+          resolveUrl={sentenceUrl}
+          autoPlay={!muted}
+          onReplay={setReplays}
+        />
+      )}
+
+      {prompt.kind === "listen" ? null : cloze ? (
         <div className="flex flex-col gap-1 rounded-xl bg-muted/60 p-4 text-center">
           <p className="text-lg" lang="en">
-            {task.prompt.cloze.before}
+            {cloze.before}
             <span className="mx-1 inline-block min-w-16 border-b-2 border-foreground align-baseline">
               {result ? (
-                <strong className="font-semibold">{task.prompt.cloze.answer}</strong>
+                <strong className="font-semibold">{cloze.answer}</strong>
               ) : (
                 <span className="sr-only">{t("blank")}</span>
               )}
             </span>
-            {task.prompt.cloze.after}
+            {cloze.after}
           </p>
-          <p className="text-sm text-muted-foreground">{task.prompt.translation}</p>
+          {prompt.kind === "cloze" && (
+            <p className="text-sm text-muted-foreground">{prompt.translation}</p>
+          )}
         </div>
       ) : (
         <div className="flex flex-col items-center gap-1 text-center">
@@ -307,6 +364,7 @@ export function Writing({ item, voice, muted, onAnswer, task }: ModeProps & { ta
               text={sentence ?? lemma}
               voice={voice}
               url={sentence ? null : item.word.media.audio[voice]}
+              resolveUrl={sentenceUrl}
               autoPlay={!muted}
               showRate
             />

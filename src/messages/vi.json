@@ -82,7 +82,9 @@
     "signingOut": "Đang đăng xuất…",
     "practiceSpelling": "Luyện chính tả",
     "practiceSpellingHint": "Tập viết lại từ đã nhớ nghĩa. Tắt nếu bạn chỉ cần hiểu nghĩa (vd luyện đọc); số câu ôn mỗi ngày sẽ ít hơn.",
-    "practice": "Luyện tập"
+    "reviewSection": "Phiên ôn",
+    "multiAccent": "Luyện nhiều giọng",
+    "multiAccentHint": "Tập nghe đổi ngẫu nhiên giọng Mỹ và giọng Anh, quen tai cả hai cách đọc."
   },
   "languages": {
     "vi": "Tiếng Việt",
@@ -806,6 +808,12 @@
     "clear": "Xếp lại từ đầu",
     "pattern": "Gợi ý: {pattern}",
     "diffLabel": "Chỗ sai được tô màu",
-    "answerInput": "Câu trả lời của bạn"
+    "answerInput": "Câu trả lời của bạn",
+    "listen": "Nghe lại",
+    "listenRate": "Tốc độ {rate}x",
+    "replays": "Đã nghe lại {count} lần",
+    "listenPickMeaning": "Nghe rồi chọn nghĩa đúng",
+    "listenType": "Nghe rồi gõ lại từ",
+    "listenCloze": "Nghe câu rồi điền từ còn thiếu"
   }
 }

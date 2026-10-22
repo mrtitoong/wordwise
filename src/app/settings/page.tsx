@@ -6,6 +6,7 @@ import { LanguageSwitcher } from "@/components/language-switcher";
 import { Button } from "@/components/ui/button";
 import { SignOutButton } from "@/features/auth/sign-out-button";
 import { DailyNewLimit } from "@/features/settings/daily-new-limit";
+import { PracticeSpelling } from "@/features/settings/practice-spelling";
 import { getCurrentUser } from "@/lib/supabase/server";
 
 export async function generateMetadata(): Promise<Metadata> {
@@ -49,6 +50,15 @@ export default async function SettingsPage() {
           {t("dailyNew")}
         </h2>
         <DailyNewLimit />
+      </section>
+      <section aria-labelledby="practice-heading" className="flex flex-col gap-3 pt-6">
+        <h2
+          id="practice-heading"
+          className="text-sm font-semibold tracking-wide text-muted-foreground uppercase"
+        >
+          {t("practice")}
+        </h2>
+        <PracticeSpelling />
       </section>
       <section aria-labelledby="language-heading" className="flex flex-col gap-3 pt-6">
         <h2

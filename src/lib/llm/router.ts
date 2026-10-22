@@ -12,6 +12,7 @@ import type {
   LlmCallLog,
   LlmConfig,
   LlmLogger,
+  ImageInput,
   ModelSpec,
   ProviderId,
   TokenUsage,
@@ -30,6 +31,8 @@ export interface GenerateJsonOptions<S extends z.ZodType> {
   schemaRetries?: number;
   /** Sửa lỗi vặt trong JSON của model trước khi validate (vd bỏ dấu "/" quanh IPA). */
   preprocess?: (raw: unknown) => unknown;
+  /** Ảnh gửi kèm prompt (chỉ model có thị giác). */
+  images?: ImageInput[];
 }
 
 export interface GenerateJsonResult<T> {
@@ -72,7 +75,7 @@ export function createLlmRouter<Task extends string>(deps: LlmRouterDeps<Task>):
   }
 
   return {
-    async generateJSON(task, { system, prompt, schema, schemaRetries, preprocess }) {
+    async generateJSON(task, { system, prompt, schema, schemaRetries, preprocess, images }) {
       const taskConfig = deps.config[task];
       const jsonSchema = toJsonSchema(schema);
       const schemaMode = taskConfig.schemaMode ?? "enforce";
@@ -109,6 +112,7 @@ export function createLlmRouter<Task extends string>(deps: LlmRouterDeps<Task>):
               prompt: fullPrompt,
               jsonSchema,
               schemaMode,
+              ...(images?.length ? { images } : {}),
             }));
           } catch (error) {
             if (error instanceof LlmPolicyError) throw error;

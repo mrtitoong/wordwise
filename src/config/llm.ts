@@ -57,6 +57,7 @@ export const LLM_TASKS = [
   "photo-word-picker",
   "list-analyzer",
   "reverse-lookup",
+  "photo-ocr",
 ] as const;
 
 export type LlmTask = (typeof LLM_TASKS)[number];
@@ -81,6 +82,8 @@ const DEFAULT_TASKS: Record<
   "list-analyzer": { containsUserData: true, models: ["claude-sonnet", "claude-haiku"] },
   // Câu tiếng Việt người dùng nói/gõ để tra ngược (Prompt 2.5) → chỉ trả phí.
   "reverse-lookup": { containsUserData: true, models: ["claude-sonnet", "claude-haiku"] },
+  // Đọc chữ trên ảnh người dùng chụp khi Google Cloud Vision đọc kém (Prompt 2.6) → chỉ trả phí.
+  "photo-ocr": { containsUserData: true, models: ["claude-sonnet", "claude-haiku"] },
 };
 
 export function envKeyForTask(task: LlmTask): string {

@@ -589,6 +589,7 @@ export type Database = {
           fsrs_params: Json | null;
           goals: string[];
           onboarded_at: string | null;
+          practice_spelling: boolean;
           reminder_time: string | null;
           target_language: string;
           timezone: string;
@@ -606,6 +607,7 @@ export type Database = {
           fsrs_params?: Json | null;
           goals?: string[];
           onboarded_at?: string | null;
+          practice_spelling?: boolean;
           reminder_time?: string | null;
           target_language?: string;
           timezone?: string;
@@ -623,6 +625,7 @@ export type Database = {
           fsrs_params?: Json | null;
           goals?: string[];
           onboarded_at?: string | null;
+          practice_spelling?: boolean;
           reminder_time?: string | null;
           target_language?: string;
           timezone?: string;

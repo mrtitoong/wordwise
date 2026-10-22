@@ -84,6 +84,7 @@ export function toTodayInput(data: ReviewData, relatedOf?: TodayInput["relatedOf
       dailyNewLimit: data.settings.daily_new_limit,
       dailyReviewLimit: data.settings.daily_review_limit,
       timeZone: data.settings.timezone,
+      practiceSpelling: data.settings.practice_spelling ?? true,
     },
     lemmaOf: (senseId) => data.senses.get(senseId)?.word.lemma ?? "",
     ...(relatedOf ? { relatedOf } : {}),

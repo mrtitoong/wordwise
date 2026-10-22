@@ -13,6 +13,11 @@ export type SimulationOptions = {
   seed?: number;
   /** Từ mới lần đầu gặp: tỉ lệ người học bấm "Nhớ" (còn lại "Quên"). */
   firstSeenGood?: number;
+  /**
+   * Có thẻ Chính tả (GĐ4): mở khi thẻ Nghĩa qua bước học, đến hạn cùng thẻ Nghĩa nhưng ≤ 1 ngày,
+   * mỗi ngày mở tối đa `newPerDay` thẻ (như app).
+   */
+  spelling?: boolean;
 };
 
 export type SimulationDay = {
@@ -22,6 +27,8 @@ export type SimulationDay = {
   /** Lượt ôn thẻ đã vào lịch dài hạn (Review), và số lần nhớ đúng trong đó. */
   dueReviews: number;
   recalled: number;
+  /** Trong `reviews`: lượt của thẻ Chính tả. */
+  spellingReviews: number;
 };
 
 /** Bộ sinh số ngẫu nhiên có hạt giống (mulberry32). */
@@ -47,13 +54,23 @@ export function simulate(options: SimulationOptions): SimulationDay[] {
   const random = seededRandom(options.seed ?? 42);
   const firstSeenGood = options.firstSeenGood ?? 0.8;
   const cards: Card[] = [];
+  /** Chỉ số thẻ Chính tả trong `cards`; thẻ Nghĩa → đã có thẻ Chính tả chưa. */
+  const spellingCards = new Set<number>();
+  const hasSpelling = new Set<number>();
   const result: SimulationDay[] = [];
 
   for (let day = 0; day < options.days; day++) {
     const start = START + day * DAY_MS;
     const end = start + SESSION_MS;
     for (let i = 0; i < options.newPerDay; i++) cards.push(createEmptyCard(new Date(start)));
-    const stats: SimulationDay = { day, reviews: 0, dueReviews: 0, recalled: 0 };
+    const stats: SimulationDay = {
+      day,
+      reviews: 0,
+      dueReviews: 0,
+      recalled: 0,
+      spellingReviews: 0,
+    };
+    let newSpellingToday = 0;
 
     let now = start;
     for (;;) {
@@ -72,6 +89,15 @@ export function simulate(options: SimulationOptions): SimulationDay[] {
       }
       for (const { card, index } of due) {
         const at = new Date(now);
+        const isSpelling = spellingCards.has(index);
+        if (isSpelling && card.state === State.New) {
+          // Giới hạn thẻ Chính tả mới mỗi ngày: chưa tới lượt thì để sang ngày sau.
+          if (newSpellingToday >= options.newPerDay) {
+            cards[index] = { ...card, due: new Date(start + DAY_MS) };
+            continue;
+          }
+          newSpellingToday++;
+        }
         let rating: Rating.Again | Rating.Good;
         if (card.state === State.New) {
           rating = random() < firstSeenGood ? Rating.Good : Rating.Again;
@@ -84,8 +110,21 @@ export function simulate(options: SimulationOptions): SimulationDay[] {
             if (remembered) stats.recalled++;
           }
         }
-        cards[index] = scheduler.next(card, at, rating).card;
+        const next = scheduler.next(card, at, rating).card;
+        cards[index] = next;
         stats.reviews++;
+        if (isSpelling) stats.spellingReviews++;
+        if (
+          options.spelling &&
+          !isSpelling &&
+          !hasSpelling.has(index) &&
+          (next.state === State.Review || next.state === State.Relearning)
+        ) {
+          hasSpelling.add(index);
+          spellingCards.add(cards.length);
+          const spellingDue = Math.min(next.due.getTime(), now + DAY_MS);
+          cards.push(createEmptyCard(new Date(spellingDue)));
+        }
         now += ANSWER_MS;
       }
     }

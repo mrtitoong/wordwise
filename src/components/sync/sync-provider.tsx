@@ -3,7 +3,7 @@
 import { useEffect } from "react";
 import { GUEST_OWNER } from "@/lib/db/ids";
 import { getLocalDb } from "@/lib/db/local";
-import { openNewWords, recordReview } from "@/lib/db/repo";
+import { ensureSkillCards, openNewWords, recordReview } from "@/lib/db/repo";
 import { createClient } from "@/lib/supabase/client";
 import { getSupabaseEnv } from "@/lib/supabase/env";
 import { getSyncEngine } from "@/lib/sync/client";
@@ -29,6 +29,7 @@ export function SyncProvider() {
       if (settled && state !== lastState && owner && !opening) {
         opening = true;
         void openNewWords(getLocalDb(), owner)
+          .then(() => ensureSkillCards(getLocalDb(), owner))
           .catch((error) => console.error("Mở từ mới lỗi:", error))
           .finally(() => (opening = false));
       }
@@ -51,7 +52,7 @@ export function SyncProvider() {
     }
 
     // Cửa test cho E2E (chỉ có trong bản build với NEXT_PUBLIC_E2E=1): ghi một
-    // lượt ôn qua đúng đường ghi của app khi chưa có màn ôn (GĐ3).
+    // lượt ôn qua đúng đường ghi của app, cho thẻ đến hạn ngay.
     if (process.env.NEXT_PUBLIC_E2E === "1") {
       Object.assign(window, {
         __wordwiseE2E: {
@@ -66,6 +67,19 @@ export function SyncProvider() {
               .first();
             if (!owner || !card) throw new Error("không có thẻ để ôn");
             return recordReview(db, owner, card.id, { rating: 3, mode: "flashcard" });
+          },
+          /** Cho thẻ của một kỹ năng đến hạn ngay (test tập viết không phải chờ sang ngày). */
+          async dueNow(skill: string) {
+            const owner = engine.getOwner();
+            const db = getLocalDb();
+            const cards = await db.cards
+              .where("user_id")
+              .equals(owner ?? "")
+              .filter((c) => c.skill === skill)
+              .toArray();
+            const due = new Date(Date.now() - 1000).toISOString();
+            await db.cards.bulkPut(cards.map((c) => ({ ...c, due })));
+            return cards.length;
           },
         },
       });

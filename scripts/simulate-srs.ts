@@ -20,6 +20,9 @@ const months = Array.from({ length: 12 }, (_, m) => [
 ]);
 const bar = (value: number, max: number) => "█".repeat(Math.max(1, Math.round((value / max) * 30)));
 const main = runs.find((r) => r.newPerDay === 10)!;
+const withSpelling = simulate({ days: 365, newPerDay: 10, seed: 42, spelling: true });
+const spellingShare = (a: number, b: number) =>
+  withSpelling.slice(a, b).reduce((sum, d) => sum + d.spellingReviews, 0) / (b - a);
 const peak = Math.max(...months.map(([a, b]) => averageLoad(main.days, a!, b!)));
 
 const retention = (days: (typeof runs)[number]["days"]) => {
@@ -28,7 +31,7 @@ const retention = (days: (typeof runs)[number]["days"]) => {
 };
 
 const lines = [
-  "# Mô phỏng lịch ôn 365 ngày (Prompt 3.1)",
+  "# Mô phỏng lịch ôn 365 ngày (Prompt 3.1, cập nhật Prompt 4.2)",
   "",
   "Sinh bởi `npm run srs:simulate` (src/lib/srs/simulate.ts). Mỗi ngày người học thêm N từ mới và",
   "ôn hết thẻ đến hạn; nhớ hay quên theo đúng khả năng nhớ R của mô hình FSRS (tỉ lệ nhớ mục tiêu",
@@ -56,6 +59,32 @@ const lines = [
       `ước tính ~${Math.round((late * 8) / 60)} phút/ngày cuối năm (8 giây/câu).`
     );
   }),
+  "",
+  "## Có thẻ Chính tả (GĐ4, 10 từ/ngày)",
+  "",
+  "Thẻ Chính tả mở khi thẻ Nghĩa qua bước học, đến hạn cùng thẻ Nghĩa nhưng không muộn hơn 1 ngày,",
+  'mỗi ngày mở tối đa bằng số từ mới/ngày; cùng tỉ lệ nhớ mục tiêu 90%. Tắt "Luyện chính tả" trong',
+  "Cài đặt thì tải như bảng trên.",
+  "",
+  "| Tháng | Chỉ thẻ Nghĩa | Nghĩa + Chính tả | Trong đó Chính tả |",
+  "|---|---|---|---|",
+  ...months.map(([a, b], m) => {
+    const only = averageLoad(main.days, a!, b!);
+    const both = averageLoad(withSpelling, a!, b!);
+    return `| ${m + 1} | ${only.toFixed(0)} | ${both.toFixed(0)} | ${spellingShare(a!, b!).toFixed(0)} |`;
+  }),
+  "",
+  (() => {
+    const mid = averageLoad(withSpelling, 90, 180);
+    const late = averageLoad(withSpelling, 270, 365);
+    const only = averageLoad(main.days, 270, 365);
+    return (
+      `Quý 4: ~${late.toFixed(0)} lượt/ngày (gấp ${(late / only).toFixed(2)}× chỉ thẻ Nghĩa), ` +
+      `quý 2 → quý 4 tăng ${(late / mid).toFixed(2)}×, ngày cao nhất ` +
+      `${Math.max(...withSpelling.map((d) => d.reviews))}. Thử hạ tỉ lệ nhớ mục tiêu của thẻ Chính ` +
+      "tả xuống 85%/80% chỉ giảm tải quý 4 khoảng 7%/12%, nên chưa dùng."
+    );
+  })(),
   "",
   "Tải tăng chậm dần vì mỗi lần nhớ đúng, khoảng cách tới lần ôn sau dài ra. Tải không đi ngang hẳn:",
   "chạy thử 2 năm (10 từ/ngày) cho quý 4 ~113 lượt/ngày, quý 8 ~143 (+27% trong khi số thẻ gấp đôi).",

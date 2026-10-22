@@ -8,7 +8,7 @@ import { useTranslations } from "next-intl";
 import { Button } from "@/components/ui/button";
 import { Sheet } from "@/components/ui/sheet";
 import { getLocalDb } from "@/lib/db/local";
-import { openExtraWords, recordReview, weightsOf } from "@/lib/db/repo";
+import { ensureSkillCards, openExtraWords, recordReview, weightsOf } from "@/lib/db/repo";
 import { clearSession, markSessionFinished, saveSession } from "@/lib/db/review-store";
 import type { Voice } from "@/lib/media/tts-azure";
 import { localDay } from "@/lib/notebooks/introductions";
@@ -23,7 +23,13 @@ import {
 } from "@/lib/review/session";
 import { planToday } from "@/lib/review/today";
 import { nextDueByRating } from "@/lib/srs/cards";
-import { gradeFromOutcome, medianResponseMs, pickMode, type ReviewMode } from "@/lib/srs/grade";
+import {
+  gradeFromOutcome,
+  medianResponseMs,
+  modesForSkill,
+  pickMode,
+  type ReviewMode,
+} from "@/lib/srs/grade";
 import { masteryLevel } from "@/lib/srs/mastery";
 import { requeue, type SessionItem } from "@/lib/srs/queue";
 import { createScheduler } from "@/lib/srs/scheduler";
@@ -32,6 +38,7 @@ import { Flashcard } from "./modes/flashcard";
 import { MultipleChoice } from "./modes/multiple-choice";
 import { NewWordIntro } from "./modes/new-word";
 import type { Intervals, ModeAnswer } from "./modes/types";
+import { Writing, buildWritingTask, type WritingTask } from "./modes/writing";
 import {
   loadChoicePool,
   prepareCards,
@@ -70,11 +77,12 @@ type Run = {
 type Ask =
   | { step: "intro" }
   | { step: "flashcard"; reverse: boolean; intervals: Intervals }
-  | { step: "mcq"; mcq: Mcq };
+  | { step: "mcq"; mcq: Mcq }
+  | { step: "writing"; task: WritingTask };
 
 const MUTE_KEY = "ww_review_muted";
-/** Chế độ đã có ở GĐ3 (GĐ4–5 thêm tập viết, nghe, phát âm). */
-const AVAILABLE_MODES: ReviewMode[] = ["flashcard", "mcq"];
+/** Chế độ đã có (GĐ4 thêm tập viết; tập nghe ở Prompt 4.3, phát âm ở GĐ5). */
+const AVAILABLE_MODES: ReviewMode[] = ["flashcard", "mcq", "writing"];
 
 function readMuted(): boolean {
   try {
@@ -125,9 +133,12 @@ export function SessionScreen({ options }: { options: SessionOptions }) {
         reverse,
         intervals: intervalsOf(scheduler.current!, prep.card, now),
       });
-      if (prep.card.state === 0) return setAsk(item.isNew ? { step: "intro" } : flashcard(false));
       const level = masteryLevel(prep.card);
-      const mode = pickMode(level, AVAILABLE_MODES);
+      if (prep.card.skill === "spelling") {
+        return setAsk({ step: "writing", task: buildWritingTask(prep, level) });
+      }
+      if (prep.card.state === 0) return setAsk(item.isNew ? { step: "intro" } : flashcard(false));
+      const mode = pickMode(level, modesForSkill("meaning", AVAILABLE_MODES));
       if (mode === "mcq") {
         const mcq = buildMcq(
           {
@@ -158,6 +169,7 @@ export function SessionScreen({ options }: { options: SessionOptions }) {
       const db = getLocalDb();
       const now = new Date();
       if (options.more) await openExtraWords(db, owner, options.more, now);
+      await ensureSkillCards(db, owner, now);
       const fresh = await loadReviewData(owner);
       scheduler.current = createScheduler({
         desiredRetention: fresh.settings.desired_retention,
@@ -263,7 +275,8 @@ export function SessionScreen({ options }: { options: SessionOptions }) {
     try {
       const db = getLocalDb();
       const now = new Date();
-      const mode: ReviewMode = ask.step === "mcq" ? "mcq" : "flashcard";
+      const mode: ReviewMode =
+        ask.step === "mcq" ? "mcq" : ask.step === "writing" ? "writing" : "flashcard";
       const levelBefore = masteryLevel(prep.card);
       const rating = gradeFromOutcome({
         mode,
@@ -278,6 +291,7 @@ export function SessionScreen({ options }: { options: SessionOptions }) {
         reviewedAt: now,
         responseMs: answer.responseMs,
         correct: answer.correct,
+        hintLevel: answer.hintLevel,
         extra,
       });
       // Quên khi ôn ngoài lịch: lượt đó đã tính vào lịch, các lượt sau là ôn thật.
@@ -423,6 +437,14 @@ export function SessionScreen({ options }: { options: SessionOptions }) {
                 intervals: intervalsOf(scheduler.current!, prep.card, new Date()),
               })
             }
+          />
+        ) : ask.step === "writing" ? (
+          <Writing
+            item={prep}
+            voice={voice}
+            muted={muted}
+            task={ask.task}
+            onAnswer={(a) => void handleAnswer(a)}
           />
         ) : ask.step === "mcq" ? (
           <MultipleChoice

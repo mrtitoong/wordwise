@@ -79,7 +79,10 @@
     "dailyNewHint": "Lưu ngay trên máy, tự đồng bộ khi có mạng.",
     "signOutPending": "Còn {count} thay đổi chưa gửi lên. Đăng xuất bây giờ sẽ mất các thay đổi này.",
     "signOutAnyway": "Vẫn đăng xuất",
-    "signingOut": "Đang đăng xuất…"
+    "signingOut": "Đang đăng xuất…",
+    "practiceSpelling": "Luyện chính tả",
+    "practiceSpellingHint": "Tập viết lại từ đã nhớ nghĩa. Tắt nếu bạn chỉ cần hiểu nghĩa (vd luyện đọc); số câu ôn mỗi ngày sẽ ít hơn.",
+    "practice": "Luyện tập"
   },
   "languages": {
     "vi": "Tiếng Việt",
@@ -786,6 +789,23 @@
       "done": "Xong",
       "retry": "Ôn lại từ sai",
       "moreWords": "Học thêm {count} từ mới"
-    }
+    },
+    "writeWord": "Viết từ tiếng Anh có nghĩa này",
+    "writeCloze": "Điền từ còn thiếu vào câu",
+    "blank": "chỗ trống",
+    "typeHere": "Gõ từ tiếng Anh",
+    "check": "Kiểm tra",
+    "hint": "Gợi ý",
+    "dontKnow": "Không nhớ",
+    "revealed": "Đáp án là",
+    "rightTypo": "Đúng rồi, chỉ sai một chữ",
+    "wrongForm": "Đúng từ nhưng sai dạng",
+    "retype": "Gõ lại một lần cho nhớ",
+    "removeLetter": "Bỏ chữ {letter}",
+    "letters": "Các chữ cái",
+    "clear": "Xếp lại từ đầu",
+    "pattern": "Gợi ý: {pattern}",
+    "diffLabel": "Chỗ sai được tô màu",
+    "answerInput": "Câu trả lời của bạn"
   }
 }

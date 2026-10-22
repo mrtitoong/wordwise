@@ -232,3 +232,57 @@ describe("requeue", () => {
     expect(tomorrow).toEqual(queue);
   });
 });
+
+describe("thẻ kỹ năng (Chính tả)", () => {
+  const settings: SessionSettings = {
+    dailyReviewLimit: 200,
+    newLimit: 10,
+    reviewsDoneToday: 0,
+    lastReviewAt: new Date(NOW.getTime() - DAY),
+  };
+  const spelling = (lemma: string, dueInMs = -1000): QueueCard => {
+    const base = newCard(lemma);
+    return {
+      ...base,
+      skill: "spelling",
+      card: { ...base.card, due: new Date(NOW.getTime() + dueInMs).toISOString() },
+    };
+  };
+
+  it("thẻ Chính tả mới không phải từ mới: xếp sau thẻ đến hạn, không tính vào giới hạn từ mới", () => {
+    const plan = buildSession(
+      [spelling("alpha"), reviewCard("beta"), newCard("gamma")],
+      { ...settings, newLimit: 0 },
+      scheduler,
+      NOW,
+    );
+    expect(plan.items).toEqual([
+      { cardId: expect.stringContaining("beta"), isNew: false },
+      { cardId: expect.stringContaining("alpha"), isNew: false },
+    ]);
+  });
+
+  it("chưa đến hạn thì chưa vào phiên; có giới hạn số thẻ kỹ năng mới mỗi ngày", () => {
+    const later = buildSession([spelling("alpha", DAY)], settings, scheduler, NOW);
+    expect(later.items).toEqual([]);
+    const capped = buildSession(
+      [spelling("alpha"), spelling("beta"), spelling("gamma")],
+      { ...settings, newSkillLimit: 2 },
+      scheduler,
+      NOW,
+    );
+    expect(capped.items).toHaveLength(2);
+  });
+
+  it("hai thẻ của cùng một từ không đứng liền nhau", () => {
+    const meaning = reviewCard("delta");
+    const plan = buildSession(
+      [meaning, spelling("delta"), reviewCard("omega", { overdueDays: 2 }), spelling("sigma")],
+      settings,
+      scheduler,
+      NOW,
+    );
+    const lemmas = plan.items.map((i) => i.cardId.split("-")[1]);
+    for (let i = 1; i < lemmas.length; i++) expect(lemmas[i]).not.toBe(lemmas[i - 1]);
+  });
+});

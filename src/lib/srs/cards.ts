@@ -2,12 +2,13 @@
  * Thẻ ôn theo kỹ năng (Prompt 3.1): mỗi từ có tối đa 3 thẻ – Nghĩa, Chính tả, Phát âm – mỗi thẻ một
  * lịch FSRS riêng để phát âm kém không kéo lùi lịch ôn nghĩa (docs/plan.md §3.3). Hàm thuần.
  *
- * GĐ3 chỉ dùng thẻ Nghĩa; thẻ Chính tả mở ở GĐ4 (tập viết), Phát âm ở GĐ5 (chấm phát âm) – tạo
- * sớm thì thẻ đến hạn mà chưa có cách ôn.
+ * Thẻ Chính tả (GĐ4: tập viết) tạo khi thẻ Nghĩa đã qua bước học (vào lịch dài hạn, mức ≥ 1) và
+ * người dùng bật "Luyện chính tả"; Phát âm ở GĐ5 (chấm phát âm) – tạo sớm thì thẻ đến hạn mà chưa
+ * có cách ôn.
  */
-import { Rating, type FSRS, type Grade } from "ts-fsrs";
+import { Rating, State, type FSRS, type Grade } from "ts-fsrs";
 import { cardId } from "@/lib/db/ids";
-import type { CardRow } from "@/lib/db/types";
+import type { CardRow, UserWordRow } from "@/lib/db/types";
 import { masteryLevel } from "./mastery";
 import { applyReview, newCardFields, toFsrsCard, type ReviewInput } from "./scheduler";
 
@@ -17,9 +18,16 @@ export type Skill = (typeof SKILLS)[number];
 /** Thẻ Phát âm chỉ mở khi thẻ Nghĩa đạt mức này (đã nhớ lại được nghĩa). */
 export const SPEAKING_UNLOCK_LEVEL = 2;
 
+/** Thẻ Nghĩa đã qua bước học 1 phút/10 phút (vào lịch dài hạn, kể cả đang học lại sau khi quên). */
+export function graduated(card: Pick<CardRow, "state" | "deleted_at"> | null | undefined): boolean {
+  return (
+    !!card && !card.deleted_at && (card.state === State.Review || card.state === State.Relearning)
+  );
+}
+
 /**
  * Kỹ năng được có thẻ: Nghĩa luôn có; các kỹ năng khác chỉ khi app đã có chế độ ôn tương ứng
- * (`enabled`), Phát âm thêm điều kiện thẻ Nghĩa đạt mức 2.
+ * (`enabled`). Chính tả cần thẻ Nghĩa đã qua bước học, Phát âm cần thẻ Nghĩa đạt mức 2.
  */
 export function unlockedSkills(
   meaningCard: Pick<CardRow, "state" | "stability" | "deleted_at"> | null | undefined,
@@ -29,8 +37,44 @@ export function unlockedSkills(
     (skill) =>
       skill === "meaning" ||
       (enabled.includes(skill) &&
-        (skill !== "speaking" || masteryLevel(meaningCard) >= SPEAKING_UNLOCK_LEVEL)),
+        (skill === "spelling"
+          ? graduated(meaningCard)
+          : masteryLevel(meaningCard) >= SPEAKING_UNLOCK_LEVEL)),
   );
+}
+
+/** Thẻ kỹ năng mới đến hạn muộn nhất sau chừng này (không hỏi viết ngay sau khi vừa học nghĩa). */
+export const SKILL_CARD_DELAY_MS = 86_400_000;
+
+/**
+ * Thẻ kỹ năng còn thiếu cho các từ đang học (thẻ Nghĩa đã đủ điều kiện mở kỹ năng khác). Thẻ đã
+ * có – kể cả đã xóa mềm – không tạo lại. ID cố định nên hai máy cùng tạo ra cùng một thẻ. Thẻ mới
+ * đến hạn cùng lúc thẻ Nghĩa nhưng không muộn hơn 1 ngày.
+ */
+export function missingSkillCards(
+  userWords: readonly Pick<UserWordRow, "id" | "user_id" | "status" | "deleted_at">[],
+  cards: readonly CardRow[],
+  enabled: readonly Skill[],
+  now: Date,
+): CardRow[] {
+  const byWord = new Map<string, Map<string, CardRow>>();
+  for (const card of cards) {
+    const skills = byWord.get(card.user_word_id) ?? new Map<string, CardRow>();
+    skills.set(card.skill, card);
+    byWord.set(card.user_word_id, skills);
+  }
+  return userWords.flatMap((uw) => {
+    if (uw.deleted_at || uw.status !== "learning") return [];
+    const own = byWord.get(uw.id);
+    const meaning = own?.get("meaning");
+    const wanted = unlockedSkills(meaning, enabled).filter((s) => s !== "meaning" && !own?.has(s));
+    if (!wanted.length) return [];
+    const due = Math.min(
+      Math.max(Date.parse(meaning!.due), now.getTime()),
+      now.getTime() + SKILL_CARD_DELAY_MS,
+    );
+    return createCards(uw, wanted, now).map((c) => ({ ...c, due: new Date(due).toISOString() }));
+  });
 }
 
 /** Thẻ mới (trạng thái New) cho các kỹ năng; id cố định theo (từ, kỹ năng) như mọi máy. */

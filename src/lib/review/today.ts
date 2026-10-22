@@ -18,7 +18,13 @@ export type TodayInput = {
   cards: readonly CardRow[];
   entries: readonly NotebookEntryRow[];
   logs: readonly ReviewLogRow[];
-  settings: { dailyNewLimit: number; dailyReviewLimit: number; timeZone: string };
+  settings: {
+    dailyNewLimit: number;
+    dailyReviewLimit: number;
+    timeZone: string;
+    /** "Luyện chính tả": thẻ Chính tả vào phiên ôn (mặc định có). */
+    practiceSpelling?: boolean;
+  };
   /** Chữ của từng nghĩa (sense_id → lemma); thiếu thì dùng chuỗi rỗng. */
   lemmaOf: (senseId: string) => string;
   /** Từ cùng họ, dễ nhầm của từng nghĩa (nội dung từ); màn Hôm nay không cần. */
@@ -31,7 +37,7 @@ export const NEW_WORD_MS = 20_000;
 /** Phiên ngắn 5 phút. */
 export const SHORT_SESSION_MS = 5 * 60_000;
 
-/** Thẻ Nghĩa của các từ đang học (đã mở, chưa tạm ngưng, chưa xóa). */
+/** Thẻ của các từ đang học (đã mở, chưa tạm ngưng, chưa xóa): Nghĩa, thêm Chính tả nếu bật. */
 export function queueCards(input: TodayInput): QueueCard[] {
   const live = new Map(
     input.userWords
@@ -45,12 +51,15 @@ export function queueCards(input: TodayInput): QueueCard[] {
     for (const tag of entry.tags ?? []) set.add(tag.toLowerCase());
     topics.set(entry.user_word_id, set);
   }
+  const skills = new Set(["meaning"]);
+  if (input.settings.practiceSpelling ?? true) skills.add("spelling");
   return input.cards
-    .filter((c) => !c.deleted_at && c.skill === "meaning" && live.has(c.user_word_id))
+    .filter((c) => !c.deleted_at && skills.has(c.skill) && live.has(c.user_word_id))
     .map((card) => {
       const uw = live.get(card.user_word_id)!;
       return {
         card,
+        skill: card.skill,
         lemma: input.lemmaOf(uw.sense_id),
         related: input.relatedOf?.(uw.sense_id) ?? [],
         topics: [...(topics.get(uw.id) ?? [])],
@@ -65,7 +74,13 @@ export function sessionSettings(input: TodayInput, now: Date): SessionSettings {
   const todays = scheduling.filter(
     (l) => localDay(new Date(l.reviewed_at), input.settings.timeZone) === today,
   );
-  const newToday = new Set(todays.filter((l) => l.state === 0).map((l) => l.card_id)).size;
+  // Từ mới = lượt đầu của thẻ Nghĩa (lượt đầu của thẻ Chính tả là lượt ôn, không phải từ mới).
+  const meaningIds = new Set(input.cards.filter((c) => c.skill === "meaning").map((c) => c.id));
+  const firstOfMeaning = (l: ReviewLogRow) => l.state === 0 && meaningIds.has(l.card_id);
+  const newToday = new Set(todays.filter(firstOfMeaning).map((l) => l.card_id)).size;
+  const newSkillToday = new Set(
+    todays.filter((l) => l.state === 0 && !meaningIds.has(l.card_id)).map((l) => l.card_id),
+  ).size;
   const last = input.logs.reduce<string | null>(
     (max, l) => (max === null || l.reviewed_at > max ? l.reviewed_at : max),
     null,
@@ -73,7 +88,9 @@ export function sessionSettings(input: TodayInput, now: Date): SessionSettings {
   return {
     dailyReviewLimit: input.settings.dailyReviewLimit,
     newLimit: Math.max(0, input.settings.dailyNewLimit - newToday),
-    reviewsDoneToday: todays.filter((l) => l.state !== 0).length,
+    // Thẻ Chính tả mới mỗi ngày không quá số từ mới/ngày: từ học trước GĐ4 mở dần, không dồn.
+    newSkillLimit: Math.max(0, input.settings.dailyNewLimit - newSkillToday),
+    reviewsDoneToday: todays.filter((l) => !firstOfMeaning(l)).length,
     lastReviewAt: last ? new Date(last) : null,
   };
 }

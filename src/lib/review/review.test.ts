@@ -148,6 +148,10 @@ describe("today", () => {
     last_review: new Date(NOW.getTime() - 5 * DAY).toISOString(),
     reps: 3,
   };
+  const spelling: CardRow = {
+    ...createCards(userWords[1]!, ["spelling"], NOW)[0]!,
+    due: NOW.toISOString(),
+  };
   const log = (over: Partial<ReviewLogRow>): ReviewLogRow =>
     ({
       id: Math.random().toString(),
@@ -159,7 +163,7 @@ describe("today", () => {
     }) as ReviewLogRow;
   const input = (logs: ReviewLogRow[] = []): TodayInput => ({
     userWords,
-    cards: [cards[0]!, reviewed, cards[2]!, cards[3]!],
+    cards: [cards[0]!, reviewed, cards[2]!, cards[3]!, spelling],
     entries: [
       { user_word_id: userWords[0]!.id, tags: ["IELTS"], deleted_at: null } as NotebookEntryRow,
     ],
@@ -168,31 +172,42 @@ describe("today", () => {
     lemmaOf: (s) => ({ s1: "alpha", s2: "beta" })[s] ?? "",
   });
 
-  it("chỉ lấy thẻ Nghĩa của từ đang học; tag thành chủ đề", () => {
+  it("lấy thẻ Nghĩa và Chính tả của từ đang học; tag thành chủ đề", () => {
     const q = queueCards(input());
-    expect(q.map((c) => c.lemma)).toEqual(["alpha", "beta"]);
+    expect(q.map((c) => `${c.lemma}:${c.skill}`)).toEqual([
+      "alpha:meaning",
+      "beta:meaning",
+      "beta:spelling",
+    ]);
     expect(q[0]!.topics).toEqual(["ielts"]);
+  });
+
+  it("tắt Luyện chính tả: thẻ Chính tả không vào phiên", () => {
+    const off = { ...input(), settings: { ...input().settings, practiceSpelling: false } };
+    expect(queueCards(off).map((c) => c.skill)).toEqual(["meaning", "meaning"]);
   });
 
   it("phần còn lại của giới hạn: trừ từ mới đã học và lượt ôn hôm nay; bỏ lượt luyện thêm", () => {
     const s = sessionSettings(
       input([
-        log({ state: 0, card_id: "a" }),
-        log({ state: 1, card_id: "a" }),
+        log({ state: 0, card_id: cards[0]!.id }),
+        log({ state: 1, card_id: cards[0]!.id }),
+        // Lượt đầu của thẻ Chính tả: là lượt ôn, không phải từ mới.
+        log({ state: 0, card_id: spelling.id }),
         log({ state: 2 }),
         log({ state: 2, is_extra: true }),
         log({ state: 2, reviewed_at: "2026-10-20T01:00:00Z" }),
       ]),
       NOW,
     );
-    expect(s).toMatchObject({ newLimit: 9, reviewsDoneToday: 2 });
+    expect(s).toMatchObject({ newLimit: 9, newSkillLimit: 9, reviewsDoneToday: 3 });
     expect(s.lastReviewAt?.toISOString()).toBe("2026-10-22T01:00:00.000Z");
   });
 
   it("planToday: đếm thẻ ôn, từ mới, thời gian; phiên ngắn cắt theo 5 phút; chỉ một thẻ", () => {
     const plan = planToday(input(), scheduler, NOW);
-    expect(plan).toMatchObject({ reviews: 1, news: 1, gentle: false });
-    expect(plan.minutes).toBe(estimateMinutes(1, 1, 8000));
+    expect(plan).toMatchObject({ reviews: 2, news: 1, gentle: false });
+    expect(plan.minutes).toBe(estimateMinutes(2, 1, 8000));
     const only = planToday(input(), scheduler, NOW, { onlyCardIds: new Set([reviewed.id]) });
     expect(only.items).toEqual([{ cardId: reviewed.id, isNew: false }]);
     const many = { ...input(), settings: { ...input().settings, dailyNewLimit: 50 } };

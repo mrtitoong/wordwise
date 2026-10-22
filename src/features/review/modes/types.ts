@@ -17,6 +17,8 @@ export type ModeAnswer = {
   hintLevel?: number;
   typoCount?: number;
   pronunciationScore?: number;
+  /** Điểm cao nhất được chấm (tập viết cấp dễ: tối đa "Nhớ"). */
+  maxRating?: Grade;
 };
 
 export type ModeProps = {

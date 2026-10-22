@@ -340,3 +340,11 @@ Repo: https://github.com/mrtitoong/wordwise
   Biến thể Anh–Mỹ lấy từ `forms.variants` và tự áp lên dạng chia (`applyVariant`: colours → colors);
   gõ dạng khác của cùng từ → `wrong_form`; gõ trúng từ dễ nhầm (`confusables`) → `other_word`, không
   coi là lỗi gõ. `answersForWord(word, form?)` dựng đáp án từ nội dung trong kho.
+- 2026-10-22 (Prompt 4.2): Thẻ Chính tả tạo khi thẻ Nghĩa **qua bước học** (state Review/Relearning
+  = mức 1), trong `recordReview` và `ensureSkillCards()` (mở app, sau đồng bộ, đầu phiên); đến hạn cùng
+  thẻ Nghĩa nhưng ≤ 1 ngày; mỗi ngày mở tối đa bằng số từ mới/ngày (từ học trước GĐ4 mở dần). Thẻ
+  Chính tả mới không phải "từ mới" (không màn giới thiệu, không trừ giới hạn từ mới), xếp sau thẻ đến
+  hạn. Tắt "Luyện chính tả" (`user_settings.practice_spelling`, đã áp lên cloud) chỉ lọc khỏi phiên, lịch
+  giữ nguyên. Mô phỏng: 10 từ/ngày → quý 4 ~220 lượt/ngày (gấp ~2× chỉ thẻ Nghĩa; hạ tỉ lệ nhớ mục tiêu
+  của thẻ Chính tả chỉ giảm 7–12% nên không dùng). Tập viết `src/features/review/modes/writing.tsx`:
+  hint_level = số lần bấm Gợi ý (≤ 4); xếp chữ không chấp nhận lỗi gõ.

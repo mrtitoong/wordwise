@@ -1,12 +1,21 @@
 import { Rating, State } from "ts-fsrs";
 import { describe, expect, it } from "vitest";
 import type { CardRow, ReviewLogRow } from "@/lib/db/types";
-import { createCards, nextDueByRating, retrievability, review, unlockedSkills } from "./cards";
+import {
+  SKILL_CARD_DELAY_MS,
+  createCards,
+  missingSkillCards,
+  nextDueByRating,
+  retrievability,
+  review,
+  unlockedSkills,
+} from "./cards";
 import {
   HARDER_MODE_CHANCE,
   MEDIAN_MIN_SAMPLES,
   gradeFromOutcome,
   medianResponseMs,
+  modesForSkill,
   pickMode,
   type Outcome,
   type ReviewMode,
@@ -178,6 +187,90 @@ describe("thẻ theo kỹ năng", () => {
     expect(unlockedSkills(weak, all)).toEqual(["meaning", "spelling"]);
     expect(unlockedSkills(strong, all)).toEqual(["meaning", "spelling", "speaking"]);
   });
+
+  it("unlockedSkills: Chính tả cần thẻ Nghĩa đã qua bước học (kể cả đang học lại)", () => {
+    const enabled = ["meaning", "spelling"] as const;
+    const at = (state: State) => ({ state, stability: 0.5, deleted_at: null });
+    expect(unlockedSkills(at(State.New), enabled)).toEqual(["meaning"]);
+    expect(unlockedSkills(at(State.Learning), enabled)).toEqual(["meaning"]);
+    expect(unlockedSkills(at(State.Review), enabled)).toEqual(["meaning", "spelling"]);
+    expect(unlockedSkills(at(State.Relearning), enabled)).toEqual(["meaning", "spelling"]);
+    expect(unlockedSkills(at(State.Review), ["meaning"])).toEqual(["meaning"]);
+  });
+
+  it("missingSkillCards: tạo thẻ Chính tả còn thiếu, đến hạn cùng thẻ Nghĩa nhưng ≤ 1 ngày", () => {
+    const uw = (id: string, status = "learning") => ({
+      id,
+      user_id: "u1",
+      status,
+      deleted_at: null as string | null,
+    });
+    const words = [
+      uw("11111111-1111-4111-8111-00000000000a"),
+      uw("11111111-1111-4111-8111-00000000000b"),
+      uw("11111111-1111-4111-8111-00000000000c"),
+      uw("11111111-1111-4111-8111-00000000000d", "suspended"),
+    ];
+    const meaning = (i: number, state: State, dueInDays: number) => ({
+      ...createCards(words[i]!, ["meaning"], NOW)[0]!,
+      state,
+      due: new Date(NOW.getTime() + dueInDays * DAY).toISOString(),
+    });
+    const cards = [
+      meaning(0, State.Review, 3), // đến hạn sau 3 ngày → thẻ Chính tả sau 1 ngày
+      meaning(1, State.Review, -2), // đã đến hạn → thẻ Chính tả đến hạn ngay
+      meaning(2, State.Learning, 0), // chưa qua bước học
+      meaning(3, State.Review, 1), // tạm ngưng
+    ];
+    const created = missingSkillCards(words, cards, ["meaning", "spelling"], NOW);
+    expect(created.map((c) => [c.user_word_id, c.skill, c.state])).toEqual([
+      [words[0]!.id, "spelling", State.New],
+      [words[1]!.id, "spelling", State.New],
+    ]);
+    expect(Date.parse(created[0]!.due)).toBe(NOW.getTime() + SKILL_CARD_DELAY_MS);
+    expect(Date.parse(created[1]!.due)).toBe(NOW.getTime());
+    expect(created[0]!.id).toBe(createCards(words[0]!, ["spelling"], NOW)[0]!.id);
+
+    // Đã có (kể cả đã xóa mềm) thì không tạo lại.
+    const existing = [...cards, { ...created[0]!, deleted_at: NOW.toISOString() }, created[1]!];
+    expect(missingSkillCards(words, existing, ["meaning", "spelling"], NOW)).toEqual([]);
+  });
+});
+
+describe("chế độ theo thẻ kỹ năng", () => {
+  it("thẻ Nghĩa: nhận biết; thẻ Chính tả: tự viết ra", () => {
+    const all = ["flashcard", "mcq", "listening", "writing", "speaking"] as const;
+    expect(modesForSkill("meaning", all)).toEqual(["flashcard", "mcq", "listening"]);
+    expect(modesForSkill("spelling", all)).toEqual(["writing", "listening"]);
+    expect(modesForSkill("spelling", ["flashcard", "mcq", "writing"])).toEqual(["writing"]);
+  });
+
+  it("thẻ Chính tả chỉ có tập viết: mọi mức đều chọn tập viết", () => {
+    for (const level of [0, 1, 2, 3, 4] as const) {
+      expect(pickMode(level, ["writing"], () => 0.9)).toBe("writing");
+      expect(pickMode(level, ["writing"], () => 0)).toBe("writing");
+    }
+  });
+
+  it("thẻ Nghĩa mức cao không bị chọn tập viết", () => {
+    expect(pickMode(3, ["flashcard", "mcq"], () => 0.9)).toBe("mcq");
+  });
+
+  it("maxRating: tập viết cấp dễ đúng nhanh vẫn chỉ Nhớ; dùng gợi ý vẫn Khó", () => {
+    const base: Outcome = {
+      mode: "writing",
+      correct: true,
+      responseMs: 1000,
+      userMedianMs: 10_000,
+      cardLevel: 0,
+    };
+    expect(gradeFromOutcome(base)).toBe(Rating.Easy);
+    expect(gradeFromOutcome({ ...base, maxRating: Rating.Good })).toBe(Rating.Good);
+    expect(gradeFromOutcome({ ...base, maxRating: Rating.Good, hintLevel: 1 })).toBe(Rating.Hard);
+    expect(gradeFromOutcome({ ...base, maxRating: Rating.Good, correct: false })).toBe(
+      Rating.Again,
+    );
+  });
 });
 
 describe("lịch ôn (cấu hình Prompt 3.1)", () => {
@@ -250,6 +343,24 @@ describe("lịch ôn (cấu hình Prompt 3.1)", () => {
     const late = retrievability(scheduler, card, new Date(NOW.getTime() + 30 * DAY));
     expect(soon).toBeGreaterThan(late);
     expect(soon).toBeLessThanOrEqual(1);
+  });
+});
+
+describe("mô phỏng 365 ngày có thẻ Chính tả", () => {
+  const only = simulate({ days: 365, newPerDay: 10, seed: 42 });
+  const both = simulate({ days: 365, newPerDay: 10, seed: 42, spelling: true });
+
+  it("tải vẫn không tăng tuyến tính; thẻ Chính tả không quá gấp đôi tải", () => {
+    const mid = averageLoad(both, 90, 180);
+    const late = averageLoad(both, 270, 365);
+    expect(late / mid).toBeLessThan(1.5);
+    expect(late).toBeLessThan(2.2 * averageLoad(only, 270, 365));
+    expect(both.slice(270).every((d) => d.spellingReviews > 0)).toBe(true);
+  });
+
+  it("thẻ Chính tả mở dần: mỗi ngày không quá số từ mới", () => {
+    expect(both[0]!.spellingReviews).toBe(0);
+    expect(averageLoad(both, 0, 7)).toBeLessThan(2 * averageLoad(only, 0, 7));
   });
 });
 

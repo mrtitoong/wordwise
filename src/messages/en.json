@@ -79,7 +79,10 @@
     "dailyNewHint": "Saved on this device right away, syncs when online.",
     "signOutPending": "{count} changes haven't been uploaded yet. Signing out now will lose them.",
     "signOutAnyway": "Sign out anyway",
-    "signingOut": "Signing out…"
+    "signingOut": "Signing out…",
+    "practiceSpelling": "Spelling practice",
+    "practiceSpellingHint": "Write words you already know the meaning of. Turn off if you only need to understand them (e.g. for reading); you'll get fewer reviews each day.",
+    "practice": "Practice"
   },
   "languages": {
     "vi": "Tiếng Việt",
@@ -786,6 +789,23 @@
       "done": "Done",
       "retry": "Review mistakes",
       "moreWords": "Learn {count} more new words"
-    }
+    },
+    "writeWord": "Write the English word for this meaning",
+    "writeCloze": "Fill in the missing word",
+    "blank": "blank",
+    "typeHere": "Type the English word",
+    "check": "Check",
+    "hint": "Hint",
+    "dontKnow": "I don't know",
+    "revealed": "The answer is",
+    "rightTypo": "Correct, just one letter off",
+    "wrongForm": "Right word, wrong form",
+    "retype": "Type it once more to remember",
+    "removeLetter": "Remove letter {letter}",
+    "letters": "Letters",
+    "clear": "Start over",
+    "pattern": "Hint: {pattern}",
+    "diffLabel": "Mistakes are highlighted",
+    "answerInput": "Your answer"
   }
 }

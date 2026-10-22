@@ -77,14 +77,17 @@
       "flashcard": "Flashcards",
       "mcq": "Multiple choice",
       "writing": "Writing",
-      "listening": "Listening"
+      "listening": "Listening",
+      "speaking": "Speaking"
     },
     "count": "Questions",
     "countValue": "{count} questions",
     "available": "{available} matching words – {count} questions.",
     "none": "No matching words. Try a wider scope.",
     "noneWriting": "Writing uses words past their first few reviews. Review more on Today and come back.",
-    "start": "Start practice"
+    "start": "Start practice",
+    "speakingLogin": "Sign in to get pronunciation scores.",
+    "noneSpeaking": "Speaking uses words you have remembered for a few days (level 2). Review more on Today and come back."
   },
   "stats": {
     "title": "Stats",
@@ -114,7 +117,9 @@
     "reviewSection": "Reviews",
     "multiAccent": "Mixed accents",
     "multiAccentHint": "Listening practice switches randomly between American and British voices.",
-    "micTest": "Microphone check"
+    "micTest": "Microphone check",
+    "practiceSpeaking": "Speaking practice",
+    "practiceSpeakingHint": "Add say-it-out-loud questions to daily reviews (needs sign-in, a microphone and a quiet place). You can still pick Speaking on the Practice page when this is off."
   },
   "languages": {
     "vi": "Tiếng Việt",
@@ -844,7 +849,57 @@
     "replays": "Replayed {count} times",
     "listenPickMeaning": "Listen and pick the meaning",
     "listenType": "Listen and type the word",
-    "listenCloze": "Listen and fill in the missing word"
+    "listenCloze": "Listen and fill in the missing word",
+    "speak": {
+      "prompt": "Listen, then say this word out loud",
+      "record": "Start speaking",
+      "stop": "Stop",
+      "tapToRecord": "Tap the mic and say the word",
+      "recording": "Listening… stops when you pause",
+      "scoring": "Scoring…",
+      "score": "{score} points",
+      "band": {
+        "good": "Great!",
+        "fair": "Good, a bit more practice",
+        "poor": "Needs more practice"
+      },
+      "firstScore": "First try: {score} points (used for your schedule)",
+      "phonemes": "Score per sound",
+      "noPhonemes": "British English: no per-sound detail yet, only the overall score.",
+      "tipsTitle": "Pronunciation tips",
+      "playMine": "Play my recording",
+      "compare": "Compare with model",
+      "again": "Try again",
+      "disclaimer": "Scores are automatic and only a guide.",
+      "next": "Next",
+      "skip": "Skip this one",
+      "problem": {
+        "noSpeech": "Couldn't hear you clearly. Speak up, closer to the mic, somewhere quiet.",
+        "login": "Sign in to get pronunciation scores.",
+        "limit": "You've used all pronunciation checks for today. Come back tomorrow!",
+        "unavailable": "Can't score right now (offline or service busy). Try again later."
+      },
+      "pause": "Pause speaking",
+      "paused": "Speaking paused for this session"
+    },
+    "tips": {
+      "th_voiceless": "Put the tip of your tongue between your teeth and blow air out.",
+      "th_voiced": "Tongue between your teeth, blow air and let your throat vibrate (not \"d\").",
+      "final_s": "Don't drop the final /s/: end with a soft hiss.",
+      "final_z": "Final /z/ is a buzzing \"zzz\", not /s/ and not silent.",
+      "final_t_d": "Don't swallow final /t/ /d/: touch the ridge behind your top teeth and release.",
+      "final_k_g": "Don't swallow final /k/ /g/: close at the back of your tongue and release.",
+      "final_other": "Say the final sound clearly instead of dropping it.",
+      "sh_s": "/ʃ/ (\"sh\") is not /s/: round your lips, pull your tongue back, like \"shh\".",
+      "zh": "/ʒ/ is like /ʃ/ with voice (as in \"measure\").",
+      "ch_j": "/tʃ/ /dʒ/: start with your tongue on the ridge, then release into \"ch\"/\"j\".",
+      "l_n": "/l/ lets air pass the sides of your tongue; /n/ sends it through your nose.",
+      "r": "English /r/: curl your tongue up without touching the roof of your mouth; don't trill.",
+      "v": "/v/: top teeth lightly on your lower lip, with voice; not /b/ or /f/.",
+      "long_vowel": "Long vowels (marked ː) are clearly longer: \"sheep\" is longer than \"ship\".",
+      "ae": "/æ/: open your mouth wide, between \"a\" and \"e\" (as in \"cat\").",
+      "schwa": "/ə/ is a short, relaxed \"uh\" in unstressed syllables."
+    }
   },
   "mic": {
     "explainTitle": "Allow the microphone",

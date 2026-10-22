@@ -2,7 +2,7 @@
 
 import { useCallback, useEffect, useRef, useState } from "react";
 import { useRouter } from "next/navigation";
-import { Volume2, VolumeX, X } from "lucide-react";
+import { MicOff, Volume2, VolumeX, X } from "lucide-react";
 import { Rating, type FSRS, type Grade } from "ts-fsrs";
 import { useTranslations } from "next-intl";
 import { Button } from "@/components/ui/button";
@@ -32,6 +32,7 @@ import {
 } from "@/lib/srs/grade";
 import { listeningTaskKind, listeningVoice, spellingTaskKind } from "@/lib/review/listening";
 import { buildPractice, type PracticeRequest } from "@/lib/review/practice";
+import type { PronunciationLocale } from "@/lib/pronunciation/api";
 import { masteryLevel, type MasteryLevel } from "@/lib/srs/mastery";
 import { getSupabaseEnv } from "@/lib/supabase/env";
 import { requeue, type SessionItem } from "@/lib/srs/queue";
@@ -40,6 +41,7 @@ import { useOwner } from "@/lib/sync/owner";
 import { Flashcard } from "./modes/flashcard";
 import { MultipleChoice } from "./modes/multiple-choice";
 import { NewWordIntro } from "./modes/new-word";
+import { Speaking } from "./modes/speaking";
 import type { Intervals, ModeAnswer } from "./modes/types";
 import { e2eOverride } from "./e2e";
 import { canSpeak } from "./modes/listen-player";
@@ -91,11 +93,12 @@ type Ask =
   | { step: "intro" }
   | { step: "flashcard"; reverse: boolean; intervals: Intervals }
   | { step: "mcq"; mcq: Mcq; listen: boolean; voice: Voice }
-  | { step: "writing"; task: WritingTask; listen: boolean; voice: Voice };
+  | { step: "writing"; task: WritingTask; listen: boolean; voice: Voice }
+  | { step: "speaking"; voice: Voice; locale: PronunciationLocale };
 
 const MUTE_KEY = "ww_review_muted";
 /** Chế độ đã có (GĐ4 thêm tập viết, tập nghe; phát âm ở GĐ5). */
-const AVAILABLE_MODES: ReviewMode[] = ["flashcard", "mcq", "listening", "writing"];
+const AVAILABLE_MODES: ReviewMode[] = ["flashcard", "mcq", "listening", "writing", "speaking"];
 
 function preferredVoice(settings: ReviewData["settings"]): Voice {
   return settings.accent === "uk" ? "uk" : "us";
@@ -158,6 +161,15 @@ export function SessionScreen({ options }: { options: SessionOptions }) {
         word: !!prep.word.media.audio[voice] || canSpeak(),
         sentence: !!clozeOfItem(prep) && (!!getSupabaseEnv() || canSpeak()),
       };
+      // Phát âm chấm theo giọng trong Cài đặt (không đổi giọng ngẫu nhiên như tập nghe).
+      if (prep.card.skill === "speaking") {
+        const preferred = voices.current.preferred;
+        return setAsk({
+          step: "speaking",
+          voice: preferred,
+          locale: preferred === "uk" ? "en-GB" : "en-US",
+        });
+      }
       if (prep.card.skill === "spelling") {
         // Luyện tập chọn chế độ: Tập viết luôn viết; Tập nghe thì nghe (không phát được thì viết).
         const kind =
@@ -358,7 +370,9 @@ export function SessionScreen({ options }: { options: SessionOptions }) {
           ? ask.listen
             ? "listening"
             : ask.step
-          : "flashcard";
+          : ask.step === "speaking"
+            ? "speaking"
+            : "flashcard";
       const levelBefore = masteryLevel(prep.card);
       const rating = gradeFromOutcome({
         mode,
@@ -374,6 +388,7 @@ export function SessionScreen({ options }: { options: SessionOptions }) {
         responseMs: answer.responseMs,
         correct: answer.correct,
         hintLevel: answer.hintLevel,
+        pronunciationScore: answer.pronunciationScore,
         extra,
       });
       // Quên khi ôn ngoài lịch: lượt đó đã tính vào lịch, các lượt sau là ôn thật.
@@ -400,28 +415,47 @@ export function SessionScreen({ options }: { options: SessionOptions }) {
             { again: rating === Rating.Again, nextDue: new Date(result.card.due) },
             now,
           );
-      const next: Run = { ...run, queue, position: run.position + 1, answers };
-      setPrepared(cards);
-      setRun(next);
-      if (next.position >= next.queue.length) {
-        await finish(next);
-        return;
-      }
-      if (next.kind === "full" || next.kind === "short") {
-        const saved: SavedSession = {
-          owner,
-          day: next.day,
-          queue: next.queue,
-          position: next.position,
-          answers: next.answers,
-          startedAt: next.startedAt,
-        };
-        await saveSession(db, saved);
-      }
-      setupAsk(next, cards, pool);
+      await goTo({ ...run, queue, position: run.position + 1, answers }, cards);
     } finally {
       setBusy(false);
     }
+  }
+
+  /** Sang câu ở vị trí `next.position` (hết hàng thì kết thúc), lưu phiên dở nếu cần. */
+  async function goTo(next: Run, cards: Map<string, PreparedCard>) {
+    setPrepared(cards);
+    setRun(next);
+    if (next.position >= next.queue.length) {
+      await finish(next);
+      return;
+    }
+    if (next.kind === "full" || next.kind === "short") {
+      const saved: SavedSession = {
+        owner: owner!,
+        day: next.day,
+        queue: next.queue,
+        position: next.position,
+        answers: next.answers,
+        startedAt: next.startedAt,
+      };
+      await saveSession(getLocalDb(), saved);
+    }
+    setupAsk(next, cards, pool);
+  }
+
+  /** Bỏ qua câu hiện tại mà không ghi lượt ôn (tập phát âm không chấm được). */
+  function skip() {
+    if (!run || busy) return;
+    void goTo({ ...run, position: run.position + 1 }, prepared);
+  }
+
+  const isSpeaking = (i: SessionItem) => prepared.get(i.cardId)?.card.skill === "speaking";
+
+  /** "Tạm tắt phát âm" (nơi công cộng): bỏ các câu phát âm còn lại của phiên, thẻ vẫn đến hạn. */
+  function pauseSpeaking() {
+    if (!run || busy) return;
+    const rest = run.queue.slice(run.position).filter((i) => !isSpeaking(i));
+    void goTo({ ...run, queue: [...run.queue.slice(0, run.position), ...rest] }, prepared);
   }
 
   function toggleMute() {
@@ -491,6 +525,17 @@ export function SessionScreen({ options }: { options: SessionOptions }) {
         <span className="text-sm text-muted-foreground tabular-nums">
           {run.position + 1}/{total}
         </span>
+        {run.queue.slice(run.position).some(isSpeaking) && (
+          <button
+            type="button"
+            aria-label={t("speak.pause")}
+            title={t("speak.pause")}
+            onClick={pauseSpeaking}
+            className="flex size-11 items-center justify-center rounded-full text-muted-foreground hover:bg-muted focus-visible:outline-2 focus-visible:outline-ring"
+          >
+            <MicOff className="size-5" aria-hidden />
+          </button>
+        )}
         <button
           type="button"
           aria-label={t(muted ? "unmute" : "mute")}
@@ -519,6 +564,15 @@ export function SessionScreen({ options }: { options: SessionOptions }) {
                 intervals: intervalsOf(scheduler.current!, prep.card, new Date()),
               })
             }
+          />
+        ) : ask.step === "speaking" ? (
+          <Speaking
+            item={prep}
+            voice={ask.voice}
+            locale={ask.locale}
+            muted={muted}
+            onAnswer={(a) => void handleAnswer(a)}
+            onSkip={skip}
           />
         ) : ask.step === "writing" ? (
           <Writing

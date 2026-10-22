@@ -21,6 +21,7 @@ import {
   type PracticeRequest,
 } from "@/lib/review/practice";
 import { createScheduler } from "@/lib/srs/scheduler";
+import { GUEST_OWNER } from "@/lib/db/ids";
 import { useOwner } from "@/lib/sync/owner";
 import { cn } from "@/lib/utils";
 
@@ -65,9 +66,10 @@ export function PracticeScreen() {
       learned,
       notebooks: data.notebooks.filter((n) => !n.deleted_at),
       tags: [...tags].sort((a, b) => a.localeCompare(b)),
-      available: plan.available,
+      // Chấm phát âm cần tài khoản.
+      available: request.mode === "speaking" && owner === GUEST_OWNER ? 0 : plan.available,
     };
-  }, [data, settings, request]);
+  }, [data, settings, request, owner]);
 
   if (!view) {
     return (
@@ -149,7 +151,15 @@ export function PracticeScreen() {
         <p className="text-sm" role="status">
           {view.available > 0
             ? t("available", { available: view.available, count })
-            : t(request.mode === "writing" ? "noneWriting" : "none")}
+            : t(
+                request.mode === "speaking"
+                  ? owner === GUEST_OWNER
+                    ? "speakingLogin"
+                    : "noneSpeaking"
+                  : request.mode === "writing"
+                    ? "noneWriting"
+                    : "none",
+              )}
         </p>
         <Button
           className="min-h-12 text-base"

@@ -83,6 +83,8 @@ export function SyncProvider() {
               .toArray();
             const due = new Date(Date.now() - 1000).toISOString();
             await db.cards.bulkPut(cards.map((c) => ({ ...c, due, ...patch })));
+            // Mức thuộc đổi thì có thể mở thêm thẻ kỹ năng (Chính tả, Phát âm).
+            if (owner) await ensureSkillCards(db, owner);
             return cards.length;
           },
         },

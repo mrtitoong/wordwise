@@ -65,7 +65,7 @@ Mọi cách nhập đi qua cùng một bước chuẩn hóa: đưa về từ g�
 
 | Chế độ | Cách chơi | Kỹ năng | Cách chấm |
 | --- | --- | --- | --- |
-| Flashcard | Lật thẻ hai chiều (từ → nghĩa, nghĩa → từ), tự đánh giá 4 mức | Nhận biết | Người dùng tự chấm: Quên / Khó / Được / Dễ |
+| Flashcard | Lật thẻ hai chiều (từ → nghĩa, nghĩa → từ), tự đánh giá 4 mức | Nhận biết | Người dùng tự chấm: Quên / Khó / Nhớ / Dễ |
 | Trắc nghiệm | Chọn nghĩa đúng trong 4 đáp án; đáp án nhiễu lấy từ cùng chủ đề/loại từ | Nhận biết | Tự động, kèm thời gian phản hồi |
 | Tập viết | 4 cấp gợi ý: xếp chữ cái → điền chữ khuyết (`c_ll_c_t_on`) → chữ đầu + độ dài → không gợi ý; điền từ vào câu ví dụ | Nhớ lại, chính tả | So khớp, chấp nhận lỗi gõ 1 ký tự ở mức "Khó" |
 | Tập nghe | Nghe audio → gõ lại từ, chọn nghĩa, hoặc nghe câu rồi điền từ còn thiếu; tốc độ 1x/0.75x | Nghe hiểu | Tự động |
@@ -135,7 +135,7 @@ Các chế độ tự chấm không hỏi người dùng, mà quy đổi từ d�
 | --- | --- |
 | Sai, hoặc đúng sau khi xem đáp án | Again (Quên) |
 | Đúng nhưng dùng gợi ý, sai 1 ký tự, hoặc chậm hơn 2× trung vị của người dùng | Hard (Khó) |
-| Đúng, tốc độ bình thường | Good (Được) |
+| Đúng, tốc độ bình thường | Good (Nhớ) |
 | Đúng, nhanh hơn 0,5× trung vị, chế độ khó hơn mức hiện tại | Easy (Dễ) |
 | Phát âm: < 60 / 60–79 / 80–89 / ≥ 90 điểm | Again / Hard / Good / Easy |
 

@@ -323,3 +323,6 @@ Repo: https://github.com/mrtitoong/wordwise
 - 2026-10-22: Chế độ ôn cùng giao diện `ModeProps` (`src/features/review/modes`), GĐ3 có flashcard
   (tự chấm 4 nút, phím 1–4, vuốt) và trắc nghiệm (tự chấm theo plan.md §3.3; đáp án nhiễu cùng loại
   từ, ưu tiên từ dễ nhầm; thiếu đáp án thì dùng flashcard; lấy thêm 120 từ thông dụng trong kho).
+- 2026-10-22: Flashcard **giữ 4 nút tự chấm**, đổi nhãn "Được" thành **"Nhớ"** (Quên · Khó · Nhớ ·
+  Dễ) cho dễ hiểu. Phương án 2 nút "Chưa nhớ / Nhớ rồi" (4 nút bật trong Cài đặt) để xem lại sau khi
+  có người dùng thử.

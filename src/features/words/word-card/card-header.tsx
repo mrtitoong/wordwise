@@ -1,11 +1,12 @@
 "use client";
 
 import Link from "next/link";
-import { ImageIcon, Plus } from "lucide-react";
+import { ImageIcon, Plus, Repeat } from "lucide-react";
 import { useTranslations } from "next-intl";
 import { AudioButton } from "@/components/audio-button";
 import { Button } from "@/components/ui/button";
 import { useUserImageUrl } from "@/features/media/user-images";
+import { cardId } from "@/lib/db/ids";
 import { MineBadge, useCard } from "./parts";
 
 export function CardHeader() {
@@ -123,7 +124,15 @@ export function CardHeader() {
       )}
 
       {view.inNotebook ? (
-        <div>
+        <div className="flex flex-wrap gap-2">
+          {primary.userWordId && (
+            <Button asChild className="min-h-11">
+              <Link href={`/review/session?card=${cardId(primary.userWordId, "meaning")}`}>
+                <Repeat aria-hidden />
+                {t("reviewThis")}
+              </Link>
+            </Button>
+          )}
           <Button
             type="button"
             variant="outline"

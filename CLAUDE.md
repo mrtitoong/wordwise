@@ -303,3 +303,23 @@ Repo: https://github.com/mrtitoong/wordwise
   (repo công khai). Edge Function deploy bằng **Supabase CLI** (máy dev đã `supabase login`):
   `npx supabase functions deploy <tên> --project-ref jhvyyahowopzrpyenwdh --use-api` (không cần
   Docker; đọc `supabase/config.toml`, giữ verify_jwt = false).
+- 2026-10-22 (GĐ3, chủ sản phẩm duyệt 5 đề xuất): **Một thang mức thuộc** (`src/lib/srs/mastery.ts`):
+  0 mới · 1 đang học hoặc S < 3 · 2 (3–7 ngày) · 3 Đã thuộc (7–21) · 4 Thành thạo (≥ 21), thay mốc
+  3/14/60 của plan.md §3.2; dùng chung cho chọn chế độ và nhãn sổ tay. **GĐ3 chỉ có thẻ Nghĩa**; thẻ
+  Chính tả tạo ở GĐ4, Phát âm ở GĐ5 (mở khi Nghĩa đạt mức 2). Lịch: bước học 1m/10m, học lại 10m,
+  tối đa 365 ngày, fuzz (hạt giống tất định nên tính lại thẻ vẫn khớp giữa các máy).
+- 2026-10-22: Phiên ôn (`src/lib/srs/queue.ts`): R thấp trước, xen 1 từ mới/4 thẻ ôn, không để từ
+  cùng gốc/họ/dễ nhầm hoặc cùng tag liền nhau, Quên quay lại sau 3–5 câu. **Quay lại nhẹ nhàng**
+  (bỏ > 3 ngày hoặc còn > 100 thẻ dồn): tối đa 50 thẻ/ngày, dừng từ mới, **không sửa ngày đến hạn**
+  của thẻ còn lại. Chủ đề ở GĐ3 = tag trong sổ. Mô phỏng 365 ngày ở `docs/qa/srs-simulation.md`
+  (`npm run srs:simulate`): 10 từ/ngày → ~112 lượt/ngày cuối năm, tải tăng 1,3× khi số thẻ 2,35×;
+  năm 2 vẫn tăng chậm (không đi ngang hẳn).
+- 2026-10-22: **Ngày học** (chuỗi): ≥ 5 câu hoặc ôn hết hàng (theo múi giờ người dùng), 1 ngày nghỉ/
+  tuần (thứ Hai–CN). "Ôn hết hàng", phiên dở, số phiên của khách lưu ở bảng `meta` (chỉ trong máy).
+  "Ôn từ này"/"Ôn lại từ sai" khi thẻ chưa đến hạn là **ôn ngoài lịch** (`is_extra`): nhớ được thì
+  không đổi lịch, quên thì tính như lượt ôn thật. "Học thêm 5 từ mới" mở từ Sắp học vượt giới hạn
+  ngày (chỉ khi người dùng bấm). "Học 5 từ này" ở onboarding vào thẳng phiên ôn. Gợi ý khách tạo
+  tài khoản sau 3 phiên hoặc 20 từ (ở màn kết quả). "Gợi ý mẹo nhớ mới" bằng AI để GĐ4.
+- 2026-10-22: Chế độ ôn cùng giao diện `ModeProps` (`src/features/review/modes`), GĐ3 có flashcard
+  (tự chấm 4 nút, phím 1–4, vuốt) và trắc nghiệm (tự chấm theo plan.md §3.3; đáp án nhiễu cùng loại
+  từ, ưu tiên từ dễ nhầm; thiếu đáp án thì dùng flashcard; lấy thêm 120 từ thông dụng trong kho).

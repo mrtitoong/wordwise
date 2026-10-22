@@ -18,6 +18,11 @@ export type SimulationOptions = {
    * mỗi ngày mở tối đa `newPerDay` thẻ (như app).
    */
   spelling?: boolean;
+  /**
+   * Có thẻ Phát âm (GĐ5, khi bật "Luyện phát âm"): mở khi thẻ Nghĩa đạt mức 2 (S ≥ 3 ngày), giới
+   * hạn thẻ mới mỗi ngày riêng (như thẻ Chính tả).
+   */
+  speaking?: boolean;
 };
 
 export type SimulationDay = {
@@ -27,6 +32,8 @@ export type SimulationDay = {
   /** Lượt ôn thẻ đã vào lịch dài hạn (Review), và số lần nhớ đúng trong đó. */
   dueReviews: number;
   recalled: number;
+  /** Trong `reviews`: lượt của thẻ Phát âm. */
+  speakingReviews: number;
   /** Trong `reviews`: lượt của thẻ Chính tả. */
   spellingReviews: number;
 };
@@ -54,9 +61,9 @@ export function simulate(options: SimulationOptions): SimulationDay[] {
   const random = seededRandom(options.seed ?? 42);
   const firstSeenGood = options.firstSeenGood ?? 0.8;
   const cards: Card[] = [];
-  /** Chỉ số thẻ Chính tả trong `cards`; thẻ Nghĩa → đã có thẻ Chính tả chưa. */
-  const spellingCards = new Set<number>();
-  const hasSpelling = new Set<number>();
+  /** Chỉ số thẻ kỹ năng (Chính tả, Phát âm) trong `cards`; thẻ Nghĩa → đã có thẻ kỹ năng nào. */
+  const skillOf = new Map<number, "spelling" | "speaking">();
+  const opened = new Set<string>();
   const result: SimulationDay[] = [];
 
   for (let day = 0; day < options.days; day++) {
@@ -69,8 +76,9 @@ export function simulate(options: SimulationOptions): SimulationDay[] {
       dueReviews: 0,
       recalled: 0,
       spellingReviews: 0,
+      speakingReviews: 0,
     };
-    let newSpellingToday = 0;
+    const newSkillToday = { spelling: 0, speaking: 0 };
 
     let now = start;
     for (;;) {
@@ -89,14 +97,14 @@ export function simulate(options: SimulationOptions): SimulationDay[] {
       }
       for (const { card, index } of due) {
         const at = new Date(now);
-        const isSpelling = spellingCards.has(index);
-        if (isSpelling && card.state === State.New) {
-          // Giới hạn thẻ Chính tả mới mỗi ngày: chưa tới lượt thì để sang ngày sau.
-          if (newSpellingToday >= options.newPerDay) {
+        const skill = skillOf.get(index);
+        if (skill && card.state === State.New) {
+          // Giới hạn thẻ kỹ năng mới mỗi ngày: chưa tới lượt thì để sang ngày sau.
+          if (newSkillToday[skill] >= options.newPerDay) {
             cards[index] = { ...card, due: new Date(start + DAY_MS) };
             continue;
           }
-          newSpellingToday++;
+          newSkillToday[skill]++;
         }
         let rating: Rating.Again | Rating.Good;
         if (card.state === State.New) {
@@ -113,17 +121,20 @@ export function simulate(options: SimulationOptions): SimulationDay[] {
         const next = scheduler.next(card, at, rating).card;
         cards[index] = next;
         stats.reviews++;
-        if (isSpelling) stats.spellingReviews++;
-        if (
-          options.spelling &&
-          !isSpelling &&
-          !hasSpelling.has(index) &&
-          (next.state === State.Review || next.state === State.Relearning)
-        ) {
-          hasSpelling.add(index);
-          spellingCards.add(cards.length);
-          const spellingDue = Math.min(next.due.getTime(), now + DAY_MS);
-          cards.push(createEmptyCard(new Date(spellingDue)));
+        if (skill === "spelling") stats.spellingReviews++;
+        if (skill === "speaking") stats.speakingReviews++;
+        const graduated = next.state === State.Review || next.state === State.Relearning;
+        const open = (kind: "spelling" | "speaking") => {
+          opened.add(`${index}:${kind}`);
+          skillOf.set(cards.length, kind);
+          cards.push(createEmptyCard(new Date(Math.min(next.due.getTime(), now + DAY_MS))));
+        };
+        if (!skill && graduated) {
+          if (options.spelling && !opened.has(`${index}:spelling`)) open("spelling");
+          // Mức 2: S ≥ 3 ngày (src/lib/srs/mastery.ts).
+          if (options.speaking && next.stability >= 3 && !opened.has(`${index}:speaking`)) {
+            open("speaking");
+          }
         }
         now += ANSWER_MS;
       }

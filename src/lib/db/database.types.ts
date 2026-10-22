@@ -590,6 +590,7 @@ export type Database = {
           goals: string[];
           multi_accent: boolean;
           onboarded_at: string | null;
+          practice_speaking: boolean;
           practice_spelling: boolean;
           reminder_time: string | null;
           target_language: string;
@@ -609,6 +610,7 @@ export type Database = {
           goals?: string[];
           multi_accent?: boolean;
           onboarded_at?: string | null;
+          practice_speaking?: boolean;
           practice_spelling?: boolean;
           reminder_time?: string | null;
           target_language?: string;
@@ -628,6 +630,7 @@ export type Database = {
           goals?: string[];
           multi_accent?: boolean;
           onboarded_at?: string | null;
+          practice_speaking?: boolean;
           practice_spelling?: boolean;
           reminder_time?: string | null;
           target_language?: string;

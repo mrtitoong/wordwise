@@ -37,8 +37,11 @@ export type SessionSettings = {
   dailyReviewLimit: number;
   /** Số từ mới còn được học hôm nay. */
   newLimit: number;
-  /** Số thẻ kỹ năng mới (Chính tả) còn được mở hôm nay; bỏ trống là không giới hạn. */
-  newSkillLimit?: number;
+  /**
+   * Số thẻ kỹ năng mới còn được mở hôm nay, riêng từng kỹ năng (Chính tả, Phát âm); kỹ năng không
+   * có trong đây là không giới hạn.
+   */
+  newSkillLimits?: Partial<Record<string, number>>;
   /** Lượt ôn (không phải từ mới) đã làm hôm nay. */
   reviewsDoneToday: number;
   /** Lần ôn gần nhất (bất kỳ thẻ nào); null khi chưa ôn bao giờ. */
@@ -131,14 +134,21 @@ export function buildSession(
   now: Date,
 ): SessionPlan {
   const isMeaning = (c: QueueCard) => (c.skill ?? "meaning") === "meaning";
-  // Thẻ kỹ năng mới (Chính tả của từ đã qua bước học) không phải "từ mới": xếp sau thẻ đến hạn,
-  // tính vào giới hạn ôn/ngày.
+  // Thẻ kỹ năng mới (Chính tả, Phát âm của từ đã học) không phải "từ mới": xếp sau thẻ đến hạn,
+  // tính vào giới hạn ôn/ngày; mỗi kỹ năng có giới hạn mở mới riêng.
+  const opened = new Map<string, number>();
   const newSkill = cards
     .filter((c) => c.card.state === 0 && !isMeaning(c) && Date.parse(c.card.due) <= now.getTime())
     .sort(
       (a, b) => Date.parse(a.card.due) - Date.parse(b.card.due) || a.lemma.localeCompare(b.lemma),
     )
-    .slice(0, Math.max(0, settings.newSkillLimit ?? Infinity))
+    .filter((c) => {
+      const skill = c.skill!;
+      const count = opened.get(skill) ?? 0;
+      if (count >= Math.max(0, settings.newSkillLimits?.[skill] ?? Infinity)) return false;
+      opened.set(skill, count + 1);
+      return true;
+    })
     .map((entry) => ({ entry, r: 1 }));
   const due = cards
     .filter((c) => c.card.state !== 0 && Date.parse(c.card.due) <= now.getTime())

@@ -5,6 +5,7 @@
  */
 import { useLiveQuery } from "dexie-react-hooks";
 import { defaultSettingsRow } from "@/lib/db/repo";
+import { GUEST_OWNER } from "@/lib/db/ids";
 import { getLocalDb } from "@/lib/db/local";
 import { completedDays, getSavedSession } from "@/lib/db/review-store";
 import type {
@@ -85,6 +86,8 @@ export function toTodayInput(data: ReviewData, relatedOf?: TodayInput["relatedOf
       dailyReviewLimit: data.settings.daily_review_limit,
       timeZone: data.settings.timezone,
       practiceSpelling: data.settings.practice_spelling ?? true,
+      // Chấm phát âm cần tài khoản: khách không có thẻ Phát âm trong phiên.
+      practiceSpeaking: (data.settings.practice_speaking ?? false) && data.owner !== GUEST_OWNER,
     },
     lemmaOf: (senseId) => data.senses.get(senseId)?.word.lemma ?? "",
     ...(relatedOf ? { relatedOf } : {}),

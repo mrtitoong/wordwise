@@ -88,6 +88,7 @@ export function defaultSettingsRow(owner: string, now = new Date()): UserSetting
     timezone: "Asia/Ho_Chi_Minh",
     accent: "us",
     onboarded_at: null,
+    practice_speaking: false,
     practice_spelling: true,
     created_at: iso,
     updated_at: iso,
@@ -348,8 +349,8 @@ export async function openNewWords(db: LocalDb, owner: string, now = new Date())
   return opened;
 }
 
-/** Kỹ năng có chế độ ôn trong app (GĐ4 thêm Chính tả; GĐ5 thêm Phát âm). */
-export const SKILLS_WITH_MODES: readonly Skill[] = ["meaning", "spelling"];
+/** Kỹ năng có chế độ ôn trong app (GĐ4 thêm Chính tả, GĐ5 thêm Phát âm). */
+export const SKILLS_WITH_MODES: readonly Skill[] = ["meaning", "spelling", "speaking"];
 
 /** Tạo thẻ kỹ năng còn thiếu (trong transaction đang chạy); `userWordIds` để chỉ xét vài từ. */
 async function createSkillCards(
@@ -466,6 +467,7 @@ export async function recordReview(
     responseMs?: number;
     correct?: boolean;
     hintLevel?: number;
+    pronunciationScore?: number;
     extra?: boolean;
   },
 ): Promise<{ card: CardRow; log: ReviewLogRow }> {
@@ -485,6 +487,7 @@ export async function recordReview(
       responseMs: input.responseMs ?? null,
       correct: input.correct ?? null,
       hintLevel: input.hintLevel ?? 0,
+      pronunciationScore: input.pronunciationScore ?? null,
       extra: input.extra ?? false,
     });
     await db.review_logs.add(reviewed.log);

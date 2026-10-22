@@ -200,7 +200,11 @@ describe("today", () => {
       ]),
       NOW,
     );
-    expect(s).toMatchObject({ newLimit: 9, newSkillLimit: 9, reviewsDoneToday: 3 });
+    expect(s).toMatchObject({
+      newLimit: 9,
+      newSkillLimits: { spelling: 9, speaking: 10 },
+      reviewsDoneToday: 3,
+    });
     expect(s.lastReviewAt?.toISOString()).toBe("2026-10-22T01:00:00.000Z");
   });
 

@@ -13,7 +13,14 @@ import { retrievability } from "@/lib/srs/cards";
 import { isLeech, masteryLevel } from "@/lib/srs/mastery";
 import type { SessionItem } from "@/lib/srs/queue";
 
-export const PRACTICE_MODES = ["auto", "flashcard", "mcq", "writing", "listening"] as const;
+export const PRACTICE_MODES = [
+  "auto",
+  "flashcard",
+  "mcq",
+  "writing",
+  "listening",
+  "speaking",
+] as const;
 export type PracticeMode = (typeof PRACTICE_MODES)[number];
 
 export const PRACTICE_STATUSES = ["all", "learning", "known", "mastered", "leech"] as const;
@@ -54,9 +61,14 @@ export type PracticePlan = {
   available: number;
 };
 
-type WordCards = { userWord: UserWordRow; meaning: CardRow; spelling: CardRow | null };
+type WordCards = {
+  userWord: UserWordRow;
+  meaning: CardRow;
+  spelling: CardRow | null;
+  speaking: CardRow | null;
+};
 
-/** Từ đã học, thuộc phạm vi đã chọn, kèm thẻ Nghĩa và thẻ Chính tả (nếu có). */
+/** Từ đã học, thuộc phạm vi đã chọn, kèm thẻ Nghĩa và thẻ Chính tả, Phát âm (nếu có). */
 export function practiceWords(
   input: PracticeInput,
   scope: Pick<PracticeRequest, "notebookId" | "tag" | "status">,
@@ -83,13 +95,14 @@ export function practiceWords(
     const meaning = bySkill.get(`${userWord.id}:meaning`);
     if (!meaning || meaning.state === 0) return [];
     const spelling = bySkill.get(`${userWord.id}:spelling`) ?? null;
+    const speaking = bySkill.get(`${userWord.id}:speaking`) ?? null;
     const status = learningStatus(userWord, meaning);
     const keep =
       scope.status === "all" ||
       (scope.status === "leech"
         ? isLeech(meaning) || (!!spelling && isLeech(spelling))
         : status === scope.status);
-    return keep ? [{ userWord, meaning, spelling }] : [];
+    return keep ? [{ userWord, meaning, spelling, speaking }] : [];
   });
 }
 
@@ -110,6 +123,9 @@ function cardFor(
     // Nghe → gõ khi thẻ Chính tả đã nhớ lại được (mức 2); còn lại nghe → chọn nghĩa.
     case "listening":
       return word.spelling && masteryLevel(word.spelling) >= 2 ? word.spelling : word.meaning;
+    // Tập phát âm cần thẻ Phát âm (thẻ Nghĩa đạt mức 2).
+    case "speaking":
+      return word.speaking;
     case "auto":
       return word.spelling && practiceSpelling && random() < 0.5 ? word.spelling : word.meaning;
   }

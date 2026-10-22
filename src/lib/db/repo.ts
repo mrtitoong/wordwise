@@ -1,4 +1,5 @@
 import type { Grade } from "ts-fsrs";
+import { missingSkillCards, type Skill } from "@/lib/srs/cards";
 import { applyReview, createScheduler, newCardFields } from "@/lib/srs/scheduler";
 import { introducedToday, planIntroductions } from "@/lib/notebooks/introductions";
 import { mergeCard } from "@/lib/sync/merge";
@@ -86,6 +87,7 @@ export function defaultSettingsRow(owner: string, now = new Date()): UserSetting
     timezone: "Asia/Ho_Chi_Minh",
     accent: "us",
     onboarded_at: null,
+    practice_spelling: true,
     created_at: iso,
     updated_at: iso,
   };
@@ -345,6 +347,50 @@ export async function openNewWords(db: LocalDb, owner: string, now = new Date())
   return opened;
 }
 
+/** Kỹ năng có chế độ ôn trong app (GĐ4 thêm Chính tả; GĐ5 thêm Phát âm). */
+export const SKILLS_WITH_MODES: readonly Skill[] = ["meaning", "spelling"];
+
+/** Tạo thẻ kỹ năng còn thiếu (trong transaction đang chạy); `userWordIds` để chỉ xét vài từ. */
+async function createSkillCards(
+  db: LocalDb,
+  owner: string,
+  now: Date,
+  userWordIds?: readonly string[],
+): Promise<number> {
+  const userWords = userWordIds
+    ? (await db.user_words.bulkGet([...userWordIds])).filter((u): u is UserWordRow => !!u)
+    : await db.user_words.where("user_id").equals(owner).toArray();
+  const cards = userWordIds
+    ? await db.cards
+        .where("user_word_id")
+        .anyOf([...userWordIds])
+        .toArray()
+    : await db.cards.where("user_id").equals(owner).toArray();
+  const missing = missingSkillCards(
+    userWords.filter((u) => u.user_id === owner),
+    cards,
+    SKILLS_WITH_MODES,
+    now,
+  );
+  for (const card of missing) {
+    await db.cards.put(card);
+    await queue(db, "cards", card.id, owner);
+  }
+  return missing.length;
+}
+
+/**
+ * Tạo thẻ Chính tả cho từ đã qua bước học mà chưa có (từ học trước GĐ4, thẻ Nghĩa ôn ở máy khác).
+ * Gọi khi mở app, sau khi đồng bộ và trước phiên ôn. Trả về số thẻ vừa tạo.
+ */
+export async function ensureSkillCards(db: LocalDb, owner: string, now = new Date()) {
+  const created = await db.transaction("rw", db.user_words, db.cards, db.outbox, () =>
+    createSkillCards(db, owner, now),
+  );
+  if (created > 0) notifyWrite();
+  return created;
+}
+
 /**
  * "Học thêm N từ mới": người dùng chủ động mở thêm từ ở hàng Sắp học, vượt giới hạn ngày. Thêm vào
  * sổ trước thì mở trước. Trả về id các từ vừa mở.
@@ -447,6 +493,10 @@ export async function recordReview(
     const updated = { ...reviewed.card, updated_at: new Date().toISOString() };
     await db.cards.put(updated);
     await queue(db, "cards", card.id, owner);
+    // Thẻ Nghĩa vừa qua bước học → mở thẻ Chính tả (ôn từ phiên sau).
+    if (card.skill === "meaning") {
+      await createSkillCards(db, owner, new Date(reviewed.log.reviewed_at), [card.user_word_id]);
+    }
     return { card: updated, log: reviewed.log };
   });
   notifyWrite();

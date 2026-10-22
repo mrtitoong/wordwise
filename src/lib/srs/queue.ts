@@ -21,6 +21,8 @@ export type QueueCard = {
     | "lapses"
     | "last_review"
   >;
+  /** Thẻ kỹ năng; bỏ trống là Nghĩa. */
+  skill?: string;
   lemma: string;
   /** Từ cùng họ, từ dễ nhầm (nội dung từ): không đứng liền nhau. */
   related: readonly string[];
@@ -34,6 +36,8 @@ export type SessionSettings = {
   dailyReviewLimit: number;
   /** Số từ mới còn được học hôm nay. */
   newLimit: number;
+  /** Số thẻ kỹ năng mới (Chính tả) còn được mở hôm nay; bỏ trống là không giới hạn. */
+  newSkillLimit?: number;
   /** Lượt ôn (không phải từ mới) đã làm hôm nay. */
   reviewsDoneToday: number;
   /** Lần ôn gần nhất (bất kỳ thẻ nào); null khi chưa ôn bao giờ. */
@@ -110,7 +114,8 @@ export function spreadApart<T extends { entry: QueueCard; isNew: boolean }>(
 /**
  * Phiên hôm nay: thẻ đến hạn sắp theo khả năng nhớ R tăng dần (sắp quên trước), tối đa phần còn
  * lại của giới hạn ôn/ngày; từ mới tới giới hạn, xen 1 từ mới sau 4 thẻ ôn; không để hai từ cùng
- * gốc/chủ đề liền nhau. Bỏ học > 3 ngày (hoặc còn dồn nhiều): tối đa 50 thẻ, chưa học từ mới;
+ * gốc/chủ đề liền nhau (hai thẻ kỹ năng của cùng một từ cũng vậy). Thẻ kỹ năng mới xếp sau thẻ
+ * đến hạn. Bỏ học > 3 ngày (hoặc còn dồn nhiều): tối đa 50 thẻ, chưa học từ mới;
  * thẻ còn lại giữ nguyên ngày đến hạn và được chọn tiếp vào các ngày sau.
  */
 export function buildSession(
@@ -119,12 +124,23 @@ export function buildSession(
   scheduler: FSRS,
   now: Date,
 ): SessionPlan {
+  const isMeaning = (c: QueueCard) => (c.skill ?? "meaning") === "meaning";
+  // Thẻ kỹ năng mới (Chính tả của từ đã qua bước học) không phải "từ mới": xếp sau thẻ đến hạn,
+  // tính vào giới hạn ôn/ngày.
+  const newSkill = cards
+    .filter((c) => c.card.state === 0 && !isMeaning(c) && Date.parse(c.card.due) <= now.getTime())
+    .sort(
+      (a, b) => Date.parse(a.card.due) - Date.parse(b.card.due) || a.lemma.localeCompare(b.lemma),
+    )
+    .slice(0, Math.max(0, settings.newSkillLimit ?? Infinity))
+    .map((entry) => ({ entry, r: 1 }));
   const due = cards
     .filter((c) => c.card.state !== 0 && Date.parse(c.card.due) <= now.getTime())
     .map((entry) => ({ entry, r: retrievability(scheduler, entry.card, now) }))
-    .sort((a, b) => a.r - b.r || Date.parse(a.entry.card.due) - Date.parse(b.entry.card.due));
+    .sort((a, b) => a.r - b.r || Date.parse(a.entry.card.due) - Date.parse(b.entry.card.due))
+    .concat(newSkill);
   const fresh = cards
-    .filter((c) => c.card.state === 0)
+    .filter((c) => c.card.state === 0 && isMeaning(c))
     .sort(
       (a, b) =>
         (a.introducedAt ?? "").localeCompare(b.introducedAt ?? "") ||

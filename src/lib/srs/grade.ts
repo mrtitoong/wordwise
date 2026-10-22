@@ -28,6 +28,24 @@ export const PREFERRED_MODES: Record<MasteryLevel, readonly ReviewMode[]> = {
   4: ["speaking", "writing"],
 };
 
+/**
+ * Chế độ ôn của từng thẻ kỹ năng (chốt GĐ4): thẻ Nghĩa ôn bằng nhận biết (flashcard, trắc nghiệm,
+ * nghe → chọn nghĩa), thẻ Chính tả bằng tự viết ra (tập viết, nghe → gõ lại, nghe câu → điền từ).
+ */
+export const SKILL_MODES = {
+  meaning: ["flashcard", "mcq", "listening"],
+  spelling: ["writing", "listening"],
+  speaking: ["speaking"],
+} as const satisfies Record<string, readonly ReviewMode[]>;
+
+/** Chế độ dùng được cho thẻ `skill` trong số chế độ app đang có. */
+export function modesForSkill(
+  skill: keyof typeof SKILL_MODES,
+  available: readonly ReviewMode[],
+): ReviewMode[] {
+  return SKILL_MODES[skill].filter((m) => available.includes(m));
+}
+
 /** Tỉ lệ chọn chế độ khó hơn một bậc ("khó khăn có lợi"). */
 export const HARDER_MODE_CHANCE = 0.2;
 
@@ -77,6 +95,8 @@ export type Outcome = {
   pronunciationScore?: number | null;
   /** Mức thuộc của thẻ trước câu hỏi. */
   cardLevel: MasteryLevel;
+  /** Điểm cao nhất được chấm (tập viết ở cấp dễ – xếp chữ, điền chữ thiếu – tối đa "Nhớ"). */
+  maxRating?: Grade;
 };
 
 /** Chậm hơn chừng này lần trung vị → Khó; nhanh hơn chừng này phần → có thể Dễ. */
@@ -84,6 +104,11 @@ export const SLOW_FACTOR = 2;
 export const FAST_FACTOR = 0.5;
 
 export function gradeFromOutcome(outcome: Outcome): Grade {
+  const grade = rawGrade(outcome);
+  return outcome.maxRating !== undefined && grade > outcome.maxRating ? outcome.maxRating : grade;
+}
+
+function rawGrade(outcome: Outcome): Grade {
   if (outcome.mode === "flashcard" && outcome.selfRating) return outcome.selfRating;
 
   if (outcome.mode === "speaking" && typeof outcome.pronunciationScore === "number") {

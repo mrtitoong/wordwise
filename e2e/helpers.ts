@@ -58,10 +58,17 @@ export async function signInWithCode(page: Page, email: string, next?: string) {
   await page.getByRole("button", { name: "Xác nhận" }).click();
 }
 
-/** Đi hết onboarding: chọn trình độ, tắt nhắc học, học 5 từ khởi đầu (hoặc tự thêm). */
+/**
+ * Đi hết onboarding: chọn trình độ, tắt nhắc học, học 5 từ khởi đầu (hoặc tự thêm). "Học 5 từ
+ * này" mở phiên học ngắn; mặc định thoát ngay về Hôm nay (stayInSession để ôn tiếp).
+ */
 export async function completeOnboarding(
   page: Page,
-  { level = "B1", starters = true }: { level?: string; starters?: boolean } = {},
+  {
+    level = "B1",
+    starters = true,
+    stayInSession = false,
+  }: { level?: string; starters?: boolean; stayInSession?: boolean } = {},
 ) {
   await expect(page).toHaveURL(/\/onboarding$/);
   await page.getByRole("button", { name: "Tiếp tục" }).click();
@@ -74,8 +81,27 @@ export async function completeOnboarding(
   await expect(page.getByRole("list", { name: "Từ khởi đầu" }).getByRole("listitem")).toHaveCount(
     5,
   );
-  if (starters) await page.getByRole("button", { name: "Học 5 từ này" }).click();
-  else await page.getByRole("button", { name: "Tự thêm từ của tôi" }).click();
+  if (!starters) {
+    await page.getByRole("button", { name: "Tự thêm từ của tôi" }).click();
+    return;
+  }
+  await page.getByRole("button", { name: "Học 5 từ này" }).click();
+  await expect(page).toHaveURL(/\/review\/session$/);
+  if (!stayInSession) await leaveSession(page);
+}
+
+/** Thoát phiên ôn về màn Hôm nay (phiên chưa sẵn sàng thì bấm "Về Hôm nay"). */
+export async function leaveSession(page: Page) {
+  const close = page.getByRole("button", { name: "Thoát phiên" });
+  const home = page.getByRole("button", { name: "Về Hôm nay" });
+  await expect(close.or(home)).toBeVisible({ timeout: 15_000 });
+  if (await close.isVisible()) {
+    await close.click();
+    await page.getByRole("button", { name: "Thoát", exact: true }).click();
+  } else {
+    await home.click();
+  }
+  await expect(page).toHaveURL("/");
 }
 
 /** Chủ dữ liệu của khách trong IndexedDB (khớp GUEST_OWNER ở src/lib/db/ids.ts). */

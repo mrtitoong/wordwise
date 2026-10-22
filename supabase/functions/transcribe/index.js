@@ -78,6 +78,10 @@ function base64ToBytes(base64) {
   for (let i = 0; i < binary.length; i++) bytes[i] = binary.charCodeAt(i);
   return bytes;
 }
+function isWav(bytes) {
+  const tag = (offset) => String.fromCharCode(...bytes.subarray(offset, offset + 4));
+  return bytes.length > 44 && tag(0) === "RIFF" && tag(8) === "WAVE";
+}
 
 // src/functions/transcribe/handler.ts
 var CORS_HEADERS = {
@@ -90,10 +94,6 @@ function json(body, status = 200) {
     status,
     headers: { ...CORS_HEADERS, "content-type": "application/json; charset=utf-8" }
   });
-}
-function isWav(bytes) {
-  const tag = (offset) => String.fromCharCode(...bytes.subarray(offset, offset + 4));
-  return bytes.length > 44 && tag(0) === "RIFF" && tag(8) === "WAVE";
 }
 function createTranscribeHandler(deps) {
   return async function handle(request) {

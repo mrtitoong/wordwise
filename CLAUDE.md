@@ -348,3 +348,11 @@ Repo: https://github.com/mrtitoong/wordwise
   giữ nguyên. Mô phỏng: 10 từ/ngày → quý 4 ~220 lượt/ngày (gấp ~2× chỉ thẻ Nghĩa; hạ tỉ lệ nhớ mục tiêu
   của thẻ Chính tả chỉ giảm 7–12% nên không dùng). Tập viết `src/features/review/modes/writing.tsx`:
   hint_level = số lần bấm Gợi ý (≤ 4); xếp chữ không chấp nhận lỗi gõ.
+- 2026-10-22 (Prompt 4.3): Tập nghe `src/lib/review/listening.ts`. Thẻ Nghĩa từ mức 1 trở lên **trộn
+  trắc nghiệm và nghe → chọn nghĩa** (pickMode giới hạn ở mức 1 cho thẻ Nghĩa, không chỉ còn nghe ở mức
+  cao). Thẻ Chính tả: mức 0–1 tập viết; mức 2 tập viết/nghe → gõ; mức 3 cả ba; mức 4 tập viết/nghe câu →
+  điền từ (chia đều). "Có audio" = có MP3 của từ hoặc trình duyệt đọc được; câu ví dụ xin audio qua
+  word-media (khách/hết lượt thì trình duyệt đọc). Nghe lại > 3 lần (không tính lần tự phát) → dùng gợi
+  ý (Khó, hint_level +1). `user_settings.multi_accent` (đã áp lên cloud) đổi ngẫu nhiên giọng mỗi câu
+  nghe. Cài đặt: mục "Phiên ôn" (Luyện chính tả, Luyện nhiều giọng). Bản build E2E: `data-e2e-answer`
+  và localStorage `ww_e2e_overrides` (ép dạng câu hỏi), hook `patchCards(skill, patch)`.

@@ -6,7 +6,7 @@ import { LanguageSwitcher } from "@/components/language-switcher";
 import { Button } from "@/components/ui/button";
 import { SignOutButton } from "@/features/auth/sign-out-button";
 import { DailyNewLimit } from "@/features/settings/daily-new-limit";
-import { PracticeSpelling } from "@/features/settings/practice-spelling";
+import { SettingSwitch } from "@/features/settings/setting-switch";
 import { getCurrentUser } from "@/lib/supabase/server";
 
 export async function generateMetadata(): Promise<Metadata> {
@@ -56,9 +56,14 @@ export default async function SettingsPage() {
           id="practice-heading"
           className="text-sm font-semibold tracking-wide text-muted-foreground uppercase"
         >
-          {t("practice")}
+          {t("reviewSection")}
         </h2>
-        <PracticeSpelling />
+        <SettingSwitch
+          field="practice_spelling"
+          label="practiceSpelling"
+          hint="practiceSpellingHint"
+        />
+        <SettingSwitch field="multi_accent" label="multiAccent" hint="multiAccentHint" />
       </section>
       <section aria-labelledby="language-heading" className="flex flex-col gap-3 pt-6">
         <h2

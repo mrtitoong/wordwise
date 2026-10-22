@@ -8,6 +8,7 @@ type Log = {
   rating: number;
   is_extra: boolean;
   hint_level: number;
+  reviewed_at: string;
 };
 type Word = { id: string; lemma: string };
 type Sense = { id: string; word_id: string; meaning_vi: string };
@@ -26,7 +27,12 @@ async function meanings(page: Page): Promise<Map<string, string[]>> {
   return out;
 }
 
-/** Trả lời đúng câu hiện tại (flashcard: "Nhớ"; trắc nghiệm: chọn nghĩa đúng). Trả về chế độ. */
+/** Đáp án của câu đang hỏi (bản build E2E ghi vào `data-e2e-answer`; test không nghe được). */
+async function currentAnswer(page: Page): Promise<string> {
+  return (await page.locator("[data-e2e-answer]").first().getAttribute("data-e2e-answer"))!;
+}
+
+/** Trả lời đúng câu hiện tại (flashcard: "Nhớ"; trắc nghiệm, nghe → chọn nghĩa: chọn nghĩa đúng). */
 async function answerCorrectly(page: Page): Promise<"intro" | "flashcard" | "mcq" | "done"> {
   const intro = page.getByRole("button", { name: "Đã xem, kiểm tra" });
   const show = page.getByRole("button", { name: "Hiện đáp án" });
@@ -44,7 +50,7 @@ async function answerCorrectly(page: Page): Promise<"intro" | "flashcard" | "mcq
     await page.getByRole("button", { name: /^Nhớ/ }).click();
     return "flashcard";
   }
-  const lemma = (await page.locator("p.text-4xl").first().textContent())!.trim();
+  const lemma = await currentAnswer(page);
   const correct = (await meanings(page)).get(lemma) ?? [];
   const buttons = options.getByRole("button");
   const labels = await buttons.allTextContents();
@@ -133,9 +139,8 @@ test.describe("Phiên ôn", () => {
       expect(Date.parse(card.due)).toBeGreaterThan(Date.now());
     }
     expect(logs.length).toBe(seen.length - 5);
-    expect(new Set(logs.map((l) => l.mode))).toEqual(
-      new Set(logs.some((l) => l.mode === "mcq") ? ["flashcard", "mcq"] : ["flashcard"]),
-    );
+    expect(logs.some((l) => l.mode === "flashcard")).toBe(true);
+    expect(logs.every((l) => ["flashcard", "mcq", "listening"].includes(l.mode))).toBe(true);
     expect(logs.every((l) => !l.is_extra && l.rating >= 3)).toBe(true);
 
     await page.getByRole("button", { name: "Xong", exact: true }).click();
@@ -188,8 +193,8 @@ test.describe("Phiên ôn", () => {
 
     const count = await page.evaluate(() =>
       (
-        window as unknown as { __wordwiseE2E: { dueNow: (skill: string) => Promise<number> } }
-      ).__wordwiseE2E.dueNow("spelling"),
+        window as unknown as { __wordwiseE2E: { patchCards: (skill: string) => Promise<number> } }
+      ).__wordwiseE2E.patchCards("spelling"),
     );
     expect(count).toBe(5);
 
@@ -230,10 +235,89 @@ test.describe("Phiên ôn", () => {
     await expect(toggle).toHaveAttribute("aria-checked", "false");
     await page.evaluate(() =>
       (
-        window as unknown as { __wordwiseE2E: { dueNow: (skill: string) => Promise<number> } }
-      ).__wordwiseE2E.dueNow("spelling"),
+        window as unknown as { __wordwiseE2E: { patchCards: (skill: string) => Promise<number> } }
+      ).__wordwiseE2E.patchCards("spelling"),
     );
     await page.goto("/review/session");
     await expect(page.getByText("Không có gì cần ôn lúc này")).toBeVisible();
+  });
+
+  test("tập nghe: nghe → gõ lại, nghe câu → điền từ, nghe → chọn nghĩa; nghe lại nhiều lần thì Khó", async ({
+    page,
+  }) => {
+    type Hooks = {
+      __wordwiseE2E: { patchCards: (skill: string, patch?: object) => Promise<number> };
+    };
+    await learnStarterWords(page);
+    await page.getByRole("button", { name: "Xong", exact: true }).click();
+    await expect(page).toHaveURL("/");
+
+    // Thẻ đã thuộc (mức 3: S = 10 ngày), đến hạn ngay; ép dạng câu hỏi để không phụ thuộc ngẫu nhiên.
+    const known = {
+      state: 2,
+      stability: 10,
+      difficulty: 5,
+      reps: 3,
+      scheduled_days: 10,
+      learning_steps: 0,
+      last_review: new Date(Date.now() - 10 * 86_400_000).toISOString(),
+    };
+    const run = async (skill: string, overrides: object, title: string) => {
+      await page.evaluate(
+        ([s, p, o]) => {
+          localStorage.setItem("ww_e2e_overrides", JSON.stringify(o));
+          return (window as unknown as Hooks).__wordwiseE2E.patchCards(s as string, p as object);
+        },
+        [skill, known, overrides] as const,
+      );
+      await page.goto("/review/session");
+      const done = page.getByRole("button", { name: "Xong", exact: true });
+      let answered = 0;
+      for (; answered < 10; answered++) {
+        await expect(page.getByText(title).or(done)).toBeVisible();
+        if (await done.isVisible()) break;
+        // Nút nghe to: nghe lại 4 lần ở câu đầu (quá 3 lần → tính là dùng gợi ý).
+        const listen = page.getByRole("button", { name: "Nghe lại" });
+        await expect(listen).toBeVisible();
+        if (answered === 0) for (let i = 0; i < 4; i++) await listen.click();
+        if (answered === 0) await expect(page.getByText("Đã nghe lại 4 lần")).toBeVisible();
+        if (skill === "meaning") {
+          await answerCorrectly(page);
+        } else {
+          const input = page.getByRole("textbox", { name: "Câu trả lời của bạn" });
+          await input.fill(await currentAnswer(page));
+          await page.getByRole("button", { name: "Kiểm tra" }).click();
+          await expect(page.getByText("Chính xác!")).toBeVisible();
+          await expect(page.getByText("Chính xác!")).toBeHidden();
+        }
+      }
+      await page.getByRole("button", { name: "Xong", exact: true }).click();
+      return answered;
+    };
+
+    // Phiên học từ khởi đầu có thể đã hỏi vài câu nghe → chọn nghĩa: chỉ đếm từ đây.
+    const since = new Date().toISOString();
+    expect(await run("spelling", { spellingKind: "listen-type" }, "Nghe rồi gõ lại từ")).toBe(5);
+    // Câu ví dụ hiện có chỗ trống: chỉ thẻ có câu khuyết được từ (thường là cả 5 từ khởi đầu).
+    expect(
+      await run("spelling", { spellingKind: "listen-cloze" }, "Nghe câu rồi điền từ còn thiếu"),
+    ).toBe(5);
+    expect(await run("meaning", { meaningMode: "listening" }, "Nghe rồi chọn nghĩa đúng")).toBe(5);
+
+    const logs = (await readLocalStore<Log>(page, "review_logs")).filter(
+      (l) => l.mode === "listening" && l.reviewed_at >= since,
+    );
+    expect(logs).toHaveLength(15);
+    // Câu đầu của mỗi lượt nghe lại 4 lần: chấm Khó; câu gõ có ghi cấp gợi ý.
+    expect(logs.filter((l) => l.rating === 2)).toHaveLength(3);
+    expect(logs.filter((l) => l.hint_level > 0)).toHaveLength(2);
+    expect(logs.every((l) => l.rating >= 2)).toBe(true);
+
+    await page.goto("/settings");
+    await expect(page.getByRole("heading", { name: "Phiên ôn" })).toBeVisible();
+    const multi = page.getByRole("switch", { name: "Luyện nhiều giọng" });
+    await expect(multi).toHaveAttribute("aria-checked", "false");
+    await multi.click();
+    await expect(multi).toHaveAttribute("aria-checked", "true");
   });
 });

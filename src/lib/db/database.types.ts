@@ -588,6 +588,7 @@ export type Database = {
           desired_retention: number;
           fsrs_params: Json | null;
           goals: string[];
+          multi_accent: boolean;
           onboarded_at: string | null;
           practice_spelling: boolean;
           reminder_time: string | null;
@@ -606,6 +607,7 @@ export type Database = {
           desired_retention?: number;
           fsrs_params?: Json | null;
           goals?: string[];
+          multi_accent?: boolean;
           onboarded_at?: string | null;
           practice_spelling?: boolean;
           reminder_time?: string | null;
@@ -624,6 +626,7 @@ export type Database = {
           desired_retention?: number;
           fsrs_params?: Json | null;
           goals?: string[];
+          multi_accent?: boolean;
           onboarded_at?: string | null;
           practice_spelling?: boolean;
           reminder_time?: string | null;

@@ -296,3 +296,9 @@ Repo: https://github.com/mrtitoong/wordwise
   `notebook_entries.context_image_url` (ràng buộc DB chỉ nhận ảnh của chính người đó; từ mới mang theo
   qua `word_job_requests.context_image_url`), thẻ từ hiện bằng signed URL. Bộ ảnh mẫu ở
   `tests/fixtures/ocr` (6 ảnh tổng hợp + `real-*` do chủ sản phẩm chụp), kết quả ở `docs/qa/ocr.md`.
+- 2026-10-22: Gộp Prompt 2.6 khi **Vision chưa chạy** (Google Cloud chưa bật thanh toán, 403
+  `BILLING_DISABLED`; chủ sản phẩm chốt gộp trước): tab Ảnh tạm đọc bằng Claude Sonnet (đúng 100% từ
+  trên 10 ảnh mẫu gồm 4 ảnh thật, ~$0,01/ảnh, chỉ có dạng Chữ). Bật thanh toán xong thì chạy lại
+  `npm run ocr:accuracy`, không cần sửa code. Ảnh thật `tests/fixtures/ocr/real-*` chỉ giữ trên máy
+  (repo công khai). `ocr-image` đã deploy; `generate-word` trên cloud còn bản trước 2.6 (chạy được,
+  chỉ thiếu ảnh ngữ cảnh cho từ mới) → deploy lại bằng Supabase CLI khi đã `supabase login`.

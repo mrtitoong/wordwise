@@ -326,3 +326,17 @@ Repo: https://github.com/mrtitoong/wordwise
 - 2026-10-22: Flashcard **giữ 4 nút tự chấm**, đổi nhãn "Được" thành **"Nhớ"** (Quên · Khó · Nhớ ·
   Dễ) cho dễ hiểu. Phương án 2 nút "Chưa nhớ / Nhớ rồi" (4 nút bật trong Cài đặt) để xem lại sau khi
   có người dùng thử.
+- 2026-10-22 (GĐ4, chủ sản phẩm duyệt): Hai thẻ theo kỹ năng: **Nghĩa** (flashcard, trắc nghiệm,
+  nghe → chọn nghĩa) và **Chính tả** (tập viết, nghe → gõ lại, nghe câu → điền từ), mỗi thẻ một lịch.
+  Thẻ Chính tả tạo khi thẻ Nghĩa đạt **mức 1**; dùng chung giới hạn ôn/ngày; công tắc "Luyện chính tả"
+  trong Cài đặt (mặc định bật); chạy lại mô phỏng 365 ngày với 2 thẻ. Tập viết: mức 0–1 **ngẫu nhiên**
+  xếp chữ hoặc điền chữ thiếu (đúng tối đa "Nhớ"), mức 2 chữ đầu + số ô, mức 3–4 ô trống; "Gợi ý" hạ
+  một cấp (tối đa "Khó"). "Luyện nhiều giọng" (US/UK ngẫu nhiên) mặc định tắt. Audio câu cho tập nghe
+  tạo khi cần trong giới hạn 100 câu/ngày. Mẹo nhớ AI (Prompt 4.5): Haiku, chỉ gửi từ + nghĩa, cần đăng
+  nhập, 10 lượt/người/ngày, lưu vào "Của bạn" ở tab Ghi nhớ. /practice chưa có "danh sách có chủ đích"
+  (GĐ7).
+- 2026-10-22 (Prompt 4.1): `src/lib/grading/spelling.ts`: `checkAnswer()` dùng Damerau-Levenshtein
+  (bản OSA); sai 1 lỗi với từ ≥ 5 chữ cái (không tính khoảng trắng, nháy, gạch nối) là đúng + Khó.
+  Biến thể Anh–Mỹ lấy từ `forms.variants` và tự áp lên dạng chia (`applyVariant`: colours → colors);
+  gõ dạng khác của cùng từ → `wrong_form`; gõ trúng từ dễ nhầm (`confusables`) → `other_word`, không
+  coi là lỗi gõ. `answersForWord(word, form?)` dựng đáp án từ nội dung trong kho.

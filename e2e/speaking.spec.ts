@@ -111,12 +111,9 @@ test.describe("Tập phát âm", () => {
       }
       // Micro giả: tự dừng (im lặng hoặc hết 5 giây) rồi chấm; báo lỗi thì in ra để biết lý do.
       const score = page.getByText(/^(?:✗ |✓ |~ )?\d+ điểm$/);
-      const problem = page.getByRole("alert");
+      const problem = page.locator("[data-e2e-answer] [role=alert]");
       await expect(score.or(problem).first()).toBeVisible({ timeout: 10_000 });
-      expect(
-        await problem.count(),
-        await problem.allTextContents().then((t) => t.join(" | ")),
-      ).toBe(0);
+      expect(await problem.allTextContents()).toEqual([]);
       await expect(score).toBeVisible();
       if (i === 0) {
         await expect(page.getByText("Cần luyện thêm")).toBeVisible();

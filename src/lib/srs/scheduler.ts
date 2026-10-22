@@ -18,10 +18,27 @@ export type SchedulerOptions = {
   weights?: readonly number[] | null;
 };
 
+/**
+ * Cấu hình lịch (docs/plan.md §3.4, Prompt 3.1): từ mới quay lại sau 1 phút và 10 phút trong
+ * phiên, quên thì học lại sau 10 phút; khoảng cách tối đa 365 ngày; xê dịch ngẫu nhiên nhẹ (fuzz)
+ * để thẻ không dồn vào một ngày. Fuzz của ts-fsrs lấy hạt giống từ chính thẻ và thời điểm ôn nên
+ * vẫn cho cùng kết quả trên mọi máy (tính lại thẻ khi xung đột vẫn khớp).
+ */
+export const SCHEDULER_CONFIG = {
+  learningSteps: ["1m", "10m"],
+  relearningSteps: ["10m"],
+  maximumInterval: 365,
+  enableFuzz: true,
+} as const;
+
 export function createScheduler({ desiredRetention = 0.9, weights }: SchedulerOptions = {}): FSRS {
   return fsrs(
     generatorParameters({
-      request_retention: desiredRetention,
+      request_retention: Number(desiredRetention),
+      maximum_interval: SCHEDULER_CONFIG.maximumInterval,
+      enable_fuzz: SCHEDULER_CONFIG.enableFuzz,
+      learning_steps: [...SCHEDULER_CONFIG.learningSteps],
+      relearning_steps: [...SCHEDULER_CONFIG.relearningSteps],
       ...(weights ? { w: [...weights] } : {}),
     }),
   );

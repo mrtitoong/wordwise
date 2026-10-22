@@ -735,6 +735,7 @@ export type Database = {
       word_job_requests: {
         Row: {
           added_at: string | null;
+          context_image_url: string | null;
           context_sentence: string | null;
           created_at: string;
           input_method: string | null;
@@ -746,6 +747,7 @@ export type Database = {
         };
         Insert: {
           added_at?: string | null;
+          context_image_url?: string | null;
           context_sentence?: string | null;
           created_at?: string;
           input_method?: string | null;
@@ -757,6 +759,7 @@ export type Database = {
         };
         Update: {
           added_at?: string | null;
+          context_image_url?: string | null;
           context_sentence?: string | null;
           created_at?: string;
           input_method?: string | null;
@@ -976,6 +979,7 @@ export type Database = {
       };
       request_word_job: {
         Args: {
+          p_context_image_url?: string;
           p_context_sentence?: string;
           p_input_method?: string;
           p_language: string;
@@ -1001,6 +1005,7 @@ export type Database = {
         Returns: Json;
       };
       sentence_audio_quota: { Args: { p_user_id: string }; Returns: Json };
+      suggest_spellings: { Args: { p_language?: string; p_terms: string[] }; Returns: Json };
       verify_worker_secret: { Args: { p_secret: string }; Returns: boolean };
     };
     Enums: {

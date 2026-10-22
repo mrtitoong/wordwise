@@ -107,7 +107,8 @@ var LLM_TASKS = [
   "mnemonic",
   "photo-word-picker",
   "list-analyzer",
-  "reverse-lookup"
+  "reverse-lookup",
+  "photo-ocr"
 ];
 var DEFAULT_TASKS = {
   // Kiến thức chung → Claude Haiku, dự phòng Sonnet (chốt 2026-10-20 sau so sánh 50 từ:
@@ -125,7 +126,9 @@ var DEFAULT_TASKS = {
   "photo-word-picker": { containsUserData: true, models: ["claude-sonnet", "claude-haiku"] },
   "list-analyzer": { containsUserData: true, models: ["claude-sonnet", "claude-haiku"] },
   // Câu tiếng Việt người dùng nói/gõ để tra ngược (Prompt 2.5) → chỉ trả phí.
-  "reverse-lookup": { containsUserData: true, models: ["claude-sonnet", "claude-haiku"] }
+  "reverse-lookup": { containsUserData: true, models: ["claude-sonnet", "claude-haiku"] },
+  // Đọc chữ trên ảnh người dùng chụp khi Google Cloud Vision đọc kém (Prompt 2.6) → chỉ trả phí.
+  "photo-ocr": { containsUserData: true, models: ["claude-sonnet", "claude-haiku"] }
 };
 function envKeyForTask(task) {
   return `LLM_MODELS_${task.toUpperCase().replaceAll("-", "_")}`;
@@ -283,7 +286,8 @@ function createClaudeProvider(options) {
       system,
       prompt,
       jsonSchema,
-      schemaMode
+      schemaMode,
+      images
     }) {
       const serverFallback = SERVER_FALLBACK_MODELS.has(model.model);
       let response;
@@ -292,7 +296,22 @@ function createClaudeProvider(options) {
           model: model.model,
           max_tokens: model.maxOutputTokens,
           system,
-          messages: [{ role: "user", content: prompt }],
+          messages: [
+            {
+              role: "user",
+              content: images?.length ? [
+                ...images.map((image) => ({
+                  type: "image",
+                  source: {
+                    type: "base64",
+                    media_type: image.mediaType,
+                    data: image.data
+                  }
+                })),
+                { type: "text", text: prompt }
+              ] : prompt
+            }
+          ],
           output_config: {
             ...schemaMode === "enforce" ? { format: { type: "json_schema", schema: toClaudeJsonSchema(jsonSchema) } } : {},
             ...model.reasoning ? { effort: model.reasoning } : {}
@@ -417,7 +436,7 @@ function createLlmRouter(deps) {
     }
   }
   return {
-    async generateJSON(task, { system, prompt, schema, schemaRetries, preprocess }) {
+    async generateJSON(task, { system, prompt, schema, schemaRetries, preprocess, images }) {
       const taskConfig = deps.config[task];
       const jsonSchema = toJsonSchema(schema);
       const schemaMode = taskConfig.schemaMode ?? "enforce";
@@ -452,7 +471,8 @@ ${schemaInstruction(jsonSchema)}` : prompt;
               system,
               prompt: fullPrompt,
               jsonSchema,
-              schemaMode
+              schemaMode,
+              ...images?.length ? { images } : {}
             }));
           } catch (error) {
             if (error instanceof LlmPolicyError) throw error;
@@ -945,6 +965,8 @@ var WordRequestSchema = z6.object({
   /** Từ chưa có trong kho: máy chủ tự thêm nghĩa phổ biến nhất vào sổ này khi tạo xong. */
   notebookId: z6.uuid().nullish(),
   contextSentence: z6.string().trim().max(500).nullish(),
+  /** Ảnh chụp người dùng giữ làm ngữ cảnh (storage://user-images/{user_id}/…). */
+  contextImageUrl: z6.string().max(300).regex(/^storage:\/\/user-images\/[0-9a-f-]{36}\/[\w.-]+$/).nullish(),
   inputMethod: InputMethodSchema.nullish(),
   /** Ghi chú riêng (cột nghĩa/ghi chú của file) → "Ghi chú của bạn" ở tab Nghĩa. */
   note: z6.string().trim().max(500).nullish(),
@@ -1108,6 +1130,7 @@ function createSupabaseWordStore(client) {
             p_notebook_id: target.notebookId,
             p_input_method: target.inputMethod,
             ...target.contextSentence ? { p_context_sentence: target.contextSentence } : {},
+            ...target.contextImageUrl ? { p_context_image_url: target.contextImageUrl } : {},
             ...target.note ? { p_note: target.note } : {},
             ...target.tags?.length ? { p_tags: target.tags } : {}
           } : {}
@@ -1396,6 +1419,7 @@ async function requestWord(request, userId, deps) {
   const target = request.notebookId ? {
     notebookId: request.notebookId,
     contextSentence: request.contextSentence ?? null,
+    ...request.contextImageUrl ? { contextImageUrl: request.contextImageUrl } : {},
     inputMethod: request.inputMethod ?? "typed",
     ...request.note ? { note: request.note } : {},
     ...request.tags?.length ? { tags: request.tags } : {}

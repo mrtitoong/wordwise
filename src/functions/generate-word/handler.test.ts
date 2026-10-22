@@ -145,6 +145,33 @@ describe("generate-word handler", () => {
     expect(WordResponseSchema.parse(await response.json()).status).toBe("premium_required");
   });
 
+  it("ảnh chụp: chuyển câu gốc và ảnh ngữ cảnh; ảnh ngoài thư mục người dùng bị từ chối", async () => {
+    const { handle, store } = setup();
+    const notebookId = "11111111-1111-4111-8111-111111111111";
+    const image = "storage://user-images/22222222-2222-4222-8222-222222222222/a1.webp";
+    const body = {
+      lemma: "zygote",
+      notebookId,
+      inputMethod: "photo",
+      contextSentence: "A zygote forms.",
+      contextImageUrl: image,
+    };
+    await handle(post(body, { authorization: "Bearer user-jwt" }));
+    expect(store.requestJob).toHaveBeenCalledWith("u1", "en", "zygote", null, {
+      notebookId,
+      contextSentence: "A zygote forms.",
+      contextImageUrl: image,
+      inputMethod: "photo",
+    });
+    const bad = await handle(
+      post(
+        { ...body, contextImageUrl: "https://evil.example/x.jpg" },
+        { authorization: "Bearer user-jwt" },
+      ),
+    );
+    expect(bad.status).toBe(400);
+  });
+
   it("hết lượt → limit_reached kèm gói hiện tại", async () => {
     const { handle, store } = setup();
     vi.mocked(store.requestJob).mockResolvedValue({

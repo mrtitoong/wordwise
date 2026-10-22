@@ -300,5 +300,6 @@ Repo: https://github.com/mrtitoong/wordwise
   `BILLING_DISABLED`; chủ sản phẩm chốt gộp trước): tab Ảnh tạm đọc bằng Claude Sonnet (đúng 100% từ
   trên 10 ảnh mẫu gồm 4 ảnh thật, ~$0,01/ảnh, chỉ có dạng Chữ). Bật thanh toán xong thì chạy lại
   `npm run ocr:accuracy`, không cần sửa code. Ảnh thật `tests/fixtures/ocr/real-*` chỉ giữ trên máy
-  (repo công khai). `ocr-image` đã deploy; `generate-word` trên cloud còn bản trước 2.6 (chạy được,
-  chỉ thiếu ảnh ngữ cảnh cho từ mới) → deploy lại bằng Supabase CLI khi đã `supabase login`.
+  (repo công khai). Edge Function deploy bằng **Supabase CLI** (máy dev đã `supabase login`):
+  `npx supabase functions deploy <tên> --project-ref jhvyyahowopzrpyenwdh --use-api` (không cần
+  Docker; đọc `supabase/config.toml`, giữ verify_jwt = false).

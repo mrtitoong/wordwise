@@ -30,3 +30,6 @@ next-env.d.ts
 
 # Ảnh chụp thật để đo OCR (sách có bản quyền, chữ viết tay): chỉ giữ trên máy, repo công khai.
 tests/fixtures/ocr/real-*
+
+# Thư mục tạm của Supabase CLI (project ref, phiên bản).
+supabase/.temp/

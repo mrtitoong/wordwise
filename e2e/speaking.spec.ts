@@ -1,11 +1,18 @@
+import { resolve } from "node:path";
 import { expect, test, type Page } from "@playwright/test";
 import { hasSupabase, readLocalStore, signInWithCode, uniqueEmail } from "./helpers";
 import { learnStarterWords, type Card } from "./review-helpers";
 
-// Micro giả của Chromium, tự cho phép quyền micro; điểm chấm giả lập (CI không có khóa Azure).
+// Micro giả của Chromium phát file mẫu (1,5 giây "nói" rồi im lặng, lặp lại) để có tiếng nói và
+// tự dừng khi im lặng; tự cho phép quyền micro; điểm chấm giả lập (CI không có khóa Azure).
+const FAKE_AUDIO = resolve("tests/fixtures/audio/speech-then-silence.wav");
 test.use({
   launchOptions: {
-    args: ["--use-fake-ui-for-media-stream", "--use-fake-device-for-media-stream"],
+    args: [
+      "--use-fake-ui-for-media-stream",
+      "--use-fake-device-for-media-stream",
+      `--use-file-for-fake-audio-capture=${FAKE_AUDIO}`,
+    ],
   },
   permissions: ["microphone"],
 });
@@ -37,7 +44,6 @@ const result = (overall: number) => ({
 async function mockScoring(page: Page) {
   let calls = 0;
   await page.route("**/functions/v1/assess-pronunciation", async (route) => {
-    if (route.request().method() === "OPTIONS") return route.fulfill({ status: 204 });
     calls++;
     await route.fulfill({ json: { status: "ok", result: result(calls === 1 ? 45 : 86) } });
   });

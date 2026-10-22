@@ -81,3 +81,11 @@ entrypoint = "./functions/word-media/index.js"
 enabled = true
 verify_jwt = false
 entrypoint = "./functions/transcribe/index.js"
+
+# Đọc chữ trên ảnh chụp (Prompt 2.6, chỉ Premium). Mã nguồn ở src/functions/ocr-image. Tự kiểm
+# tra đăng nhập và gói (trả "login_required"/"premium_required" để app báo dễ hiểu) nên tắt kiểm
+# tra JWT ở cổng.
+[functions.ocr-image]
+enabled = true
+verify_jwt = false
+entrypoint = "./functions/ocr-image/index.js"

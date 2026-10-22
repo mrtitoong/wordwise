@@ -55,7 +55,36 @@
   },
   "practice": {
     "title": "Practice",
-    "emptyBody": "Add a few words to practise by notebook, topic or mode."
+    "emptyBody": "Learn a few words on Today first, then come back to practice by notebook, topic or mode.",
+    "goToday": "Go to Today",
+    "loading": "Loading…",
+    "intro": "Extra practice your way. Words not due yet: if you remember them, their schedule stays the same; if you forget, they come back sooner.",
+    "notebook": "Notebook",
+    "allNotebooks": "All notebooks",
+    "tag": "Topic",
+    "allTags": "All topics",
+    "status": "Status",
+    "statuses": {
+      "all": "All",
+      "learning": "Learning",
+      "known": "Known",
+      "mastered": "Mastered",
+      "leech": "Often forgotten"
+    },
+    "mode": "Mode",
+    "modes": {
+      "auto": "Auto mix",
+      "flashcard": "Flashcards",
+      "mcq": "Multiple choice",
+      "writing": "Writing",
+      "listening": "Listening"
+    },
+    "count": "Questions",
+    "countValue": "{count} questions",
+    "available": "{available} matching words – {count} questions.",
+    "none": "No matching words. Try a wider scope.",
+    "noneWriting": "Writing uses words past their first few reviews. Review more on Today and come back.",
+    "start": "Start practice"
   },
   "stats": {
     "title": "Stats",

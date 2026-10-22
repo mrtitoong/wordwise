@@ -40,7 +40,7 @@ export function SessionResult({
 }: {
   summary: SessionSummary;
   owner: string;
-  kind: "full" | "short" | "single" | "retry";
+  kind: "full" | "short" | "single" | "retry" | "practice";
 }) {
   const t = useTranslations("review.result");
   const router = useRouter();

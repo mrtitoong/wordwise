@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useMemo, useState } from "react";
+import { useEffect, useMemo, useRef, useState } from "react";
 import { ArrowLeft, X } from "lucide-react";
 import { useTranslations } from "next-intl";
 import { Button } from "@/components/ui/button";
@@ -89,12 +89,6 @@ export function PhotoReview({
         if (cancelled) return;
         setFailed(false);
         setResolutions((prev) => new Map([...prev, ...found]));
-        // Chữ chưa có trong kho có thể do máy đọc nhầm → hỏi "Có phải …?".
-        const unknown = [...found].filter(([, r]) => r.words.length === 0).map(([k]) => k);
-        if (unknown.length) {
-          const more = await suggestSpellings(createClient(), unknown);
-          if (!cancelled && more.size) setSuggestions((prev) => new Map([...prev, ...more]));
-        }
       } catch {
         if (!cancelled) setFailed(true);
       }
@@ -103,6 +97,24 @@ export function PhotoReview({
       cancelled = true;
     };
   }, [missing, context.online]);
+
+  // Chữ chưa có trong kho có thể do máy đọc nhầm → hỏi "Có phải …?" (mỗi chữ hỏi một lần).
+  const unknown = useMemo(
+    () =>
+      [...resolutions]
+        .filter(([key, r]) => r.words.length === 0 && !suggestions.has(key))
+        .map(([key]) => key),
+    [resolutions, suggestions],
+  );
+  const asked = useRef(new Set<string>());
+  useEffect(() => {
+    const fresh = unknown.filter((k) => !asked.current.has(k));
+    if (fresh.length === 0 || !context.online) return;
+    fresh.forEach((k) => asked.current.add(k));
+    void suggestSpellings(createClient(), fresh).then(
+      (more) => more.size && setSuggestions((prev) => new Map([...prev, ...more])),
+    );
+  }, [unknown, context.online]);
 
   const entries = useMemo<(NormalizedEntry | null)[]>(() => {
     const seen = new Set<string>();

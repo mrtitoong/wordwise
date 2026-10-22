@@ -345,6 +345,32 @@ export async function openNewWords(db: LocalDb, owner: string, now = new Date())
   return opened;
 }
 
+/**
+ * "Học thêm N từ mới": người dùng chủ động mở thêm từ ở hàng Sắp học, vượt giới hạn ngày. Thêm vào
+ * sổ trước thì mở trước. Trả về id các từ vừa mở.
+ */
+export async function openExtraWords(
+  db: LocalDb,
+  owner: string,
+  count: number,
+  now = new Date(),
+): Promise<string[]> {
+  const opened = await db.transaction("rw", db.user_words, db.outbox, async () => {
+    const queued = (await db.user_words.where("user_id").equals(owner).toArray())
+      .filter((uw) => !uw.deleted_at && uw.status === "queued")
+      .sort((a, b) => a.added_at.localeCompare(b.added_at) || a.id.localeCompare(b.id))
+      .slice(0, Math.max(0, count));
+    const iso = now.toISOString();
+    for (const row of queued) {
+      await db.user_words.put({ ...row, status: "learning", introduced_at: iso, updated_at: iso });
+      await queue(db, "user_words", row.id, owner);
+    }
+    return queued.map((row) => row.id);
+  });
+  if (opened.length > 0) notifyWrite();
+  return opened;
+}
+
 /** Số chỗ còn lại để mở từ mới hôm nay (cho thanh tóm tắt khi thêm từ). */
 export async function openSlotsToday(
   db: LocalDb,
@@ -386,7 +412,15 @@ export async function recordReview(
   db: LocalDb,
   owner: string,
   cardIdValue: string,
-  input: { rating: Grade; mode: ReviewLogRow["mode"]; reviewedAt?: Date; responseMs?: number },
+  input: {
+    rating: Grade;
+    mode: ReviewLogRow["mode"];
+    reviewedAt?: Date;
+    responseMs?: number;
+    correct?: boolean;
+    hintLevel?: number;
+    extra?: boolean;
+  },
 ): Promise<{ card: CardRow; log: ReviewLogRow }> {
   const result = await db.transaction("rw", personalTables(db), async () => {
     const card = await db.cards.get(cardIdValue);
@@ -402,12 +436,17 @@ export async function recordReview(
       reviewedAt: input.reviewedAt ?? new Date(),
       logId: randomId(),
       responseMs: input.responseMs ?? null,
+      correct: input.correct ?? null,
+      hintLevel: input.hintLevel ?? 0,
+      extra: input.extra ?? false,
     });
+    await db.review_logs.add(reviewed.log);
+    await queue(db, "review_logs", reviewed.log.id, owner);
+    // Lượt ôn ngoài lịch mà nhớ được: thẻ giữ nguyên, không cần gửi lại.
+    if (reviewed.log.is_extra) return { card, log: reviewed.log };
     const updated = { ...reviewed.card, updated_at: new Date().toISOString() };
     await db.cards.put(updated);
-    await db.review_logs.add(reviewed.log);
     await queue(db, "cards", card.id, owner);
-    await queue(db, "review_logs", reviewed.log.id, owner);
     return { card: updated, log: reviewed.log };
   });
   notifyWrite();

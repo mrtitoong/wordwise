@@ -99,6 +99,11 @@ export type ReviewInput = {
   hintLevel?: number;
   responseMs?: number | null;
   correct?: boolean | null;
+  /**
+   * Ôn ngoài lịch ("Ôn từ này", luyện thêm): nhớ được thì chỉ ghi nhật ký (is_extra), không đổi
+   * lịch; quên thì vẫn tính như lượt ôn thật.
+   */
+  extra?: boolean;
 };
 
 /** Một lượt ôn: thẻ sau khi ôn và dòng review_logs (chưa có created_at từ server). */
@@ -107,9 +112,10 @@ export function applyReview(
   card: CardRow,
   input: ReviewInput,
 ): { card: CardRow; log: ReviewLogRow } {
+  const extra = !!input.extra && input.rating !== 1;
   const result = scheduler.next(toFsrsCard(card), input.reviewedAt, input.rating);
   return {
-    card: { ...card, ...fromFsrsCard(result.card) },
+    card: extra ? card : { ...card, ...fromFsrsCard(result.card) },
     log: {
       id: input.logId,
       user_id: card.user_id,
@@ -121,7 +127,7 @@ export function applyReview(
       response_ms: input.responseMs ?? null,
       correct: input.correct ?? null,
       pronunciation_score: null,
-      is_extra: false,
+      is_extra: extra,
       reviewed_at: input.reviewedAt.toISOString(),
       elapsed_days: Math.max(0, result.log.elapsed_days),
       scheduled_days: Math.max(0, result.log.scheduled_days),

@@ -79,6 +79,7 @@ export function defaultSettingsRow(owner: string, now = new Date()): UserSetting
     ui_locale: "vi",
     cefr_level: null,
     goals: [],
+    multi_accent: false,
     daily_new_limit: 10,
     daily_review_limit: 200,
     desired_retention: 0.9,

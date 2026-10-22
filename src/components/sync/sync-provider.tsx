@@ -4,6 +4,7 @@ import { useEffect } from "react";
 import { GUEST_OWNER } from "@/lib/db/ids";
 import { getLocalDb } from "@/lib/db/local";
 import { ensureSkillCards, openNewWords, recordReview } from "@/lib/db/repo";
+import type { CardRow } from "@/lib/db/types";
 import { createClient } from "@/lib/supabase/client";
 import { getSupabaseEnv } from "@/lib/supabase/env";
 import { getSyncEngine } from "@/lib/sync/client";
@@ -68,8 +69,11 @@ export function SyncProvider() {
             if (!owner || !card) throw new Error("không có thẻ để ôn");
             return recordReview(db, owner, card.id, { rating: 3, mode: "flashcard" });
           },
-          /** Cho thẻ của một kỹ năng đến hạn ngay (test tập viết không phải chờ sang ngày). */
-          async dueNow(skill: string) {
+          /**
+           * Sửa thẻ của một kỹ năng để test không phải chờ sang ngày: mặc định cho đến hạn ngay,
+           * `patch` để đặt thêm mức thuộc (state, stability…).
+           */
+          async patchCards(skill: string, patch: Partial<CardRow> = {}) {
             const owner = engine.getOwner();
             const db = getLocalDb();
             const cards = await db.cards
@@ -78,7 +82,7 @@ export function SyncProvider() {
               .filter((c) => c.skill === skill)
               .toArray();
             const due = new Date(Date.now() - 1000).toISOString();
-            await db.cards.bulkPut(cards.map((c) => ({ ...c, due })));
+            await db.cards.bulkPut(cards.map((c) => ({ ...c, due, ...patch })));
             return cards.length;
           },
         },

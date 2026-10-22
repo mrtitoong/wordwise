@@ -113,7 +113,8 @@
     "practiceSpellingHint": "Tập viết lại từ đã nhớ nghĩa. Tắt nếu bạn chỉ cần hiểu nghĩa (vd luyện đọc); số câu ôn mỗi ngày sẽ ít hơn.",
     "reviewSection": "Phiên ôn",
     "multiAccent": "Luyện nhiều giọng",
-    "multiAccentHint": "Tập nghe đổi ngẫu nhiên giọng Mỹ và giọng Anh, quen tai cả hai cách đọc."
+    "multiAccentHint": "Tập nghe đổi ngẫu nhiên giọng Mỹ và giọng Anh, quen tai cả hai cách đọc.",
+    "micTest": "Kiểm tra micro"
   },
   "languages": {
     "vi": "Tiếng Việt",
@@ -844,5 +845,40 @@
     "listenPickMeaning": "Nghe rồi chọn nghĩa đúng",
     "listenType": "Nghe rồi gõ lại từ",
     "listenCloze": "Nghe câu rồi điền từ còn thiếu"
+  },
+  "mic": {
+    "explainTitle": "Cho phép dùng micro",
+    "explainWhy": "WordWise cần micro để nghe bạn đọc từ và chấm phát âm.",
+    "explainPrivacy": "Bản thu chỉ dùng để chấm điểm rồi bị xóa, không lưu trên máy chủ. Bạn nghe lại được ngay trên máy này.",
+    "explainPrompt": "Bấm \"Cho phép micro\", rồi chọn Cho phép khi trình duyệt hỏi.",
+    "allow": "Cho phép micro",
+    "later": "Để sau",
+    "listening": "Đang nghe",
+    "meter": "Âm lượng micro",
+    "error": {
+      "not-allowed": "Chưa có quyền dùng micro.",
+      "no-microphone": "Không tìm thấy micro trên thiết bị.",
+      "unsupported": "Trình duyệt này chưa thu âm được. Thử Chrome hoặc Safari bản mới."
+    },
+    "fixIos": "Vào Cài đặt của iPhone → Safari → Micro → Cho phép, rồi tải lại trang.",
+    "fixBrowser": "Bấm biểu tượng ổ khóa cạnh địa chỉ trang → Quyền → Micro → Cho phép, rồi thử lại.",
+    "testTitle": "Kiểm tra micro",
+    "testIntro": "Bấm nút micro rồi đọc một từ (tối đa {seconds} giây). Ngừng nói khoảng 1 giây là tự dừng.",
+    "record": "Bắt đầu thu",
+    "stop": "Dừng thu",
+    "recordingHint": "Đang thu… nói đi",
+    "requesting": "Đang xin quyền micro…",
+    "resultTitle": "Bản thu",
+    "format": "Định dạng",
+    "duration": "Thời lượng",
+    "seconds": "{value} giây",
+    "speech": "Có tiếng nói",
+    "speechYes": "Có",
+    "speechNo": "Không nghe thấy",
+    "checkWav": "Thử đổi sang WAV",
+    "wavOk": "Được ({kb} KB)",
+    "wavSilent": "Quá nhỏ, như im lặng",
+    "wavFailed": "Không đổi được",
+    "again": "Thu lại"
   }
 }

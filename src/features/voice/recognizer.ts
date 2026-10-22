@@ -10,15 +10,15 @@ import { getSupabaseEnv } from "@/lib/supabase/env";
 import type { SpeechLang } from "@/lib/voice/api";
 import { pickCandidates } from "@/lib/voice/candidates";
 import { requestTranscribe } from "@/lib/voice/request-transcribe";
+import { MAX_RECORD_SECONDS } from "@/lib/voice/wav";
 import {
-  MAX_RECORD_SECONDS,
-  TARGET_SAMPLE_RATE,
-  bytesToBase64,
-  downmix,
-  encodeWav,
-  resample,
-  rms,
-} from "@/lib/voice/wav";
+  RecorderFailure,
+  blobToWavBase64,
+  hasRecorder,
+  startRecording,
+  type ActiveRecording,
+  type Recording,
+} from "./recorder";
 
 export type RecognizerError =
   /** Người dùng/trình duyệt từ chối quyền micro. */
@@ -85,13 +85,7 @@ export function hasBrowserRecognition(): boolean {
   return speechRecognitionCtor() !== null;
 }
 
-export function hasRecorder(): boolean {
-  return (
-    typeof window !== "undefined" &&
-    typeof MediaRecorder !== "undefined" &&
-    !!navigator.mediaDevices?.getUserMedia
-  );
-}
+export { hasRecorder };
 
 function browserRecognizer(
   Ctor: SpeechRecognitionCtor,
@@ -148,48 +142,18 @@ function browserRecognizer(
   };
 }
 
-async function toWavBase64(blob: Blob): Promise<string | null> {
-  const AudioCtx =
-    window.AudioContext ??
-    (window as unknown as { webkitAudioContext: typeof AudioContext }).webkitAudioContext;
-  const context = new AudioCtx();
-  try {
-    const decoded = await context.decodeAudioData(await blob.arrayBuffer());
-    const channels = Array.from({ length: decoded.numberOfChannels }, (_, i) =>
-      decoded.getChannelData(i),
-    );
-    const samples = resample(downmix(channels), decoded.sampleRate, TARGET_SAMPLE_RATE);
-    if (rms(samples) < 0.003) return null; // im lặng
-    return bytesToBase64(encodeWav(samples));
-  } finally {
-    void context.close();
-  }
-}
-
 function serverRecognizer(lang: SpeechLang, events: RecognizerEvents): Recognizer {
-  let recorder: MediaRecorder | null = null;
-  let stream: MediaStream | null = null;
-  let timer: ReturnType<typeof setTimeout> | undefined;
+  let active: ActiveRecording | null = null;
   let aborted = false;
-  const chunks: Blob[] = [];
 
-  const cleanup = () => {
-    clearTimeout(timer);
-    stream?.getTracks().forEach((t) => t.stop());
-    stream = null;
-  };
-
-  async function finish() {
-    cleanup();
-    if (aborted) {
+  async function finish(recording: Recording | null) {
+    if (aborted || !recording) {
       events.onEnd();
       return;
     }
     events.onProcessing?.();
     try {
-      const audio = await toWavBase64(
-        new Blob(chunks, { type: recorder?.mimeType || "audio/webm" }),
-      );
+      const audio = await blobToWavBase64(recording.blob);
       if (!audio) {
         events.onError("no-speech");
         return;
@@ -211,39 +175,26 @@ function serverRecognizer(lang: SpeechLang, events: RecognizerEvents): Recognize
     kind: "server",
     start: () => {
       aborted = false;
-      chunks.length = 0;
       if (!getSupabaseEnv()) {
         events.onError("unavailable");
         events.onEnd();
         return;
       }
-      navigator.mediaDevices
-        .getUserMedia({
-          audio: { channelCount: 1, echoCancellation: true, noiseSuppression: true },
+      startRecording({ maxSeconds: MAX_RECORD_SECONDS })
+        .then((recording) => {
+          active = recording;
+          void recording.done.then(finish);
         })
-        .then((s) => {
-          stream = s;
-          recorder = new MediaRecorder(s);
-          recorder.ondataavailable = (e) => e.data.size && chunks.push(e.data);
-          recorder.onstop = () => void finish();
-          recorder.start();
-          timer = setTimeout(
-            () => recorder?.state === "recording" && recorder.stop(),
-            MAX_RECORD_SECONDS * 1000,
-          );
-        })
-        .catch((error: DOMException) => {
-          events.onError(error.name === "NotFoundError" ? "no-microphone" : "not-allowed");
+        .catch((error: unknown) => {
+          const code = error instanceof RecorderFailure ? error.code : "not-allowed";
+          events.onError(code === "unsupported" ? "unavailable" : code);
           events.onEnd();
         });
     },
-    stop: () => {
-      if (recorder?.state === "recording") recorder.stop();
-    },
+    stop: () => active?.stop(),
     abort: () => {
       aborted = true;
-      if (recorder?.state === "recording") recorder.stop();
-      else cleanup();
+      active?.cancel();
     },
   };
 }

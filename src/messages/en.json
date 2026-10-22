@@ -113,7 +113,8 @@
     "practiceSpellingHint": "Write words you already know the meaning of. Turn off if you only need to understand them (e.g. for reading); you'll get fewer reviews each day.",
     "reviewSection": "Reviews",
     "multiAccent": "Mixed accents",
-    "multiAccentHint": "Listening practice switches randomly between American and British voices."
+    "multiAccentHint": "Listening practice switches randomly between American and British voices.",
+    "micTest": "Microphone check"
   },
   "languages": {
     "vi": "Tiếng Việt",
@@ -844,5 +845,40 @@
     "listenPickMeaning": "Listen and pick the meaning",
     "listenType": "Listen and type the word",
     "listenCloze": "Listen and fill in the missing word"
+  },
+  "mic": {
+    "explainTitle": "Allow the microphone",
+    "explainWhy": "WordWise needs your microphone to hear you say words and score your pronunciation.",
+    "explainPrivacy": "Recordings are only used for scoring and then discarded; they are not stored on our servers. You can replay them on this device.",
+    "explainPrompt": "Tap \"Allow microphone\", then choose Allow when your browser asks.",
+    "allow": "Allow microphone",
+    "later": "Not now",
+    "listening": "Listening",
+    "meter": "Microphone level",
+    "error": {
+      "not-allowed": "Microphone access is not allowed.",
+      "no-microphone": "No microphone found on this device.",
+      "unsupported": "This browser can't record audio. Try a recent Chrome or Safari."
+    },
+    "fixIos": "Open iPhone Settings → Safari → Microphone → Allow, then reload the page.",
+    "fixBrowser": "Click the lock icon next to the address → Permissions → Microphone → Allow, then try again.",
+    "testTitle": "Microphone check",
+    "testIntro": "Tap the mic and say a word (up to {seconds} seconds). Pause for about a second and it stops by itself.",
+    "record": "Start recording",
+    "stop": "Stop recording",
+    "recordingHint": "Recording… speak now",
+    "requesting": "Asking for microphone access…",
+    "resultTitle": "Recording",
+    "format": "Format",
+    "duration": "Duration",
+    "seconds": "{value} s",
+    "speech": "Speech detected",
+    "speechYes": "Yes",
+    "speechNo": "Not heard",
+    "checkWav": "Try converting to WAV",
+    "wavOk": "OK ({kb} KB)",
+    "wavSilent": "Too quiet, like silence",
+    "wavFailed": "Couldn't convert",
+    "again": "Record again"
   }
 }

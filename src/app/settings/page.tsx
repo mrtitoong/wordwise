@@ -64,6 +64,15 @@ export default async function SettingsPage() {
           hint="practiceSpellingHint"
         />
         <SettingSwitch field="multi_accent" label="multiAccent" hint="multiAccentHint" />
+        <Link
+          href="/settings/microphone"
+          className="flex min-h-12 items-center justify-between rounded-xl border px-4 font-medium focus-visible:outline-2 focus-visible:outline-ring"
+        >
+          {t("micTest")}
+          <span aria-hidden className="text-muted-foreground">
+            ›
+          </span>
+        </Link>
       </section>
       <section aria-labelledby="language-heading" className="flex flex-col gap-3 pt-6">
         <h2

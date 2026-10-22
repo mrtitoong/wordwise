@@ -367,3 +367,15 @@ Repo: https://github.com/mrtitoong/wordwise
   mẹo nhớ mới" ở tab Ghi nhớ + gợi ý cho từ hay quên, phương án A (Haiku, chỉ gửi từ + nghĩa, lưu vào
   "Của bạn", 10 lượt/ngày); cá nhân hóa bằng câu gặp/ghi chú (Sonnet) xem xét sau khi có người dùng thật.
   GĐ4 khép lại với 4 chế độ (flashcard, trắc nghiệm, tập viết, tập nghe); phát âm ở GĐ5.
+- 2026-10-22 (GĐ5, chủ sản phẩm duyệt 6 đề xuất): Chấm phát âm cho **mọi tài khoản đã đăng nhập**
+  (Free và Premium), 100 lần/người/ngày; khách mời đăng nhập. Thẻ Phát âm mở khi thẻ Nghĩa mức 2, mỗi
+  ngày mở tối đa bằng số từ mới/ngày; công tắc **"Luyện phát âm" mặc định tắt** (Cài đặt → Phiên ôn), ai
+  cũng luyện được ở trang Luyện tập. GĐ5 chỉ chấm **từ và cụm từ** (đọc câu để sau). Hiện dãy âm vị
+  Azure trả về, tô màu từng âm (không khớp vào IPA của thẻ). Mẹo sửa âm cho người Việt theo quy tắc,
+  không AI; chưa chấm trọng âm. Thiết bị thật (Safari iOS, Chrome Android) do chủ sản phẩm thử theo
+  `docs/qa/recording.md`.
+- 2026-10-22 (Prompt 5.1): Bộ thu chung `src/features/voice/recorder.ts` (`startRecording`,
+  `blobToWavBase64`; tab Nói dùng chung), hook `useRecorder()` (5 giây, tự dừng khi im lặng 1,2 giây,
+  sóng âm), logic thuần `src/lib/voice/recording.ts`. Lần đầu thu hiện màn giải thích quyền micro (cờ
+  localStorage `ww_mic_explained`, đặt sau khi được cấp quyền). Trang **Cài đặt → Kiểm tra micro**
+  (`/settings/microphone`). E2E thu âm dùng micro giả của Chromium (`e2e/recording.spec.ts`).

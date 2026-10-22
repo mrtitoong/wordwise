@@ -8,6 +8,7 @@ type Log = {
   rating: number;
   is_extra: boolean;
   hint_level: number;
+  reviewed_at: string;
 };
 type Word = { id: string; lemma: string };
 type Sense = { id: string; word_id: string; meaning_vi: string };
@@ -294,6 +295,8 @@ test.describe("Phiên ôn", () => {
       return answered;
     };
 
+    // Phiên học từ khởi đầu có thể đã hỏi vài câu nghe → chọn nghĩa: chỉ đếm từ đây.
+    const since = new Date().toISOString();
     expect(await run("spelling", { spellingKind: "listen-type" }, "Nghe rồi gõ lại từ")).toBe(5);
     // Câu ví dụ hiện có chỗ trống: chỉ thẻ có câu khuyết được từ (thường là cả 5 từ khởi đầu).
     expect(
@@ -302,7 +305,7 @@ test.describe("Phiên ôn", () => {
     expect(await run("meaning", { meaningMode: "listening" }, "Nghe rồi chọn nghĩa đúng")).toBe(5);
 
     const logs = (await readLocalStore<Log>(page, "review_logs")).filter(
-      (l) => l.mode === "listening",
+      (l) => l.mode === "listening" && l.reviewed_at >= since,
     );
     expect(logs).toHaveLength(15);
     // Câu đầu của mỗi lượt nghe lại 4 lần: chấm Khó; câu gõ có ghi cấp gợi ý.

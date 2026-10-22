@@ -1,6 +1,12 @@
 import { describe, expect, it } from "vitest";
 import { seededRandom } from "@/lib/srs/simulate";
-import { FREE_REPLAYS, listeningVoice, replaysAsHint, spellingTaskKind } from "./listening";
+import {
+  FREE_REPLAYS,
+  listeningTaskKind,
+  listeningVoice,
+  replaysAsHint,
+  spellingTaskKind,
+} from "./listening";
 
 const all = { word: true, sentence: true };
 
@@ -52,5 +58,18 @@ describe("listeningVoice, replaysAsHint", () => {
     expect(replaysAsHint(0)).toBe(false);
     expect(replaysAsHint(FREE_REPLAYS)).toBe(false);
     expect(replaysAsHint(FREE_REPLAYS + 1)).toBe(true);
+  });
+});
+
+describe("listeningTaskKind (Luyện tập chọn Tập nghe)", () => {
+  it("nghe → gõ ở mọi mức; nghe câu → điền từ từ mức 3", () => {
+    expect(listeningTaskKind(0, all, () => 0.99)).toBe("listen-type");
+    expect(listeningTaskKind(3, all, () => 0.99)).toBe("listen-cloze");
+    expect(listeningTaskKind(3, all, () => 0)).toBe("listen-type");
+  });
+
+  it("không phát được thì null", () => {
+    expect(listeningTaskKind(4, { word: false, sentence: false })).toBeNull();
+    expect(listeningTaskKind(1, { word: false, sentence: true })).toBeNull();
   });
 });

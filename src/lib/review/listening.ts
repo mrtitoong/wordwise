@@ -47,3 +47,18 @@ export function listeningVoice(
 export function replaysAsHint(replays: number): boolean {
   return replays > FREE_REPLAYS;
 }
+
+/**
+ * Luyện tập chọn "Tập nghe" cho thẻ Chính tả: nghe → gõ lại (mọi mức), thêm nghe câu → điền từ từ
+ * mức 3. Không phát được âm thanh thì null (dùng tập viết).
+ */
+export function listeningTaskKind(
+  level: MasteryLevel,
+  can: ListenAvailability,
+  random: () => number = Math.random,
+): Exclude<SpellingTaskKind, "writing"> | null {
+  const options: Exclude<SpellingTaskKind, "writing">[] = [];
+  if (can.word) options.push("listen-type");
+  if (can.sentence && level >= 3) options.push("listen-cloze");
+  return options.length ? options[Math.floor(random() * options.length)]! : null;
+}

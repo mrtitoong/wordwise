@@ -23,7 +23,30 @@
     "emptyTitle": "Start with your first word",
     "emptyBody": "Add a word you just came across, or pick a ready-made set for your goal.",
     "addFirst": "Add your first word",
-    "browseLibrary": "Browse word sets"
+    "browseLibrary": "Browse word sets",
+    "streakLabel": "Study streak",
+    "streakDays": "{count, plural, one {# day streak} other {# day streak}}",
+    "restLeft": "1 rest day left this week",
+    "restUsed": "rest day used this week",
+    "best": "best {count} days",
+    "gentleTitle": "Welcome back!",
+    "gentleBody": "Today you'll review only the {count} most important cards; the rest is spread over the next days. New words are paused until you catch up.",
+    "resumeTitle": "Continue your session",
+    "resumeBody": "{left}/{total} questions left",
+    "resume": "Continue",
+    "doneTitle": "Done for today!",
+    "doneBody": "About {count, plural, one {# card} other {# cards}} tomorrow.",
+    "doneBodyNone": "Nothing is due tomorrow yet.",
+    "moreWords": "Learn {count} more new words",
+    "reviewTitle": "Today's review",
+    "cards": "to review",
+    "newWords": "new words",
+    "minutes": "minutes",
+    "start": "Start",
+    "short": "Quick 5-minute session",
+    "queued": "Up next: {count, plural, one {# word} other {# words}} waiting",
+    "see": "View",
+    "recent": "Recently added"
   },
   "words": {
     "title": "My words",
@@ -369,7 +392,8 @@
       "retry": "Try again",
       "signIn": "Sign in",
       "back": "Back"
-    }
+    },
+    "reviewThis": "Review this word"
   },
   "notebooks": {
     "newNotebook": "New notebook",
@@ -698,6 +722,70 @@
       "inNotebook": "already in this notebook, skipped",
       "didYouMean": "Did you mean <b>{word}</b>? Tap to fix.",
       "imageFailed": "Couldn't save the context photo; the words were still added."
+    }
+  },
+  "review": {
+    "title": "Review session",
+    "loading": "Preparing your session…",
+    "emptyTitle": "Nothing to review right now",
+    "emptyBody": "You're all caught up, or the word content hasn't been downloaded yet (needs a connection the first time).",
+    "backHome": "Back to Today",
+    "close": "Leave session",
+    "progress": "Session progress",
+    "mute": "Mute sound",
+    "unmute": "Unmute sound",
+    "exitTitle": "Leave the session?",
+    "exitBody": "Your answers so far are saved. You can continue this session later from Today.",
+    "stay": "Stay",
+    "exit": "Leave",
+    "newWord": "New word",
+    "openCard": "Open full card",
+    "gotIt": "Got it, test me",
+    "context": "Where you met it",
+    "flip": "Tap to flip the card",
+    "cardBack": "Back of the card",
+    "flipHint": "Recall the meaning, then tap to flip (Space)",
+    "flipHintReverse": "Recall the English word, then tap to flip (Space)",
+    "show": "Show answer",
+    "rateLabel": "How well did you remember it?",
+    "rating": {
+      "again": "Again",
+      "hard": "Hard",
+      "good": "Good",
+      "easy": "Easy"
+    },
+    "interval": {
+      "minute": "{count} min",
+      "hour": "{count} h",
+      "day": "{count, plural, one {# day} other {# days}}",
+      "month": "{count, plural, one {# month} other {# months}}",
+      "year": "{count, plural, one {# year} other {# years}}"
+    },
+    "mcqPickMeaning": "Choose the right meaning",
+    "mcqPickWord": "Choose the right English word",
+    "options": "Answers",
+    "correctAnswer": "Correct answer",
+    "yourAnswer": "Your choice",
+    "right": "Correct!",
+    "wrong": "Not quite",
+    "next": "Next",
+    "result": {
+      "streak": "{count, plural, one {# day streak} other {# day streak}}",
+      "answers": "answers",
+      "accuracy": "correct",
+      "time": "time",
+      "minutes": "{count} min",
+      "levelUps": "{count, plural, one {# word} other {# words}} reached a new level",
+      "missedTitle": "Words to watch",
+      "noMistakes": "No mistakes!",
+      "tomorrow": "Tomorrow: about {count, plural, one {# card} other {# cards}}, {minutes} min.",
+      "tomorrowNone": "Nothing is due tomorrow yet.",
+      "guestPrompt": "You're learning as a guest: your data lives only on this device. Create a free account to keep your progress and learn on any device.",
+      "later": "Later",
+      "signUp": "Create account",
+      "done": "Done",
+      "retry": "Review mistakes",
+      "moreWords": "Learn {count} more new words"
     }
   }
 }

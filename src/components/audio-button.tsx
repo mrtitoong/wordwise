@@ -17,6 +17,8 @@ export interface AudioButtonProps {
   resolveUrl?: () => Promise<string | null>;
   /** Hiện nút đổi tốc độ 1x / 0.75x bên cạnh. */
   showRate?: boolean;
+  /** Tự phát một lần khi hiện ra (thẻ trong phiên ôn). */
+  autoPlay?: boolean;
   className?: string;
 }
 
@@ -27,6 +29,7 @@ export function AudioButton({
   url,
   resolveUrl,
   showRate,
+  autoPlay,
   className,
 }: AudioButtonProps) {
   const t = useTranslations("audio");
@@ -35,6 +38,13 @@ export function AudioButton({
   const [playing, setPlaying] = useState(false);
 
   useEffect(() => () => player.stop(), [player]);
+
+  useEffect(() => {
+    if (!autoPlay) return;
+    void player.play({ url, resolveUrl, text, voice, rate: 1, onEnd: () => {} });
+    // Chỉ phát khi thẻ hiện ra (đổi từ), không phát lại khi đổi tốc độ.
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [autoPlay, text, voice, url]);
 
   async function play() {
     setPlaying(true);

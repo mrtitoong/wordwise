@@ -23,7 +23,30 @@
     "emptyTitle": "Bắt đầu với từ đầu tiên",
     "emptyBody": "Thêm từ bạn vừa gặp, hoặc chọn một bộ từ có sẵn theo mục tiêu của bạn.",
     "addFirst": "Thêm từ đầu tiên",
-    "browseLibrary": "Chọn bộ từ có sẵn"
+    "browseLibrary": "Chọn bộ từ có sẵn",
+    "streakLabel": "Chuỗi ngày học",
+    "streakDays": "Chuỗi {count} ngày",
+    "restLeft": "còn 1 ngày nghỉ tuần này",
+    "restUsed": "đã dùng ngày nghỉ tuần này",
+    "best": "kỷ lục {count} ngày",
+    "gentleTitle": "Chào mừng trở lại!",
+    "gentleBody": "Hôm nay chỉ ôn {count} thẻ quan trọng nhất, phần còn lại ôn dần các ngày sau. Từ mới tạm dừng cho tới khi bạn bắt kịp.",
+    "resumeTitle": "Tiếp tục phiên dở",
+    "resumeBody": "Còn {left}/{total} câu",
+    "resume": "Tiếp tục",
+    "doneTitle": "Xong hôm nay!",
+    "doneBody": "Ngày mai khoảng {count} thẻ.",
+    "doneBodyNone": "Ngày mai chưa có thẻ nào đến hạn.",
+    "moreWords": "Học thêm {count} từ mới",
+    "reviewTitle": "Ôn hôm nay",
+    "cards": "thẻ cần ôn",
+    "newWords": "từ mới",
+    "minutes": "phút",
+    "start": "Bắt đầu",
+    "short": "Phiên ngắn 5 phút",
+    "queued": "Sắp học: {count} từ đang chờ",
+    "see": "Xem",
+    "recent": "Thêm gần đây"
   },
   "words": {
     "title": "Từ của tôi",
@@ -369,7 +392,8 @@
       "retry": "Thử lại",
       "signIn": "Đăng nhập",
       "back": "Quay lại"
-    }
+    },
+    "reviewThis": "Ôn từ này"
   },
   "notebooks": {
     "newNotebook": "Sổ tay mới",
@@ -698,6 +722,70 @@
       "inNotebook": "đã có trong sổ này, bỏ qua",
       "didYouMean": "Có phải <b>{word}</b>? Chạm để sửa.",
       "imageFailed": "Chưa lưu được ảnh ngữ cảnh, từ vẫn được thêm."
+    }
+  },
+  "review": {
+    "title": "Phiên ôn",
+    "loading": "Đang chuẩn bị phiên ôn…",
+    "emptyTitle": "Không có gì cần ôn lúc này",
+    "emptyBody": "Thẻ đã ôn hết, hoặc nội dung từ chưa tải về máy (cần có mạng lần đầu).",
+    "backHome": "Về Hôm nay",
+    "close": "Thoát phiên",
+    "progress": "Tiến độ phiên",
+    "mute": "Tắt âm thanh",
+    "unmute": "Bật âm thanh",
+    "exitTitle": "Thoát phiên?",
+    "exitBody": "Kết quả các câu đã làm đã được lưu. Bạn có thể tiếp tục phiên này sau từ màn Hôm nay.",
+    "stay": "Ở lại",
+    "exit": "Thoát",
+    "newWord": "Từ mới",
+    "openCard": "Xem thẻ đầy đủ",
+    "gotIt": "Đã xem, kiểm tra",
+    "context": "Câu bạn gặp",
+    "flip": "Chạm để lật thẻ",
+    "cardBack": "Mặt sau thẻ",
+    "flipHint": "Nhớ nghĩa của từ này rồi chạm để lật (Space)",
+    "flipHintReverse": "Nhớ từ tiếng Anh rồi chạm để lật (Space)",
+    "show": "Hiện đáp án",
+    "rateLabel": "Bạn nhớ từ này thế nào?",
+    "rating": {
+      "again": "Quên",
+      "hard": "Khó",
+      "good": "Được",
+      "easy": "Dễ"
+    },
+    "interval": {
+      "minute": "{count} phút",
+      "hour": "{count} giờ",
+      "day": "{count} ngày",
+      "month": "{count} tháng",
+      "year": "{count} năm"
+    },
+    "mcqPickMeaning": "Chọn nghĩa đúng",
+    "mcqPickWord": "Chọn từ tiếng Anh đúng",
+    "options": "Các đáp án",
+    "correctAnswer": "Đáp án đúng",
+    "yourAnswer": "Bạn chọn",
+    "right": "Chính xác!",
+    "wrong": "Chưa đúng",
+    "next": "Tiếp",
+    "result": {
+      "streak": "Chuỗi {count} ngày",
+      "answers": "câu",
+      "accuracy": "đúng",
+      "time": "thời gian",
+      "minutes": "{count} phút",
+      "levelUps": "{count} từ lên mức thuộc mới",
+      "missedTitle": "Từ cần chú ý",
+      "noMistakes": "Không sai câu nào!",
+      "tomorrow": "Ngày mai: khoảng {count} thẻ, {minutes} phút.",
+      "tomorrowNone": "Ngày mai chưa có thẻ nào đến hạn.",
+      "guestPrompt": "Bạn đang học ở chế độ khách: dữ liệu chỉ nằm trên máy này. Tạo tài khoản miễn phí để không mất tiến độ và học trên mọi thiết bị.",
+      "later": "Để sau",
+      "signUp": "Tạo tài khoản",
+      "done": "Xong",
+      "retry": "Ôn lại từ sai",
+      "moreWords": "Học thêm {count} từ mới"
     }
   }
 }

@@ -1,0 +1,462 @@
+"use client";
+
+import { useCallback, useEffect, useRef, useState } from "react";
+import { useRouter } from "next/navigation";
+import { Volume2, VolumeX, X } from "lucide-react";
+import { Rating, type FSRS, type Grade } from "ts-fsrs";
+import { useTranslations } from "next-intl";
+import { Button } from "@/components/ui/button";
+import { Sheet } from "@/components/ui/sheet";
+import { getLocalDb } from "@/lib/db/local";
+import { openExtraWords, recordReview, weightsOf } from "@/lib/db/repo";
+import { clearSession, markSessionFinished, saveSession } from "@/lib/db/review-store";
+import type { Voice } from "@/lib/media/tts-azure";
+import { localDay } from "@/lib/notebooks/introductions";
+import { buildMcq, type ChoiceSense, type Mcq } from "@/lib/review/mcq";
+import {
+  canResume,
+  intervalLabel,
+  summarize,
+  type Answer,
+  type SavedSession,
+  type SessionSummary,
+} from "@/lib/review/session";
+import { planToday } from "@/lib/review/today";
+import { nextDueByRating } from "@/lib/srs/cards";
+import { gradeFromOutcome, medianResponseMs, pickMode, type ReviewMode } from "@/lib/srs/grade";
+import { masteryLevel } from "@/lib/srs/mastery";
+import { requeue, type SessionItem } from "@/lib/srs/queue";
+import { createScheduler } from "@/lib/srs/scheduler";
+import { useOwner } from "@/lib/sync/owner";
+import { Flashcard } from "./modes/flashcard";
+import { MultipleChoice } from "./modes/multiple-choice";
+import { NewWordIntro } from "./modes/new-word";
+import type { Intervals, ModeAnswer } from "./modes/types";
+import {
+  loadChoicePool,
+  prepareCards,
+  readLocalWords,
+  relatedOf,
+  type PreparedCard,
+} from "./session-content";
+import { SessionResult } from "./session-result";
+import { loadReviewData, toTodayInput, type ReviewData } from "./use-review-data";
+
+export type SessionOptions = {
+  /** Phiên ngắn 5 phút. */
+  short?: boolean;
+  /** "Học thêm N từ mới". */
+  more?: number;
+  /** "Ôn từ này": chỉ một thẻ. */
+  cardId?: string;
+  /** "Ôn lại từ sai". */
+  retry?: string[];
+  /** Tiếp tục phiên dở. */
+  resume?: boolean;
+};
+
+type Kind = "full" | "short" | "single" | "retry";
+
+type Run = {
+  kind: Kind;
+  day: string;
+  queue: SessionItem[];
+  position: number;
+  answers: Answer[];
+  startedAt: string;
+};
+
+/** Cách hỏi câu hiện tại (chọn một lần khi câu hiện ra). */
+type Ask =
+  | { step: "intro" }
+  | { step: "flashcard"; reverse: boolean; intervals: Intervals }
+  | { step: "mcq"; mcq: Mcq };
+
+const MUTE_KEY = "ww_review_muted";
+/** Chế độ đã có ở GĐ3 (GĐ4–5 thêm tập viết, nghe, phát âm). */
+const AVAILABLE_MODES: ReviewMode[] = ["flashcard", "mcq"];
+
+function readMuted(): boolean {
+  try {
+    return localStorage.getItem(MUTE_KEY) === "1";
+  } catch {
+    return false;
+  }
+}
+
+function intervalsOf(scheduler: FSRS, card: PreparedCard["card"], now: Date): Intervals {
+  const dues = nextDueByRating(scheduler, card, now);
+  const out = {} as Intervals;
+  for (const rating of [Rating.Again, Rating.Hard, Rating.Good, Rating.Easy] as Grade[]) {
+    out[rating] = intervalLabel(now, dues[rating]);
+  }
+  return out;
+}
+
+export function SessionScreen({ options }: { options: SessionOptions }) {
+  const t = useTranslations("review");
+  const router = useRouter();
+  const owner = useOwner();
+  const [data, setData] = useState<ReviewData | null>(null);
+  const [run, setRun] = useState<Run | null>(null);
+  const [prepared, setPrepared] = useState<Map<string, PreparedCard>>(new Map());
+  const [pool, setPool] = useState<ChoiceSense[]>([]);
+  const [ask, setAsk] = useState<Ask | null>(null);
+  const [phase, setPhase] = useState<"loading" | "run" | "done" | "empty">("loading");
+  const [summary, setSummary] = useState<SessionSummary | null>(null);
+  const [muted, setMuted] = useState(readMuted);
+  const [confirmExit, setConfirmExit] = useState(false);
+  const [busy, setBusy] = useState(false);
+  const started = useRef(false);
+  /** Thẻ ôn ngoài lịch ("Ôn từ này", "Ôn lại từ sai" khi chưa đến hạn). */
+  const extraIds = useRef(new Set<string>());
+
+  const scheduler = useRef<FSRS | null>(null);
+
+  /** Chọn cách hỏi cho câu ở vị trí `position`. */
+  const setupAsk = useCallback(
+    (r: Run, cards: Map<string, PreparedCard>, choices: ChoiceSense[]) => {
+      const item = r.queue[r.position];
+      const prep = item && cards.get(item.cardId);
+      if (!item || !prep) return setAsk(null);
+      const now = new Date();
+      const flashcard = (reverse: boolean): Ask => ({
+        step: "flashcard",
+        reverse,
+        intervals: intervalsOf(scheduler.current!, prep.card, now),
+      });
+      if (prep.card.state === 0) return setAsk(item.isNew ? { step: "intro" } : flashcard(false));
+      const level = masteryLevel(prep.card);
+      const mode = pickMode(level, AVAILABLE_MODES);
+      if (mode === "mcq") {
+        const mcq = buildMcq(
+          {
+            senseId: prep.senseId,
+            wordId: prep.word.id,
+            lemma: prep.word.content.lemma,
+            pos: prep.word.content.pos,
+            meaning: prep.meaning,
+          },
+          choices,
+          {
+            direction: level >= 2 && Math.random() < 0.5 ? "meaning-to-word" : "word-to-meaning",
+            confusables: prep.confusables,
+          },
+        );
+        if (mcq) return setAsk({ step: "mcq", mcq });
+      }
+      setAsk(flashcard(level >= 2 && Math.random() < 0.3));
+    },
+    [],
+  );
+
+  // Xếp hàng phiên (một lần khi đã biết người dùng).
+  useEffect(() => {
+    if (!owner || started.current) return;
+    started.current = true;
+    void (async () => {
+      const db = getLocalDb();
+      const now = new Date();
+      if (options.more) await openExtraWords(db, owner, options.more, now);
+      const fresh = await loadReviewData(owner);
+      scheduler.current = createScheduler({
+        desiredRetention: fresh.settings.desired_retention,
+        weights: weightsOf(fresh.settings),
+      });
+      const day = localDay(now, fresh.settings.timezone);
+      const learning = fresh.userWords.filter((u) => !u.deleted_at && u.status === "learning");
+      const known = await readLocalWords(
+        db,
+        fresh,
+        learning.map((u) => u.sense_id),
+      );
+      const input = toTodayInput(fresh, (senseId) => {
+        const wordId = fresh.senses.get(senseId)?.word.id;
+        const word = wordId ? known.get(wordId) : undefined;
+        return word ? relatedOf(word) : [];
+      });
+
+      let next: Run;
+      if (options.resume && canResume(fresh.saved, owner, day)) {
+        const saved = fresh.saved!;
+        next = {
+          kind: "full",
+          day,
+          queue: saved.queue,
+          position: saved.position,
+          answers: saved.answers,
+          startedAt: saved.startedAt,
+        };
+      } else if (options.cardId || options.retry?.length) {
+        const ids = options.cardId ? [options.cardId] : options.retry!;
+        const plan = planToday(input, scheduler.current, now, { onlyCardIds: new Set(ids) });
+        const planned = new Set(plan.items.map((i) => i.cardId));
+        const queue = [
+          ...plan.items,
+          ...ids.filter((id) => !planned.has(id)).map((cardId) => ({ cardId, isNew: false })),
+        ];
+        for (const id of ids) if (!planned.has(id)) extraIds.current.add(id);
+        next = {
+          kind: options.cardId ? "single" : "retry",
+          day,
+          queue,
+          position: 0,
+          answers: [],
+          startedAt: now.toISOString(),
+        };
+      } else {
+        const plan = planToday(input, scheduler.current, now, {
+          short: options.short,
+          extraNew: options.more,
+        });
+        next = {
+          kind: options.short ? "short" : "full",
+          day,
+          queue: plan.items,
+          position: 0,
+          answers: [],
+          startedAt: now.toISOString(),
+        };
+      }
+
+      const cards = await prepareCards(
+        db,
+        fresh,
+        next.queue.map((i) => i.cardId),
+        known,
+      );
+      // Thẻ không có nội dung (offline, chưa tải được) bị bỏ qua.
+      const kept = next.queue.filter((i) => cards.has(i.cardId));
+      const position = Math.min(
+        next.position -
+          next.queue.slice(0, next.position).filter((i) => !cards.has(i.cardId)).length,
+        kept.length,
+      );
+      next = { ...next, queue: kept, position };
+      const choices = await loadChoicePool(db);
+      setData(fresh);
+      setPrepared(cards);
+      setPool(choices);
+      setRun(next);
+      if (next.position >= next.queue.length) {
+        setPhase("empty");
+        return;
+      }
+      setupAsk(next, cards, choices);
+      setPhase("run");
+    })();
+  }, [owner, options, setupAsk]);
+
+  async function finish(r: Run) {
+    const db = getLocalDb();
+    await clearSession(db, owner!);
+    await markSessionFinished(db, owner!, r.day, r.kind === "full");
+    setSummary(summarize(r.answers, new Date(r.startedAt), new Date()));
+    setPhase("done");
+  }
+
+  async function handleAnswer(answer: ModeAnswer) {
+    if (!run || !owner || !data || busy || !ask) return;
+    const item = run.queue[run.position]!;
+    const prep = prepared.get(item.cardId)!;
+    setBusy(true);
+    try {
+      const db = getLocalDb();
+      const now = new Date();
+      const mode: ReviewMode = ask.step === "mcq" ? "mcq" : "flashcard";
+      const levelBefore = masteryLevel(prep.card);
+      const rating = gradeFromOutcome({
+        mode,
+        ...answer,
+        cardLevel: levelBefore,
+        userMedianMs: medianResponseMs(data.logs, mode),
+      });
+      const extra = extraIds.current.has(item.cardId);
+      const result = await recordReview(db, owner, item.cardId, {
+        rating,
+        mode,
+        reviewedAt: now,
+        responseMs: answer.responseMs,
+        correct: answer.correct,
+        extra,
+      });
+      // Quên khi ôn ngoài lịch: lượt đó đã tính vào lịch, các lượt sau là ôn thật.
+      if (extra && rating === Rating.Again) extraIds.current.delete(item.cardId);
+      const cards = new Map(prepared).set(item.cardId, { ...prep, card: result.card });
+      const answers: Answer[] = [
+        ...run.answers,
+        {
+          cardId: item.cardId,
+          wordId: prep.word.id,
+          lemma: prep.word.content.lemma,
+          rating,
+          correct: answer.correct,
+          levelBefore,
+          levelAfter: masteryLevel(result.card),
+        },
+      ];
+      const queue = result.log.is_extra
+        ? run.queue
+        : requeue(
+            run.queue,
+            run.position,
+            item,
+            { again: rating === Rating.Again, nextDue: new Date(result.card.due) },
+            now,
+          );
+      const next: Run = { ...run, queue, position: run.position + 1, answers };
+      setPrepared(cards);
+      setRun(next);
+      if (next.position >= next.queue.length) {
+        await finish(next);
+        return;
+      }
+      if (next.kind === "full" || next.kind === "short") {
+        const saved: SavedSession = {
+          owner,
+          day: next.day,
+          queue: next.queue,
+          position: next.position,
+          answers: next.answers,
+          startedAt: next.startedAt,
+        };
+        await saveSession(db, saved);
+      }
+      setupAsk(next, cards, pool);
+    } finally {
+      setBusy(false);
+    }
+  }
+
+  function toggleMute() {
+    const value = !muted;
+    setMuted(value);
+    try {
+      localStorage.setItem(MUTE_KEY, value ? "1" : "0");
+    } catch {
+      // Không lưu được: chỉ áp dụng cho phiên này.
+    }
+  }
+
+  if (phase === "loading") {
+    return (
+      <p className="py-24 text-center text-muted-foreground" role="status">
+        {t("loading")}
+      </p>
+    );
+  }
+
+  if (phase === "empty") {
+    return (
+      <div className="flex flex-col items-center gap-4 py-24 text-center">
+        <p className="text-lg font-semibold">{t("emptyTitle")}</p>
+        <p className="text-sm text-muted-foreground">{t("emptyBody")}</p>
+        <Button className="min-h-11" onClick={() => router.push("/")}>
+          {t("backHome")}
+        </Button>
+      </div>
+    );
+  }
+
+  if (phase === "done" && summary && run && data) {
+    return <SessionResult summary={summary} owner={owner!} kind={run.kind} />;
+  }
+
+  const item = run?.queue[run.position];
+  const prep = item && prepared.get(item.cardId);
+  if (!run || !item || !prep || !ask || !data) return null;
+  const voice: Voice = data.settings.accent === "uk" ? "uk" : "us";
+  const total = run.queue.length;
+
+  return (
+    <div className="flex min-h-dvh flex-col gap-4 pt-[env(safe-area-inset-top,0px)] pb-[calc(1rem+env(safe-area-inset-bottom,0px))]">
+      <header className="flex h-14 items-center gap-2">
+        <button
+          type="button"
+          aria-label={t("close")}
+          onClick={() => setConfirmExit(true)}
+          className="-ml-2 flex size-11 items-center justify-center rounded-full text-muted-foreground hover:bg-muted focus-visible:outline-2 focus-visible:outline-ring"
+        >
+          <X className="size-5" aria-hidden />
+        </button>
+        <div
+          className="h-2 flex-1 overflow-hidden rounded-full bg-muted"
+          role="progressbar"
+          aria-label={t("progress")}
+          aria-valuemin={0}
+          aria-valuemax={total}
+          aria-valuenow={run.position}
+        >
+          <div
+            className="h-full rounded-full bg-primary transition-all"
+            style={{ width: `${(run.position / total) * 100}%` }}
+          />
+        </div>
+        <span className="text-sm text-muted-foreground tabular-nums">
+          {run.position + 1}/{total}
+        </span>
+        <button
+          type="button"
+          aria-label={t(muted ? "unmute" : "mute")}
+          aria-pressed={muted}
+          onClick={toggleMute}
+          className="-mr-2 flex size-11 items-center justify-center rounded-full text-muted-foreground hover:bg-muted focus-visible:outline-2 focus-visible:outline-ring"
+        >
+          {muted ? (
+            <VolumeX className="size-5" aria-hidden />
+          ) : (
+            <Volume2 className="size-5" aria-hidden />
+          )}
+        </button>
+      </header>
+
+      <div key={`${run.position}:${item.cardId}:${ask.step}`} className="flex flex-1 flex-col">
+        {ask.step === "intro" ? (
+          <NewWordIntro
+            item={prep}
+            voice={voice}
+            muted={muted}
+            onContinue={() =>
+              setAsk({
+                step: "flashcard",
+                reverse: false,
+                intervals: intervalsOf(scheduler.current!, prep.card, new Date()),
+              })
+            }
+          />
+        ) : ask.step === "mcq" ? (
+          <MultipleChoice
+            item={prep}
+            voice={voice}
+            muted={muted}
+            mcq={ask.mcq}
+            onAnswer={(a) => void handleAnswer(a)}
+          />
+        ) : (
+          <Flashcard
+            item={prep}
+            voice={voice}
+            muted={muted}
+            reverse={ask.reverse}
+            intervals={ask.intervals}
+            onAnswer={(a) => void handleAnswer(a)}
+          />
+        )}
+      </div>
+
+      {confirmExit && (
+        <Sheet open onOpenChange={(o) => !o && setConfirmExit(false)} title={t("exitTitle")}>
+          <p className="text-sm">{t("exitBody")}</p>
+          <div className="grid grid-cols-2 gap-2">
+            <Button variant="outline" className="min-h-11" onClick={() => setConfirmExit(false)}>
+              {t("stay")}
+            </Button>
+            <Button className="min-h-11" onClick={() => router.push("/")}>
+              {t("exit")}
+            </Button>
+          </div>
+        </Sheet>
+      )}
+    </div>
+  );
+}

@@ -121,6 +121,8 @@ export type InputMethod = "typed" | "voice" | "photo" | "csv" | "list";
 export type AddEntry = {
   senseId: string;
   contextSentence?: string | null;
+  /** Ảnh gốc nơi gặp từ (storage://user-images/…), khi người dùng chọn giữ ảnh chụp. */
+  contextImageUrl?: string | null;
   tags?: string[];
   /** Ghi chú riêng → "Ghi chú của bạn" ở tab Nghĩa (không thêm trùng). */
   note?: string | null;
@@ -241,7 +243,7 @@ export async function addSensesToNotebook(
           user_word_id: uwId,
           input_method: options.inputMethod,
           context_sentence: item.contextSentence ?? null,
-          context_image_url: null,
+          context_image_url: item.contextImageUrl ?? null,
           source: options.source ?? null,
           tags: item.tags ?? [],
           added_at: addedAt,

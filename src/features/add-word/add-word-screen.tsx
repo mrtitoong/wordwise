@@ -13,6 +13,7 @@ import { useOwner } from "@/lib/sync/owner";
 import { cn } from "@/lib/utils";
 import { BulkEntry } from "./bulk-entry";
 import { FileEntry } from "./file-entry";
+import { PhotoEntry } from "./photo/photo-entry";
 import { VoiceEntry } from "./voice-entry";
 import { PremiumSheet } from "./premium-sheet";
 import { SingleEntry } from "./single-entry";
@@ -48,6 +49,8 @@ export type EntryContext = {
   dailyLimit: number;
   /** Giọng Mỹ/Anh trong Cài đặt (nhận dạng giọng nói). */
   accent: "us" | "uk";
+  /** Trình độ trong Cài đặt (tab Ảnh bỏ từ quá dễ khi tự chọn). */
+  cefrLevel: string | null;
   onLimit: (plan: "free" | "premium", limit: number) => void;
 };
 
@@ -60,7 +63,7 @@ export function AddWordScreen({ initialNotebookId }: { initialNotebookId: string
   const online = useOnlineStatus();
   const [chosen, setChosen] = useState<string | null>(initialNotebookId);
   const [bulkText, setBulkText] = useState<string | null>(null);
-  const [tab, setTab] = useState<"typed" | "voice" | "file">("typed");
+  const [tab, setTab] = useState<(typeof TABS)[number]>("typed");
   const [limit, setLimit] = useState<{ plan: "free" | "premium"; limit: number } | null>(null);
 
   // Người dùng bỏ qua 5 từ khởi đầu thì chưa có "Sổ của tôi".
@@ -85,6 +88,7 @@ export function AddWordScreen({ initialNotebookId }: { initialNotebookId: string
       entries,
       dailyLimit: settings?.daily_new_limit ?? 10,
       accent: settings?.accent === "uk" ? ("uk" as const) : ("us" as const),
+      cefrLevel: settings?.cefr_level ?? null,
       slots,
     };
   }, [owner]);
@@ -118,6 +122,7 @@ export function AddWordScreen({ initialNotebookId }: { initialNotebookId: string
       openSlots: data.slots,
       dailyLimit: data.dailyLimit,
       accent: data.accent,
+      cefrLevel: data.cefrLevel,
       onLimit: (plan, max) => setLimit({ plan, limit: max }),
     };
   }, [owner, data, notebook, online]);
@@ -163,7 +168,6 @@ export function AddWordScreen({ initialNotebookId }: { initialNotebookId: string
         className="grid grid-cols-4 gap-1 rounded-xl bg-muted p-1"
       >
         {TABS.map((id) => {
-          const available = id !== "photo";
           const active = id === tab;
           return (
             <button
@@ -171,25 +175,20 @@ export function AddWordScreen({ initialNotebookId }: { initialNotebookId: string
               type="button"
               role="tab"
               aria-selected={active}
-              disabled={!available}
-              onClick={() => available && setTab(id)}
+              onClick={() => setTab(id)}
               className={cn(
                 "flex min-h-11 flex-col items-center justify-center rounded-lg text-sm leading-tight focus-visible:outline-2 focus-visible:outline-ring",
-                active
-                  ? "bg-background font-semibold shadow-sm"
-                  : available
-                    ? "text-foreground"
-                    : "text-muted-foreground/70",
+                active ? "bg-background font-semibold shadow-sm" : "text-foreground",
               )}
             >
               {t(`addWord.tabs.${id}`)}
-              {!available && <span className="text-[10px]">{t("addWord.comingSoon")}</span>}
             </button>
           );
         })}
       </div>
 
       {context && tab === "file" && <FileEntry context={context} />}
+      {context && tab === "photo" && <PhotoEntry context={context} />}
       {context && tab === "voice" && (
         <VoiceEntry context={context} onTypeInstead={() => setTab("typed")} />
       )}

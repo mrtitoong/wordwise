@@ -50,6 +50,15 @@ export async function uploadUserImage(owner: string, file: File): Promise<Upload
   } catch {
     return { ok: false, error: "unsupported" };
   }
+  return uploadImageBlob(owner, image);
+}
+
+/** Tải ảnh đã nén sẵn (≤ USER_IMAGE_MAX_BYTES) lên thư mục của người dùng. */
+export async function uploadImageBlob(
+  owner: string,
+  image: { blob: Blob; ext: "webp" | "jpg" },
+): Promise<UploadResult> {
+  if (image.blob.size > USER_IMAGE_MAX_BYTES) return { ok: false, error: "unsupported" };
   const path = userImagePath(owner, randomId(), image.ext);
   const { error } = await createClient()
     .storage.from(USER_IMAGES_BUCKET)

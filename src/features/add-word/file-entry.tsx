@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useMemo, useState } from "react";
+import { useMemo, useState } from "react";
 import Link from "next/link";
 import { useLiveQuery } from "dexie-react-hooks";
 import { FileUp, Sparkles } from "lucide-react";
@@ -30,6 +30,7 @@ import type { ResolveResponse } from "@/lib/words/api";
 import { resolveWords } from "@/lib/words/request-word";
 import { startImport } from "@/features/import/import-runner";
 import type { EntryContext } from "./add-word-screen";
+import { usePlan } from "./use-plan";
 
 const CHUNK = 50;
 const PREVIEW_LIMIT = 100;
@@ -66,25 +67,6 @@ const columnName = (i: number) =>
   i < 26
     ? String.fromCharCode(65 + i)
     : `${String.fromCharCode(64 + Math.floor(i / 26))}${String.fromCharCode(65 + (i % 26))}`;
-
-/** Gói hiện tại (đọc hồ sơ của chính mình); null khi chưa biết. */
-function usePlan(owner: string, signedIn: boolean): "free" | "premium" | null {
-  const [plan, setPlan] = useState<"free" | "premium" | null>(null);
-  useEffect(() => {
-    if (!signedIn || !getSupabaseEnv()) return;
-    let cancelled = false;
-    void createClient()
-      .from("profiles")
-      .select("plan")
-      .eq("user_id", owner)
-      .single()
-      .then(({ data }) => !cancelled && setPlan(data?.plan === "premium" ? "premium" : "free"));
-    return () => {
-      cancelled = true;
-    };
-  }, [owner, signedIn]);
-  return plan;
-}
 
 type Preview = {
   row: ImportRow;

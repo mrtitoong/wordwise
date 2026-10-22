@@ -5,6 +5,7 @@
 import type { FSRS } from "ts-fsrs";
 import type { CardRow } from "@/lib/db/types";
 import { retrievability } from "./cards";
+import type { ReviewMode } from "./grade";
 
 /** Một thẻ có thể vào phiên, kèm thông tin để trộn thứ tự. */
 export type QueueCard = {
@@ -44,7 +45,12 @@ export type SessionSettings = {
   lastReviewAt: Date | null;
 };
 
-export type SessionItem = { cardId: string; isNew: boolean };
+export type SessionItem = {
+  cardId: string;
+  isNew: boolean;
+  /** Luyện tập chọn một chế độ: câu hỏi theo chế độ này thay vì để phiên tự chọn. */
+  mode?: ReviewMode;
+};
 
 export type SessionPlan = {
   items: SessionItem[];

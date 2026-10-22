@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import { getTranslations } from "next-intl/server";
 import { z } from "zod";
 import { SessionScreen, type SessionOptions } from "@/features/review/session-screen";
+import { parsePractice } from "@/lib/review/practice";
 
 export async function generateMetadata(): Promise<Metadata> {
   const t = await getTranslations("review");
@@ -26,6 +27,17 @@ export default async function ReviewSessionPage({ searchParams }: { searchParams
     ...(more.success ? { more: more.data } : {}),
     ...(card.success ? { cardId: card.data } : {}),
     ...(retry.length ? { retry } : {}),
+    ...(one(params.practice) === "1"
+      ? {
+          practice: parsePractice({
+            nb: one(params.nb),
+            tag: one(params.tag),
+            status: one(params.status),
+            mode: one(params.mode),
+            n: one(params.n),
+          }),
+        }
+      : {}),
   };
   return (
     <main className="mx-auto min-h-dvh max-w-md px-4">

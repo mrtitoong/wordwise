@@ -1,7 +1,7 @@
 import type { Metadata } from "next";
 import { getTranslations } from "next-intl/server";
 import { TopBar } from "@/components/app-shell/top-bar";
-import { EmptyState } from "@/components/empty-state";
+import { PracticeScreen } from "@/features/practice/practice-screen";
 
 export async function generateMetadata(): Promise<Metadata> {
   const t = await getTranslations("practice");
@@ -13,7 +13,9 @@ export default async function PracticePage() {
   return (
     <>
       <TopBar title={t("title")} />
-      <EmptyState body={t("emptyBody")} />
+      <div className="pt-2">
+        <PracticeScreen />
+      </div>
     </>
   );
 }

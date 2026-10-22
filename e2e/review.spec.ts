@@ -320,4 +320,63 @@ test.describe("Phiên ôn", () => {
     await multi.click();
     await expect(multi).toHaveAttribute("aria-checked", "true");
   });
+
+  test("luyện tập: chọn chế độ → luyện ngoài lịch, nhớ được thì lịch ôn giữ nguyên", async ({
+    page,
+  }) => {
+    await learnStarterWords(page);
+    await page.getByRole("button", { name: "Xong", exact: true }).click();
+    await expect(page).toHaveURL("/");
+    const before = await readLocalStore<Card>(page, "cards");
+
+    await page
+      .getByRole("navigation", { name: "Điều hướng chính" })
+      .getByRole("link", { name: "Luyện tập" })
+      .click();
+    await expect(page).toHaveURL("/practice");
+    await expect(page.getByText("Có 5 từ phù hợp – buổi luyện 5 câu.")).toBeVisible();
+
+    // Không có từ hay quên.
+    await page
+      .getByRole("radiogroup", { name: "Trạng thái" })
+      .getByRole("radio", { name: "Hay quên" })
+      .click();
+    await expect(page.getByText("Chưa có từ nào phù hợp.", { exact: false })).toBeVisible();
+    await expect(page.getByRole("button", { name: "Bắt đầu luyện" })).toBeDisabled();
+    await page
+      .getByRole("radiogroup", { name: "Trạng thái" })
+      .getByRole("radio", { name: "Tất cả" })
+      .click();
+
+    // Trắc nghiệm: 5 câu, đều là ôn ngoài lịch (thẻ chưa đến hạn).
+    const modes = page.getByRole("radiogroup", { name: "Chế độ" });
+    await modes.getByRole("radio", { name: "Trắc nghiệm" }).click();
+    await page.getByRole("button", { name: "Bắt đầu luyện" }).click();
+    await expect(page).toHaveURL(/\/review\/session\?practice=1&mode=mcq&n=10/);
+    await expect(page.getByText(/^1\/5$/)).toBeVisible();
+    for (let i = 0; i < 5; i++) expect(await answerCorrectly(page)).toBe("mcq");
+    await page.getByRole("button", { name: "Xong", exact: true }).click();
+
+    // Tập viết: thẻ Chính tả (vừa mở sau khi học nghĩa).
+    await page.goto("/practice");
+    await modes.getByRole("radio", { name: "Tập viết" }).click();
+    await expect(page.getByText("Có 5 từ phù hợp – buổi luyện 5 câu.")).toBeVisible();
+    await page.getByRole("button", { name: "Bắt đầu luyện" }).click();
+    for (let i = 0; i < 5; i++) {
+      await writeCorrectly(page);
+      await expect(page.getByText("Chính xác!")).toBeVisible();
+      await expect(page.getByText("Chính xác!")).toBeHidden();
+    }
+    await expect(page.getByRole("button", { name: "Xong", exact: true })).toBeVisible();
+
+    const logs = (await readLocalStore<Log>(page, "review_logs")).filter((l) => l.is_extra);
+    expect(logs.filter((l) => l.mode === "mcq")).toHaveLength(5);
+    expect(logs.filter((l) => l.mode === "writing")).toHaveLength(5);
+    // Nhớ được khi ôn ngoài lịch: thẻ không đổi.
+    const after = await readLocalStore<Card>(page, "cards");
+    for (const card of before) {
+      const now = after.find((c) => c.id === card.id)!;
+      expect([now.state, now.due, now.reps]).toEqual([card.state, card.due, card.reps]);
+    }
+  });
 });

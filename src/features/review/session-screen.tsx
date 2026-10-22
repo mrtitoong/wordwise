@@ -30,7 +30,8 @@ import {
   pickMode,
   type ReviewMode,
 } from "@/lib/srs/grade";
-import { listeningVoice, spellingTaskKind } from "@/lib/review/listening";
+import { listeningTaskKind, listeningVoice, spellingTaskKind } from "@/lib/review/listening";
+import { buildPractice, type PracticeRequest } from "@/lib/review/practice";
 import { masteryLevel, type MasteryLevel } from "@/lib/srs/mastery";
 import { getSupabaseEnv } from "@/lib/supabase/env";
 import { requeue, type SessionItem } from "@/lib/srs/queue";
@@ -68,11 +69,13 @@ export type SessionOptions = {
   cardId?: string;
   /** "Ôn lại từ sai". */
   retry?: string[];
+  /** Luyện tập tự chọn (trang Luyện tập): phạm vi, chế độ, số câu. */
+  practice?: PracticeRequest;
   /** Tiếp tục phiên dở. */
   resume?: boolean;
 };
 
-type Kind = "full" | "short" | "single" | "retry";
+type Kind = "full" | "short" | "single" | "retry" | "practice";
 
 type Run = {
   kind: Kind;
@@ -156,7 +159,14 @@ export function SessionScreen({ options }: { options: SessionOptions }) {
         sentence: !!clozeOfItem(prep) && (!!getSupabaseEnv() || canSpeak()),
       };
       if (prep.card.skill === "spelling") {
-        const kind = e2eOverride("spellingKind") ?? spellingTaskKind(level, can);
+        // Luyện tập chọn chế độ: Tập viết luôn viết; Tập nghe thì nghe (không phát được thì viết).
+        const kind =
+          e2eOverride("spellingKind") ??
+          (item.mode === "writing"
+            ? "writing"
+            : item.mode === "listening"
+              ? (listeningTaskKind(level, can) ?? "writing")
+              : spellingTaskKind(level, can));
         return setAsk(
           kind === "writing"
             ? { step: "writing", task: buildWritingTask(prep, level), listen: false, voice }
@@ -173,9 +183,13 @@ export function SessionScreen({ options }: { options: SessionOptions }) {
       const meaningModes = modesForSkill("meaning", AVAILABLE_MODES).filter(
         (m) => m !== "listening" || can.word,
       );
+      const forced = item.mode && meaningModes.includes(item.mode) ? item.mode : undefined;
       const mode =
         (e2eOverride("meaningMode") as ReviewMode | undefined) ??
-        pickMode(Math.min(level, 1) as MasteryLevel, meaningModes);
+        forced ??
+        (item.mode === "listening"
+          ? "mcq"
+          : pickMode(Math.min(level, 1) as MasteryLevel, meaningModes));
       if (mode === "mcq" || mode === "listening") {
         const listen = mode === "listening";
         const mcq = buildMcq(
@@ -241,6 +255,27 @@ export function SessionScreen({ options }: { options: SessionOptions }) {
           position: saved.position,
           answers: saved.answers,
           startedAt: saved.startedAt,
+        };
+      } else if (options.practice) {
+        const plan = buildPractice(
+          {
+            userWords: fresh.userWords,
+            cards: fresh.cards,
+            entries: fresh.entries,
+            practiceSpelling: fresh.settings.practice_spelling ?? true,
+          },
+          options.practice,
+          scheduler.current,
+          now,
+        );
+        for (const id of plan.extra) extraIds.current.add(id);
+        next = {
+          kind: "practice",
+          day,
+          queue: plan.items,
+          position: 0,
+          answers: [],
+          startedAt: now.toISOString(),
         };
       } else if (options.cardId || options.retry?.length) {
         const ids = options.cardId ? [options.cardId] : options.retry!;

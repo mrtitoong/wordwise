@@ -55,7 +55,36 @@
   },
   "practice": {
     "title": "Luyện tập",
-    "emptyBody": "Thêm vài từ để luyện theo sổ tay, chủ đề hoặc chế độ bạn thích."
+    "emptyBody": "Học vài từ ở màn Hôm nay trước, rồi quay lại luyện theo sổ tay, chủ đề hoặc chế độ bạn thích.",
+    "goToday": "Về Hôm nay",
+    "loading": "Đang tải…",
+    "intro": "Luyện thêm theo ý bạn. Từ chưa đến hạn: nhớ được thì lịch ôn giữ nguyên, quên thì sẽ được ôn lại sớm hơn.",
+    "notebook": "Sổ tay",
+    "allNotebooks": "Tất cả sổ",
+    "tag": "Chủ đề",
+    "allTags": "Mọi chủ đề",
+    "status": "Trạng thái",
+    "statuses": {
+      "all": "Tất cả",
+      "learning": "Đang học",
+      "known": "Đã thuộc",
+      "mastered": "Thành thạo",
+      "leech": "Hay quên"
+    },
+    "mode": "Chế độ",
+    "modes": {
+      "auto": "Trộn tự động",
+      "flashcard": "Flashcard",
+      "mcq": "Trắc nghiệm",
+      "writing": "Tập viết",
+      "listening": "Tập nghe"
+    },
+    "count": "Số câu",
+    "countValue": "{count} câu",
+    "available": "Có {available} từ phù hợp – buổi luyện {count} câu.",
+    "none": "Chưa có từ nào phù hợp. Thử chọn phạm vi rộng hơn.",
+    "noneWriting": "Tập viết dùng các từ đã qua mấy lần ôn đầu tiên. Ôn thêm ở Hôm nay rồi quay lại nhé.",
+    "start": "Bắt đầu luyện"
   },
   "stats": {
     "title": "Thống kê",

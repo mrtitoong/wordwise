@@ -356,3 +356,10 @@ Repo: https://github.com/mrtitoong/wordwise
   ý (Khó, hint_level +1). `user_settings.multi_accent` (đã áp lên cloud) đổi ngẫu nhiên giọng mỗi câu
   nghe. Cài đặt: mục "Phiên ôn" (Luyện chính tả, Luyện nhiều giọng). Bản build E2E: `data-e2e-answer`
   và localStorage `ww_e2e_overrides` (ép dạng câu hỏi), hook `patchCards(skill, patch)`.
+- 2026-10-22 (Prompt 4.4): Trang `/practice` (`src/features/practice/practice-screen.tsx`, lõi
+  `src/lib/review/practice.ts`): phạm vi sổ tay · chủ đề (tag, không phân biệt hoa/thường) · trạng thái
+  (Tất cả/Đang học/Đã thuộc/Thành thạo/Hay quên); chế độ Trộn tự động/Flashcard/Trắc nghiệm/Tập viết/
+  Tập nghe; 10/20/30 câu. Chỉ luyện từ đã học (thẻ Nghĩa đã ôn, không Sắp học/Tạm ngưng); mỗi từ một
+  câu, R thấp trước. Tập viết cần thẻ Chính tả; Tập nghe dùng thẻ Chính tả mức ≥ 2 (nghe → gõ) hoặc thẻ
+  Nghĩa (nghe → chọn nghĩa). Thẻ chưa đến hạn là ôn ngoài lịch (`is_extra`), thẻ đến hạn là lượt ôn thật.
+  Phiên `/review/session?practice=1&nb=&tag=&status=&mode=&n=`, `SessionItem.mode` ép chế độ.

@@ -93,8 +93,8 @@ export function OnboardingFlow({ candidates }: OnboardingFlowProps) {
       if (owner !== GUEST_OWNER) await syncWithTimeout();
       const result = await completeOnboarding();
       if (!result.ok) throw new Error("completeOnboarding");
-      // Tải lại hẳn để proxy đọc cookie "đã onboarding".
-      window.location.assign(withStarters ? "/" : "/add");
+      // Tải lại hẳn để proxy đọc cookie "đã onboarding". "Học 5 từ này" vào thẳng phiên học ngắn.
+      window.location.assign(withStarters ? "/review/session" : "/add");
     } catch {
       setSaving(false);
       setFailed(true);

@@ -1,5 +1,6 @@
 /**
- * Chạy thử Edge Function generate-word, word-media, transcribe, ocr-image trên Supabase cục bộ
+ * Chạy thử Edge Function generate-word, word-media, transcribe, ocr-image, assess-pronunciation
+ * trên Supabase cục bộ
  * (job CI "functions"): kiểm tra bundle chạy được trong Deno thật, gọi được các hàm SQL, đăng nhập
  * và RLS đúng.
  * Không có khóa LLM nên chỉ kiểm tra tra kho / xếp việc, không tạo nội dung.
@@ -10,6 +11,7 @@ import { createClient } from "@supabase/supabase-js";
 import type { Database } from "@/lib/db/database.types";
 import { SentenceAudioResponseSchema } from "@/lib/media/api";
 import { OcrResponseSchema } from "@/lib/ocr/api";
+import { AssessResponseSchema } from "@/lib/pronunciation/api";
 import { TranscribeResponseSchema } from "@/lib/voice/api";
 import { bytesToBase64, encodeWav } from "@/lib/voice/wav";
 import { ResolveResponseSchema, WordResponseSchema, type WordResponse } from "@/lib/words/api";
@@ -171,6 +173,35 @@ expect(
     ),
   "transcribe: người dùng gọi được (CI không có khóa Azure → unavailable)",
   userVoice,
+);
+
+/* ---------- Chấm phát âm (Prompt 5.2) ---------- */
+
+async function assess(token: string) {
+  const response = await fetch(`${url}/functions/v1/assess-pronunciation`, {
+    method: "POST",
+    headers: { apikey: key!, authorization: `Bearer ${token}`, "content-type": "application/json" },
+    body: JSON.stringify({
+      text: "resilient",
+      locale: "en-US",
+      audio: bytesToBase64(encodeWav(new Float32Array(1600))),
+    }),
+  });
+  return { status: response.status, body: (await response.json()) as unknown };
+}
+const guestAssess = await assess(key);
+expect(
+  guestAssess.status === 200 &&
+    AssessResponseSchema.parse(guestAssess.body).status === "login_required",
+  "assess-pronunciation: khách → login_required",
+  guestAssess,
+);
+const userAssess = await assess(session.session.access_token);
+expect(
+  userAssess.status === 200 &&
+    ["unavailable", "no_speech", "ok"].includes(AssessResponseSchema.parse(userAssess.body).status),
+  "assess-pronunciation: người dùng gọi được (CI không có khóa Azure → unavailable)",
+  userAssess,
 );
 
 /* ---------- Ảnh chụp (Prompt 2.6) ---------- */

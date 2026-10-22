@@ -90,3 +90,9 @@ export function base64ToBytes(base64: string): Uint8Array {
   for (let i = 0; i < binary.length; i++) bytes[i] = binary.charCodeAt(i);
   return bytes;
 }
+
+/** Chỉ nhận WAV (RIFF…WAVE) để không gửi dữ liệu lạ sang dịch vụ giọng nói. */
+export function isWav(bytes: Uint8Array): boolean {
+  const tag = (offset: number) => String.fromCharCode(...bytes.subarray(offset, offset + 4));
+  return bytes.length > 44 && tag(0) === "RIFF" && tag(8) === "WAVE";
+}

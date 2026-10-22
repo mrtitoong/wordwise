@@ -379,3 +379,11 @@ Repo: https://github.com/mrtitoong/wordwise
   sóng âm), logic thuần `src/lib/voice/recording.ts`. Lần đầu thu hiện màn giải thích quyền micro (cờ
   localStorage `ww_mic_explained`, đặt sau khi được cấp quyền). Trang **Cài đặt → Kiểm tra micro**
   (`/settings/microphone`). E2E thu âm dùng micro giả của Chromium (`e2e/recording.spec.ts`).
+- 2026-10-22 (Prompt 5.2): Edge Function **`assess-pronunciation`** (đã deploy) → `PronunciationScorer`
+  (`src/lib/pronunciation/scorer.ts`), bản đầu Azure Pronunciation Assessment qua REST short audio
+  (WAV 16 kHz, header `Pronunciation-Assessment` base64 JSON: HundredMark, Phoneme, Comprehensive).
+  Trả overall (PronScore), accuracy, fluency, completeness, từng từ và từng âm vị. **Azure chỉ trả tên
+  âm vị IPA cho en-US**; en-GB vẫn có điểm từng âm nhưng `ipa: null`. Cần đăng nhập, usage kind
+  `pronunciation` 100/ngày (`private.settings.user_daily_pronunciation`, đã áp lên cloud). Giá theo tài
+  liệu Azure bằng STT tiêu chuẩn (~$1/giờ âm thanh, có nguồn ghi thêm ~$0,3/giờ) → ~$0,001/lần chấm 3
+  giây. `npm run pronunciation:smoke` thử thật (cần khóa Azure trong .env.local).

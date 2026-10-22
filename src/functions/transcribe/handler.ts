@@ -14,7 +14,7 @@ import {
   type TranscribeResponse,
 } from "@/lib/voice/api";
 import type { SpeechToText } from "@/lib/voice/azure-stt";
-import { base64ToBytes } from "@/lib/voice/wav";
+import { base64ToBytes, isWav } from "@/lib/voice/wav";
 
 export interface TranscribeDeps {
   /** null khi chưa cấu hình Azure. */
@@ -35,12 +35,6 @@ function json(body: TranscribeResponse | { error: string }, status = 200): Respo
     status,
     headers: { ...CORS_HEADERS, "content-type": "application/json; charset=utf-8" },
   });
-}
-
-/** Chỉ nhận WAV (RIFF…WAVE) để không gửi dữ liệu lạ sang Azure. */
-function isWav(bytes: Uint8Array): boolean {
-  const tag = (offset: number) => String.fromCharCode(...bytes.subarray(offset, offset + 4));
-  return bytes.length > 44 && tag(0) === "RIFF" && tag(8) === "WAVE";
 }
 
 export function createTranscribeHandler(deps: TranscribeDeps) {

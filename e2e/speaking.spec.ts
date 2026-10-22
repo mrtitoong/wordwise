@@ -62,6 +62,8 @@ const KNOWN = {
 
 test.describe("Tập phát âm", () => {
   test.skip(!hasSupabase, "cần Supabase cục bộ (chạy trong CI)");
+  // Học 5 từ, đăng nhập, rồi thu âm nhiều lần (mỗi lần tới vài giây).
+  test.setTimeout(120_000);
 
   test("luyện phát âm: thu âm → điểm, âm tô màu, mẹo; ghi điểm vào lượt ôn; tạm tắt trong phiên", async ({
     page,
@@ -107,8 +109,15 @@ test.describe("Tập phát âm", () => {
         await expect(page.getByRole("dialog", { name: "Cho phép dùng micro" })).toBeVisible();
         await page.getByRole("button", { name: "Cho phép micro" }).click();
       }
-      // Micro giả: tự dừng (im lặng hoặc hết 5 giây) rồi chấm.
-      await expect(page.getByText(/^(?:✗ |✓ |~ )?\d+ điểm$/)).toBeVisible({ timeout: 10_000 });
+      // Micro giả: tự dừng (im lặng hoặc hết 5 giây) rồi chấm; báo lỗi thì in ra để biết lý do.
+      const score = page.getByText(/^(?:✗ |✓ |~ )?\d+ điểm$/);
+      const problem = page.getByRole("alert");
+      await expect(score.or(problem).first()).toBeVisible({ timeout: 10_000 });
+      expect(
+        await problem.count(),
+        await problem.allTextContents().then((t) => t.join(" | ")),
+      ).toBe(0);
+      await expect(score).toBeVisible();
       if (i === 0) {
         await expect(page.getByText("Cần luyện thêm")).toBeVisible();
         await expect(page.getByRole("list", { name: "Điểm từng âm" })).toBeVisible();

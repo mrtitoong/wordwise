@@ -36,3 +36,11 @@ Chạy lúc 2026-10-22 01:38 UTC · model dự phòng: claude-sonnet-5-5
 <!-- results:end -->
 
 ## Nhận xét
+
+- 2026-10-22 (ảnh tổng hợp, chưa có khóa Vision): Claude Sonnet (dự phòng) đọc đúng 100% từ trên cả
+  6 ảnh, ~2–4 giây và ~$0,005–0,008 mỗi ảnh. Ảnh mờ 4px vẫn đọc đúng hết nên cảnh báo "mờ" chỉ là
+  lời khuyên (người dùng bấm "Vẫn dùng ảnh này" được).
+- Ngưỡng cảnh báo bắt đúng ảnh mờ (độ nét 53, ngưỡng 300) và ảnh tối (độ sáng 60, ngưỡng 70); ảnh
+  rõ có độ nét > 4.000 nên ngưỡng còn dư nhiều. Cần chỉnh lại theo ảnh chụp thật.
+- Việc còn lại: đặt khóa Vision vào `.env.local`, thêm 4 ảnh `real-*`, chạy lại
+  `npm run ocr:accuracy` để có số liệu Vision và kết luận tiêu chí ≥ 95%.

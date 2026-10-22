@@ -363,3 +363,7 @@ Repo: https://github.com/mrtitoong/wordwise
   câu, R thấp trước. Tập viết cần thẻ Chính tả; Tập nghe dùng thẻ Chính tả mức ≥ 2 (nghe → gõ) hoặc thẻ
   Nghĩa (nghe → chọn nghĩa). Thẻ chưa đến hạn là ôn ngoài lịch (`is_extra`), thẻ đến hạn là lượt ôn thật.
   Phiên `/review/session?practice=1&nb=&tag=&status=&mode=&n=`, `SessionItem.mode` ép chế độ.
+- 2026-10-22: **Tạm bỏ Prompt 4.5** (mẹo nhớ bằng AI), làm sau (chủ sản phẩm chốt). Khi làm: nút "Gợi ý
+  mẹo nhớ mới" ở tab Ghi nhớ + gợi ý cho từ hay quên, phương án A (Haiku, chỉ gửi từ + nghĩa, lưu vào
+  "Của bạn", 10 lượt/ngày); cá nhân hóa bằng câu gặp/ghi chú (Sonnet) xem xét sau khi có người dùng thật.
+  GĐ4 khép lại với 4 chế độ (flashcard, trắc nghiệm, tập viết, tập nghe); phát âm ở GĐ5.

@@ -73,14 +73,14 @@ describe("gradeFromOutcome (plan.md §3.3)", () => {
     expect(gradeFromOutcome({ ...base, responseMs: 8001 })).toBe(Rating.Hard);
   });
 
-  it("đúng tốc độ bình thường → Được; chưa đủ dữ liệu thời gian thì không xét nhanh/chậm", () => {
+  it("đúng tốc độ bình thường → Nhớ (Good); chưa đủ dữ liệu thời gian thì không xét nhanh/chậm", () => {
     expect(gradeFromOutcome({ ...base, responseMs: 4000 })).toBe(Rating.Good);
     expect(gradeFromOutcome({ ...base, responseMs: 60_000, userMedianMs: null })).toBe(Rating.Good);
   });
 
   it("đúng, nhanh hơn 0,5× trung vị và chế độ khó hơn mức hiện tại → Dễ", () => {
     expect(gradeFromOutcome({ ...base, responseMs: 1500, cardLevel: 0 })).toBe(Rating.Easy);
-    // Chế độ không khó hơn mức hiện tại: nhanh vẫn chỉ là Được.
+    // Chế độ không khó hơn mức hiện tại: nhanh vẫn chỉ là Nhớ (Good).
     expect(gradeFromOutcome({ ...base, responseMs: 1500, cardLevel: 1 })).toBe(Rating.Good);
   });
 

@@ -14,7 +14,7 @@ const GRADES: { rating: Grade; key: "again" | "hard" | "good" | "easy"; tone: st
   { rating: Rating.Easy, key: "easy", tone: "border-sky-300 text-sky-800 dark:text-sky-200" },
 ];
 
-/** Vuốt ngang xa hơn mức này (px) sau khi lật: trái = Quên, phải = Được. */
+/** Vuốt ngang xa hơn mức này (px) sau khi lật: trái = Quên, phải = Nhớ. */
 const SWIPE_PX = 80;
 
 /**

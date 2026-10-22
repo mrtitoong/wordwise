@@ -11,7 +11,7 @@ export type SimulationOptions = {
   newPerDay: number;
   desiredRetention?: number;
   seed?: number;
-  /** Từ mới lần đầu gặp: tỉ lệ người học bấm "Được" (còn lại "Quên"). */
+  /** Từ mới lần đầu gặp: tỉ lệ người học bấm "Nhớ" (còn lại "Quên"). */
   firstSeenGood?: number;
 };
 

@@ -20,7 +20,7 @@ async function meanings(page: Page): Promise<Map<string, string[]>> {
   return out;
 }
 
-/** Trả lời đúng câu hiện tại (flashcard: "Được"; trắc nghiệm: chọn nghĩa đúng). Trả về chế độ. */
+/** Trả lời đúng câu hiện tại (flashcard: "Nhớ"; trắc nghiệm: chọn nghĩa đúng). Trả về chế độ. */
 async function answerCorrectly(page: Page): Promise<"intro" | "flashcard" | "mcq" | "done"> {
   const intro = page.getByRole("button", { name: "Đã xem, kiểm tra" });
   const show = page.getByRole("button", { name: "Hiện đáp án" });
@@ -35,7 +35,7 @@ async function answerCorrectly(page: Page): Promise<"intro" | "flashcard" | "mcq
   }
   if (await show.isVisible()) {
     await show.click();
-    await page.getByRole("button", { name: /^Được/ }).click();
+    await page.getByRole("button", { name: /^Nhớ/ }).click();
     return "flashcard";
   }
   const lemma = (await page.locator("p.text-4xl").first().textContent())!.trim();

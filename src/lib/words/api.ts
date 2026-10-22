@@ -16,6 +16,12 @@ export const WordRequestSchema = z.object({
   /** Từ chưa có trong kho: máy chủ tự thêm nghĩa phổ biến nhất vào sổ này khi tạo xong. */
   notebookId: z.uuid().nullish(),
   contextSentence: z.string().trim().max(500).nullish(),
+  /** Ảnh chụp người dùng giữ làm ngữ cảnh (storage://user-images/{user_id}/…). */
+  contextImageUrl: z
+    .string()
+    .max(300)
+    .regex(/^storage:\/\/user-images\/[0-9a-f-]{36}\/[\w.-]+$/)
+    .nullish(),
   inputMethod: InputMethodSchema.nullish(),
   /** Ghi chú riêng (cột nghĩa/ghi chú của file) → "Ghi chú của bạn" ở tab Nghĩa. */
   note: z.string().trim().max(500).nullish(),

@@ -12,7 +12,7 @@ import { readFileSync } from "node:fs";
 import { relative } from "node:path";
 import { build, type Plugin } from "esbuild";
 
-const FUNCTIONS = ["generate-word", "transcribe", "word-media"];
+const FUNCTIONS = ["generate-word", "ocr-image", "transcribe", "word-media"];
 
 const pkg = JSON.parse(readFileSync("package.json", "utf8")) as {
   dependencies: Record<string, string>;

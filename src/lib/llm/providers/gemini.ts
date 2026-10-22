@@ -23,7 +23,12 @@ export function createGeminiProvider(options: { apiKey: string } | { client: Goo
       prompt,
       jsonSchema,
       schemaMode,
+      images,
     }: ProviderRequest): Promise<ProviderResponse> {
+      // Adapter chưa gửi ảnh: báo lỗi (không gọi lại) để router chuyển sang model dự phòng.
+      if (images?.length) {
+        throw new LlmProviderError("Adapter gemini chưa hỗ trợ ảnh", "gemini", false, false);
+      }
       let response;
       try {
         response = await client.models.generateContent({

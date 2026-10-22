@@ -65,6 +65,29 @@ describe("Claude", () => {
     expect((params.output_config as { format: object }).format).not.toHaveProperty("parse");
   });
 
+  it("gửi ảnh kèm prompt thành khối image trước khối text", async () => {
+    const { create, client } = fakeClient({
+      stop_reason: "end_turn",
+      content: [{ type: "text", text: "{}" }],
+      usage: { input_tokens: 1, output_tokens: 1 },
+    });
+    await createClaudeProvider({ client }).generate({
+      ...request({ provider: "claude", model: "claude-sonnet-5-5" }),
+      images: [{ mediaType: "image/jpeg", data: "QUJD" }],
+    });
+    expect((create.mock.calls[0] as unknown[])[0]).toMatchObject({
+      messages: [
+        {
+          role: "user",
+          content: [
+            { type: "image", source: { type: "base64", media_type: "image/jpeg", data: "QUJD" } },
+            { type: "text", text: "hello" },
+          ],
+        },
+      ],
+    });
+  });
+
   it("schemaMode prompt: không gửi format, vẫn gửi effort", async () => {
     const { create, client } = fakeClient({
       stop_reason: "end_turn",
@@ -232,6 +255,18 @@ describe("Gemini", () => {
     const config = ((generateContent.mock.calls[0] as unknown[])[0] as { config: object }).config;
     expect(config).toMatchObject({ responseMimeType: "application/json" });
     expect(config).not.toHaveProperty("responseJsonSchema");
+  });
+
+  it("có ảnh: báo lỗi không gọi lại (router chuyển dự phòng), không gọi API", async () => {
+    const generateContent = vi.fn();
+    const client = { models: { generateContent } } as unknown as GoogleGenAI;
+    await expect(
+      createGeminiProvider({ client }).generate({
+        ...request({ provider: "gemini", model: "gemini-3.8-flash" }),
+        images: [{ mediaType: "image/png", data: "QUJD" }],
+      }),
+    ).rejects.toMatchObject({ retryable: false });
+    expect(generateContent).not.toHaveBeenCalled();
   });
 
   it("429 và RESOURCE_EXHAUSTED là giới hạn lượt gọi", () => {

@@ -3,6 +3,7 @@
 import { useState } from "react";
 import { useTranslations } from "next-intl";
 import { AudioButton } from "@/components/audio-button";
+import { useUserImageUrl } from "@/features/media/user-images";
 import type { Voice } from "@/lib/media/tts-azure";
 import { requestSentenceAudioUrl } from "@/lib/media/request-sentence-audio";
 import { createClient } from "@/lib/supabase/client";
@@ -45,6 +46,27 @@ function ExampleItem({ sense, index, voice }: { sense: SenseView; index: number;
   );
 }
 
+/** Ảnh gốc nơi gặp từ: ảnh chụp người dùng giữ lại (bucket riêng tư → signed URL). */
+function ContextImage({ src }: { src: string }) {
+  const t = useTranslations("wordCard");
+  const { owner } = useCard();
+  const isPrivate = src.startsWith("storage://");
+  const signed = useUserImageUrl(isPrivate ? src : null, owner);
+  const url = isPrivate ? signed : src;
+  if (!url) return null;
+  return (
+    <a href={url} target="_blank" rel="noreferrer" className="block">
+      {/* eslint-disable-next-line @next/next/no-img-element */}
+      <img
+        src={url}
+        alt={t("examples.contextImage")}
+        className="max-h-48 w-full rounded-lg object-cover"
+        loading="lazy"
+      />
+    </a>
+  );
+}
+
 export function ExamplesTab({ voice }: { voice: Voice }) {
   const t = useTranslations("wordCard");
   const { view } = useCard();
@@ -62,15 +84,7 @@ export function ExamplesTab({ voice }: { voice: Voice }) {
                 className="flex flex-col gap-2 rounded-xl border-2 border-primary/30 bg-accent/40 p-3"
               >
                 {c.source && <p className="text-xs text-muted-foreground">{c.source}</p>}
-                {c.imageUrl && (
-                  // eslint-disable-next-line @next/next/no-img-element
-                  <img
-                    src={c.imageUrl}
-                    alt={t("examples.contextImage")}
-                    className="max-h-48 w-full rounded-lg object-cover"
-                    loading="lazy"
-                  />
-                )}
+                {c.imageUrl && <ContextImage src={c.imageUrl} />}
                 <p lang="en">
                   <Highlighted text={c.sentence} terms={view.highlightTerms} />
                 </p>

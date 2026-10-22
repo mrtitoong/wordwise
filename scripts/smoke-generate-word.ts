@@ -1,6 +1,7 @@
 /**
- * Chạy thử Edge Function generate-word và word-media trên Supabase cục bộ (job CI "functions"): kiểm tra
- * bundle chạy được trong Deno thật, gọi được các hàm SQL, đăng nhập và RLS đúng.
+ * Chạy thử Edge Function generate-word, word-media, transcribe, ocr-image trên Supabase cục bộ
+ * (job CI "functions"): kiểm tra bundle chạy được trong Deno thật, gọi được các hàm SQL, đăng nhập
+ * và RLS đúng.
  * Không có khóa LLM nên chỉ kiểm tra tra kho / xếp việc, không tạo nội dung.
  *
  *   SUPABASE_URL=… SUPABASE_PUBLISHABLE_KEY=… npx tsx scripts/smoke-generate-word.ts
@@ -8,6 +9,7 @@
 import { createClient } from "@supabase/supabase-js";
 import type { Database } from "@/lib/db/database.types";
 import { SentenceAudioResponseSchema } from "@/lib/media/api";
+import { OcrResponseSchema } from "@/lib/ocr/api";
 import { TranscribeResponseSchema } from "@/lib/voice/api";
 import { bytesToBase64, encodeWav } from "@/lib/voice/wav";
 import { ResolveResponseSchema, WordResponseSchema, type WordResponse } from "@/lib/words/api";
@@ -169,6 +171,47 @@ expect(
     ),
   "transcribe: người dùng gọi được (CI không có khóa Azure → unavailable)",
   userVoice,
+);
+
+/* ---------- Ảnh chụp (Prompt 2.6) ---------- */
+
+async function ocr(token: string) {
+  const jpeg = bytesToBase64(new Uint8Array([0xff, 0xd8, 0xff, 0xe0, ...new Array(200).fill(7)]));
+  const response = await fetch(`${url}/functions/v1/ocr-image`, {
+    method: "POST",
+    headers: { apikey: key!, authorization: `Bearer ${token}`, "content-type": "application/json" },
+    body: JSON.stringify({ image: jpeg }),
+  });
+  return { status: response.status, body: (await response.json()) as unknown };
+}
+const guestOcr = await ocr(key);
+expect(
+  guestOcr.status === 200 && OcrResponseSchema.parse(guestOcr.body).status === "login_required",
+  "ocr-image: khách → login_required",
+  guestOcr,
+);
+const freeOcr = await ocr(session.session.access_token);
+expect(
+  freeOcr.status === 200 && OcrResponseSchema.parse(freeOcr.body).status === "premium_required",
+  "ocr-image: tài khoản Free → premium_required",
+  freeOcr,
+);
+const photoWord = await word(
+  { lemma: "zygosity", notebookId: notebook?.id, inputMethod: "photo", contextSentence: "Câu" },
+  session.session.access_token,
+);
+expect(
+  photoWord.status === "premium_required",
+  "Từ mới từ ảnh chụp, tài khoản Free → premium_required",
+  photoWord,
+);
+const { data: spellings } = await user.rpc("suggest_spellings", {
+  p_terms: ["tenacous", "resilient", "qqqqqq"],
+});
+expect(
+  JSON.stringify(spellings) === JSON.stringify([{ term: "tenacous", lemma: "tenacious" }]),
+  "suggest_spellings: gợi ý từ gần nhất trong kho, bỏ qua từ đã đúng",
+  spellings,
 );
 
 const mediaEndpoint = `${url}/functions/v1/word-media`;

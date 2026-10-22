@@ -56,6 +56,8 @@ export type RequestJobResult =
 export interface JobTarget {
   notebookId: string;
   contextSentence: string | null;
+  /** Ảnh ngữ cảnh; máy chủ chỉ nhận ảnh trong thư mục của chính người đó. */
+  contextImageUrl?: string | null;
   inputMethod: InputMethod;
   note?: string | null;
   tags?: string[];
@@ -150,6 +152,7 @@ export async function requestWord(
     ? {
         notebookId: request.notebookId,
         contextSentence: request.contextSentence ?? null,
+        ...(request.contextImageUrl ? { contextImageUrl: request.contextImageUrl } : {}),
         inputMethod: request.inputMethod ?? "typed",
         ...(request.note ? { note: request.note } : {}),
         ...(request.tags?.length ? { tags: request.tags } : {}),

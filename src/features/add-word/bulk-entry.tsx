@@ -5,17 +5,15 @@ import { useTranslations } from "next-intl";
 import { Button } from "@/components/ui/button";
 import { Sheet } from "@/components/ui/sheet";
 import { showToast } from "@/components/ui/toast";
-import { getLocalDb } from "@/lib/db/local";
-import { addSensesToNotebook } from "@/lib/db/repo";
 import { normalizeEntry, summarizeEntries, type NormalizedEntry } from "@/lib/entry/normalize";
 import { parsePastedText } from "@/lib/entry/paste";
 import { createClient } from "@/lib/supabase/client";
 import { getSupabaseEnv } from "@/lib/supabase/env";
 import { cn } from "@/lib/utils";
 import type { InputMethod, ResolveResponse } from "@/lib/words/api";
-import { requestWord, resolveWords } from "@/lib/words/request-word";
+import { resolveWords } from "@/lib/words/request-word";
+import { addEntries } from "./add-entries";
 import type { EntryContext } from "./add-word-screen";
-import { cacheSenses } from "./word-search";
 
 const CHUNK = 50;
 
@@ -94,52 +92,11 @@ export function BulkEntry({
   async function addAll() {
     if (!entries) return;
     setBusy(true);
-    const db = getLocalDb();
-    const ready = entries.flatMap((e) =>
-      e.status === "ready" || e.status === "choose" ? [{ senseId: e.senseId }] : [],
-    );
-    let added = 0;
     try {
-      if (ready.length) {
-        const result = await addSensesToNotebook(db, context.owner, ready, {
-          notebookId: context.notebookId,
-          inputMethod,
-          source: "paste",
-        });
-        added = result.added.length + result.linked.length;
-        void cacheSenses(
-          db,
-          ready.map((r) => r.senseId),
-        );
-      }
-      let preparing = 0;
-      let skipped = 0;
-      if (context.signedIn) {
-        const fresh = entries.filter((e) => e.status === "new");
-        for (const [i, entry] of fresh.entries()) {
-          const response = await requestWord(createClient(), {
-            lemma: entry.lemma,
-            notebookId: context.notebookId,
-            inputMethod,
-          });
-          if (response.status === "limit_reached") {
-            skipped = fresh.length - i;
-            context.onLimit(response.plan, response.dailyLimit);
-            break;
-          }
-          if (response.status === "preparing") preparing++;
-          if (response.status === "ready") {
-            const senseId = response.words[0]!.senseIds[0]!;
-            const result = await addSensesToNotebook(db, context.owner, [{ senseId }], {
-              notebookId: context.notebookId,
-              inputMethod,
-              source: "paste",
-            });
-            added += result.added.length + result.linked.length;
-            void cacheSenses(db, [senseId]);
-          }
-        }
-      }
+      const { added, preparing, skipped } = await addEntries(entries, context, {
+        inputMethod,
+        source: "paste",
+      });
       showToast({
         text: skipped ? t("resultLimit", { added, skipped }) : t("result", { added, preparing }),
       });

@@ -18,7 +18,12 @@ export function createGroqProvider(options: { apiKey: string } | { client: Groq 
       prompt,
       jsonSchema,
       schemaMode,
+      images,
     }: ProviderRequest): Promise<ProviderResponse> {
+      // Adapter chưa gửi ảnh: báo lỗi (không gọi lại) để router chuyển sang model dự phòng.
+      if (images?.length) {
+        throw new LlmProviderError("Adapter groq chưa hỗ trợ ảnh", "groq", false, false);
+      }
       let response;
       try {
         response = await client.chat.completions.create({

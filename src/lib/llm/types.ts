@@ -51,6 +51,14 @@ export interface ProviderRequest {
   jsonSchema: Record<string, unknown>;
   /** "prompt": schema đã nằm trong prompt, adapter chỉ bật chế độ JSON. */
   schemaMode: SchemaMode;
+  /** Ảnh gửi kèm (đọc chữ trên ảnh); adapter không hỗ trợ ảnh thì báo lỗi. */
+  images?: ImageInput[];
+}
+
+export interface ImageInput {
+  mediaType: "image/jpeg" | "image/png" | "image/webp";
+  /** Base64, không có tiền tố data:. */
+  data: string;
 }
 
 export interface TokenUsage {

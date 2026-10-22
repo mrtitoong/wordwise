@@ -22,6 +22,7 @@ export function createClaudeProvider(options: { apiKey: string } | { client: Ant
       prompt,
       jsonSchema,
       schemaMode,
+      images,
     }: ProviderRequest): Promise<ProviderResponse> {
       const serverFallback = SERVER_FALLBACK_MODELS.has(model.model);
       let response;
@@ -30,7 +31,24 @@ export function createClaudeProvider(options: { apiKey: string } | { client: Ant
           model: model.model,
           max_tokens: model.maxOutputTokens,
           system,
-          messages: [{ role: "user", content: prompt }],
+          messages: [
+            {
+              role: "user",
+              content: images?.length
+                ? [
+                    ...images.map((image) => ({
+                      type: "image" as const,
+                      source: {
+                        type: "base64" as const,
+                        media_type: image.mediaType,
+                        data: image.data,
+                      },
+                    })),
+                    { type: "text" as const, text: prompt },
+                  ]
+                : prompt,
+            },
+          ],
           output_config: {
             ...(schemaMode === "enforce"
               ? { format: { type: "json_schema", schema: toClaudeJsonSchema(jsonSchema) } }

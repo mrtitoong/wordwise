@@ -20,7 +20,8 @@
     "seed:build": "tsx scripts/build-seed.ts",
     "functions:build": "tsx scripts/build-functions.ts",
     "pregenerate": "tsx --env-file-if-exists=.env.local scripts/pregenerate.ts",
-    "compare:models": "tsx --env-file-if-exists=.env.local scripts/compare-models.ts"
+    "compare:models": "tsx --env-file-if-exists=.env.local scripts/compare-models.ts",
+    "ocr:accuracy": "tsx --env-file-if-exists=.env.local scripts/ocr-accuracy.ts"
   },
   "dependencies": {
     "@anthropic-ai/sdk": "0.131.0",

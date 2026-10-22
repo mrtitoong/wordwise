@@ -277,3 +277,22 @@ Repo: https://github.com/mrtitoong/wordwise
   `reverse-lookup`, Sonnet, dự phòng Haiku, 30 lượt/người/ngày) qua `generate-word`
   (`action: "reverse"`). Nói liên tục chỉ có với Web Speech; câu quá 3 từ tách thành từng từ,
   xem trước bằng bảng dán nhiều dòng.
+- 2026-10-22 (Prompt 2.6): **Thêm từ bằng ảnh chỉ cho Premium** (chủ sản phẩm chốt; khách mời đăng
+  nhập, Free thấy giới thiệu Premium), 30 ảnh/người/ngày (`usage_events` kind `ocr`,
+  `private.settings.user_daily_ocr`). Máy chủ chặn ở cả `ocr-image` và `request_word_job`
+  (`input_method = 'photo'` như `'csv'`). Edge Function `ocr-image`: **Google Cloud Vision**
+  DOCUMENT_TEXT_DETECTION (khóa `GOOGLE_VISION_API_KEY`, gửi qua header), tin cậy TB < 0,75 hoặc lỗi
+  thì **Claude Sonnet đọc lại** (tác vụ `photo-ocr`, dự phòng Haiku; chỉ có chữ, không có khung).
+  Ảnh không lưu trên máy chủ. Lớp LLM nhận `images` (chỉ adapter Claude; Gemini/Groq báo lỗi).
+- 2026-10-22: Trong trình duyệt: xoay 90°, cắt khung, thu nhỏ ≤ 2000px JPEG; cảnh báo tối/mờ/nhỏ
+  trước khi đọc (ngưỡng ở `src/lib/ocr/image.ts`, chỉnh theo `npm run ocr:accuracy`), nghiêng > 10° sau
+  khi đọc. **"Tự chọn từ mới" theo quy tắc, không gọi AI**: bỏ từ đã có, từ CEFR thấp hơn trình độ
+  (chưa đặt thì bỏ A1), từ chức năng, tên riêng, số, chữ tin cậy < 0,6; ưu tiên từ khó; tối đa 15.
+  Chọn tối đa 50 mục/lần; kéo ngang chọn cụm ≤ 6 từ trong một câu. Có hai cách xem: Ảnh (khung trên
+  từng từ, phóng to) và Chữ (nút ≥ 44px; khung trên ảnh nhỏ hơn 44px là ngoại lệ).
+- 2026-10-22: Mỗi từ giữ câu gốc làm `context_sentence` (≤ 300 ký tự quanh từ). Gợi ý sửa chính tả
+  bằng hàm SQL `suggest_spellings` (levenshtein với kho, sai 1 ký tự, từ ≥ 7 ký tự sai 2). **"Giữ ảnh
+  làm ngữ cảnh" mặc định tắt**; bật thì ảnh ≤ 1200px vào bucket `user-images`, gắn
+  `notebook_entries.context_image_url` (ràng buộc DB chỉ nhận ảnh của chính người đó; từ mới mang theo
+  qua `word_job_requests.context_image_url`), thẻ từ hiện bằng signed URL. Bộ ảnh mẫu ở
+  `tests/fixtures/ocr` (6 ảnh tổng hợp + `real-*` do chủ sản phẩm chụp), kết quả ở `docs/qa/ocr.md`.

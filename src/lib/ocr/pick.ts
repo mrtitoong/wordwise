@@ -163,7 +163,15 @@ function sortPicks(picks: Pick[]): Pick[] {
 
 /** Chữ của mục đã chọn ("bounce back", "well-known"). */
 export function pickText(doc: OcrDocument, pick: Pick): string {
-  return joinTokens(doc.tokens.slice(pick.from, pick.to + 1));
+  const text = joinTokens(doc.tokens.slice(pick.from, pick.to + 1));
+  // Chữ hoa chỉ vì đứng đầu câu ("Resilient people…") → viết thường; giữ tên riêng, chữ viết tắt.
+  const first = doc.tokens[pick.from]!;
+  const startsSentence = !doc.tokens
+    .slice(0, pick.from)
+    .some((t) => t.sentence === first.sentence && t.kind === "word");
+  return startsSentence && /^\p{Lu}\p{Ll}*$/u.test(first.text)
+    ? text.charAt(0).toLowerCase() + text.slice(1)
+    : text;
 }
 
 /** Câu gốc của mục đã chọn (lưu làm câu đã gặp). */

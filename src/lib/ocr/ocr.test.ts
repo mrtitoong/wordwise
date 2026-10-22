@@ -267,9 +267,12 @@ describe("chọn từ", () => {
     picks = pickRange(doc, picks, index("bounces"), index("."));
     expect(picks.map((p) => pickText(doc, p))).toEqual(["resilient", "bounces back"]);
     expect(pickContext(doc, picks[1]!)).toBe("The resilient person bounces back.");
+    // Chữ hoa đầu câu → viết thường; tên riêng giữa câu giữ nguyên.
+    expect(pickText(doc, togglePick(doc, [], index("Setbacks"))[0]!)).toBe("setbacks");
+    expect(pickText(doc, togglePick(doc, [], index("Smith"))[0]!)).toBe("Smith");
     // Kéo ngược sang câu khác: dừng ở hết câu của điểm bắt đầu.
     const across = pickRange(doc, [], index("Setbacks"), index("back"));
-    expect(across.map((p) => pickText(doc, p))).toEqual(["Setbacks"]);
+    expect(across.map((p) => pickText(doc, p))).toEqual(["setbacks"]);
     // Chồng lên mục cũ: thay mục cũ.
     const replaced = pickRange(doc, picks, index("resilient"), index("person"));
     expect(replaced.map((p) => pickText(doc, p))).toEqual(["resilient person", "bounces back"]);

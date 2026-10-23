@@ -110,3 +110,10 @@ entrypoint = "./functions/send-reminders/index.js"
 enabled = true
 verify_jwt = false
 entrypoint = "./functions/analyze-list/index.js"
+
+# Admin tạo lại một tab của thẻ từ khi duyệt danh sách (Prompt 7.3). Mã nguồn ở
+# src/functions/admin-word. Tự kiểm tra JWT và vai trò admin trong function.
+[functions.admin-word]
+enabled = true
+verify_jwt = false
+entrypoint = "./functions/admin-word/index.js"

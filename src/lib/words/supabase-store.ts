@@ -11,7 +11,7 @@ import type { RequestJobResult, WordJob, WordStore } from "./pipeline";
 
 type Client = SupabaseClient<Database>;
 
-const WORD_SELECT =
+export const WORD_SELECT =
   "id, language, lemma, pos, ipa_us, ipa_uk, cefr, register, schema_version, forms, details, " +
   "audio_us_url, audio_uk_url, " +
   "word_senses (id, sense_order, definition_en, meaning_vi, image_query, image_url, image_credit, " +
@@ -27,7 +27,7 @@ type DetailRow = {
   common_mistakes: unknown;
 };
 
-type WordWithSenses = {
+export type WordWithSenses = {
   id: string;
   language: Language;
   lemma: string;

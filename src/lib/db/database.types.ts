@@ -1012,7 +1012,12 @@ export type Database = {
     Functions: {
       claim_due_reminders: {
         Args: { p_now?: string };
-        Returns: { locale: string; news: number; reviews: number; user_id: string }[];
+        Returns: {
+          locale: string;
+          news: number;
+          reviews: number;
+          user_id: string;
+        }[];
       };
       claim_media_words: { Args: { p_include_images: boolean; p_limit: number }; Returns: Json };
       claim_word_jobs: { Args: { p_job_id?: string; p_limit?: number }; Returns: Json };

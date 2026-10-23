@@ -17,6 +17,9 @@ export type PullResult<T> = { ok: true; rows: T[] } | Extract<RemoteResult, { ok
 
 export type WordContent = { words: WordRow[]; senses: WordSenseRow[]; details: WordDetailsRow[] };
 
+/** Từ Admin đã sửa nội dung (words.content_updated_at), kèm id các nghĩa để tải lại. */
+export type EditedWord = { id: string; contentUpdatedAt: string; senseIds: string[] };
+
 /** Phần server mà sync engine cần; bản thật dùng Supabase, test dùng bản giả. */
 export interface SyncRemote {
   upsert<T extends SyncTable>(table: T, rows: SyncRowMap[T][]): Promise<RemoteResult>;
@@ -29,6 +32,7 @@ export interface SyncRemote {
     limit: number,
   ): Promise<PullResult<SyncRowMap[T]>>;
   fetchWordContent(senseIds: string[]): Promise<{ ok: true; content: WordContent } | RemoteResult>;
+  editedWords(since: string, offset: number, limit: number): Promise<PullResult<EditedWord>>;
 }
 
 /** Cột server tự quản lý, không gửi từ máy khách. */
@@ -107,6 +111,26 @@ export function createSupabaseRemote(client: SupabaseClient<Database>): SyncRemo
       return {
         ok: true,
         content: { words: words.data ?? [], senses: senses ?? [], details: details.data ?? [] },
+      };
+    },
+
+    async editedWords(since, offset, limit) {
+      const { data, error, status } = await client
+        .from("words")
+        .select("id, content_updated_at, word_senses (id)")
+        .gt("content_updated_at", since)
+        .order("content_updated_at")
+        .order("id")
+        .range(offset, offset + limit - 1);
+      const result = classify(error, status);
+      if (!result.ok) return result;
+      return {
+        ok: true,
+        rows: (data ?? []).map((row) => ({
+          id: row.id,
+          contentUpdatedAt: row.content_updated_at!,
+          senseIds: row.word_senses.map((s) => s.id),
+        })),
       };
     },
   };

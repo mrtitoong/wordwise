@@ -158,6 +158,9 @@ export class SyncEngine {
     if (!pushed.ok && pushed.kind === "network") return this.finish(pushed);
     const pulled = await this.pull(owner);
     if (!pulled.ok) return this.finish(pulled);
+    // Lỗi server ở bước này không chặn đồng bộ dữ liệu học (lần sau tải lại).
+    const refreshed = await this.refreshEditedWords();
+    if (!refreshed.ok && refreshed.kind === "network") return this.finish(refreshed);
 
     // Gộp thẻ có thể sinh việc mới (thẻ tính lại): gửi luôn trong lượt này.
     let again: RemoteResult = { ok: true };
@@ -297,6 +300,37 @@ export class SyncEngine {
         }
       },
     );
+  }
+
+  /**
+   * Admin sửa nội dung từ dùng chung (Prompt 7.3): tải lại các từ đã lưu trong máy có
+   * content_updated_at mới hơn lần trước. Con trỏ dùng chung cho mọi tài khoản trên máy.
+   */
+  private async refreshEditedWords(): Promise<RemoteResult> {
+    const cursorKey = "cursor:edited-words";
+    const cursor = (await this.db.meta.get(cursorKey))?.value;
+    const since = cursor ? new Date(Date.parse(cursor) - PULL_OVERLAP_MS).toISOString() : EPOCH;
+    let latest = cursor ?? EPOCH;
+    const senseIds: string[] = [];
+    for (let offset = 0; ; offset += PULL_PAGE_SIZE) {
+      const page = await this.remote!.editedWords(since, offset, PULL_PAGE_SIZE);
+      if (!page.ok) return page;
+      for (const word of page.rows) {
+        if (word.contentUpdatedAt > latest) latest = word.contentUpdatedAt;
+        const local = await this.db.words.get(word.id);
+        if (local && local.content_updated_at !== word.contentUpdatedAt) {
+          senseIds.push(...word.senseIds);
+        }
+      }
+      if (page.rows.length < PULL_PAGE_SIZE) break;
+    }
+    for (let i = 0; i < senseIds.length; i += PULL_PAGE_SIZE) {
+      const result = await this.remote!.fetchWordContent(senseIds.slice(i, i + PULL_PAGE_SIZE));
+      if (!("content" in result)) return result;
+      await cacheWordContent(this.db, result.content);
+    }
+    await this.db.meta.put({ key: cursorKey, value: latest });
+    return { ok: true };
   }
 
   /** Lưu sẵn nội dung các từ vừa kéo về để xem/ôn được khi offline. */

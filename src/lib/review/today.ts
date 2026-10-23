@@ -6,6 +6,7 @@ import type { FSRS } from "ts-fsrs";
 import type { CardRow, NotebookEntryRow, ReviewLogRow, UserWordRow } from "@/lib/db/types";
 import { studyDay } from "@/lib/review/day";
 import { medianResponseMs } from "@/lib/srs/grade";
+import { DEFAULT_ANSWER_MS, estimateMinutes, NEW_WORD_MS } from "./estimate";
 import {
   buildSession,
   type QueueCard,
@@ -36,9 +37,8 @@ export type TodayInput = {
   relatedOf?: (senseId: string) => readonly string[];
 };
 
-/** Thời gian ước tính mỗi câu khi chưa đủ dữ liệu của người dùng; từ mới lâu hơn (xem thẻ). */
-export const DEFAULT_ANSWER_MS = 8_000;
-export const NEW_WORD_MS = 20_000;
+export { DEFAULT_ANSWER_MS, estimateMinutes, NEW_WORD_MS };
+
 /** Phiên ngắn 5 phút. */
 export const SHORT_SESSION_MS = 5 * 60_000;
 
@@ -118,11 +118,6 @@ export type TodayPlan = SessionPlan & {
 /** Thời gian trung bình một câu của người này (trắc nghiệm), hoặc mặc định. */
 export function answerMs(logs: readonly ReviewLogRow[]): number {
   return medianResponseMs(logs, "mcq") ?? DEFAULT_ANSWER_MS;
-}
-
-export function estimateMinutes(reviews: number, news: number, perAnswerMs: number): number {
-  if (reviews + news === 0) return 0;
-  return Math.max(1, Math.round((reviews * perAnswerMs + news * NEW_WORD_MS) / 60_000));
 }
 
 /**

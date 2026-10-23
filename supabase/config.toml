@@ -97,3 +97,9 @@ entrypoint = "./functions/ocr-image/index.js"
 enabled = true
 verify_jwt = false
 entrypoint = "./functions/assess-pronunciation/index.js"
+
+# src/functions/send-reminders. Chỉ pg_cron gọi (khóa worker trong header), không có JWT người dùng.
+[functions.send-reminders]
+enabled = true
+verify_jwt = false
+entrypoint = "./functions/send-reminders/index.js"

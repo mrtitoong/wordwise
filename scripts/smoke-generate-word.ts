@@ -28,6 +28,12 @@ function expect(condition: boolean, message: string, detail?: unknown) {
   if (!condition) {
     failures++;
     if (detail !== undefined) console.log("  ", JSON.stringify(detail));
+    // Annotation của GitHub Actions đọc được công khai qua API (log thì cần đăng nhập).
+    if (process.env.GITHUB_ACTIONS) {
+      console.log(
+        `::error title=smoke::${message} ${JSON.stringify(detail ?? null).slice(0, 500)}`,
+      );
+    }
   }
 }
 
@@ -277,6 +283,18 @@ expect(
 );
 const mediaWorker = await media({ action: "work" }, key, { "x-worker-secret": "sai".repeat(20) });
 expect(mediaWorker.status === 401, "Worker media sai khóa → 401", mediaWorker);
+
+// send-reminders (Prompt 6.3): chạy được trong Deno cùng thư viện web-push, chặn khóa worker sai.
+const reminders = await fetch(`${url}/functions/v1/send-reminders`, {
+  method: "POST",
+  headers: { "content-type": "application/json", "x-worker-secret": "sai".repeat(20) },
+  body: JSON.stringify({ action: "work" }),
+});
+const remindersBody = await reminders.json().catch(() => null);
+expect(reminders.status === 401, "Nhắc học: worker sai khóa → 401", {
+  status: reminders.status,
+  body: remindersBody,
+});
 
 if (failures > 0) {
   console.error(`${failures} kiểm tra lỗi`);

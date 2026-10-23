@@ -9,6 +9,8 @@ export const CEFR_LEVELS = ["A1", "A2", "B1", "B2", "C1"] as const;
 export const GOALS = ["ielts", "toeic", "communication", "work", "travel", "school"] as const;
 export const DAILY_NEW_OPTIONS = [5, 10, 15, 20] as const;
 export const DEFAULT_DAILY_NEW = 10;
+/** Giờ nhắc học gợi ý (onboarding, Cài đặt). */
+export const DEFAULT_REMINDER = "20:00";
 export const STARTER_WORD_COUNT = 5;
 
 export type CefrLevel = (typeof CEFR_LEVELS)[number];

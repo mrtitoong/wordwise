@@ -8,6 +8,19 @@ import type { CardRow, ReviewLogRow } from "@/lib/db/types";
 import { createClient } from "@/lib/supabase/client";
 import { getSupabaseEnv } from "@/lib/supabase/env";
 import { getSyncEngine } from "@/lib/sync/client";
+import { subscribeReminders } from "@/features/settings/push-client";
+
+/**
+ * Đã đặt giờ nhắc (kể cả lúc onboarding khi còn là khách) và trình duyệt đã cho phép thông báo:
+ * đăng ký trình duyệt này cho tài khoản đang đăng nhập (không hỏi lại quyền).
+ */
+async function restoreReminders(owner: string) {
+  if (owner === GUEST_OWNER) return;
+  const settings = await getLocalDb().user_settings.get(owner);
+  if (!settings?.reminder_time) return;
+  if (typeof Notification === "undefined" || Notification.permission !== "granted") return;
+  await subscribeReminders({ ask: false }).catch(() => undefined);
+}
 
 /**
  * Khởi động đồng bộ trong trình duyệt: xác định chủ dữ liệu (tài khoản hoặc
@@ -39,13 +52,16 @@ export function SyncProvider() {
 
     if (getSupabaseEnv()) {
       const supabase = createClient();
-      void supabase.auth.getSession().then(({ data }) => {
-        void engine.setOwner(data.session?.user.id ?? GUEST_OWNER).then(() => engine.syncNow());
-      });
+      const start = (owner: string) =>
+        void engine
+          .setOwner(owner)
+          .then(() => engine.syncNow())
+          .then(() => restoreReminders(owner));
+      void supabase.auth
+        .getSession()
+        .then(({ data }) => start(data.session?.user.id ?? GUEST_OWNER));
       const { data } = supabase.auth.onAuthStateChange((event, session) => {
-        if (event === "SIGNED_IN" || event === "SIGNED_OUT") {
-          void engine.setOwner(session?.user.id ?? GUEST_OWNER).then(() => engine.syncNow());
-        }
+        if (event === "SIGNED_IN" || event === "SIGNED_OUT") start(session?.user.id ?? GUEST_OWNER);
       });
       unsubscribe = () => data.subscription.unsubscribe();
     } else {

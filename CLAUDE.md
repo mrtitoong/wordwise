@@ -425,3 +425,19 @@ Repo: https://github.com/mrtitoong/wordwise
   ~0,5 giây; `npm run stats:perf` (CI) kiểm tra phần tính < 1 giây. `next.config.ts` đặt
   `agentRules: false` để `next dev` không tự chèn hướng dẫn vào CLAUDE.md. Cửa test E2E
   `seedHistory(days)` ghi lịch sử ôn giả trong máy.
+- 2026-10-23: CI tăng tốc (chủ sản phẩm duyệt): E2E dùng **Google Chrome có sẵn trên máy ubuntu-latest**
+  (`PLAYWRIGHT_CHANNEL=chrome`, bỏ bước tải Chromium từng mất tới 9 phút; máy dev vẫn dùng Chromium của
+  Playwright); Supabase cục bộ khởi động chạy nền song song với npm ci (`scripts/ci-supabase.sh`). Theo
+  dõi CI qua trang Actions công khai, không gọi API không đăng nhập quá dày (giới hạn 60 lượt/giờ).
+- 2026-10-23 (Prompt 6.3): **Tỉ lệ nhớ mong muốn** 80/85/90/95% trong Cài đặt; chọn thì xem ước tính số
+  thẻ/ngày (bảng tính sẵn bằng mô phỏng, `npm run srs:retention-table` → `src/lib/srs/retention-load.ts`),
+  bấm Lưu mới đổi, chỉ ảnh hưởng lần ôn sau. **Nhắc học bằng Web Push**, cần đăng nhập: bảng
+  `push_subscriptions` (ghi qua `save_push_subscription`, cùng trình duyệt đổi tài khoản thì chuyển sang
+  người mới, tối đa 10 trình duyệt/người), `claim_due_reminders()` chọn người đã tới giờ nhắc (trễ ≤ 3
+  giờ), chưa ôn trong ngày học (4:00), có việc để học, tối đa 1 lần/ngày (`private.reminders_sent`);
+  pg_cron 5 phút gọi Edge Function **`send-reminders`** (`npm:web-push@3.6.7`, khóa VAPID: công khai ở
+  `src/config/push.ts`, bí mật trong Supabase Secrets `VAPID_PRIVATE_KEY`). Nội dung kiểu "12 từ đang
+  chờ ôn, khoảng 2 phút." theo `ui_locale`. Service Worker tối giản `public/sw.js` (chỉ nhận thông báo).
+  Đăng nhập lại thì tự đăng ký nếu đã cho phép thông báo; đăng xuất thì hủy trên máy đó. iPhone/iPad chỉ
+  nhận khi đã "Thêm vào Màn hình chính" (iOS 16.4+), Cài đặt có hướng dẫn. Đã áp lên cloud và deploy.
+  Tối ưu tham số FSRS theo người để sau GĐ8.

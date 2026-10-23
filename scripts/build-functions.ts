@@ -16,6 +16,7 @@ const FUNCTIONS = [
   "assess-pronunciation",
   "generate-word",
   "ocr-image",
+  "send-reminders",
   "transcribe",
   "word-media",
 ];

@@ -177,7 +177,31 @@
     "multiAccentHint": "Listening practice switches randomly between American and British voices.",
     "micTest": "Microphone check",
     "practiceSpeaking": "Speaking practice",
-    "practiceSpeakingHint": "Add say-it-out-loud questions to daily reviews (needs sign-in, a microphone and a quiet place). You can still pick Speaking on the Practice page when this is off."
+    "practiceSpeakingHint": "Add say-it-out-loud questions to daily reviews (needs sign-in, a microphone and a quiet place). You can still pick Speaking on the Practice page when this is off.",
+    "reminderSection": "Reminders",
+    "reminder": {
+      "toggle": "Daily study reminder",
+      "at": "Remind me at",
+      "hint": "Only when you haven't studied that day, at most once a day, with how many words are waiting.",
+      "guest": "Sign in to get study reminders on your phone or computer.",
+      "signIn": "Sign in",
+      "iosInstall": "On iPhone/iPad (iOS 16.4 or later): tap Share → Add to Home Screen, open WordWise from that icon, then turn reminders on.",
+      "unsupported": "This browser can't receive notifications. Try Chrome, Edge or Firefox.",
+      "denied": "You've blocked notifications from WordWise. Allow them in your browser's site settings, then try again.",
+      "error": "Couldn't turn reminders on (offline or server error). Try again later.",
+      "notOnThisDevice": "This device isn't receiving reminders yet.",
+      "enableHere": "Turn on notifications here"
+    },
+    "retentionSection": "Target retention",
+    "retention": {
+      "title": "Target retention",
+      "estimate": "About {count} reviews a day when you learn {newPerDay} new words a day.",
+      "compare": "(Current {percent}%: about {count}.)",
+      "overLimit": "Over your limit of {limit} a day; the rest moves to the next day.",
+      "hint": "Higher means you remember more but review more. Applies to future reviews.",
+      "cancel": "Cancel",
+      "save": "Save {percent}%"
+    }
   },
   "languages": {
     "vi": "Tiếng Việt",

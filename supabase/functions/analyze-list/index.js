@@ -2073,7 +2073,7 @@ async function order(ctx) {
         }
         next += 1;
       }
-      if (next < batches.length) {
+      if (next < batches.length || ctx.calls.count > 0) {
         return {
           step: "order",
           done: next,

@@ -566,7 +566,9 @@ async function order(ctx: Ctx): Promise<StepResult> {
         }
         next += 1;
       }
-      if (next < batches.length) {
+      // Đã gọi LLM trong lượt này: lưu rồi để lượt mới sắp xếp (tải 500 từ, ghi 500 dòng sau
+      // lượt LLM cuối từng vượt giới hạn CPU).
+      if (next < batches.length || ctx.calls.count > 0) {
         return {
           step: "order",
           done: next,

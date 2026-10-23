@@ -5,7 +5,7 @@ import { AnalysisPanel } from "@/features/admin/analysis-panel";
 import { ListForm } from "@/features/admin/list-form";
 import { SourcesPanel } from "@/features/admin/sources-panel";
 import { StatusBadge } from "@/features/admin/status-badge";
-import type { ListForm as ListValues } from "@/lib/admin/lists";
+import { JOB_COLUMNS, type ListForm as ListValues } from "@/lib/admin/lists";
 import { createClient } from "@/lib/supabase/server";
 
 type Params = Promise<{ id: string }>;
@@ -35,7 +35,7 @@ export default async function AdminListPage({ params }: { params: Params }) {
       .order("created_at"),
     supabase
       .from("import_jobs")
-      .select("id, status, step, done, total, errors, cost_usd, input_tokens, output_tokens")
+      .select(JOB_COLUMNS)
       .eq("list_id", id)
       .eq("kind", "admin_list")
       .order("created_at", { ascending: false })
@@ -72,7 +72,6 @@ export default async function AdminListPage({ params }: { params: Params }) {
         listId={id}
         listStatus={list.status}
         sourceCount={sources?.length ?? 0}
-        hasDocument={(sources ?? []).some((s) => s.kind === "document")}
         initialJob={jobs?.[0] ?? null}
       />
     </main>

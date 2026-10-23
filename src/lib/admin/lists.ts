@@ -144,6 +144,10 @@ export function sourceContent(source: SourceInput): unknown {
 
 /* ---------- Tiến độ phân tích ---------- */
 
+/** Cột import_jobs trang Admin đọc để hiện tiến độ (server lẫn trình duyệt). */
+export const JOB_COLUMNS =
+  "id, status, step, done, total, errors, cost_usd, input_tokens, output_tokens, state" as const;
+
 export const ANALYSIS_STEPS = [
   "extract",
   "normalize",
@@ -183,4 +187,30 @@ export function jobProgress(job: JobLike): JobProgress {
 /** Còn đang chạy (cần hỏi lại tiến độ). */
 export function isJobActive(job: Pick<JobLike, "status"> | null | undefined): boolean {
   return job?.status === "queued" || job?.status === "running";
+}
+
+/* ---------- Tóm tắt khi phân tích xong ---------- */
+
+const countMap = z.record(z.string(), z.number().int().min(0)).catch({});
+
+/** import_jobs.state.summary do worker ghi khi xong (Prompt 7.2). */
+export const AnalysisSummarySchema = z.object({
+  items: z.number().int().min(0),
+  withWarnings: z.number().int().min(0).catch(0),
+  warnings: countMap,
+  dropped: countMap,
+  newWords: z.number().int().min(0).catch(0),
+  durationSeconds: z.number().min(0).nullable().catch(null),
+});
+export type AnalysisSummaryView = z.infer<typeof AnalysisSummarySchema>;
+
+export function analysisSummary(state: unknown): AnalysisSummaryView | null {
+  const summary = (state as { summary?: unknown } | null)?.summary;
+  const parsed = AnalysisSummarySchema.safeParse(summary);
+  return parsed.success ? parsed.data : null;
+}
+
+/** Thời gian chạy tính bằng phút (làm tròn lên, tối thiểu 1). */
+export function durationMinutes(seconds: number | null): number | null {
+  return seconds === null ? null : Math.max(1, Math.ceil(seconds / 60));
 }

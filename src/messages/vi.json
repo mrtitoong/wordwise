@@ -436,7 +436,7 @@
     "analysis": {
       "title": "Phân tích",
       "minCefr": "Chỉ lấy từ từ cấp",
-      "minCefrHint": "Áp dụng cho bài đọc: bỏ các từ dễ hơn cấp này.",
+      "minCefrHint": "Bỏ các từ dễ hơn cấp này. Từ chưa có trong kho được AI ước lượng cấp trước khi tạo nội dung.",
       "all": "Mọi cấp",
       "start": "Phân tích",
       "starting": "Đang bắt đầu…",
@@ -458,7 +458,31 @@
       "failedAt": "Lỗi ở bước {step}",
       "retry": "Chạy lại từ bước lỗi",
       "done": "Phân tích xong. Danh sách đang chờ duyệt.",
-      "leave": "Có thể rời trang, việc vẫn chạy nền."
+      "leave": "Có thể rời trang, việc vẫn chạy nền.",
+      "progressParts": "{done}/{total} phần",
+      "summary": {
+        "items": "{count} từ",
+        "withWarnings": "{count} từ có cảnh báo",
+        "newWords": "{count} từ mới tạo nội dung",
+        "duration": "khoảng {minutes} phút",
+        "warningsTitle": "Cảnh báo",
+        "droppedTitle": "Đã bỏ:",
+        "warnings": {
+          "spelling": "Đã sửa chính tả",
+          "rare": "Từ hiếm",
+          "above_level": "Vượt trình độ",
+          "many_senses": "Nhiều nghĩa",
+          "no_context": "Không có ngữ cảnh",
+          "low_confidence": "AI chưa chắc"
+        },
+        "dropped": {
+          "invalid": "chữ không hợp lệ",
+          "not_a_word": "không phải từ tiếng Anh",
+          "below_level": "dưới trình độ",
+          "content_failed": "không tạo được nội dung",
+          "duplicate": "trùng sau khi sửa"
+        }
+      }
     }
   },
   "sync": {

@@ -1,6 +1,8 @@
 import { describe, expect, it } from "vitest";
 import type { ImportRow } from "@/lib/entry/file-import";
 import {
+  analysisSummary,
+  durationMinutes,
   isCoverUrl,
   isJobActive,
   jobProgress,
@@ -119,5 +121,34 @@ describe("tiến độ phân tích", () => {
     expect(isJobActive({ status: "running" })).toBe(true);
     expect(isJobActive({ status: "failed" })).toBe(false);
     expect(isJobActive(null)).toBe(false);
+  });
+});
+
+describe("tóm tắt phân tích", () => {
+  it("đọc tóm tắt từ state, bỏ qua dữ liệu hỏng", () => {
+    expect(
+      analysisSummary({
+        summary: {
+          items: 480,
+          withWarnings: 37,
+          warnings: { rare: 5, spelling: 2 },
+          dropped: { below_level: 12, bad: "x" },
+          newWords: 300,
+          durationSeconds: 610,
+        },
+      }),
+    ).toEqual({
+      items: 480,
+      withWarnings: 37,
+      warnings: { rare: 5, spelling: 2 },
+      dropped: {},
+      newWords: 300,
+      durationSeconds: 610,
+    });
+    expect(analysisSummary({})).toBeNull();
+    expect(analysisSummary(null)).toBeNull();
+    expect(durationMinutes(610)).toBe(11);
+    expect(durationMinutes(20)).toBe(1);
+    expect(durationMinutes(null)).toBeNull();
   });
 });

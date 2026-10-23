@@ -5,7 +5,15 @@ import { useRouter } from "next/navigation";
 import { Check } from "lucide-react";
 import { useTranslations } from "next-intl";
 import { Button } from "@/components/ui/button";
-import { ANALYSIS_STEPS, isJobActive, jobProgress, LIST_CEFR } from "@/lib/admin/lists";
+import {
+  analysisSummary,
+  ANALYSIS_STEPS,
+  durationMinutes,
+  isJobActive,
+  JOB_COLUMNS,
+  jobProgress,
+  LIST_CEFR,
+} from "@/lib/admin/lists";
 import { createClient } from "@/lib/supabase/client";
 import { cn } from "@/lib/utils";
 import { retryAnalysis, startAnalysis } from "./actions";
@@ -20,9 +28,9 @@ export type JobSnapshot = {
   cost_usd: number;
   input_tokens: number;
   output_tokens: number;
+  state: unknown;
 };
 
-const JOB_COLUMNS = "id, status, step, done, total, errors, cost_usd, input_tokens, output_tokens";
 const POLL_MS = 2000;
 
 /** Thông báo lỗi mới nhất mà worker ghi vào import_jobs.errors. */
@@ -40,13 +48,11 @@ export function AnalysisPanel({
   listId,
   listStatus,
   sourceCount,
-  hasDocument,
   initialJob,
 }: {
   listId: string;
   listStatus: string;
   sourceCount: number;
-  hasDocument: boolean;
   initialJob: JobSnapshot | null;
 }) {
   const t = useTranslations("admin.analysis");
@@ -88,6 +94,7 @@ export function AnalysisPanel({
         cost_usd: 0,
         input_tokens: 0,
         output_tokens: 0,
+        state: {},
       });
       router.refresh();
     } else {
@@ -103,6 +110,7 @@ export function AnalysisPanel({
   }
 
   const progress = job ? jobProgress(job) : null;
+  const summary = job ? analysisSummary(job.state) : null;
   const canStart = !active && (listStatus === "draft" || listStatus === "review");
   const stepName = (index: number) =>
     t(`steps.${ANALYSIS_STEPS[Math.min(index, ANALYSIS_STEPS.length - 1)]!}`);
@@ -115,24 +123,22 @@ export function AnalysisPanel({
 
       {canStart && (
         <div className="flex flex-wrap items-end gap-3">
-          {hasDocument && (
-            <label className="flex flex-col gap-1 text-sm">
-              {t("minCefr")}
-              <select
-                value={minCefr}
-                onChange={(e) => setMinCefr(e.target.value)}
-                className="min-h-11 rounded-lg border bg-background px-3"
-              >
-                <option value="">{t("all")}</option>
-                {LIST_CEFR.map((c) => (
-                  <option key={c} value={c}>
-                    {c}
-                  </option>
-                ))}
-              </select>
-              <span className="text-xs text-muted-foreground">{t("minCefrHint")}</span>
-            </label>
-          )}
+          <label className="flex flex-col gap-1 text-sm">
+            {t("minCefr")}
+            <select
+              value={minCefr}
+              onChange={(e) => setMinCefr(e.target.value)}
+              className="min-h-11 rounded-lg border bg-background px-3"
+            >
+              <option value="">{t("all")}</option>
+              {LIST_CEFR.map((c) => (
+                <option key={c} value={c}>
+                  {c}
+                </option>
+              ))}
+            </select>
+            <span className="text-xs text-muted-foreground">{t("minCefrHint")}</span>
+          </label>
           <Button className="min-h-11" disabled={busy || sourceCount === 0} onClick={start}>
             {busy ? t("starting") : t("start")}
           </Button>
@@ -191,8 +197,9 @@ export function AnalysisPanel({
                   : t("running", { step: stepName(progress.stepIndex) })}
             {job.total > 0 &&
               !progress.finished &&
-              ` · ${t("progress", { done: job.done, total: job.total })}`}
+              ` · ${t(job.step === "extract" ? "progressParts" : "progress", { done: job.done, total: job.total })}`}
           </p>
+          {progress.finished && summary && <SummaryView summary={summary} />}
           {progress.failed && lastError(job.errors) && (
             <p className="rounded-lg bg-muted p-2 text-xs">{lastError(job.errors)}</p>
           )}
@@ -220,5 +227,48 @@ export function AnalysisPanel({
         </div>
       )}
     </section>
+  );
+}
+
+const WARNING_CODES = [
+  "spelling",
+  "rare",
+  "above_level",
+  "many_senses",
+  "no_context",
+  "low_confidence",
+] as const;
+const DROP_CODES = ["below_level", "not_a_word", "content_failed", "duplicate", "invalid"] as const;
+
+/** Kết quả khi xong: số từ, cảnh báo theo loại, từ bị bỏ và lý do, từ mới, thời gian. */
+function SummaryView({ summary }: { summary: NonNullable<ReturnType<typeof analysisSummary>> }) {
+  const t = useTranslations("admin.analysis.summary");
+  const minutes = durationMinutes(summary.durationSeconds);
+  const warnings = WARNING_CODES.filter((code) => (summary.warnings[code] ?? 0) > 0);
+  const dropped = DROP_CODES.filter((code) => (summary.dropped[code] ?? 0) > 0);
+  return (
+    <div className="flex flex-col gap-2 text-sm">
+      <p>
+        {t("items", { count: summary.items })} ·{" "}
+        {t("withWarnings", { count: summary.withWarnings })} ·{" "}
+        {t("newWords", { count: summary.newWords })}
+        {minutes !== null && ` · ${t("duration", { minutes })}`}
+      </p>
+      {warnings.length > 0 && (
+        <ul aria-label={t("warningsTitle")} className="flex flex-wrap gap-2">
+          {warnings.map((code) => (
+            <li key={code} className="rounded-full border px-3 py-1 text-xs">
+              {t(`warnings.${code}`)}: {summary.warnings[code]}
+            </li>
+          ))}
+        </ul>
+      )}
+      {dropped.length > 0 && (
+        <p className="text-xs text-muted-foreground">
+          {t("droppedTitle")}{" "}
+          {dropped.map((code) => `${t(`dropped.${code}`)} (${summary.dropped[code]})`).join(", ")}
+        </p>
+      )}
+    </div>
   );
 }

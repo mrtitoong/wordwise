@@ -1076,7 +1076,7 @@ export type Database = {
     };
     Functions: {
       admin_list_overview: {
-        Args: never;
+        Args: Record<PropertyKey, never>;
         Returns: {
           id: string;
           item_count: number;

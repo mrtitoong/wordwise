@@ -25,6 +25,8 @@ jobs:
       - run: npm run format:check
       - run: npm run typecheck
       - run: npm test
+      - name: Tốc độ thống kê (50.000 lượt ôn dưới 1 giây)
+        run: npm run stats:perf
       - name: Bundle Edge Function khớp mã nguồn
         run: npm run functions:build -- --check
       # Build không cần Supabase: thiếu biến môi trường thì app chạy chế độ khách.

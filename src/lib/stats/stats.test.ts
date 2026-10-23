@@ -298,7 +298,7 @@ describe("statusHistory", () => {
 describe("computeStats", () => {
   it("bộ dữ liệu mẫu cố định (cùng bộ với test SQL đối chứng)", () => {
     const f = statsFixture();
-    const stats = computeStats({ ...f, now: FIXTURE_NOW, timeZone: FIXTURE_TZ }, scheduler);
+    const stats = computeStats({ ...f, now: FIXTURE_NOW, timeZone: FIXTURE_TZ });
     const total = (o: Record<string, number>) => Object.values(o).reduce((a, b) => a + b, 0);
     // 40 từ, 2 đã xóa.
     expect(total(stats.statuses)).toBe(38);
@@ -308,44 +308,22 @@ describe("computeStats", () => {
     expect(stats.minutes).toHaveLength(365);
     expect(stats.forecast).toHaveLength(30);
     expect(stats.mostForgotten.length).toBeLessThanOrEqual(10);
-    expect(stats.history.at(-1)!.week).toBe("2026-10-19");
+    const history = statusHistory(f, scheduler, FIXTURE_NOW, FIXTURE_TZ);
+    expect(history.at(-1)!.week).toBe("2026-10-19");
     expect(stats.streak.today).toBe(true);
   });
 
   it("chưa ôn lần nào: số liệu rỗng, tỉ lệ nhớ chưa có", () => {
-    const stats = computeStats(
-      { userWords: [], cards: [], logs: [], completedDays: new Set(), now: NOW, timeZone: TZ },
-      scheduler,
-    );
+    const stats = computeStats({
+      userWords: [],
+      cards: [],
+      logs: [],
+      completedDays: new Set(),
+      now: NOW,
+      timeZone: TZ,
+    });
     expect(stats.dataDays).toBe(0);
     expect(stats.retention30.rate).toBeNull();
     expect(stats.streak.current).toBe(0);
-    expect(stats.history).toEqual([]);
-  });
-
-  it("50.000 lượt ôn tính dưới 1 giây", () => {
-    const words = Array.from({ length: 2000 }, (_, i) =>
-      userWord(`w${i}`, { added_at: new Date(NOW.getTime() - (i % 365) * DAY).toISOString() }),
-    );
-    const cards = words.flatMap((w, i) => [
-      card(w.id, {
-        stability: i % 40,
-        due: new Date(NOW.getTime() + (i % 60) * DAY).toISOString(),
-      }),
-      card(w.id, { skill: "spelling", stability: i % 20 }),
-    ]);
-    const logs = Array.from({ length: 50_000 }, (_, i) =>
-      log(cards[i % cards.length]!.id, (i * 7.3) % 365, {
-        rating: i % 9 === 0 ? Rating.Again : Rating.Good,
-        response_ms: 5_000 + (i % 30) * 1_000,
-      }),
-    ).sort((a, b) => a.reviewed_at.localeCompare(b.reviewed_at));
-    const start = performance.now();
-    computeStats(
-      { userWords: words, cards, logs, completedDays: new Set(), now: NOW, timeZone: TZ },
-      scheduler,
-    );
-    const ms = performance.now() - start;
-    expect(ms).toBeLessThan(1000);
   });
 });

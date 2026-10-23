@@ -8,7 +8,6 @@
  * `supabase test db` chạy file.
  */
 import { readFileSync, writeFileSync } from "node:fs";
-import { createScheduler } from "../src/lib/srs/scheduler";
 import {
   FIXTURE_NOW,
   FIXTURE_TZ,
@@ -33,10 +32,7 @@ function insert(table: string, rows: Record<string, string | number | boolean | 
 }
 
 const fixture = statsFixture();
-const stats = computeStats(
-  { ...fixture, now: FIXTURE_NOW, timeZone: FIXTURE_TZ },
-  createScheduler(),
-);
+const stats = computeStats({ ...fixture, now: FIXTURE_NOW, timeZone: FIXTURE_TZ });
 const s = stats.statuses;
 const forecast7 = stats.forecast.slice(0, 7).map((d) => d.value);
 

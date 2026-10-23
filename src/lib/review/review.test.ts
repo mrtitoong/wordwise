@@ -49,6 +49,38 @@ describe("computeStreak", () => {
     expect(streak(answers)).toMatchObject({ current: 6, restLeftThisWeek: false });
   });
 
+  it("chuỗi dài nhất khớp cách đếm lùi từ từng ngày học (300 bộ ngày ngẫu nhiên)", () => {
+    /** Cách cũ: đếm lùi từ mỗi ngày học, mỗi tuần (thứ Hai–CN) được nghỉ 1 ngày. */
+    const bruteBest = (offsets: number[]) => {
+      const days = new Set(offsets);
+      let best = 0;
+      for (const start of offsets) {
+        const rest = new Set<number>();
+        let count = 0;
+        for (let d = start; d <= Math.max(...offsets); d++) {
+          if (days.has(d)) {
+            count++;
+            continue;
+          }
+          // NOW là thứ Năm: d ngày trước thuộc tuần floor((d + 3) / 7) tính lùi.
+          const week = Math.floor((d + 3) / 7);
+          if (rest.has(week)) break;
+          rest.add(week);
+        }
+        best = Math.max(best, count);
+      }
+      return best;
+    };
+    let seed = 7;
+    const random = () => ((seed = (seed * 16807) % 2147483647) - 1) / 2147483646;
+    for (let run = 0; run < 300; run++) {
+      const density = 0.3 + random() * 0.65;
+      const offsets = Array.from({ length: 60 }, (_, d) => d).filter(() => random() < density);
+      if (!offsets.length) continue;
+      expect(streak(offsets.flatMap((d) => at(d))).best).toBe(bruteBest(offsets));
+    }
+  });
+
   it("ngày học theo múi giờ người dùng, bắt đầu lúc 4:00 sáng", () => {
     // 23:30 ngày 21/10 và 00:30 ngày 22/10 giờ VN cùng là ngày học 21/10 (học khuya).
     const late = Array.from({ length: 3 }, (_, i) => `2026-10-21T16:3${i}:00Z`);

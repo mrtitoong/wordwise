@@ -4,7 +4,7 @@ import { useEffect } from "react";
 import { GUEST_OWNER } from "@/lib/db/ids";
 import { getLocalDb } from "@/lib/db/local";
 import { ensureSkillCards, openNewWords, recordReview } from "@/lib/db/repo";
-import type { CardRow } from "@/lib/db/types";
+import type { CardRow, ReviewLogRow } from "@/lib/db/types";
 import { createClient } from "@/lib/supabase/client";
 import { getSupabaseEnv } from "@/lib/supabase/env";
 import { getSyncEngine } from "@/lib/sync/client";
@@ -86,6 +86,45 @@ export function SyncProvider() {
             // Mức thuộc đổi thì có thể mở thêm thẻ kỹ năng (Chính tả, Phát âm).
             if (owner) await ensureSkillCards(db, owner);
             return cards.length;
+          },
+          /**
+           * Lịch sử ôn giả cho trang Thống kê: mỗi thẻ đã có một lượt ôn mỗi ngày trong `days` ngày
+           * qua (9:00 sáng, cứ 5 lượt có 1 lượt Quên). Chỉ ghi trong máy, không đồng bộ.
+           */
+          async seedHistory(days = 30) {
+            const owner = engine.getOwner();
+            const db = getLocalDb();
+            const cards = await db.cards
+              .where("user_id")
+              .equals(owner ?? "")
+              .toArray();
+            const today = new Date();
+            today.setHours(9, 0, 0, 0);
+            const logs = cards.flatMap((card, c) =>
+              Array.from({ length: days }, (_, d): ReviewLogRow => {
+                const at = new Date(today.getTime() - (d + 1) * 86_400_000).toISOString();
+                const forgot = (c + d) % 5 === 0;
+                return {
+                  id: crypto.randomUUID(),
+                  user_id: owner!,
+                  card_id: card.id,
+                  mode: card.skill === "spelling" ? "writing" : d % 2 ? "mcq" : "flashcard",
+                  rating: forgot ? 1 : 3,
+                  state: 2,
+                  is_extra: false,
+                  response_ms: 6_000 + ((c * 7 + d * 3) % 20) * 1_000,
+                  correct: !forgot,
+                  hint_level: 0,
+                  pronunciation_score: null,
+                  reviewed_at: at,
+                  elapsed_days: 1,
+                  scheduled_days: 1,
+                  created_at: at,
+                };
+              }),
+            );
+            await db.review_logs.bulkPut(logs);
+            return logs.length;
           },
         },
       });

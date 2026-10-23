@@ -58,6 +58,35 @@ function chainFrom(start: string, days: ReadonlySet<string>, earliest: string) {
   return { count, restUsed };
 }
 
+/**
+ * Chuỗi dài nhất, cùng quy tắc với `chainFrom` nhưng một lượt từ cũ tới mới (thử từng ngày bắt đầu
+ * thì chậm theo bình phương số ngày khi đã học vài năm). Chuỗi kết thúc ở ngày d gồm các ngày học
+ * sau ngày nghỉ sớm hơn của tuần nào có 2 ngày nghỉ.
+ */
+function bestChain(sorted: readonly string[], days: ReadonlySet<string>): number {
+  const last = sorted[sorted.length - 1]!;
+  const firstMiss = new Map<string, string>();
+  /** Số ngày học từ đầu tới từng ngày (để đếm ngày học trong một khoảng). */
+  const studiedBefore = new Map<string, number>();
+  let studied = 0;
+  let from = sorted[0]!;
+  let best = 0;
+  for (let day = sorted[0]!; day <= last; day = addDays(day, 1)) {
+    studiedBefore.set(day, studied);
+    if (days.has(day)) {
+      studied++;
+      best = Math.max(best, studied - studiedBefore.get(from)!);
+      continue;
+    }
+    const week = weekOf(day);
+    const earlier = firstMiss.get(week);
+    // Ngày nghỉ thứ hai trong tuần: chuỗi mới bắt đầu sau ngày nghỉ thứ nhất.
+    if (earlier !== undefined && earlier >= from) from = addDays(earlier, 1);
+    firstMiss.set(week, day);
+  }
+  return best;
+}
+
 export function computeStreak(input: StreakInput): Streak {
   const days = studyDays(input);
   const today = studyDay(input.now, input.timeZone);
@@ -70,9 +99,7 @@ export function computeStreak(input: StreakInput): Streak {
   const start = studiedToday ? today : addDays(today, -1);
   const { count, restUsed } = chainFrom(start, days, earliest);
 
-  // Chuỗi dài nhất: thử bắt đầu từ mỗi ngày học (ít ngày nên đủ nhanh).
-  let best = count;
-  for (const day of sorted) best = Math.max(best, chainFrom(day, days, earliest).count);
+  const best = Math.max(count, bestChain(sorted, days));
 
   return {
     current: count,

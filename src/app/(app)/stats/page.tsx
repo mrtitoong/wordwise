@@ -1,7 +1,7 @@
 import type { Metadata } from "next";
 import { getTranslations } from "next-intl/server";
 import { TopBar } from "@/components/app-shell/top-bar";
-import { EmptyState } from "@/components/empty-state";
+import { StatsScreen } from "@/features/stats/stats-screen";
 
 export async function generateMetadata(): Promise<Metadata> {
   const t = await getTranslations("stats");
@@ -13,7 +13,9 @@ export default async function StatsPage() {
   return (
     <>
       <TopBar title={t("title")} />
-      <EmptyState body={t("emptyBody")} />
+      <div className="pt-2">
+        <StatsScreen />
+      </div>
     </>
   );
 }

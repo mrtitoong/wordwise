@@ -23,6 +23,8 @@ export type CardContextValue = {
   owner: string | null;
   open: (sheet: SheetState) => void;
   addSense: (senseId: string) => void;
+  /** Chỉ xem (Admin duyệt danh sách): ẩn nút thêm/sửa/báo lỗi, chip không bấm được. */
+  readOnly?: boolean;
 };
 
 const CardContext = createContext<CardContextValue | null>(null);
@@ -83,7 +85,8 @@ export function LayerFooter({
   canAdd?: boolean;
 }) {
   const t = useTranslations("wordCard");
-  const { view, open } = useCard();
+  const { view, open, readOnly } = useCard();
+  if (readOnly) return null;
   return (
     <div className="flex items-center justify-between gap-2 border-t pt-1">
       {view.inNotebook && canAdd ? (
@@ -155,7 +158,15 @@ export function WordChip({
   pos?: Pos | null;
   children?: ReactNode;
 }) {
-  const { open } = useCard();
+  const { open, readOnly } = useCard();
+  if (readOnly) {
+    return (
+      <span className="inline-flex min-h-9 items-center gap-1.5 rounded-full border bg-background px-3.5 text-sm font-medium">
+        {word}
+        {children}
+      </span>
+    );
+  }
   return (
     <button
       type="button"

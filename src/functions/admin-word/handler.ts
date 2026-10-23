@@ -19,8 +19,7 @@ export const AdminWordRequestSchema = z.object({
 });
 
 export type AdminWordResponse =
-  | { status: "ok"; content: WordContent }
-  | { status: "forbidden" | "not_found" | "unavailable" };
+  { status: "ok"; content: WordContent } | { status: "forbidden" | "not_found" | "unavailable" };
 
 export interface AdminWordDeps {
   getUserId(authorization: string | null): Promise<string | null>;

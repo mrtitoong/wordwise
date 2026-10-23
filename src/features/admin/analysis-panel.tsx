@@ -143,7 +143,13 @@ export function AnalysisPanel({
             {busy ? t("starting") : t("start")}
           </Button>
           {sourceCount === 0 && <p className="text-sm text-muted-foreground">{t("noSources")}</p>}
+          {listStatus === "review" && (
+            <p className="w-full text-sm text-muted-foreground">{t("rerunHint")}</p>
+          )}
         </div>
+      )}
+      {!active && listStatus === "published" && (
+        <p className="rounded-xl bg-muted p-3 text-sm">{t("publishedHint")}</p>
       )}
       {error && (
         <p role="alert" className="text-sm text-destructive">

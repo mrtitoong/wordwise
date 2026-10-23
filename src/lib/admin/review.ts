@@ -168,7 +168,10 @@ function similarity(a: Sense, b: Sense): number {
  * Ghép nghĩa hiện có với nghĩa vừa tạo: chọn cặp giống nhau nhất (nghĩa Anh + Việt), mỗi nghĩa
  * mới dùng một lần; không cặp nào giống thì lấy cùng vị trí. null = không có nghĩa mới tương ứng.
  */
-export function matchSenses(current: readonly Sense[], generated: readonly Sense[]): (number | null)[] {
+export function matchSenses(
+  current: readonly Sense[],
+  generated: readonly Sense[],
+): (number | null)[] {
   const pairs: { i: number; j: number; score: number }[] = [];
   current.forEach((a, i) =>
     generated.forEach((b, j) => pairs.push({ i, j, score: similarity(a, b) })),

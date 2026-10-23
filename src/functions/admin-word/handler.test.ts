@@ -7,7 +7,9 @@ const WORD_ID = "11111111-1111-4111-8111-111111111111";
 
 function setup(overrides: Partial<AdminWordDeps> = {}) {
   const deps: AdminWordDeps = {
-    getUserId: vi.fn(async (auth) => (auth === "Bearer admin-jwt" ? "admin" : auth ? "user" : null)),
+    getUserId: vi.fn(async (auth) =>
+      auth === "Bearer admin-jwt" ? "admin" : auth ? "user" : null,
+    ),
     isAdmin: vi.fn(async (id) => id === "admin"),
     loadWord: vi.fn(async (id) => (id === WORD_ID ? bank : null)),
     generate: vi.fn(async () => ({

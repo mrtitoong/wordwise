@@ -495,6 +495,39 @@ export type Database = {
         };
         Relationships: [];
       };
+      push_subscriptions: {
+        Row: {
+          auth: string;
+          created_at: string;
+          endpoint: string;
+          id: string;
+          last_sent_at: string | null;
+          p256dh: string;
+          user_agent: string | null;
+          user_id: string;
+        };
+        Insert: {
+          auth: string;
+          created_at?: string;
+          endpoint: string;
+          id?: string;
+          last_sent_at?: string | null;
+          p256dh: string;
+          user_agent?: string | null;
+          user_id: string;
+        };
+        Update: {
+          auth?: string;
+          created_at?: string;
+          endpoint?: string;
+          id?: string;
+          last_sent_at?: string | null;
+          p256dh?: string;
+          user_agent?: string | null;
+          user_id?: string;
+        };
+        Relationships: [];
+      };
       review_logs: {
         Row: {
           card_id: string;
@@ -977,6 +1010,10 @@ export type Database = {
       [_ in never]: never;
     };
     Functions: {
+      claim_due_reminders: {
+        Args: { p_now?: string };
+        Returns: { locale: string; news: number; reviews: number; user_id: string }[];
+      };
       claim_media_words: { Args: { p_include_images: boolean; p_limit: number }; Returns: Json };
       claim_word_jobs: { Args: { p_job_id?: string; p_limit?: number }; Returns: Json };
       complete_word_job: { Args: { p_job_id: string; p_word_id: string }; Returns: undefined };
@@ -1004,6 +1041,10 @@ export type Database = {
       save_generated_word: {
         Args: { p_details: Json; p_job_id: string; p_senses: Json; p_word: Json };
         Returns: string;
+      };
+      save_push_subscription: {
+        Args: { p_auth: string; p_endpoint: string; p_p256dh: string; p_user_agent?: string };
+        Returns: undefined;
       };
       search_by_meaning: {
         Args: { p_language?: string; p_limit?: number; p_query: string };

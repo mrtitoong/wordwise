@@ -21,6 +21,7 @@ import { dictionaryForPrompt, type DictionaryData } from "@/lib/dictionary/free-
 import { toLemma, type Lemmatizer } from "@/lib/entry/lemma";
 import type { LlmRouter } from "@/lib/llm/router";
 import type { PromptTemplate } from "@/lib/llm/prompt-template";
+import { estimateCostUsd } from "@/lib/llm/cost";
 import { buildWordContentPrompt } from "@/lib/llm/tasks/word-content";
 import { WordContentSchema, type Language, type Pos, type WordContent } from "@/lib/schema/word";
 import { toWordRows, type WordRows } from "@/lib/schema/word-rows";
@@ -39,7 +40,7 @@ export interface WordJob {
   language: Language;
   lemma: string;
   pos: Pos | null;
-  source: "user" | "bulk";
+  source: "user" | "bulk" | "admin";
   /** Số lần đã nhận việc, kể cả lần này. */
   attempts: number;
   frequencyRank: number | null;
@@ -80,6 +81,11 @@ export interface WordStore {
   saveWord(jobId: string, rows: WordRows): Promise<string>;
   completeJob(jobId: string, wordId: string): Promise<void>;
   failJob(jobId: string, error: string, retryAt: Date | null): Promise<void>;
+  /** Cộng token/chi phí của lượt tạo nội dung vào việc (danh sách Admin tính chi phí từ đây). */
+  addUsage?(
+    jobId: string,
+    usage: { inputTokens: number; outputTokens: number; costUsd: number },
+  ): Promise<void>;
 }
 
 export type WordLlm = Pick<LlmRouter<"word-content">, "generateJSON">;
@@ -259,6 +265,17 @@ export async function processJob(job: WordJob, deps: WorkerDeps): Promise<JobOut
       schema: contentSchemaFor(job, pos),
       preprocess: stripIpaSlashes,
     });
+
+    if (deps.store.addUsage) {
+      // Ghi chi phí không được làm hỏng việc đã tạo xong.
+      await deps.store
+        .addUsage(job.id, {
+          inputTokens: result.usage.inputTokens ?? 0,
+          outputTokens: result.usage.outputTokens ?? 0,
+          costUsd: estimateCostUsd(result.model, result.usage),
+        })
+        .catch((error: unknown) => console.error("Ghi chi phí việc lỗi:", error));
+    }
 
     const content: WordContent = { ...result.data, lemma: job.lemma };
 

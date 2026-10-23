@@ -56,6 +56,9 @@ export const LLM_TASKS = [
   "mnemonic",
   "photo-word-picker",
   "list-analyzer",
+  "list-triage",
+  "sense-picker",
+  "list-subtopics",
   "reverse-lookup",
   "photo-ocr",
 ] as const;
@@ -80,6 +83,12 @@ const DEFAULT_TASKS: Record<
   // Ảnh/văn bản OCR của người dùng, bài đọc Admin → chỉ trả phí.
   "photo-word-picker": { containsUserData: true, models: ["claude-sonnet", "claude-haiku"] },
   "list-analyzer": { containsUserData: true, models: ["claude-sonnet", "claude-haiku"] },
+  // Phân tích danh sách Admin (Prompt 7.2): việc nhỏ, nhiều lượt → Haiku, dự phòng Sonnet.
+  // Ước lượng CEFR/chính tả và chia chủ đề con chỉ gửi từ + nghĩa; chọn nghĩa gửi câu trong bài
+  // đọc của Admin nên vẫn đánh dấu containsUserData (chỉ model trả phí).
+  "list-triage": { containsUserData: true, models: ["claude-haiku", "claude-sonnet"] },
+  "sense-picker": { containsUserData: true, models: ["claude-haiku", "claude-sonnet"] },
+  "list-subtopics": { containsUserData: true, models: ["claude-haiku", "claude-sonnet"] },
   // Câu tiếng Việt người dùng nói/gõ để tra ngược (Prompt 2.5) → chỉ trả phí.
   "reverse-lookup": { containsUserData: true, models: ["claude-sonnet", "claude-haiku"] },
   // Đọc chữ trên ảnh người dùng chụp khi Google Cloud Vision đọc kém (Prompt 2.6) → chỉ trả phí.

@@ -436,7 +436,7 @@
     "analysis": {
       "title": "Analysis",
       "minCefr": "Only words from level",
-      "minCefrHint": "For readings: skips words easier than this level.",
+      "minCefrHint": "Skips words easier than this level. AI estimates the level of new words before creating content.",
       "all": "Any level",
       "start": "Analyze",
       "starting": "Starting…",
@@ -458,7 +458,31 @@
       "failedAt": "Failed at step: {step}",
       "retry": "Retry from the failed step",
       "done": "Analysis finished. The list is ready for review.",
-      "leave": "You can leave this page; it keeps running."
+      "leave": "You can leave this page; it keeps running.",
+      "progressParts": "{done}/{total} parts",
+      "summary": {
+        "items": "{count} words",
+        "withWarnings": "{count} with warnings",
+        "newWords": "{count} new words generated",
+        "duration": "about {minutes} min",
+        "warningsTitle": "Warnings",
+        "droppedTitle": "Skipped:",
+        "warnings": {
+          "spelling": "Spelling fixed",
+          "rare": "Rare word",
+          "above_level": "Above level",
+          "many_senses": "Many senses",
+          "no_context": "No context",
+          "low_confidence": "AI unsure"
+        },
+        "dropped": {
+          "invalid": "invalid text",
+          "not_a_word": "not an English word",
+          "below_level": "below level",
+          "content_failed": "content failed",
+          "duplicate": "duplicate after fix"
+        }
+      }
     }
   },
   "sync": {

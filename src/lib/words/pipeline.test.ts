@@ -336,6 +336,23 @@ describe("processJob", () => {
     expect(fake.jobs[0]!.status).toBe("done");
   });
 
+  it("ghi token và chi phí vào việc; ghi lỗi không làm hỏng việc", async () => {
+    const fake = fakeStore();
+    const usage = vi.fn(async () => {
+      throw new Error("db down");
+    });
+    fake.store.addUsage = usage;
+    const claimed = await queued(fake.store, "resilient", "adjective");
+    const { deps } = workerDeps(fake.store, [example("resilient")]);
+    expect(await processJob(claimed, deps)).toMatchObject({ status: "done" });
+    // 100 token vào × $0,1 + 50 token ra × $0,5 (giá Haiku trong test, mỗi triệu token).
+    expect(usage).toHaveBeenCalledWith(claimed.id, {
+      inputTokens: 100,
+      outputTokens: 50,
+      costUsd: (100 * 0.1 + 50 * 0.5) / 1_000_000,
+    });
+  });
+
   it("không đưa câu ngữ cảnh của người dùng vào prompt, có dữ liệu từ điển", async () => {
     const fake = fakeStore();
     const claimed = await queued(fake.store, "resilient", "adjective");

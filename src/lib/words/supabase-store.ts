@@ -86,7 +86,7 @@ function toJob(raw: Record<string, unknown>): WordJob {
     language: LanguageSchema.parse(raw.language),
     lemma: String(raw.lemma),
     pos: raw.pos === null ? null : PosSchema.parse(raw.pos),
-    source: raw.source === "bulk" ? "bulk" : "user",
+    source: raw.source === "bulk" || raw.source === "admin" ? raw.source : "user",
     attempts: Number(raw.attempts),
     frequencyRank: typeof raw.frequency_rank === "number" ? raw.frequency_rank : null,
   };
@@ -206,6 +206,18 @@ export function createSupabaseWordStore(client: Client): WordStore {
           ...(retryAt ? { p_retry_at: retryAt.toISOString() } : {}),
         }),
         "Ghi lỗi việc",
+      );
+    },
+
+    async addUsage(jobId, usage) {
+      check(
+        await client.rpc("add_word_job_usage", {
+          p_job_id: jobId,
+          p_input_tokens: usage.inputTokens,
+          p_output_tokens: usage.outputTokens,
+          p_cost_usd: usage.costUsd,
+        }),
+        "Ghi chi phí việc",
       );
     },
   };

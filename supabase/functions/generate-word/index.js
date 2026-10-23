@@ -107,6 +107,9 @@ var LLM_TASKS = [
   "mnemonic",
   "photo-word-picker",
   "list-analyzer",
+  "list-triage",
+  "sense-picker",
+  "list-subtopics",
   "reverse-lookup",
   "photo-ocr"
 ];
@@ -125,6 +128,12 @@ var DEFAULT_TASKS = {
   // Ảnh/văn bản OCR của người dùng, bài đọc Admin → chỉ trả phí.
   "photo-word-picker": { containsUserData: true, models: ["claude-sonnet", "claude-haiku"] },
   "list-analyzer": { containsUserData: true, models: ["claude-sonnet", "claude-haiku"] },
+  // Phân tích danh sách Admin (Prompt 7.2): việc nhỏ, nhiều lượt → Haiku, dự phòng Sonnet.
+  // Ước lượng CEFR/chính tả và chia chủ đề con chỉ gửi từ + nghĩa; chọn nghĩa gửi câu trong bài
+  // đọc của Admin nên vẫn đánh dấu containsUserData (chỉ model trả phí).
+  "list-triage": { containsUserData: true, models: ["claude-haiku", "claude-sonnet"] },
+  "sense-picker": { containsUserData: true, models: ["claude-haiku", "claude-sonnet"] },
+  "list-subtopics": { containsUserData: true, models: ["claude-haiku", "claude-sonnet"] },
   // Câu tiếng Việt người dùng nói/gõ để tra ngược (Prompt 2.5) → chỉ trả phí.
   "reverse-lookup": { containsUserData: true, models: ["claude-sonnet", "claude-haiku"] },
   // Đọc chữ trên ảnh người dùng chụp khi Google Cloud Vision đọc kém (Prompt 2.6) → chỉ trả phí.
@@ -1091,7 +1100,7 @@ function toJob(raw) {
     language: LanguageSchema.parse(raw.language),
     lemma: String(raw.lemma),
     pos: raw.pos === null ? null : PosSchema.parse(raw.pos),
-    source: raw.source === "bulk" ? "bulk" : "user",
+    source: raw.source === "bulk" || raw.source === "admin" ? raw.source : "user",
     attempts: Number(raw.attempts),
     frequencyRank: typeof raw.frequency_rank === "number" ? raw.frequency_rank : null
   };
@@ -1182,6 +1191,17 @@ function createSupabaseWordStore(client) {
           ...retryAt ? { p_retry_at: retryAt.toISOString() } : {}
         }),
         "Ghi lỗi việc"
+      );
+    },
+    async addUsage(jobId, usage) {
+      check(
+        await client.rpc("add_word_job_usage", {
+          p_job_id: jobId,
+          p_input_tokens: usage.inputTokens,
+          p_output_tokens: usage.outputTokens,
+          p_cost_usd: usage.costUsd
+        }),
+        "Ghi chi phí việc"
       );
     }
   };
@@ -1352,6 +1372,13 @@ function toLemma(input, options) {
   return { lemma, surface, alternatives: lemma === surface ? [] : [surface] };
 }
 
+// src/lib/llm/cost.ts
+function estimateCostUsd(model, usage) {
+  const input = usage.inputTokens ?? 0;
+  const output = usage.outputTokens ?? 0;
+  return (input * model.priceUsdPerMTok.input + output * model.priceUsdPerMTok.output) / 1e6;
+}
+
 // src/lib/llm/tasks/word-content.ts
 var LANGUAGE_NAMES = {
   en: "tiếng Anh",
@@ -1497,6 +1524,13 @@ async function processJob(job, deps) {
       schema: contentSchemaFor(job, pos),
       preprocess: stripIpaSlashes
     });
+    if (deps.store.addUsage) {
+      await deps.store.addUsage(job.id, {
+        inputTokens: result.usage.inputTokens ?? 0,
+        outputTokens: result.usage.outputTokens ?? 0,
+        costUsd: estimateCostUsd(result.model, result.usage)
+      }).catch((error) => console.error("Ghi chi phí việc lỗi:", error));
+    }
     const content = { ...result.data, lemma: job.lemma };
     if (!pos) {
       const existing = await deps.store.findWordId(job.language, job.lemma, content.pos);

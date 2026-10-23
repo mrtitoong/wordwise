@@ -29,9 +29,23 @@ function formatter(timeZone: string): Intl.DateTimeFormat {
   return format;
 }
 
+/** Mọi múi giờ lệch UTC theo bội 15 phút: cùng khoảng 15 phút thì cùng ngày. */
+const SLOT_MS = 15 * 60_000;
+const SLOT_CACHE_MAX = 50_000;
+const slotDays = new Map<string, Map<number, string>>();
+
 /** Ngày lịch (YYYY-MM-DD) của một thời điểm theo múi giờ; múi giờ sai thì dùng giờ Việt Nam. */
 export function localDay(date: Date, timeZone: string): string {
-  return formatter(timeZone).format(date);
+  const slot = Math.floor(date.getTime() / SLOT_MS);
+  let days = slotDays.get(timeZone);
+  if (!days) slotDays.set(timeZone, (days = new Map()));
+  let day = days.get(slot);
+  if (day === undefined) {
+    if (days.size >= SLOT_CACHE_MAX) days.clear();
+    day = formatter(timeZone).format(new Date(slot * SLOT_MS));
+    days.set(slot, day);
+  }
+  return day;
 }
 
 /**

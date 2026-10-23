@@ -142,6 +142,14 @@ describe("mở dần từ Sắp học", () => {
     expect(studyDay(new Date("2026-10-20T21:00:00Z"), "Asia/Ho_Chi_Minh")).toBe("2026-10-21");
   });
 
+  it("sát nửa đêm và múi giờ lệch 45 phút vẫn đúng ngày", () => {
+    expect(localDay(new Date("2026-10-21T16:59:59.999Z"), "Asia/Ho_Chi_Minh")).toBe("2026-10-21");
+    expect(localDay(new Date("2026-10-21T17:00:00Z"), "Asia/Ho_Chi_Minh")).toBe("2026-10-22");
+    // Nepal UTC+5:45: 0:00 ngày 22/10 = 18:15Z ngày 21/10.
+    expect(localDay(new Date("2026-10-21T18:14:59Z"), "Asia/Kathmandu")).toBe("2026-10-21");
+    expect(localDay(new Date("2026-10-21T18:15:00Z"), "Asia/Kathmandu")).toBe("2026-10-22");
+  });
+
   it("mở đủ số từ còn lại hôm nay, thêm trước mở trước", () => {
     const words = [
       userWord("today", { introduced_at: "2026-10-21T01:00:00Z" }),

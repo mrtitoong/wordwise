@@ -49,11 +49,17 @@ describe("computeStreak", () => {
     expect(streak(answers)).toMatchObject({ current: 6, restLeftThisWeek: false });
   });
 
-  it("ngày tính theo múi giờ người dùng", () => {
-    // 23:30 ngày 21/10 giờ VN = 16:30Z ngày 21/10; 00:30 ngày 22/10 giờ VN = 17:30Z.
-    const late = Array.from({ length: 5 }, (_, i) => `2026-10-21T16:3${i}:00Z`);
-    const early = Array.from({ length: 5 }, (_, i) => `2026-10-21T17:3${i}:00Z`);
-    expect(streak([...late, ...early])).toMatchObject({ current: 2, today: true });
+  it("ngày học theo múi giờ người dùng, bắt đầu lúc 4:00 sáng", () => {
+    // 23:30 ngày 21/10 và 00:30 ngày 22/10 giờ VN cùng là ngày học 21/10 (học khuya).
+    const late = Array.from({ length: 3 }, (_, i) => `2026-10-21T16:3${i}:00Z`);
+    const afterMidnight = Array.from({ length: 2 }, (_, i) => `2026-10-21T17:3${i}:00Z`);
+    expect(streak([...late, ...afterMidnight])).toMatchObject({ current: 1, today: false });
+    // 04:30 ngày 22/10 giờ VN (21:30Z ngày 21/10) đã là ngày học mới.
+    const morning = Array.from({ length: 5 }, (_, i) => `2026-10-21T21:3${i}:00Z`);
+    expect(streak([...late, ...afterMidnight, ...morning])).toMatchObject({
+      current: 2,
+      today: true,
+    });
   });
 
   it("chưa học bao giờ", () => {

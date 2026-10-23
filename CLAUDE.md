@@ -398,3 +398,17 @@ Repo: https://github.com/mrtitoong/wordwise
   âm) bằng số từ mới/ngày. Mô phỏng 3 thẻ: quý 4 ~328 lượt/ngày (gấp 2,9× chỉ Nghĩa), vượt giới hạn
   200/ngày thì dời sang hôm sau. E2E dùng micro giả (`tests/fixtures/audio/speech-then-silence.wav`)
   và chấm điểm giả lập.
+- 2026-10-23 (GĐ6, chủ sản phẩm duyệt 8 đề xuất): **Ngày học bắt đầu lúc 4:00 sáng** cho mọi thứ tính
+  theo ngày ở máy khách (chuỗi ngày, giới hạn từ mới/ngày, mở Sắp học, thống kê; `studyDay()` trong
+  `src/lib/review/day.ts`); giới hạn ở máy chủ (chi phí) vẫn 0:00 giờ VN. Phút học = tổng thời gian trả
+  lời, mỗi câu tối đa 60 giây. Độ chính xác 4 nhóm theo chế độ: Nghĩa (flashcard, trắc nghiệm), Viết,
+  Nghe, Nói; đúng = không Quên. Từ theo trạng thái qua thời gian dựng lại từ lịch sử ôn (FSRS), mỗi
+  tuần một cột, tối đa 52. Recharts (tải riêng ở /stats), heatmap tự vẽ. **Tối ưu tham số FSRS theo
+  người để sau GĐ8** (chưa ai có 1.000 lượt ôn); GĐ6 làm chỉnh tỉ lệ nhớ 80–95% kèm ước tính số
+  thẻ/ngày. Nhắc học bằng Web Push với Service Worker tối giản (khóa VAPID trong Supabase Secrets).
+- 2026-10-23 (Prompt 6.1): `src/lib/stats/stats.ts` (`computeStats`): tỉ lệ nhớ thực tế chỉ lượt ôn
+  đến hạn (state Review, không `is_extra`); dự báo tính thẻ đã ôn của từ đang học theo kỹ năng đang
+  bật, quá hạn vào hôm nay; leech = thẻ bất kỳ quên ≥ 6 lần; "quên nhiều nhất" đếm lượt Quên 30 ngày
+  (cả luyện thêm). Đối chứng SQL: bộ dữ liệu mẫu `src/lib/stats/fixture.ts` → `npm run stats:sql` sinh
+  `supabase/tests/stats.test.sql` (pgTAP, CI kiểm tra file khớp). 50.000 lượt ôn tính ~0,3 giây
+  (`localDay` lưu sẵn ngày theo khoảng 15 phút).

@@ -1,6 +1,7 @@
 import { describe, expect, it } from "vitest";
 import type { CardRow, NotebookEntryRow, NotebookRow, UserWordRow } from "@/lib/db/types";
-import { introducedToday, localDay, planIntroductions } from "./introductions";
+import { localDay, studyDay } from "@/lib/review/day";
+import { introducedToday, planIntroductions } from "./introductions";
 import {
   countByStatus,
   countOwnedWords,
@@ -133,6 +134,20 @@ describe("mở dần từ Sắp học", () => {
     expect(localDay(new Date("2026-10-20T18:00:00Z"), "Asia/Ho_Chi_Minh")).toBe("2026-10-21");
     expect(localDay(new Date("2026-10-20T18:00:00Z"), "America/New_York")).toBe("2026-10-20");
     expect(localDay(new Date("2026-10-20T18:00:00Z"), "Sai/Mui_Gio")).toBe("2026-10-21");
+  });
+
+  it("ngày học bắt đầu lúc 4:00 sáng", () => {
+    // 1:00 sáng 21/10 giờ VN vẫn là ngày học 20/10; 4:00 sáng là ngày 21/10.
+    expect(studyDay(new Date("2026-10-20T18:00:00Z"), "Asia/Ho_Chi_Minh")).toBe("2026-10-20");
+    expect(studyDay(new Date("2026-10-20T21:00:00Z"), "Asia/Ho_Chi_Minh")).toBe("2026-10-21");
+  });
+
+  it("sát nửa đêm và múi giờ lệch 45 phút vẫn đúng ngày", () => {
+    expect(localDay(new Date("2026-10-21T16:59:59.999Z"), "Asia/Ho_Chi_Minh")).toBe("2026-10-21");
+    expect(localDay(new Date("2026-10-21T17:00:00Z"), "Asia/Ho_Chi_Minh")).toBe("2026-10-22");
+    // Nepal UTC+5:45: 0:00 ngày 22/10 = 18:15Z ngày 21/10.
+    expect(localDay(new Date("2026-10-21T18:14:59Z"), "Asia/Kathmandu")).toBe("2026-10-21");
+    expect(localDay(new Date("2026-10-21T18:15:00Z"), "Asia/Kathmandu")).toBe("2026-10-22");
   });
 
   it("mở đủ số từ còn lại hôm nay, thêm trước mở trước", () => {

@@ -1,9 +1,9 @@
 /**
  * Chuỗi ngày học (chốt GĐ3): một ngày được tính khi trả lời ít nhất 5 câu, hoặc ôn hết hàng của
- * ngày đó; theo múi giờ người dùng. Mỗi tuần (thứ Hai – Chủ nhật) được nghỉ 1 ngày không mất chuỗi
+ * ngày đó; theo ngày học của người dùng (bắt đầu 4:00). Mỗi tuần (thứ Hai – Chủ nhật) được nghỉ 1 ngày không mất chuỗi
  * (ux-flows §5). Hôm nay chưa học thì chưa tính là nghỉ. Hàm thuần.
  */
-import { localDay } from "@/lib/notebooks/introductions";
+import { addDays, studyDay, weekOf } from "./day";
 
 /** Số câu trả lời tối thiểu để tính một ngày học. */
 export const STREAK_MIN_ANSWERS = 5;
@@ -28,23 +28,11 @@ export type Streak = {
   best: number;
 };
 
-const DAY_MS = 86_400_000;
-
-function addDays(day: string, delta: number): string {
-  return new Date(Date.parse(`${day}T00:00:00Z`) + delta * DAY_MS).toISOString().slice(0, 10);
-}
-
-/** Thứ Hai đầu tuần của một ngày (khóa tuần). */
-function weekOf(day: string): string {
-  const weekday = (new Date(`${day}T00:00:00Z`).getUTCDay() + 6) % 7; // 0 = thứ Hai
-  return addDays(day, -weekday);
-}
-
 /** Các ngày học (YYYY-MM-DD) theo múi giờ. */
 export function studyDays(input: Omit<StreakInput, "now">): Set<string> {
   const counts = new Map<string, number>();
   for (const at of input.answers) {
-    const day = localDay(new Date(at), input.timeZone);
+    const day = studyDay(new Date(at), input.timeZone);
     counts.set(day, (counts.get(day) ?? 0) + 1);
   }
   const days = new Set<string>();
@@ -72,7 +60,7 @@ function chainFrom(start: string, days: ReadonlySet<string>, earliest: string) {
 
 export function computeStreak(input: StreakInput): Streak {
   const days = studyDays(input);
-  const today = localDay(input.now, input.timeZone);
+  const today = studyDay(input.now, input.timeZone);
   const studiedToday = days.has(today);
   if (days.size === 0) return { current: 0, today: false, restLeftThisWeek: true, best: 0 };
   const sorted = [...days].sort();

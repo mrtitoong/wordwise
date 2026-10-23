@@ -82,6 +82,8 @@ jobs:
         run: |
           npm run seed:build
           git diff --exit-code -- supabase/seed/words.sql
+      - name: Test SQL đối chứng thống kê khớp với bộ dữ liệu mẫu
+        run: npm run stats:sql -- --check
       - uses: supabase/setup-cli@v1
         with:
           version: 2.119.0

@@ -464,3 +464,23 @@ Repo: https://github.com/mrtitoong/wordwise
   ≤ 200.000 ký tự/≤ 30 trang PDF) và phân tích (`start_list_analysis()` → `import_jobs` kind admin_list
   với `step`, `options.min_cefr`, token/chi phí; `retry_list_analysis()` chạy lại từ bước lỗi). Mọi thao
   tác qua server action có `requireAdmin()` + RLS. `experimental.serverActions.bodySizeLimit = 6mb`.
+- 2026-10-23 (Prompt 7.2, chủ sản phẩm duyệt 4 đề xuất): Pipeline phân tích danh sách
+  `src/lib/admin/analysis/` (hàm thuần + `pipeline.ts` điều phối), Edge Function **`analyze-list`**
+  (pg_cron `list-worker` mỗi phút + tự gọi lượt mới khi hết giờ, lượt 140 giây). Kết quả từng từ trong
+  bảng `curated_list_candidates` (stage raw → merged → triaged), lỗi 3 lần liên tiếp ở một bước → việc
+  thất bại, danh sách về Nháp, Admin chạy lại từ bước lỗi. Bài đọc: Sonnet trích theo đoạn 8.000 ký tự,
+  6 đoạn song song. **Từ chưa có trong kho được Haiku xem trước (chính tả, CEFR, độ hiếm, 100 từ/lượt)
+  trước khi tạo nội dung**: sai chính tả thì tự sửa và cảnh báo, không phải từ tiếng Anh thì bỏ; bộ lọc
+  "chỉ lấy từ cấp X trở lên" áp cho mọi nguồn (không chỉ bài đọc). Chọn nghĩa: một nghĩa → lấy luôn;
+  cột nghĩa của file → `bestSenseByMeaning`; có câu → Haiku (`sense-picker`, 20 từ/lượt); không có →
+  nghĩa phổ biến nhất + cảnh báo. Từ không ghi loại từ chọn trong nghĩa của mọi loại từ.
+- 2026-10-23: Từ mới của danh sách Admin → `word_jobs.source = 'admin'` (`enqueue_admin_words`), ưu tiên
+  sau việc của người dùng, trần riêng `admin_daily_new_words` 2.000/ngày, giữ đủ `admin_worker_parallel`
+  = 20 worker generate-word (trừ số việc đang chạy). `word_jobs` ghi token/chi phí (`add_word_job_usage`),
+  danh sách cộng chi phí của việc do nó tạo. **Không chờ audio/ảnh**: xong chữ là Chờ duyệt; word-media
+  làm trước từ của danh sách Admin. Chủ đề con: tag đầu tiên nếu ≥ nửa số từ có tag, không thì Haiku
+  (`list-subtopics`, ~25 từ/nhóm, 2–20 nhóm, chỉ khi ≥ 15 từ). Sắp xếp: nhóm theo độ thông dụng (trung
+  vị), trong nhóm theo thứ hạng tần suất/CEFR, từ hiếm sau, cùng họ đứng cạnh, cặp dễ nhầm cách ≥ 10.
+  Cảnh báo: spelling, rare (cờ AI hoặc C2), above_level, many_senses (≥ 3), no_context, low_confidence
+  (chọn nghĩa < 0,6, nội dung < 0,5). Tóm tắt trong `import_jobs.state.summary`. Dữ liệu thử:
+  `data/wordlists/nawl-1.2.csv` (NAWL, CC BY-SA 4.0). CI in lỗi pgTAP ra annotation công khai.

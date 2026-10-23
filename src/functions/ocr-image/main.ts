@@ -76,11 +76,12 @@ Deno.serve(
     async getPlan(userId) {
       const { data, error } = await supabase
         .from("profiles")
-        .select("plan")
+        .select("plan, role")
         .eq("user_id", userId)
         .maybeSingle();
       if (error) throw new Error(`profiles: ${error.message}`);
-      return data?.plan === "premium" ? "premium" : "free";
+      // Admin đọc bài đọc/đề thi khi soạn danh sách (Prompt 7.1): dùng như Premium.
+      return data?.plan === "premium" || data?.role === "admin" ? "premium" : "free";
     },
     async consumeUsage(userId) {
       const { data, error } = await supabase.rpc("consume_usage", {

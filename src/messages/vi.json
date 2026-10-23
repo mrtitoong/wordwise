@@ -314,7 +314,152 @@
     }
   },
   "admin": {
-    "title": "Quản trị"
+    "title": "Quản trị",
+    "nav": {
+      "label": "Khu quản trị",
+      "lists": "Danh sách",
+      "newList": "Tạo danh sách",
+      "reports": "Báo lỗi nội dung",
+      "soon": "sắp có",
+      "backToApp": "Về app"
+    },
+    "status": {
+      "draft": "Nháp",
+      "processing": "Đang xử lý",
+      "review": "Chờ duyệt",
+      "published": "Đã xuất bản",
+      "all": "Tất cả"
+    },
+    "lists": {
+      "title": "Danh sách có chủ đích",
+      "create": "Tạo danh sách",
+      "empty": "Chưa có danh sách nào.",
+      "emptyAction": "Tạo danh sách đầu tiên",
+      "filter": "Lọc theo trạng thái",
+      "colTitle": "Tên",
+      "colStatus": "Trạng thái",
+      "colItems": "Số từ",
+      "colLearners": "Người học",
+      "colUpdated": "Cập nhật",
+      "colVersion": "Phiên bản",
+      "step": "Bước {step}/6",
+      "failedStep": "Lỗi ở bước {step}/6"
+    },
+    "form": {
+      "newTitle": "Tạo danh sách",
+      "editTitle": "Thông tin danh sách",
+      "title": "Tên danh sách",
+      "titlePlaceholder": "vd IELTS – Environment",
+      "language": "Ngôn ngữ",
+      "languages": {
+        "en": "Tiếng Anh"
+      },
+      "cefr": "Trình độ mục tiêu",
+      "none": "Không chọn",
+      "topic": "Chủ đề",
+      "topicPlaceholder": "vd Môi trường",
+      "purpose": "Mục đích",
+      "purposes": {
+        "ielts": "IELTS",
+        "toeic": "TOEIC",
+        "toefl": "TOEFL",
+        "communication": "Giao tiếp",
+        "work": "Công việc",
+        "academic": "Học thuật",
+        "school": "Trường học",
+        "other": "Khác"
+      },
+      "description": "Mô tả",
+      "days": "Số ngày gợi ý",
+      "daysHint": "Người học dùng làm hạn mặc định (1–730 ngày).",
+      "cover": "Ảnh bìa",
+      "coverChoose": "Chọn ảnh",
+      "coverRemove": "Bỏ ảnh",
+      "coverFailed": "Không tải được ảnh bìa. Thử ảnh JPG/PNG khác.",
+      "create": "Tạo danh sách",
+      "save": "Lưu thay đổi",
+      "saving": "Đang lưu…",
+      "saved": "Đã lưu",
+      "invalid": "Kiểm tra lại các ô đã nhập.",
+      "failed": "Chưa lưu được. Thử lại."
+    },
+    "sources": {
+      "title": "Nguồn từ",
+      "hint": "Thêm một hoặc nhiều nguồn, rồi bấm Phân tích. Hệ thống tự gộp trùng.",
+      "empty": "Chưa có nguồn nào.",
+      "tabs": {
+        "table": "CSV/Excel",
+        "lines": "Dán văn bản",
+        "document": "Bài đọc/đề thi"
+      },
+      "kind": {
+        "rows": "Bảng",
+        "lines": "Dán văn bản",
+        "document": "Bài đọc"
+      },
+      "items": "{count} từ",
+      "chars": "{count} ký tự",
+      "delete": "Xóa nguồn {name}",
+      "locked": "Đang phân tích: chưa thêm/xóa nguồn được.",
+      "file": "Chọn file CSV hoặc Excel",
+      "sheet": "Trang tính",
+      "hasHeader": "Dòng đầu là tiêu đề",
+      "mapping": "Cột nào là gì",
+      "fields": {
+        "word": "Từ",
+        "meaning": "Nghĩa",
+        "example": "Ví dụ",
+        "note": "Ghi chú",
+        "tags": "Tag"
+      },
+      "skip": "Bỏ qua",
+      "needWord": "Chọn cột Từ.",
+      "valid": "{valid} từ hợp lệ (bỏ {skipped} dòng lỗi/trùng).",
+      "preview": "Xem trước",
+      "pastePlaceholder": "Mỗi dòng một từ, có thể kèm nghĩa: climate - khí hậu",
+      "pasteCount": "{count} từ",
+      "truncated": "Chỉ lấy {max} dòng đầu.",
+      "document": "Chọn PDF, ảnh hoặc file văn bản",
+      "documentHint": "PDF có chữ đọc ngay trong trình duyệt; bản scan và ảnh đọc bằng AI (~200 đ/trang). Tối đa 30 trang.",
+      "reading": "Đang đọc trang {done}/{total}…",
+      "readDone": "Đọc được {chars} ký tự từ {pages} trang ({ocr} trang đọc bằng AI).",
+      "readTruncated": "File dài hơn 30 trang: chỉ đọc 30 trang đầu.",
+      "readErrors": {
+        "unsupported": "Không đọc được loại file này.",
+        "ocr_failed": "Đọc chữ trên ảnh không thành công. Thử lại hoặc dùng ảnh rõ hơn.",
+        "empty": "Không thấy chữ nào trong file."
+      },
+      "add": "Thêm nguồn",
+      "adding": "Đang thêm…",
+      "failed": "Chưa thêm được nguồn. Thử lại."
+    },
+    "analysis": {
+      "title": "Phân tích",
+      "minCefr": "Chỉ lấy từ từ cấp",
+      "minCefrHint": "Áp dụng cho bài đọc: bỏ các từ dễ hơn cấp này.",
+      "all": "Mọi cấp",
+      "start": "Phân tích",
+      "starting": "Đang bắt đầu…",
+      "noSources": "Thêm ít nhất một nguồn từ trước.",
+      "busy": "Danh sách đang được phân tích.",
+      "failed": "Chưa bắt đầu được. Thử lại.",
+      "steps": {
+        "extract": "Trích xuất",
+        "normalize": "Chuẩn hóa",
+        "sense": "Chọn nghĩa",
+        "content": "Nội dung",
+        "order": "Sắp xếp",
+        "warn": "Cảnh báo"
+      },
+      "queued": "Đang chờ đến lượt…",
+      "running": "Đang chạy: {step}",
+      "progress": "{done}/{total} từ",
+      "cost": "Chi phí AI: ~${cost} ({tokens} token)",
+      "failedAt": "Lỗi ở bước {step}",
+      "retry": "Chạy lại từ bước lỗi",
+      "done": "Phân tích xong. Danh sách đang chờ duyệt.",
+      "leave": "Có thể rời trang, việc vẫn chạy nền."
+    }
   },
   "sync": {
     "local": "Dữ liệu đang lưu trên máy này",

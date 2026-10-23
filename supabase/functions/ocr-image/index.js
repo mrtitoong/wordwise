@@ -933,9 +933,9 @@ Deno.serve(
       return error || !data.user ? null : data.user.id;
     },
     async getPlan(userId) {
-      const { data, error } = await supabase.from("profiles").select("plan").eq("user_id", userId).maybeSingle();
+      const { data, error } = await supabase.from("profiles").select("plan, role").eq("user_id", userId).maybeSingle();
       if (error) throw new Error(`profiles: ${error.message}`);
-      return data?.plan === "premium" ? "premium" : "free";
+      return data?.plan === "premium" || data?.role === "admin" ? "premium" : "free";
     },
     async consumeUsage(userId) {
       const { data, error } = await supabase.rpc("consume_usage", {

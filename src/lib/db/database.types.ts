@@ -203,11 +203,53 @@ export type Database = {
           },
         ];
       };
+      curated_list_sources: {
+        Row: {
+          content: NonNullable<Json>;
+          created_at: string;
+          created_by: string | null;
+          id: string;
+          item_count: number;
+          kind: string;
+          list_id: string;
+          name: string | null;
+        };
+        Insert: {
+          content: NonNullable<Json>;
+          created_at?: string;
+          created_by?: string | null;
+          id?: string;
+          item_count?: number;
+          kind: string;
+          list_id: string;
+          name?: string | null;
+        };
+        Update: {
+          content?: NonNullable<Json>;
+          created_at?: string;
+          created_by?: string | null;
+          id?: string;
+          item_count?: number;
+          kind?: string;
+          list_id?: string;
+          name?: string | null;
+        };
+        Relationships: [
+          {
+            foreignKeyName: "curated_list_sources_list_id_fkey";
+            columns: ["list_id"];
+            isOneToOne: false;
+            referencedRelation: "curated_lists";
+            referencedColumns: ["id"];
+          },
+        ];
+      };
       curated_lists: {
         Row: {
           cover_url: string | null;
           created_at: string;
           created_by: string | null;
+          description: string | null;
           id: string;
           language: string;
           published_at: string | null;
@@ -224,6 +266,7 @@ export type Database = {
           cover_url?: string | null;
           created_at?: string;
           created_by?: string | null;
+          description?: string | null;
           id?: string;
           language: string;
           published_at?: string | null;
@@ -240,6 +283,7 @@ export type Database = {
           cover_url?: string | null;
           created_at?: string;
           created_by?: string | null;
+          description?: string | null;
           id?: string;
           language?: string;
           published_at?: string | null;
@@ -256,37 +300,58 @@ export type Database = {
       };
       import_jobs: {
         Row: {
+          cost_usd: number;
           created_at: string;
           done: number;
           errors: NonNullable<Json>;
+          finished_at: string | null;
           id: string;
+          input_tokens: number;
           kind: string;
           list_id: string | null;
+          options: NonNullable<Json>;
+          output_tokens: number;
+          started_at: string | null;
           status: string;
+          step: string;
           total: number;
           updated_at: string;
           user_id: string;
         };
         Insert: {
+          cost_usd?: number;
           created_at?: string;
           done?: number;
           errors?: NonNullable<Json>;
+          finished_at?: string | null;
           id?: string;
+          input_tokens?: number;
           kind: string;
           list_id?: string | null;
+          options?: NonNullable<Json>;
+          output_tokens?: number;
+          started_at?: string | null;
           status?: string;
+          step?: string;
           total?: number;
           updated_at?: string;
           user_id: string;
         };
         Update: {
+          cost_usd?: number;
           created_at?: string;
           done?: number;
           errors?: NonNullable<Json>;
+          finished_at?: string | null;
           id?: string;
+          input_tokens?: number;
           kind?: string;
           list_id?: string | null;
+          options?: NonNullable<Json>;
+          output_tokens?: number;
+          started_at?: string | null;
           status?: string;
+          step?: string;
           total?: number;
           updated_at?: string;
           user_id?: string;
@@ -1010,6 +1075,26 @@ export type Database = {
       [_ in never]: never;
     };
     Functions: {
+      admin_list_overview: {
+        Args: Record<PropertyKey, never>;
+        Returns: {
+          id: string;
+          item_count: number;
+          job_done: number;
+          job_id: string;
+          job_status: string;
+          job_step: string;
+          job_total: number;
+          language: string;
+          learner_count: number;
+          source_count: number;
+          status: string;
+          target_cefr: string;
+          title: string;
+          updated_at: string;
+          version: number;
+        }[];
+      };
       claim_due_reminders: {
         Args: { p_now?: string };
         Returns: {
@@ -1043,6 +1128,7 @@ export type Database = {
         };
         Returns: Json;
       };
+      retry_list_analysis: { Args: { p_job_id: string }; Returns: undefined };
       save_generated_word: {
         Args: { p_details: Json; p_job_id: string; p_senses: Json; p_word: Json };
         Returns: string;
@@ -1060,6 +1146,7 @@ export type Database = {
         Returns: Json;
       };
       sentence_audio_quota: { Args: { p_user_id: string }; Returns: Json };
+      start_list_analysis: { Args: { p_list_id: string; p_options?: Json }; Returns: string };
       suggest_spellings: { Args: { p_language?: string; p_terms: string[] }; Returns: Json };
       verify_worker_secret: { Args: { p_secret: string }; Returns: boolean };
     };

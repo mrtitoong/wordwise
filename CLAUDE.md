@@ -441,3 +441,26 @@ Repo: https://github.com/mrtitoong/wordwise
   Đăng nhập lại thì tự đăng ký nếu đã cho phép thông báo; đăng xuất thì hủy trên máy đó. iPhone/iPad chỉ
   nhận khi đã "Thêm vào Màn hình chính" (iOS 16.4+), Cài đặt có hướng dẫn. Đã áp lên cloud và deploy.
   Tối ưu tham số FSRS theo người để sau GĐ8.
+- 2026-10-23: Repo **giữ công khai** (chủ sản phẩm chốt): không có khóa bí mật trong lịch sử git, CI miễn
+  phí không giới hạn.
+- 2026-10-23 (GĐ7, chủ sản phẩm duyệt 11 đề xuất): Khu Admin **tối ưu cho máy tính** (điện thoại vẫn dùng
+  được: bảng cuộn ngang, nút ≥ 44px). Hàng đợi phân tích bằng **bảng + pg_cron** như word_jobs (không
+  pgmq). Tiến độ: trang **hỏi lại mỗi 2 giây** (không Realtime). Bài đọc: PDF có chữ đọc bằng pdf.js trong
+  trình duyệt, bản scan/ảnh qua `ocr-image` (Admin dùng như Premium); trích từ bằng `list-analyzer`
+  (Sonnet). Chọn nghĩa có ngữ cảnh bằng **Haiku** (~20 từ/lần), không ngữ cảnh → nghĩa phổ biến nhất +
+  cảnh báo. Việc của Admin chạy **20 từ song song**, không trừ giới hạn 50/300 từ/ngày của tài khoản, trần
+  riêng **2.000 từ mới/ngày** cho danh sách Admin; ghi chi phí token. Sửa danh sách đã xuất bản: **bản
+  nháp riêng**, xuất bản thì giữ mã danh sách, version + 1; người học thấy "có thêm N từ – Nhận/Bỏ qua";
+  từ bị bỏ vẫn ở lại sổ. Kiểm tra đầu vào: "Biết" có thêm 1 câu trắc nghiệm, đúng → vào lịch như Đã thuộc
+  (lần ôn đầu rải 1–4 tuần); từ ngoài mẫu: ngưỡng tần suất người học biết ≥ 80% → **đề xuất** đã biết,
+  người học xem lại trước khi lưu. Lộ trình: sổ có ngày mục tiêu mở từ theo **chỉ tiêu riêng** cộng thêm
+  ngoài số từ mới/ngày chung; tỉ lệ nhớ 0,95 chỉ cho thẻ của từ trong sổ ở 14 ngày cuối. Thống kê danh sách
+  bằng hàm SQL chỉ trả số tổng hợp. Tài khoản admin: mr.titoong@gmail.com.
+- 2026-10-23 (Prompt 7.1): `/admin` (`src/features/admin`): bảng danh sách (`admin_list_overview()`: số
+  từ, số nguồn, số người học, việc mới nhất), lọc trạng thái, form khai báo (thêm cột
+  `curated_lists.description`; ảnh bìa vào bucket công khai `list-covers`, chỉ admin ghi), trang chi tiết
+  với nguồn từ (bảng `curated_list_sources`: `rows` CSV/Excel có ánh xạ cột – dùng chung
+  `src/features/import/read-table.ts`, `lines` dán văn bản tối đa 5.000 dòng, `document` chữ bài đọc
+  ≤ 200.000 ký tự/≤ 30 trang PDF) và phân tích (`start_list_analysis()` → `import_jobs` kind admin_list
+  với `step`, `options.min_cefr`, token/chi phí; `retry_list_analysis()` chạy lại từ bước lỗi). Mọi thao
+  tác qua server action có `requireAdmin()` + RLS. `experimental.serverActions.bodySizeLimit = 6mb`.

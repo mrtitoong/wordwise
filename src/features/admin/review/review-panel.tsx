@@ -83,17 +83,22 @@ export function ReviewPanel({
   const chooseSense = (senseId: string) => {
     if (!word || senseId === item.senseId) return;
     const index = word.senseIds.indexOf(senseId);
+    const before = item;
+    // Đổi ngay trên màn hình, server từ chối thì trả lại.
+    onChange({
+      ...item,
+      senseId,
+      meaningVi: word.content.senses[index]!.meaning_vi,
+      warnings: item.warnings.filter(
+        (w) => w.code !== "no_context" && !(w.code === "low_confidence" && w.source === "sense"),
+      ),
+    });
     startTransition(async () => {
       const result = await setItemSense(listId, item.id, senseId);
-      if (!result.ok) return fail(result.error);
-      onChange({
-        ...item,
-        senseId,
-        meaningVi: word.content.senses[index]!.meaning_vi,
-        warnings: item.warnings.filter(
-          (w) => w.code !== "no_context" && !(w.code === "low_confidence" && w.source === "sense"),
-        ),
-      });
+      if (!result.ok) {
+        onChange(before);
+        fail(result.error);
+      }
     });
   };
 

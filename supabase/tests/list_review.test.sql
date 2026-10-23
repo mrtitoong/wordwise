@@ -109,8 +109,10 @@ select is((select count(*)::int from public.curated_list_items
   'Hủy bản nháp khôi phục đúng phiên bản đã xuất bản');
 
 select lives_ok($$ select public.admin_open_list_draft('eeee0000-0000-4000-8000-0000000000a1') $$, 'Mở bản nháp lần 2');
+-- Hủy bản nháp tạo lại các mục (id mới) nên tìm mục theo nghĩa.
 select lives_ok($$ select public.admin_remove_list_item('eeee0000-0000-4000-8000-0000000000a1',
-  'eeee0000-0000-4000-8000-0000000000b2') $$, 'Bỏ từ ở bản nháp lần 2');
+  (select id from public.curated_list_items where list_id = 'eeee0000-0000-4000-8000-0000000000a1'
+     and sense_id = 'eeee0000-0000-4000-8000-0000000000e3')) $$, 'Bỏ từ ở bản nháp lần 2');
 select is(public.admin_publish_list('eeee0000-0000-4000-8000-0000000000a1'), 2, 'Xuất bản lại → phiên bản 2');
 select is((select removed_sense_ids from public.curated_list_releases
   where list_id = 'eeee0000-0000-4000-8000-0000000000a1' and version = 2),

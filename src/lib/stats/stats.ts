@@ -349,7 +349,6 @@ export type Stats = {
   accuracy: Record<SkillGroup, Accuracy>;
   leeches: ForgottenWord[];
   mostForgotten: ForgottenWord[];
-  history: StatusWeek[];
   /** Số ngày học từ lượt ôn đầu tiên tới hôm nay (0 khi chưa ôn); dưới 7 thì tỉ lệ nhớ chưa đủ tin. */
   dataDays: number;
 };
@@ -357,7 +356,11 @@ export type Stats = {
 /** Tỉ lệ nhớ chỉ đáng tin khi đã có dữ liệu từ chừng này ngày. */
 export const RETENTION_MIN_DAYS = 7;
 
-export function computeStats(input: StatsInput, scheduler: FSRS): Stats {
+/**
+ * Mọi số liệu trừ `statusHistory` (dựng lại lịch sử bằng FSRS tốn thời gian nhất; trang Thống kê
+ * tính sau khi đã hiện các số khác).
+ */
+export function computeStats(input: StatsInput): Stats {
   const { logs, now, timeZone } = input;
   const byDay = minutesByDay(logs, timeZone);
   const first = logs.reduce<string | null>(
@@ -380,7 +383,6 @@ export function computeStats(input: StatsInput, scheduler: FSRS): Stats {
     accuracy: skillAccuracy(logs, now, timeZone),
     leeches: leechWords(input.userWords, input.cards),
     mostForgotten: mostForgotten(input.userWords, input.cards, logs, now, timeZone),
-    history: statusHistory(input, scheduler, now, timeZone),
     dataDays: first
       ? daysBetween(studyDay(new Date(first), timeZone), studyDay(now, timeZone)) + 1
       : 0,

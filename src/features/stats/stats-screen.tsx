@@ -1,6 +1,6 @@
 "use client";
 
-import { useMemo, useState, type ReactNode } from "react";
+import { useEffect, useMemo, useState, type ReactNode } from "react";
 import dynamic from "next/dynamic";
 import Link from "next/link";
 import { useTranslations } from "next-intl";
@@ -9,7 +9,14 @@ import { Button } from "@/components/ui/button";
 import { weightsOf } from "@/lib/db/repo";
 import { GUEST_OWNER } from "@/lib/db/ids";
 import { createScheduler } from "@/lib/srs/scheduler";
-import { computeStats, RETENTION_MIN_DAYS, SKILL_GROUPS, type DayValue } from "@/lib/stats/stats";
+import {
+  computeStats,
+  RETENTION_MIN_DAYS,
+  SKILL_GROUPS,
+  statusHistory,
+  type DayValue,
+  type StatusWeek,
+} from "@/lib/stats/stats";
 import { forgottenList, sumDays } from "@/lib/stats/view";
 import { useOwner } from "@/lib/sync/owner";
 import { useReviewData } from "@/features/review/use-review-data";
@@ -40,27 +47,20 @@ export function StatsScreen() {
 
   const view = useMemo(() => {
     if (!data) return null;
-    const scheduler = createScheduler({
-      desiredRetention: data.settings.desired_retention,
-      weights: weightsOf(data.settings),
-    });
     const skills = ["meaning"];
     if (data.settings.practice_spelling ?? true) skills.push("spelling");
     if ((data.settings.practice_speaking ?? false) && data.owner !== GUEST_OWNER) {
       skills.push("speaking");
     }
-    const stats = computeStats(
-      {
-        userWords: data.userWords,
-        cards: data.cards,
-        logs: data.logs,
-        completedDays: data.completedDays,
-        now,
-        timeZone: data.settings.timezone,
-        skills,
-      },
-      scheduler,
-    );
+    const stats = computeStats({
+      userWords: data.userWords,
+      cards: data.cards,
+      logs: data.logs,
+      completedDays: data.completedDays,
+      now,
+      timeZone: data.settings.timezone,
+      skills,
+    });
     const wordOf = new Map(data.userWords.map((uw) => [uw.id, uw]));
     const forgotten = forgottenList(stats.mostForgotten, stats.leeches).flatMap((item) => {
       const uw = wordOf.get(item.userWordId);
@@ -76,6 +76,20 @@ export function StatsScreen() {
       return card ? [card.id] : [];
     });
     return { stats, forgotten, reviewIds, hasLogs: data.logs.length > 0 };
+  }, [data, now]);
+
+  // Dựng lại lịch sử bằng FSRS tốn thời gian nhất: tính sau khi các số khác đã hiện.
+  const [weeks, setWeeks] = useState<StatusWeek[] | null>(null);
+  useEffect(() => {
+    if (!data?.logs.length) return;
+    const timer = setTimeout(() => {
+      const scheduler = createScheduler({
+        desiredRetention: data.settings.desired_retention,
+        weights: weightsOf(data.settings),
+      });
+      setWeeks(statusHistory(data, scheduler, now, data.settings.timezone));
+    }, 0);
+    return () => clearTimeout(timer);
   }, [data, now]);
 
   if (!view) {
@@ -153,10 +167,16 @@ export function StatsScreen() {
         <Heatmap days={stats.minutes} />
       </Section>
 
-      {stats.history.length > 0 && (
+      {weeks === null ? (
         <Section title={t("statusTitle")} hint={t("statusHint")}>
-          <StatusChart history={stats.history} />
+          {chartBox}
         </Section>
+      ) : (
+        weeks.length > 0 && (
+          <Section title={t("statusTitle")} hint={t("statusHint")}>
+            <StatusChart history={weeks} />
+          </Section>
+        )
       )}
 
       <Section

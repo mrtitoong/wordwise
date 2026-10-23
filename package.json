@@ -24,7 +24,8 @@
     "ocr:accuracy": "tsx --env-file-if-exists=.env.local scripts/ocr-accuracy.ts",
     "pronunciation:smoke": "tsx --env-file-if-exists=.env.local scripts/pronunciation-smoke.ts",
     "srs:simulate": "tsx scripts/simulate-srs.ts",
-    "stats:sql": "tsx scripts/build-stats-test.ts"
+    "stats:sql": "tsx scripts/build-stats-test.ts",
+    "stats:perf": "tsx scripts/stats-perf.ts"
   },
   "dependencies": {
     "@anthropic-ai/sdk": "0.131.0",

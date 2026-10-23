@@ -103,8 +103,17 @@ jobs:
       - name: Lint SQL
         run: supabase db lint --level error
       - name: Test RLS (pgTAP)
-        run: supabase test db
+        run: |
+          set -o pipefail
+          if ! supabase test db 2>&1 | tee /tmp/pgtap.log; then
+            # Annotation đọc được công khai qua API check-runs (log của job cần đăng nhập).
+            msg=$(grep -E "not ok|^ *#|ERROR|Failed|Looks like|Parse errors|Result" /tmp/pgtap.log | head -c 30000 | sed -e 's/%/%25/g' | awk '{printf "%s%%0A", $0}')
+            echo "::error file=supabase/tests,title=pgTAP::${msg}"
+            exit 1
+          fi
       - name: TypeScript types khớp với schema
+        # Vẫn chạy khi pgTAP lỗi để thấy cả hai kết quả trong một lần CI.
+        if: ${{ !cancelled() }}
         run: |
           supabase gen types typescript --local --schema public > /tmp/database.types.ts
           npx prettier --stdin-filepath src/lib/db/database.types.ts < /tmp/database.types.ts > /tmp/database.types.formatted.ts

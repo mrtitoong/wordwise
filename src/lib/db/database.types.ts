@@ -149,6 +149,138 @@ export type Database = {
           },
         ];
       };
+      curated_list_candidates: {
+        Row: {
+          cefr: string | null;
+          context_sentence: string | null;
+          created_at: string;
+          dropped: string | null;
+          frequency_rank: number | null;
+          id: string;
+          item_order: number | null;
+          job_created: boolean;
+          job_id: string;
+          lemma: string | null;
+          list_id: string;
+          meaning_hint: string | null;
+          note: string | null;
+          occurrences: number;
+          pos: string | null;
+          position: number;
+          rare: boolean;
+          sense_confidence: number | null;
+          sense_id: string | null;
+          sense_method: string | null;
+          spelling_from: string | null;
+          stage: string;
+          subtopic: string | null;
+          surface: string;
+          tags: string[];
+          updated_at: string;
+          warnings: NonNullable<Json>;
+          word_id: string | null;
+          word_job_id: string | null;
+        };
+        Insert: {
+          cefr?: string | null;
+          context_sentence?: string | null;
+          created_at?: string;
+          dropped?: string | null;
+          frequency_rank?: number | null;
+          id?: string;
+          item_order?: number | null;
+          job_created?: boolean;
+          job_id: string;
+          lemma?: string | null;
+          list_id: string;
+          meaning_hint?: string | null;
+          note?: string | null;
+          occurrences?: number;
+          pos?: string | null;
+          position: number;
+          rare?: boolean;
+          sense_confidence?: number | null;
+          sense_id?: string | null;
+          sense_method?: string | null;
+          spelling_from?: string | null;
+          stage?: string;
+          subtopic?: string | null;
+          surface: string;
+          tags?: string[];
+          updated_at?: string;
+          warnings?: NonNullable<Json>;
+          word_id?: string | null;
+          word_job_id?: string | null;
+        };
+        Update: {
+          cefr?: string | null;
+          context_sentence?: string | null;
+          created_at?: string;
+          dropped?: string | null;
+          frequency_rank?: number | null;
+          id?: string;
+          item_order?: number | null;
+          job_created?: boolean;
+          job_id?: string;
+          lemma?: string | null;
+          list_id?: string;
+          meaning_hint?: string | null;
+          note?: string | null;
+          occurrences?: number;
+          pos?: string | null;
+          position?: number;
+          rare?: boolean;
+          sense_confidence?: number | null;
+          sense_id?: string | null;
+          sense_method?: string | null;
+          spelling_from?: string | null;
+          stage?: string;
+          subtopic?: string | null;
+          surface?: string;
+          tags?: string[];
+          updated_at?: string;
+          warnings?: NonNullable<Json>;
+          word_id?: string | null;
+          word_job_id?: string | null;
+        };
+        Relationships: [
+          {
+            foreignKeyName: "curated_list_candidates_job_id_fkey";
+            columns: ["job_id"];
+            isOneToOne: false;
+            referencedRelation: "import_jobs";
+            referencedColumns: ["id"];
+          },
+          {
+            foreignKeyName: "curated_list_candidates_list_id_fkey";
+            columns: ["list_id"];
+            isOneToOne: false;
+            referencedRelation: "curated_lists";
+            referencedColumns: ["id"];
+          },
+          {
+            foreignKeyName: "curated_list_candidates_sense_id_fkey";
+            columns: ["sense_id"];
+            isOneToOne: false;
+            referencedRelation: "word_senses";
+            referencedColumns: ["id"];
+          },
+          {
+            foreignKeyName: "curated_list_candidates_word_id_fkey";
+            columns: ["word_id"];
+            isOneToOne: false;
+            referencedRelation: "words";
+            referencedColumns: ["id"];
+          },
+          {
+            foreignKeyName: "curated_list_candidates_word_job_id_fkey";
+            columns: ["word_job_id"];
+            isOneToOne: false;
+            referencedRelation: "word_jobs";
+            referencedColumns: ["id"];
+          },
+        ];
+      };
       curated_list_items: {
         Row: {
           admin_note: string | null;
@@ -300,6 +432,7 @@ export type Database = {
       };
       import_jobs: {
         Row: {
+          attempts: number;
           cost_usd: number;
           created_at: string;
           done: number;
@@ -309,9 +442,12 @@ export type Database = {
           input_tokens: number;
           kind: string;
           list_id: string | null;
+          locked_at: string | null;
           options: NonNullable<Json>;
           output_tokens: number;
+          run_after: string;
           started_at: string | null;
+          state: NonNullable<Json>;
           status: string;
           step: string;
           total: number;
@@ -319,6 +455,7 @@ export type Database = {
           user_id: string;
         };
         Insert: {
+          attempts?: number;
           cost_usd?: number;
           created_at?: string;
           done?: number;
@@ -328,9 +465,12 @@ export type Database = {
           input_tokens?: number;
           kind: string;
           list_id?: string | null;
+          locked_at?: string | null;
           options?: NonNullable<Json>;
           output_tokens?: number;
+          run_after?: string;
           started_at?: string | null;
+          state?: NonNullable<Json>;
           status?: string;
           step?: string;
           total?: number;
@@ -338,6 +478,7 @@ export type Database = {
           user_id: string;
         };
         Update: {
+          attempts?: number;
           cost_usd?: number;
           created_at?: string;
           done?: number;
@@ -347,9 +488,12 @@ export type Database = {
           input_tokens?: number;
           kind?: string;
           list_id?: string | null;
+          locked_at?: string | null;
           options?: NonNullable<Json>;
           output_tokens?: number;
+          run_after?: string;
           started_at?: string | null;
+          state?: NonNullable<Json>;
           status?: string;
           step?: string;
           total?: number;
@@ -889,15 +1033,18 @@ export type Database = {
       word_jobs: {
         Row: {
           attempts: number;
+          cost_usd: number;
           created_at: string;
           finished_at: string | null;
           first_started_at: string | null;
           frequency_rank: number | null;
           id: string;
+          input_tokens: number;
           language: string;
           last_error: string | null;
           lemma: string;
           locked_at: string | null;
+          output_tokens: number;
           pos: string | null;
           run_after: string;
           source: string;
@@ -907,15 +1054,18 @@ export type Database = {
         };
         Insert: {
           attempts?: number;
+          cost_usd?: number;
           created_at?: string;
           finished_at?: string | null;
           first_started_at?: string | null;
           frequency_rank?: number | null;
           id?: string;
+          input_tokens?: number;
           language: string;
           last_error?: string | null;
           lemma: string;
           locked_at?: string | null;
+          output_tokens?: number;
           pos?: string | null;
           run_after?: string;
           source?: string;
@@ -925,15 +1075,18 @@ export type Database = {
         };
         Update: {
           attempts?: number;
+          cost_usd?: number;
           created_at?: string;
           finished_at?: string | null;
           first_started_at?: string | null;
           frequency_rank?: number | null;
           id?: string;
+          input_tokens?: number;
           language?: string;
           last_error?: string | null;
           lemma?: string;
           locked_at?: string | null;
+          output_tokens?: number;
           pos?: string | null;
           run_after?: string;
           source?: string;
@@ -1075,6 +1228,15 @@ export type Database = {
       [_ in never]: never;
     };
     Functions: {
+      add_word_job_usage: {
+        Args: {
+          p_cost_usd: number;
+          p_input_tokens: number;
+          p_job_id: string;
+          p_output_tokens: number;
+        };
+        Returns: undefined;
+      };
       admin_list_overview: {
         Args: Record<PropertyKey, never>;
         Returns: {
@@ -1104,15 +1266,21 @@ export type Database = {
           user_id: string;
         }[];
       };
+      claim_list_job: { Args: Record<PropertyKey, never>; Returns: Json };
       claim_media_words: { Args: { p_include_images: boolean; p_limit: number }; Returns: Json };
       claim_word_jobs: { Args: { p_job_id?: string; p_limit?: number }; Returns: Json };
       complete_word_job: { Args: { p_job_id: string; p_word_id: string }; Returns: undefined };
       consume_usage: { Args: { p_kind: string; p_user_id: string }; Returns: Json };
+      enqueue_admin_words: { Args: { p_items: Json; p_language: string }; Returns: Json };
       enqueue_bulk_words: { Args: { p_items: Json; p_language: string }; Returns: number };
+      fail_list_job: { Args: { p_error: string; p_job_id: string }; Returns: string };
       fail_word_job: {
         Args: { p_error: string; p_job_id: string; p_retry_at?: string };
         Returns: undefined;
       };
+      finish_list_analysis: { Args: { p_job_id: string; p_summary: Json }; Returns: number };
+      kick_list_worker_now: { Args: Record<PropertyKey, never>; Returns: number };
+      kick_word_worker_now: { Args: Record<PropertyKey, never>; Returns: number };
       request_word_job: {
         Args: {
           p_context_image_url?: string;
@@ -1132,6 +1300,25 @@ export type Database = {
       save_generated_word: {
         Args: { p_details: Json; p_job_id: string; p_senses: Json; p_word: Json };
         Returns: string;
+      };
+      save_list_candidates: {
+        Args: { p_job_id: string; p_replace_raw?: boolean; p_rows: Json };
+        Returns: number;
+      };
+      save_list_job: {
+        Args: {
+          p_cost_usd?: number;
+          p_done: number;
+          p_input_tokens?: number;
+          p_job_id: string;
+          p_keep_lock?: boolean;
+          p_output_tokens?: number;
+          p_state: Json;
+          p_step: string;
+          p_total: number;
+          p_wait_seconds?: number;
+        };
+        Returns: undefined;
       };
       save_push_subscription: {
         Args: { p_auth: string; p_endpoint: string; p_p256dh: string; p_user_agent?: string };

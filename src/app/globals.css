@@ -24,6 +24,17 @@
   --border: #d3dce1;
   --input: #cfd8de;
   --ring: #2b8bb0;
+  /* Biểu đồ thống kê (một sắc xanh, đã kiểm tra bằng bộ kiểm tra bảng màu): bậc trạng thái từ Mới tới
+     Thành thạo, bậc heatmap phút học, cột một chuỗi. */
+  --chart-step-1: #86b6ef;
+  --chart-step-2: #3987e5;
+  --chart-step-3: #1c5cab;
+  --chart-step-4: #0d366b;
+  --chart-heat-1: #b7d3f6;
+  --chart-heat-2: #6da7ec;
+  --chart-heat-3: #2a78d6;
+  --chart-heat-4: #184f95;
+  --chart-bar: #2a78d6;
 }
 
 .dark {
@@ -45,6 +56,15 @@
   --border: #2c3a43;
   --input: #34444e;
   --ring: #6cc0de;
+  --chart-step-1: #1c5cab;
+  --chart-step-2: #3987e5;
+  --chart-step-3: #86b6ef;
+  --chart-step-4: #cde2fb;
+  --chart-heat-1: #1c5cab;
+  --chart-heat-2: #3987e5;
+  --chart-heat-3: #86b6ef;
+  --chart-heat-4: #cde2fb;
+  --chart-bar: #3987e5;
 }
 
 @theme inline {

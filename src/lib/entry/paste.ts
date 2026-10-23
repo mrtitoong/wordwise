@@ -16,7 +16,11 @@ const BULLET = /^\s*(?:[-*•·▪]+|\d{1,4}[.)]|[a-z][.)](?=\s))\s*/i;
 // Tab, " - ", " – ", " — ", ":", "=" ngăn từ và ghi chú; dấu "-" dính liền (well-known) giữ nguyên.
 const SEPARATOR = /\t|\s+[-–—=]\s+|\s*[:=]\s+|\s*\|\s*/;
 
-export function parsePastedText(text: string): { lines: PastedLine[]; truncated: boolean } {
+/** `max`: số dòng tối đa (tab Gõ 200, danh sách của Admin nhiều hơn). */
+export function parsePastedText(
+  text: string,
+  max: number = MAX_PASTE_LINES,
+): { lines: PastedLine[]; truncated: boolean } {
   const seen = new Set<string>();
   const lines: PastedLine[] = [];
   let truncated = false;
@@ -28,7 +32,7 @@ export function parsePastedText(text: string): { lines: PastedLine[]; truncated:
     const note = rest.join(" ").trim();
     const key = word.toLowerCase();
     if (!word || seen.has(key)) continue;
-    if (lines.length >= MAX_PASTE_LINES) {
+    if (lines.length >= max) {
       truncated = true;
       break;
     }

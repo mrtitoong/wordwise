@@ -31,42 +31,11 @@ import { resolveWords } from "@/lib/words/request-word";
 import { startImport } from "@/features/import/import-runner";
 import type { EntryContext } from "./add-word-screen";
 import { usePlan } from "./use-plan";
+import { columnName, readTableFile, type Table } from "@/features/import/read-table";
 
 const CHUNK = 50;
 const PREVIEW_LIMIT = 100;
 const PREMIUM_DAILY = 300;
-
-type Table = { name: string; rows: string[][] };
-
-const cellText = (value: unknown): string =>
-  value === null || value === undefined
-    ? ""
-    : value instanceof Date
-      ? value.toISOString().slice(0, 10)
-      : String(value);
-
-async function readFile(file: File): Promise<Table[]> {
-  if (/\.xlsx$/i.test(file.name)) {
-    const { default: readXlsxFile } = await import("read-excel-file/browser");
-    const sheets = await readXlsxFile(file);
-    return sheets.map((s) => ({ name: s.sheet, rows: s.data.map((r) => r.map(cellText)) }));
-  }
-  const Papa = (await import("papaparse")).default;
-  const rows = await new Promise<string[][]>((resolve, reject) =>
-    Papa.parse<string[]>(file, {
-      skipEmptyLines: "greedy",
-      complete: (result) => resolve(result.data),
-      error: reject,
-    }),
-  );
-  if (rows[0]?.[0]) rows[0][0] = rows[0][0].replace(/^\uFEFF/, "");
-  return [{ name: file.name, rows }];
-}
-
-const columnName = (i: number) =>
-  i < 26
-    ? String.fromCharCode(65 + i)
-    : `${String.fromCharCode(64 + Math.floor(i / 26))}${String.fromCharCode(65 + (i % 26))}`;
 
 type Preview = {
   row: ImportRow;
@@ -175,7 +144,7 @@ export function FileEntry({ context }: { context: EntryContext }) {
       return;
     }
     try {
-      const read = (await readFile(file)).filter((s) => s.rows.length > 0);
+      const read = (await readTableFile(file)).filter((s) => s.rows.length > 0);
       if (read.length === 0) {
         setError(t("empty"));
         return;

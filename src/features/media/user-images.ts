@@ -18,7 +18,8 @@ import {
 import { createClient } from "@/lib/supabase/client";
 import { getSupabaseEnv } from "@/lib/supabase/env";
 
-async function shrinkImage(file: File): Promise<{ blob: Blob; ext: "webp" | "jpg" }> {
+/** Thu nhỏ và nén ảnh (WebP, JPEG nếu trình duyệt không có WebP) cho vừa giới hạn kích thước. */
+export async function shrinkImage(file: File): Promise<{ blob: Blob; ext: "webp" | "jpg" }> {
   const bitmap = await createImageBitmap(file);
   const size = fitWithin(bitmap.width, bitmap.height);
   const canvas = document.createElement("canvas");

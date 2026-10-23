@@ -18,7 +18,12 @@ export default defineConfig({
     {
       // Màn hình điện thoại nhỏ nhất cần hỗ trợ (CLAUDE.md: 360px)
       name: "mobile-360",
-      use: { ...devices["Pixel 5"], viewport: { width: 360, height: 740 } },
+      use: {
+        ...devices["Pixel 5"],
+        viewport: { width: 360, height: 740 },
+        // CI dùng Google Chrome có sẵn trên máy (PLAYWRIGHT_CHANNEL=chrome), khỏi tải Chromium mỗi lần.
+        ...(process.env.PLAYWRIGHT_CHANNEL ? { channel: process.env.PLAYWRIGHT_CHANNEL } : {}),
+      },
     },
   ],
   // Có E2E_BASE_URL (vd bản preview Vercel) thì không tự chạy server.

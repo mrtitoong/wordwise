@@ -412,3 +412,16 @@ Repo: https://github.com/mrtitoong/wordwise
   (cả luyện thêm). Đối chứng SQL: bộ dữ liệu mẫu `src/lib/stats/fixture.ts` → `npm run stats:sql` sinh
   `supabase/tests/stats.test.sql` (pgTAP, CI kiểm tra file khớp). 50.000 lượt ôn tính ~0,3 giây
   (`localDay` lưu sẵn ngày theo khoảng 15 phút).
+- 2026-10-23 (Prompt 6.2): Trang `/stats` (`src/features/stats/stats-screen.tsx`): 4 thẻ số (chuỗi,
+  từ đã thuộc, tỉ lệ nhớ 30 ngày – "—" khi dữ liệu < 7 ngày, phút học 7 ngày so với 7 ngày trước),
+  heatmap 365 ngày tự vẽ (SVG, cuộn ngang, chạm ô để xem ngày; mức 0/<5/<15/<30/≥30 phút), cột chồng
+  trạng thái theo tuần và dự báo 30 ngày bằng **Recharts 3.10.1** (tải riêng bằng `next/dynamic`, mỗi
+  biểu đồ có "Xem dạng bảng"), độ chính xác 4 kỹ năng (thanh ngang), "Từ hay quên" (quên nhiều nhất
+  30 ngày rồi tới leech, tối đa 10; "Ghi chú/ảnh" mở thẻ từ, "Ôn ngay các từ này" →
+  `/review/session?retry=` thẻ Nghĩa). Màu: một sắc xanh (`--chart-*` trong globals.css, bản tối riêng,
+  đã chạy bộ kiểm tra bảng màu). Lịch sử trạng thái (FSRS) tính sau khi các số khác đã hiện. Chuỗi dài
+  nhất tính một lượt (cách cũ chậm theo bình phương số ngày). Đo trên bản production với ~50.800 lượt
+  ôn: số liệu hiện sau 0,34–0,94 giây (lần đầu sau khi server khởi động 1,7 giây), đọc IndexedDB chiếm
+  ~0,5 giây; `npm run stats:perf` (CI) kiểm tra phần tính < 1 giây. `next.config.ts` đặt
+  `agentRules: false` để `next dev` không tự chèn hướng dẫn vào CLAUDE.md. Cửa test E2E
+  `seedHistory(days)` ghi lịch sử ôn giả trong máy.

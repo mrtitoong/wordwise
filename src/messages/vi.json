@@ -177,7 +177,31 @@
     "multiAccentHint": "Tập nghe đổi ngẫu nhiên giọng Mỹ và giọng Anh, quen tai cả hai cách đọc.",
     "micTest": "Kiểm tra micro",
     "practiceSpeaking": "Luyện phát âm",
-    "practiceSpeakingHint": "Thêm câu đọc to vào phiên ôn hằng ngày (cần đăng nhập, micro và chỗ yên tĩnh). Luyện tập vẫn chọn được Phát âm khi tắt."
+    "practiceSpeakingHint": "Thêm câu đọc to vào phiên ôn hằng ngày (cần đăng nhập, micro và chỗ yên tĩnh). Luyện tập vẫn chọn được Phát âm khi tắt.",
+    "reminderSection": "Nhắc học",
+    "reminder": {
+      "toggle": "Nhắc học mỗi ngày",
+      "at": "Giờ nhắc",
+      "hint": "Chỉ nhắc khi hôm đó bạn chưa học, tối đa 1 lần/ngày, kèm số từ đang chờ.",
+      "guest": "Đăng nhập để nhận nhắc học trên điện thoại hoặc máy tính.",
+      "signIn": "Đăng nhập",
+      "iosInstall": "Trên iPhone/iPad (iOS 16.4 trở lên): bấm Chia sẻ → Thêm vào Màn hình chính, mở WordWise từ biểu tượng đó rồi bật nhắc học.",
+      "unsupported": "Trình duyệt này không nhận được thông báo. Thử Chrome, Edge hoặc Firefox.",
+      "denied": "Bạn đã chặn thông báo của WordWise. Mở cài đặt trang web trong trình duyệt để cho phép, rồi thử lại.",
+      "error": "Chưa bật được nhắc học (mất mạng hoặc lỗi máy chủ). Thử lại sau.",
+      "notOnThisDevice": "Máy này chưa nhận thông báo nhắc học.",
+      "enableHere": "Bật thông báo trên máy này"
+    },
+    "retentionSection": "Tỉ lệ nhớ mong muốn",
+    "retention": {
+      "title": "Tỉ lệ nhớ mong muốn",
+      "estimate": "Khoảng {count} thẻ ôn mỗi ngày khi học đều {newPerDay} từ mới/ngày.",
+      "compare": "(Mức {percent}% hiện tại: khoảng {count} thẻ.)",
+      "overLimit": "Vượt giới hạn {limit} thẻ/ngày, phần dư dời sang hôm sau.",
+      "hint": "Cao hơn thì nhớ chắc hơn nhưng phải ôn nhiều hơn. Áp dụng cho các lần ôn sau.",
+      "cancel": "Hủy",
+      "save": "Lưu {percent}%"
+    }
   },
   "languages": {
     "vi": "Tiếng Việt",

@@ -6,6 +6,8 @@ import { LanguageSwitcher } from "@/components/language-switcher";
 import { Button } from "@/components/ui/button";
 import { SignOutButton } from "@/features/auth/sign-out-button";
 import { DailyNewLimit } from "@/features/settings/daily-new-limit";
+import { ReminderSettings } from "@/features/settings/reminder-settings";
+import { RetentionSetting } from "@/features/settings/retention-setting";
 import { SettingSwitch } from "@/features/settings/setting-switch";
 import { getCurrentUser } from "@/lib/supabase/server";
 
@@ -50,6 +52,24 @@ export default async function SettingsPage() {
           {t("dailyNew")}
         </h2>
         <DailyNewLimit />
+      </section>
+      <section aria-labelledby="retention-heading" className="flex flex-col gap-3 pt-6">
+        <h2
+          id="retention-heading"
+          className="text-sm font-semibold tracking-wide text-muted-foreground uppercase"
+        >
+          {t("retentionSection")}
+        </h2>
+        <RetentionSetting />
+      </section>
+      <section aria-labelledby="reminder-heading" className="flex flex-col gap-3 pt-6">
+        <h2
+          id="reminder-heading"
+          className="text-sm font-semibold tracking-wide text-muted-foreground uppercase"
+        >
+          {t("reminderSection")}
+        </h2>
+        <ReminderSettings />
       </section>
       <section aria-labelledby="practice-heading" className="flex flex-col gap-3 pt-6">
         <h2

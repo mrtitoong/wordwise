@@ -8,6 +8,7 @@ import { cn } from "@/lib/utils";
 import {
   CEFR_LEVELS,
   DAILY_NEW_OPTIONS,
+  DEFAULT_REMINDER,
   GOALS,
   TARGET_LANGUAGES,
   defaultOnboardingSettings,
@@ -27,7 +28,6 @@ import { resolveOwner, syncWithTimeout } from "@/lib/sync/client";
 import { createSupabaseRemote } from "@/lib/sync/remote";
 import { completeOnboarding } from "./actions";
 
-const DEFAULT_REMINDER = "20:00";
 const SETTING_STEPS = 3;
 
 type Step = "language" | "level" | "daily" | "notify" | "starter";

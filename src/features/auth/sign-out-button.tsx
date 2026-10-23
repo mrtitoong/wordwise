@@ -5,11 +5,12 @@ import { useTranslations } from "next-intl";
 import { Button } from "@/components/ui/button";
 import { getLocalDb, wipeLocalDb } from "@/lib/db/local";
 import { getSyncEngine, syncWithTimeout } from "@/lib/sync/client";
+import { unsubscribeReminders } from "@/features/settings/push-client";
 import { signOut } from "./actions";
 
 /**
- * Đăng xuất: gửi nốt thay đổi, xóa dữ liệu trong máy (máy dùng chung), rồi
- * đăng xuất ở server. Còn thay đổi chưa gửi được thì hỏi lại trước.
+ * Đăng xuất: gửi nốt thay đổi, tắt nhắc học trên máy này, xóa dữ liệu trong máy (máy dùng
+ * chung), rồi đăng xuất ở server. Còn thay đổi chưa gửi được thì hỏi lại trước.
  */
 export function SignOutButton() {
   const t = useTranslations("settings");
@@ -25,6 +26,8 @@ export function SignOutButton() {
       setBusy(false);
       return;
     }
+    // Máy dùng chung: không nhận nhắc học của tài khoản vừa đăng xuất nữa.
+    await unsubscribeReminders().catch(() => undefined);
     await wipeLocalDb(getLocalDb());
     await signOut();
   }

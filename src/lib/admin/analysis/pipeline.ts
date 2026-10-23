@@ -83,7 +83,7 @@ export const SENSE_PARALLEL = 5;
  * đầu ra) đã dùng ~3,3 giây CPU, bị dừng "CPU Time exceeded" và làm lại mãi. Hết lượt thì lưu
  * tiến độ, lượt worker mới làm tiếp.
  */
-export const MAX_LLM_CALLS_PER_RUN = 2;
+export const MAX_LLM_CALLS_PER_RUN = 1;
 /**
  * Mỗi lượt worker chỉ chạy ngần này phần việc (rồi gọi lượt mới) để CPU mỗi lượt luôn nhỏ:
  * đo trên cloud, lượt chạy liền nhiều bước với 500 từ dùng 3–47 giây CPU và bị dừng.

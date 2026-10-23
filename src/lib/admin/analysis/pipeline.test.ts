@@ -511,9 +511,9 @@ describe("pipeline phân tích danh sách", () => {
 
     expect(db.job.status).toBe("succeeded");
     expect(db.items).toHaveLength(260);
-    // 60 từ mới → 1 lô xem trước; 260 từ → 3 lượt chia chủ đề (100 từ/lượt).
-    expect(calls.filter((t) => t === "list-triage")).toHaveLength(1);
-    expect(calls.filter((t) => t === "list-subtopics")).toHaveLength(3);
+    // 60 từ mới → 2 lô xem trước (50 từ/lô); 260 từ → 6 lượt chia chủ đề (50 từ/lượt).
+    expect(calls.filter((t) => t === "list-triage")).toHaveLength(2);
+    expect(calls.filter((t) => t === "list-subtopics")).toHaveLength(6);
     const subtopics = new Set([...db.candidates.values()].map((c) => c.subtopic));
     expect(subtopics).toEqual(new Set(["A", "B"]));
     // Cùng chủ đề con đứng liền nhau.
@@ -525,7 +525,7 @@ describe("pipeline phân tích danh sách", () => {
 
   it("chia chủ đề con nhiều lô: lưu tiến độ, lượt sau làm tiếp, không gọi lại lô đã xong", async () => {
     const clock = { now: 0 };
-    // 500 từ có sẵn trong kho → 5 lô chia chủ đề (100 từ/lô) > 2 lượt LLM mỗi lượt worker.
+    // 500 từ có sẵn trong kho → 10 lô chia chủ đề (50 từ/lô), mỗi lượt worker 1 lượt LLM.
     const words = Array.from({ length: 500 }, (_, i) => `term${i.toString(36)}q`);
     const library = words.map((w, i) => libWord(w, "noun", { frequencyRank: 1000 + i }));
     const db = fakeStore({
@@ -537,7 +537,7 @@ describe("pipeline phân tích danh sách", () => {
     await runUntilDone(deps(db.store, llm, clock), db.job, clock);
 
     expect(db.job.status).toBe("succeeded");
-    expect(calls.filter((t) => t === "list-subtopics")).toHaveLength(5);
+    expect(calls.filter((t) => t === "list-subtopics")).toHaveLength(10);
     expect([...db.candidates.values()].every((c) => c.subtopic !== null)).toBe(true);
   });
 

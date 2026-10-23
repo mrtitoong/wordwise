@@ -387,3 +387,14 @@ Repo: https://github.com/mrtitoong/wordwise
   `pronunciation` 100/ngày (`private.settings.user_daily_pronunciation`, đã áp lên cloud). Giá theo tài
   liệu Azure bằng STT tiêu chuẩn (~$1/giờ âm thanh, có nguồn ghi thêm ~$0,3/giờ) → ~$0,001/lần chấm 3
   giây. `npm run pronunciation:smoke` thử thật (cần khóa Azure trong .env.local).
+- 2026-10-23 (Prompt 5.3): Màn tập phát âm `src/features/review/modes/speaking.tsx`: nghe mẫu (thường/
+  chậm) → thu âm → điểm 0–100, âm tô màu **kèm ký hiệu** (✓ ≥ 80, ~ 60–79, ✗ < 60), tối đa 3 mẹo sửa âm
+  cho âm < 70 (`src/lib/pronunciation/feedback.ts`, theo quy tắc), nghe lại bản của mình/so với mẫu,
+  ghi chú "chỉ mang tính tham khảo". **Lần chấm đầu tiên dùng để xếp lịch** (< 60 Quên, 60–79 Khó,
+  80–89 Nhớ, ≥ 90 Dễ), đọc lại chỉ để luyện; không chấm được (khách, hết lượt, lỗi) thì "Bỏ qua câu
+  này", không ghi lượt ôn. Nút "Tạm tắt phát âm" ở đầu phiên bỏ các câu phát âm còn lại (thẻ vẫn
+  đến hạn). `user_settings.practice_speaking` (mặc định tắt, đã áp lên cloud). Trang Luyện tập có chế
+  độ Phát âm (khách mời đăng nhập). Giới hạn mở thẻ kỹ năng mới **riêng từng loại** (Chính tả, Phát
+  âm) bằng số từ mới/ngày. Mô phỏng 3 thẻ: quý 4 ~328 lượt/ngày (gấp 2,9× chỉ Nghĩa), vượt giới hạn
+  200/ngày thì dời sang hôm sau. E2E dùng micro giả (`tests/fixtures/audio/speech-then-silence.wav`)
+  và chấm điểm giả lập.

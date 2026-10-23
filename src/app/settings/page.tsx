@@ -63,6 +63,11 @@ export default async function SettingsPage() {
           label="practiceSpelling"
           hint="practiceSpellingHint"
         />
+        <SettingSwitch
+          field="practice_speaking"
+          label="practiceSpeaking"
+          hint="practiceSpeakingHint"
+        />
         <SettingSwitch field="multi_accent" label="multiAccent" hint="multiAccentHint" />
         <Link
           href="/settings/microphone"

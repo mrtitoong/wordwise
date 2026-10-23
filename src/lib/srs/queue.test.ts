@@ -267,11 +267,22 @@ describe("thẻ kỹ năng (Chính tả)", () => {
     expect(later.items).toEqual([]);
     const capped = buildSession(
       [spelling("alpha"), spelling("beta"), spelling("gamma")],
-      { ...settings, newSkillLimit: 2 },
+      { ...settings, newSkillLimits: { spelling: 2 } },
       scheduler,
       NOW,
     );
     expect(capped.items).toHaveLength(2);
+  });
+
+  it("giới hạn thẻ mới riêng từng kỹ năng: hết lượt Chính tả vẫn mở được Phát âm", () => {
+    const speaking = (lemma: string): QueueCard => ({ ...spelling(lemma), skill: "speaking" });
+    const plan = buildSession(
+      [spelling("alpha"), speaking("beta"), speaking("gamma")],
+      { ...settings, newSkillLimits: { spelling: 0, speaking: 1 } },
+      scheduler,
+      NOW,
+    );
+    expect(plan.items).toEqual([{ cardId: expect.stringContaining("beta"), isNew: false }]);
   });
 
   it("hai thẻ của cùng một từ không đứng liền nhau", () => {

@@ -77,14 +77,17 @@
       "flashcard": "Flashcard",
       "mcq": "Trắc nghiệm",
       "writing": "Tập viết",
-      "listening": "Tập nghe"
+      "listening": "Tập nghe",
+      "speaking": "Phát âm"
     },
     "count": "Số câu",
     "countValue": "{count} câu",
     "available": "Có {available} từ phù hợp – buổi luyện {count} câu.",
     "none": "Chưa có từ nào phù hợp. Thử chọn phạm vi rộng hơn.",
     "noneWriting": "Tập viết dùng các từ đã qua mấy lần ôn đầu tiên. Ôn thêm ở Hôm nay rồi quay lại nhé.",
-    "start": "Bắt đầu luyện"
+    "start": "Bắt đầu luyện",
+    "speakingLogin": "Phát âm cần đăng nhập để chấm điểm.",
+    "noneSpeaking": "Phát âm dùng các từ đã nhớ được vài ngày (mức 2). Ôn thêm ở Hôm nay rồi quay lại nhé."
   },
   "stats": {
     "title": "Thống kê",
@@ -114,7 +117,9 @@
     "reviewSection": "Phiên ôn",
     "multiAccent": "Luyện nhiều giọng",
     "multiAccentHint": "Tập nghe đổi ngẫu nhiên giọng Mỹ và giọng Anh, quen tai cả hai cách đọc.",
-    "micTest": "Kiểm tra micro"
+    "micTest": "Kiểm tra micro",
+    "practiceSpeaking": "Luyện phát âm",
+    "practiceSpeakingHint": "Thêm câu đọc to vào phiên ôn hằng ngày (cần đăng nhập, micro và chỗ yên tĩnh). Luyện tập vẫn chọn được Phát âm khi tắt."
   },
   "languages": {
     "vi": "Tiếng Việt",
@@ -844,7 +849,57 @@
     "replays": "Đã nghe lại {count} lần",
     "listenPickMeaning": "Nghe rồi chọn nghĩa đúng",
     "listenType": "Nghe rồi gõ lại từ",
-    "listenCloze": "Nghe câu rồi điền từ còn thiếu"
+    "listenCloze": "Nghe câu rồi điền từ còn thiếu",
+    "speak": {
+      "prompt": "Nghe mẫu rồi đọc to từ này",
+      "record": "Bắt đầu đọc",
+      "stop": "Dừng",
+      "tapToRecord": "Bấm micro rồi đọc to",
+      "recording": "Đang nghe… ngừng nói là tự dừng",
+      "scoring": "Đang chấm điểm…",
+      "score": "{score} điểm",
+      "band": {
+        "good": "Tốt lắm!",
+        "fair": "Khá, luyện thêm chút nữa",
+        "poor": "Cần luyện thêm"
+      },
+      "firstScore": "Lần đầu: {score} điểm (dùng để xếp lịch ôn)",
+      "phonemes": "Điểm từng âm",
+      "noPhonemes": "Giọng Anh: chưa có điểm chi tiết từng âm, chỉ có điểm tổng.",
+      "tipsTitle": "Mẹo sửa âm",
+      "playMine": "Nghe bản của bạn",
+      "compare": "So với mẫu",
+      "again": "Đọc lại",
+      "disclaimer": "Điểm do máy chấm, chỉ mang tính tham khảo.",
+      "next": "Tiếp",
+      "skip": "Bỏ qua câu này",
+      "problem": {
+        "noSpeech": "Chưa nghe rõ. Thử đọc to, gần micro hơn và ở chỗ yên tĩnh.",
+        "login": "Cần đăng nhập để chấm phát âm.",
+        "limit": "Bạn đã dùng hết lượt chấm phát âm hôm nay. Mai quay lại nhé!",
+        "unavailable": "Chưa chấm được lúc này (mất mạng hoặc dịch vụ bận). Thử lại sau."
+      },
+      "pause": "Tạm tắt phát âm",
+      "paused": "Đã tạm tắt phát âm trong phiên này"
+    },
+    "tips": {
+      "th_voiceless": "Đặt đầu lưỡi giữa hai hàm răng rồi thổi hơi ra (không phải \"th\" hay \"t\" tiếng Việt).",
+      "th_voiced": "Đầu lưỡi giữa hai hàm răng, thổi hơi và rung cổ họng (không đọc thành \"d\" hay \"đ\").",
+      "final_s": "Đừng bỏ âm /s/ cuối: kết thúc bằng tiếng xì nhẹ \"sss\".",
+      "final_z": "Âm cuối /z/: tiếng \"zzz\" có rung cổ, không đọc thành /s/ hay bỏ đi.",
+      "final_t_d": "Đừng nuốt âm cuối /t/ /d/: chạm lưỡi lên chân răng trên rồi bật nhẹ ra.",
+      "final_k_g": "Đừng nuốt âm cuối /k/ /g/: chặn hơi ở cuống lưỡi rồi bật nhẹ ra.",
+      "final_other": "Đọc rõ âm cuối, đừng nuốt: người Việt hay bỏ phụ âm cuối của từ tiếng Anh.",
+      "sh_s": "/ʃ/ (\"sh\") khác /s/: chu môi, lưỡi lùi vào trong, hơi ra rộng như \"suỵt\".",
+      "zh": "/ʒ/ như /ʃ/ nhưng rung cổ (như trong \"measure\").",
+      "ch_j": "/tʃ/ /dʒ/: bắt đầu bằng lưỡi chạm chân răng rồi bật ra thành \"ch\"/\"j\", không đọc thành \"tr\" tiếng Việt.",
+      "l_n": "Phân biệt /l/ và /n/: /l/ cho hơi đi hai bên lưỡi, /n/ hơi đi qua mũi.",
+      "r": "/r/ tiếng Anh: cong đầu lưỡi lên nhưng không chạm vòm miệng, không rung như \"r\" tiếng Việt.",
+      "v": "/v/: răng trên chạm nhẹ môi dưới và rung cổ, không đọc thành /b/ hay /f/.",
+      "long_vowel": "Nguyên âm dài (có dấu ː): kéo dài hơn hẳn nguyên âm ngắn, ví dụ \"sheep\" dài hơn \"ship\".",
+      "ae": "/æ/: mở miệng rộng, giữa \"a\" và \"e\" tiếng Việt (như trong \"cat\").",
+      "schwa": "/ə/: âm \"ơ\" rất nhẹ và ngắn ở âm tiết không nhấn, đừng đọc rõ như nguyên âm đầy đủ."
+    }
   },
   "mic": {
     "explainTitle": "Cho phép dùng micro",

@@ -24,6 +24,11 @@ export type TodayInput = {
     timeZone: string;
     /** "Luyện chính tả": thẻ Chính tả vào phiên ôn (mặc định có). */
     practiceSpelling?: boolean;
+    /**
+     * "Luyện phát âm": thẻ Phát âm vào phiên ôn (mặc định tắt; khách không chấm được nên luôn
+     * tắt).
+     */
+    practiceSpeaking?: boolean;
   };
   /** Chữ của từng nghĩa (sense_id → lemma); thiếu thì dùng chuỗi rỗng. */
   lemmaOf: (senseId: string) => string;
@@ -53,6 +58,7 @@ export function queueCards(input: TodayInput): QueueCard[] {
   }
   const skills = new Set(["meaning"]);
   if (input.settings.practiceSpelling ?? true) skills.add("spelling");
+  if (input.settings.practiceSpeaking) skills.add("speaking");
   return input.cards
     .filter((c) => !c.deleted_at && skills.has(c.skill) && live.has(c.user_word_id))
     .map((card) => {
@@ -78,9 +84,11 @@ export function sessionSettings(input: TodayInput, now: Date): SessionSettings {
   const meaningIds = new Set(input.cards.filter((c) => c.skill === "meaning").map((c) => c.id));
   const firstOfMeaning = (l: ReviewLogRow) => l.state === 0 && meaningIds.has(l.card_id);
   const newToday = new Set(todays.filter(firstOfMeaning).map((l) => l.card_id)).size;
-  const newSkillToday = new Set(
-    todays.filter((l) => l.state === 0 && !meaningIds.has(l.card_id)).map((l) => l.card_id),
-  ).size;
+  const skillOf = new Map(input.cards.map((c) => [c.id, c.skill]));
+  const openedToday = (skill: string) =>
+    new Set(
+      todays.filter((l) => l.state === 0 && skillOf.get(l.card_id) === skill).map((l) => l.card_id),
+    ).size;
   const last = input.logs.reduce<string | null>(
     (max, l) => (max === null || l.reviewed_at > max ? l.reviewed_at : max),
     null,
@@ -88,8 +96,14 @@ export function sessionSettings(input: TodayInput, now: Date): SessionSettings {
   return {
     dailyReviewLimit: input.settings.dailyReviewLimit,
     newLimit: Math.max(0, input.settings.dailyNewLimit - newToday),
-    // Thẻ Chính tả mới mỗi ngày không quá số từ mới/ngày: từ học trước GĐ4 mở dần, không dồn.
-    newSkillLimit: Math.max(0, input.settings.dailyNewLimit - newSkillToday),
+    // Thẻ Chính tả/Phát âm mới mỗi ngày (mỗi loại) không quá số từ mới/ngày: từ học trước mở
+    // dần, không dồn.
+    newSkillLimits: Object.fromEntries(
+      ["spelling", "speaking"].map((skill) => [
+        skill,
+        Math.max(0, input.settings.dailyNewLimit - openedToday(skill)),
+      ]),
+    ),
     reviewsDoneToday: todays.filter((l) => !firstOfMeaning(l)).length,
     lastReviewAt: last ? new Date(last) : null,
   };

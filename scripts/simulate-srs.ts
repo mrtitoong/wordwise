@@ -86,6 +86,24 @@ const lines = [
     );
   })(),
   "",
+  '## Thêm thẻ Phát âm (GĐ5, khi bật "Luyện phát âm", 10 từ/ngày)',
+  "",
+  "Thẻ Phát âm mở khi thẻ Nghĩa đạt mức 2 (S ≥ 3 ngày); mỗi loại thẻ kỹ năng có giới hạn mở mới",
+  "riêng bằng số từ mới/ngày (dùng chung giới hạn thì thẻ chờ mở dồn mãi không hết). Mặc định tắt.",
+  "",
+  (() => {
+    const all = simulate({ days: 365, newPerDay: 10, seed: 42, spelling: true, speaking: true });
+    const late = averageLoad(all, 270, 365);
+    const speaking = all.slice(270).reduce((sum, d) => sum + d.speakingReviews, 0) / 95;
+    return (
+      `Nghĩa + Chính tả + Phát âm: quý 2 ~${averageLoad(all, 90, 180).toFixed(0)}, quý 4 ` +
+      `~${late.toFixed(0)} lượt/ngày (gấp ${(late / averageLoad(main.days, 270, 365)).toFixed(2)}× ` +
+      `chỉ thẻ Nghĩa; Phát âm ~${speaking.toFixed(0)}), ngày cao nhất ` +
+      `${Math.max(...all.map((d) => d.reviews))}. Giới hạn ôn mặc định 200 thẻ/ngày nên thẻ dư ` +
+      "dời sang ngày sau."
+    );
+  })(),
+  "",
   "Tải tăng chậm dần vì mỗi lần nhớ đúng, khoảng cách tới lần ôn sau dài ra. Tải không đi ngang hẳn:",
   "chạy thử 2 năm (10 từ/ngày) cho quý 4 ~113 lượt/ngày, quý 8 ~143 (+27% trong khi số thẻ gấp đôi).",
   "Muốn giữ tải ổn định lâu dài thì giảm số từ mới/ngày khi tải vượt thời gian người học có.",

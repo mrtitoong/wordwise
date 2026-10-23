@@ -50,6 +50,13 @@ Cài đặt thì tải như bảng trên.
 
 Quý 4: ~220 lượt/ngày (gấp 1.96× chỉ thẻ Nghĩa), quý 2 → quý 4 tăng 1.29×, ngày cao nhất 250. Thử hạ tỉ lệ nhớ mục tiêu của thẻ Chính tả xuống 85%/80% chỉ giảm tải quý 4 khoảng 7%/12%, nên chưa dùng.
 
+## Thêm thẻ Phát âm (GĐ5, khi bật "Luyện phát âm", 10 từ/ngày)
+
+Thẻ Phát âm mở khi thẻ Nghĩa đạt mức 2 (S ≥ 3 ngày); mỗi loại thẻ kỹ năng có giới hạn mở mới
+riêng bằng số từ mới/ngày (dùng chung giới hạn thì thẻ chờ mở dồn mãi không hết). Mặc định tắt.
+
+Nghĩa + Chính tả + Phát âm: quý 2 ~253, quý 4 ~328 lượt/ngày (gấp 2.92× chỉ thẻ Nghĩa; Phát âm ~111), ngày cao nhất 366. Giới hạn ôn mặc định 200 thẻ/ngày nên thẻ dư dời sang ngày sau.
+
 Tải tăng chậm dần vì mỗi lần nhớ đúng, khoảng cách tới lần ôn sau dài ra. Tải không đi ngang hẳn:
 chạy thử 2 năm (10 từ/ngày) cho quý 4 ~113 lượt/ngày, quý 8 ~143 (+27% trong khi số thẻ gấp đôi).
 Muốn giữ tải ổn định lâu dài thì giảm số từ mới/ngày khi tải vượt thời gian người học có.

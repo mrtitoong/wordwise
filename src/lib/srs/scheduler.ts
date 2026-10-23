@@ -97,6 +97,8 @@ export type ReviewInput = {
   reviewedAt: Date;
   logId: string;
   hintLevel?: number;
+  /** Tập phát âm: điểm tổng 0–100. */
+  pronunciationScore?: number | null;
   responseMs?: number | null;
   correct?: boolean | null;
   /**
@@ -126,7 +128,7 @@ export function applyReview(
       hint_level: input.hintLevel ?? 0,
       response_ms: input.responseMs ?? null,
       correct: input.correct ?? null,
-      pronunciation_score: null,
+      pronunciation_score: input.pronunciationScore ?? null,
       is_extra: extra,
       reviewed_at: input.reviewedAt.toISOString(),
       elapsed_days: Math.max(0, result.log.elapsed_days),

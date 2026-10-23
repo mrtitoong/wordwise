@@ -155,6 +155,18 @@ describe("buildPractice", () => {
     expect(picked.sort()).toEqual(["s1:meaning", "s2:spelling", "s3:meaning", "s7:meaning"]);
   });
 
+  it("Tập phát âm chỉ có từ đã có thẻ Phát âm", () => {
+    const speaking = card(words[1]!, "speaking" as "spelling", { stability: 3 });
+    const plan = buildPractice(
+      { ...input, cards: [...cards, { ...speaking, skill: "speaking" }] },
+      request({ mode: "speaking" }),
+      scheduler,
+      NOW,
+    );
+    expect(plan.items).toEqual([{ cardId: speaking.id, isNew: false, mode: "speaking" }]);
+    expect(buildPractice(input, request({ mode: "speaking" }), scheduler, NOW).available).toBe(0);
+  });
+
   it("tắt Luyện chính tả: Trộn tự động chỉ dùng thẻ Nghĩa", () => {
     const plan = buildPractice(
       { ...input, practiceSpelling: false },
@@ -187,6 +199,6 @@ describe("tham số URL", () => {
   });
 
   it("giá trị lạ thì dùng mặc định", () => {
-    expect(parsePractice({ mode: "speaking", status: "x", n: "15" })).toEqual(DEFAULT_PRACTICE);
+    expect(parsePractice({ mode: "dancing", status: "x", n: "15" })).toEqual(DEFAULT_PRACTICE);
   });
 });

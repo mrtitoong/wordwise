@@ -9,15 +9,16 @@ import type { UserSettingsRow } from "@/lib/db/types";
 import { useOwner } from "@/lib/sync/owner";
 import { cn } from "@/lib/utils";
 
-type BooleanSetting = "practice_spelling" | "multi_accent";
+type BooleanSetting = "practice_spelling" | "practice_speaking" | "multi_accent";
 
 const DEFAULTS: Record<BooleanSetting, boolean> = {
   practice_spelling: true,
+  practice_speaking: false,
   multi_accent: false,
 };
 
 /**
- * Công tắc bật/tắt một cài đặt (ghi vào máy trước, đồng bộ sau): "Luyện chính tả" (thẻ Chính tả có
+ * Công tắc bật/tắt một cài đặt (ghi vào máy trước, đồng bộ sau): "Luyện chính tả", "Luyện phát âm" (thẻ có
  * trong phiên ôn), "Luyện nhiều giọng" (tập nghe đổi ngẫu nhiên giọng Mỹ/Anh).
  */
 export function SettingSwitch({
@@ -26,8 +27,8 @@ export function SettingSwitch({
   hint,
 }: {
   field: BooleanSetting;
-  label: "practiceSpelling" | "multiAccent";
-  hint: "practiceSpellingHint" | "multiAccentHint";
+  label: "practiceSpelling" | "practiceSpeaking" | "multiAccent";
+  hint: "practiceSpellingHint" | "practiceSpeakingHint" | "multiAccentHint";
 }) {
   const t = useTranslations("settings");
   const owner = useOwner();

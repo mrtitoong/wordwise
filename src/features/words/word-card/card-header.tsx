@@ -11,7 +11,7 @@ import { MineBadge, useCard } from "./parts";
 
 export function CardHeader() {
   const t = useTranslations("wordCard");
-  const { view, owner, open, addSense } = useCard();
+  const { view, owner, open, addSense, readOnly } = useCard();
   const { content } = view;
 
   const customRef = view.image?.kind === "custom" ? view.image.path : null;
@@ -123,7 +123,7 @@ export function CardHeader() {
         </div>
       )}
 
-      {view.inNotebook ? (
+      {readOnly ? null : view.inNotebook ? (
         <div className="flex flex-wrap gap-2">
           {primary.userWordId && (
             <Button asChild className="min-h-11">

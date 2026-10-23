@@ -1,6 +1,8 @@
 import type { Metadata } from "next";
+import Link from "next/link";
 import { notFound } from "next/navigation";
 import { getTranslations } from "next-intl/server";
+import { Button } from "@/components/ui/button";
 import { AnalysisPanel } from "@/features/admin/analysis-panel";
 import { ListForm } from "@/features/admin/list-form";
 import { SourcesPanel } from "@/features/admin/sources-panel";
@@ -25,22 +27,28 @@ export async function generateMetadata({ params }: { params: Params }): Promise<
 export default async function AdminListPage({ params }: { params: Params }) {
   const { id } = await params;
   const t = await getTranslations("admin.form");
+  const tr = await getTranslations("admin.review");
   const supabase = await createClient();
-  const [{ data: list }, { data: sources }, { data: jobs }] = await Promise.all([
-    supabase.from("curated_lists").select("*").eq("id", id).maybeSingle(),
-    supabase
-      .from("curated_list_sources")
-      .select("id, kind, name, item_count")
-      .eq("list_id", id)
-      .order("created_at"),
-    supabase
-      .from("import_jobs")
-      .select(JOB_COLUMNS)
-      .eq("list_id", id)
-      .eq("kind", "admin_list")
-      .order("created_at", { ascending: false })
-      .limit(1),
-  ]);
+  const [{ data: list }, { data: sources }, { data: jobs }, { count: itemCount }] =
+    await Promise.all([
+      supabase.from("curated_lists").select("*").eq("id", id).maybeSingle(),
+      supabase
+        .from("curated_list_sources")
+        .select("id, kind, name, item_count")
+        .eq("list_id", id)
+        .order("created_at"),
+      supabase
+        .from("import_jobs")
+        .select(JOB_COLUMNS)
+        .eq("list_id", id)
+        .eq("kind", "admin_list")
+        .order("created_at", { ascending: false })
+        .limit(1),
+      supabase
+        .from("curated_list_items")
+        .select("id", { count: "exact", head: true })
+        .eq("list_id", id),
+    ]);
   if (!list) notFound();
   const initial: Partial<ListValues> = {
     title: list.title,
@@ -58,7 +66,16 @@ export default async function AdminListPage({ params }: { params: Params }) {
       <header className="flex flex-wrap items-center gap-3">
         <h1 className="text-2xl font-semibold">{list.title}</h1>
         <StatusBadge status={list.status} />
-        <span className="text-sm text-muted-foreground">v{list.version}</span>
+        {list.published_at && (
+          <span className="text-sm text-muted-foreground">
+            {tr("publishedVersion", { version: list.version })}
+          </span>
+        )}
+        {(itemCount ?? 0) > 0 && list.status !== "processing" && (
+          <Button asChild className="min-h-11 md:ml-auto">
+            <Link href={`/admin/lists/${id}/review`}>{tr("open", { count: itemCount ?? 0 })}</Link>
+          </Button>
+        )}
       </header>
       <section aria-labelledby="details-heading" className="flex flex-col gap-3">
         <h2 id="details-heading" className="text-lg font-semibold">

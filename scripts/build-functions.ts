@@ -13,6 +13,7 @@ import { relative } from "node:path";
 import { build, type Plugin } from "esbuild";
 
 const FUNCTIONS = [
+  "admin-word",
   "analyze-list",
   "assess-pronunciation",
   "generate-word",

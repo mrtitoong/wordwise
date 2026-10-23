@@ -484,3 +484,20 @@ Repo: https://github.com/mrtitoong/wordwise
   Cảnh báo: spelling, rare (cờ AI hoặc C2), above_level, many_senses (≥ 3), no_context, low_confidence
   (chọn nghĩa < 0,6, nội dung < 0,5). Tóm tắt trong `import_jobs.state.summary`. Dữ liệu thử:
   `data/wordlists/nawl-1.2.csv` (NAWL, CC BY-SA 4.0). CI in lỗi pgTAP ra annotation công khai.
+- 2026-10-23 (Prompt 7.3, chủ sản phẩm duyệt 5 đề xuất): Màn `/admin/lists/[id]/review`
+  (`src/features/admin/review/`, logic thuần `src/lib/admin/review.ts`). `curated_list_items` là **bản làm
+  việc** (cột `accepted`), chỉ admin đọc; **xuất bản** (`admin_publish_list`) chỉ khi mọi mục đã chấp
+  nhận, sao sang `curated_list_releases` + `curated_list_release_items` (ai cũng đọc, ghi từ thêm/bỏ so
+  với bản trước) và đặt `version`. Người học (GĐ 7.4) đọc bản phát hành, không đọc bản làm việc; danh sách
+  đã từng xuất bản (`published_at`) vẫn hiện khi đang sửa. "Sửa danh sách" đưa về Chờ duyệt (bản nháp
+  riêng), "Hủy bản nháp" khôi phục bản phát hành mới nhất. Phân tích lại giữ dấu đã chấp nhận theo nghĩa.
+  Thông báo "có thêm N từ" cho người học làm ở 7.4. Kéo thả bằng **dnd-kit** (core 6.3.1, sortable
+  10.0.0), tắt khi đang lọc; điện thoại dùng ô "Vị trí".
+- 2026-10-23: Admin **sửa thẳng nội dung dùng chung** (`admin_save_word`: giữ id và số nghĩa, không đổi
+  chữ/loại từ/audio/ảnh/dạng từ, đặt `reviewed = true`, `words.content_updated_at`); máy người học tự tải
+  lại từ đã lưu khi đồng bộ (`SyncRemote.editedWords`, so `content_updated_at`). "Tạo lại một tab" bằng
+  Edge Function **`admin-word`** (word-content, Haiku): tạo lại cả từ rồi chỉ lấy phần của tab đó, ghép
+  nghĩa theo nội dung (`matchSenses`); trả bản nháp, Admin xem lại rồi bấm Lưu. Thẻ từ có chế độ
+  `readOnly` (ẩn nút thêm/sửa/báo lỗi). Thống kê `/admin/lists/[id]/stats` bằng `admin_list_stats()`
+  (theo bản phát hành mới nhất): người học, tỉ lệ hoàn thành (đã bắt đầu học hết), tỉ lệ đã bắt đầu, tỉ
+  lệ "Đã thuộc" (thẻ Nghĩa S ≥ 7), 10 nghĩa nhiều lượt Quên nhất 30 ngày.

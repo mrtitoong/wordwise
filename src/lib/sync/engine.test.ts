@@ -6,12 +6,13 @@ import { LocalDb } from "@/lib/db/local";
 import {
   addSensesToDefaultNotebook,
   adoptGuestData,
+  cacheWordContent,
   recordReview,
   saveSettings,
 } from "@/lib/db/repo";
 import { cursorColumn, rowKey, type SyncRowMap, type SyncTable } from "@/lib/db/types";
 import { SyncEngine } from "./engine";
-import type { RemoteResult, SyncRemote } from "./remote";
+import type { EditedWord, RemoteResult, SyncRemote, WordContent } from "./remote";
 
 const USER = "11111111-1111-4111-8111-111111111111";
 const SENSE_A = "60db4402-ca9b-4997-baa8-ddd85db1b21d";
@@ -84,8 +85,23 @@ class FakeRemote implements SyncRemote {
     return { ok: true as const, rows: rows as unknown as SyncRowMap[T][] };
   }
 
-  async fetchWordContent() {
-    return { ok: true as const, content: { words: [], senses: [], details: [] } };
+  /** Từ Admin đã sửa và nội dung trả về khi tải lại. */
+  edited: EditedWord[] = [];
+  wordContent: WordContent = { words: [], senses: [], details: [] };
+  fetchedSenses: string[][] = [];
+
+  async fetchWordContent(senseIds: string[]) {
+    this.fetchedSenses.push(senseIds);
+    return { ok: true as const, content: this.wordContent };
+  }
+
+  async editedWords(since: string, offset: number, limit: number) {
+    if (!this.online) return this.offline() as Extract<RemoteResult, { ok: false }>;
+    const rows = this.edited
+      .filter((w) => w.contentUpdatedAt > since)
+      .sort((a, b) => a.contentUpdatedAt.localeCompare(b.contentUpdatedAt))
+      .slice(offset, offset + limit);
+    return { ok: true as const, rows };
   }
 }
 
@@ -240,6 +256,7 @@ describe("SyncEngine", () => {
       updateSettings: remote.updateSettings.bind(remote),
       pull: remote.pull.bind(remote),
       fetchWordContent: remote.fetchWordContent.bind(remote),
+      editedWords: remote.editedWords.bind(remote),
     };
     const flaky = new SyncEngine(db, failing);
     await flaky.setOwner(USER);
@@ -253,5 +270,33 @@ describe("SyncEngine", () => {
     expect(status.failed).toBeGreaterThan(0);
     const item = await db.outbox.where("owner").equals(USER).first();
     expect(item?.lastError).toContain("row-level security");
+  });
+
+  it("Admin sửa nội dung từ: máy đã lưu từ đó thì tải lại, từ chưa lưu thì bỏ qua", async () => {
+    const WORD = "77777777-7777-4777-8777-777777777777";
+    const content = (meaning: string, updatedAt: string | null = null) =>
+      ({
+        words: [{ id: WORD, lemma: "bank", content_updated_at: updatedAt }],
+        senses: [{ id: SENSE_A, word_id: WORD, sense_order: 0, meaning_vi: meaning }],
+        details: [{ sense_id: SENSE_A }],
+      }) as unknown as WordContent;
+    await cacheWordContent(db, content("ngân hàng"));
+    remote.edited = [
+      { id: WORD, contentUpdatedAt: "2026-10-21T00:00:00.000Z", senseIds: [SENSE_A] },
+      {
+        id: "88888888-8888-4888-8888-888888888888",
+        contentUpdatedAt: "2026-10-21T00:00:01.000Z",
+        senseIds: [SENSE_B],
+      },
+    ];
+    remote.wordContent = content("ngân hàng (đã sửa)", "2026-10-21T00:00:00.000Z");
+
+    await engine.syncNow();
+    expect((await db.word_senses.get(SENSE_A))?.meaning_vi).toBe("ngân hàng (đã sửa)");
+    expect(remote.fetchedSenses).toEqual([[SENSE_A]]);
+
+    // Lần sau không có gì mới thì không tải lại.
+    await engine.syncNow();
+    expect(remote.fetchedSenses).toHaveLength(1);
   });
 });

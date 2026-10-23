@@ -283,6 +283,7 @@ export type Database = {
       };
       curated_list_items: {
         Row: {
+          accepted: boolean;
           admin_note: string | null;
           context_sentence: string | null;
           created_at: string;
@@ -295,6 +296,7 @@ export type Database = {
           warnings: NonNullable<Json>;
         };
         Insert: {
+          accepted?: boolean;
           admin_note?: string | null;
           context_sentence?: string | null;
           created_at?: string;
@@ -307,6 +309,7 @@ export type Database = {
           warnings?: NonNullable<Json>;
         };
         Update: {
+          accepted?: boolean;
           admin_note?: string | null;
           context_sentence?: string | null;
           created_at?: string;
@@ -331,6 +334,92 @@ export type Database = {
             columns: ["sense_id"];
             isOneToOne: false;
             referencedRelation: "word_senses";
+            referencedColumns: ["id"];
+          },
+        ];
+      };
+      curated_list_release_items: {
+        Row: {
+          admin_note: string | null;
+          context_sentence: string | null;
+          item_order: number;
+          list_id: string;
+          sense_id: string;
+          subtopic: string | null;
+          version: number;
+          warnings: NonNullable<Json>;
+        };
+        Insert: {
+          admin_note?: string | null;
+          context_sentence?: string | null;
+          item_order: number;
+          list_id: string;
+          sense_id: string;
+          subtopic?: string | null;
+          version: number;
+          warnings?: NonNullable<Json>;
+        };
+        Update: {
+          admin_note?: string | null;
+          context_sentence?: string | null;
+          item_order?: number;
+          list_id?: string;
+          sense_id?: string;
+          subtopic?: string | null;
+          version?: number;
+          warnings?: NonNullable<Json>;
+        };
+        Relationships: [
+          {
+            foreignKeyName: "curated_list_release_items_list_id_version_fkey";
+            columns: ["list_id", "version"];
+            isOneToOne: false;
+            referencedRelation: "curated_list_releases";
+            referencedColumns: ["list_id", "version"];
+          },
+          {
+            foreignKeyName: "curated_list_release_items_sense_id_fkey";
+            columns: ["sense_id"];
+            isOneToOne: false;
+            referencedRelation: "word_senses";
+            referencedColumns: ["id"];
+          },
+        ];
+      };
+      curated_list_releases: {
+        Row: {
+          added_sense_ids: string[];
+          list_id: string;
+          published_at: string;
+          published_by: string | null;
+          removed_sense_ids: string[];
+          version: number;
+          word_count: number;
+        };
+        Insert: {
+          added_sense_ids?: string[];
+          list_id: string;
+          published_at?: string;
+          published_by?: string | null;
+          removed_sense_ids?: string[];
+          version: number;
+          word_count: number;
+        };
+        Update: {
+          added_sense_ids?: string[];
+          list_id?: string;
+          published_at?: string;
+          published_by?: string | null;
+          removed_sense_ids?: string[];
+          version?: number;
+          word_count?: number;
+        };
+        Relationships: [
+          {
+            foreignKeyName: "curated_list_releases_list_id_fkey";
+            columns: ["list_id"];
+            isOneToOne: false;
+            referencedRelation: "curated_lists";
             referencedColumns: ["id"];
           },
         ];
@@ -1159,6 +1248,7 @@ export type Database = {
           audio_uk_url: string | null;
           audio_us_url: string | null;
           cefr: string | null;
+          content_updated_at: string | null;
           created_at: string;
           details: NonNullable<Json>;
           forms: NonNullable<Json>;
@@ -1181,6 +1271,7 @@ export type Database = {
           audio_uk_url?: string | null;
           audio_us_url?: string | null;
           cefr?: string | null;
+          content_updated_at?: string | null;
           created_at?: string;
           details?: NonNullable<Json>;
           forms?: NonNullable<Json>;
@@ -1203,6 +1294,7 @@ export type Database = {
           audio_uk_url?: string | null;
           audio_us_url?: string | null;
           cefr?: string | null;
+          content_updated_at?: string | null;
           created_at?: string;
           details?: NonNullable<Json>;
           forms?: NonNullable<Json>;
@@ -1237,6 +1329,11 @@ export type Database = {
         };
         Returns: undefined;
       };
+      admin_accept_list_items: {
+        Args: { p_accepted: boolean; p_item_ids: string[]; p_list_id: string };
+        Returns: number;
+      };
+      admin_discard_list_draft: { Args: { p_list_id: string }; Returns: undefined };
       admin_list_overview: {
         Args: Record<PropertyKey, never>;
         Returns: {
@@ -1256,6 +1353,25 @@ export type Database = {
           updated_at: string;
           version: number;
         }[];
+      };
+      admin_list_stats: { Args: { p_list_id: string }; Returns: Json };
+      admin_open_list_draft: { Args: { p_list_id: string }; Returns: undefined };
+      admin_publish_list: { Args: { p_list_id: string }; Returns: number };
+      admin_remove_list_item: {
+        Args: { p_item_id: string; p_list_id: string };
+        Returns: undefined;
+      };
+      admin_reorder_list_items: {
+        Args: { p_item_ids: string[]; p_list_id: string };
+        Returns: undefined;
+      };
+      admin_save_word: {
+        Args: { p_details: Json; p_senses: Json; p_word: Json; p_word_id: string };
+        Returns: undefined;
+      };
+      admin_set_item_sense: {
+        Args: { p_item_id: string; p_list_id: string; p_sense_id: string };
+        Returns: undefined;
       };
       claim_due_reminders: {
         Args: { p_now?: string };

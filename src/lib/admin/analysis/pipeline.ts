@@ -77,6 +77,17 @@ export const CONTENT_POLL_SECONDS = 10;
 export const DOCUMENT_PARALLEL = 6;
 export const TRIAGE_PARALLEL = 3;
 export const SENSE_PARALLEL = 5;
+/**
+ * Số lượt gọi LLM tối đa trong một lượt worker. Edge Function còn giới hạn ~2 giây CPU mỗi lượt
+ * (gọi SDK, kiểm tra schema tốn CPU): đo với 500 từ, ~20 lượt chia chủ đề con liền nhau bị dừng
+ * "CPU Time exceeded" và làm lại mãi. Hết lượt thì lưu tiến độ, lượt worker mới làm tiếp.
+ */
+export const MAX_LLM_CALLS_PER_RUN = 4;
+/**
+ * Mỗi lượt worker chỉ chạy ngần này phần việc (rồi gọi lượt mới) để CPU mỗi lượt luôn nhỏ:
+ * đo trên cloud, lượt chạy liền nhiều bước với 500 từ dùng 3–47 giây CPU và bị dừng.
+ */
+export const MAX_STEPS_PER_RUN = 1;
 /** Số từ xếp việc tạo nội dung mỗi lần gọi database. */
 export const ENQUEUE_BATCH = 200;
 
@@ -144,6 +155,8 @@ type Ctx = {
   now: () => number;
   deadline: number;
   usage: Usage;
+  /** Số lượt gọi LLM đã dùng trong lượt worker này (dùng chung giữa các bước). */
+  calls: { count: number };
 };
 
 type StepResult =
@@ -159,6 +172,12 @@ type StepResult =
 
 function hasTime(ctx: Ctx, ms: number): boolean {
   return ctx.deadline - ctx.now() >= ms;
+}
+
+/** Còn được gọi bao nhiêu lượt LLM (tối đa `wanted`) trong lượt worker này. */
+function llmSlots(ctx: Ctx, wanted: number): number {
+  if (!hasTime(ctx, LLM_MIN_REMAINING_MS)) return 0;
+  return Math.max(0, Math.min(wanted, MAX_LLM_CALLS_PER_RUN - ctx.calls.count));
 }
 
 function chunks<T>(items: readonly T[], size: number): T[][] {
@@ -180,6 +199,7 @@ async function callLlm<T>(
   schema: z.ZodType<T>,
 ): Promise<T> {
   const { system, prompt } = build(ctx.deps.templates[task]);
+  ctx.calls.count += 1;
   const result = await ctx.deps.llm.generateJSON(task, { system, prompt, schema });
   addUsage(ctx.usage, {
     inputTokens: result.usage.inputTokens ?? 0,
@@ -232,7 +252,10 @@ async function extract(ctx: Ctx): Promise<StepResult> {
       state: state({ source: cursor.source + 1, chunk: 0, position: cursor.position }),
     };
   }
-  const batch = parts.slice(cursor.chunk, cursor.chunk + DOCUMENT_PARALLEL);
+  const batch = parts.slice(
+    cursor.chunk,
+    cursor.chunk + Math.max(1, llmSlots(ctx, DOCUMENT_PARALLEL)),
+  );
   const results = await Promise.all(
     batch.map((text) =>
       callLlm(
@@ -295,7 +318,10 @@ async function normalize(ctx: Ctx): Promise<StepResult> {
   // 2b. Từ chưa có trong kho: LLM xem trước chính tả, CEFR, độ hiếm (theo lô).
   const pending = rows.filter((c) => c.stage === "merged" && isKept(c));
   if (pending.length > 0) {
-    const batches = chunks(pending, TRIAGE_BATCH).slice(0, TRIAGE_PARALLEL);
+    const batches = chunks(pending, TRIAGE_BATCH).slice(
+      0,
+      Math.max(1, llmSlots(ctx, TRIAGE_PARALLEL)),
+    );
     const results = await Promise.all(
       batches.map((batch) =>
         callLlm(
@@ -367,8 +393,9 @@ async function pickSenses(ctx: Ctx, todo: readonly Candidate[]): Promise<Candida
     else changed.push({ ...c, dropped: "content_failed" });
   }
 
-  if (llmQueue.length > 0 && hasTime(ctx, LLM_MIN_REMAINING_MS)) {
-    const batches = chunks(llmQueue, SENSE_BATCH).slice(0, SENSE_PARALLEL);
+  const slots = llmSlots(ctx, SENSE_PARALLEL);
+  if (llmQueue.length > 0 && slots > 0) {
+    const batches = chunks(llmQueue, SENSE_BATCH).slice(0, slots);
     const results = await Promise.all(
       batches.map((batch) =>
         callLlm(
@@ -500,39 +527,54 @@ async function order(ctx: Ctx): Promise<StepResult> {
   if (fromTags) {
     topics = fromTags;
   } else if (kept.length >= MIN_ITEMS_FOR_SUBTOPICS) {
-    const words = new Map(
-      (await deps.store.getWords(kept.map((c) => c.wordId!))).map((w) => [w.id, w]),
-    );
-    const meaningOf = (c: Candidate) =>
-      words.get(c.wordId!)?.senses.find((s) => s.id === c.senseId)?.meaningVi ?? "";
-    const groupCount = subtopicCount(kept.length);
-    const existing: string[] = [];
-    for (const batch of chunks(kept, SUBTOPIC_BATCH)) {
-      // Lô sau lần lượt (cần tên chủ đề của lô trước); hết giờ thì để lượt sau làm lại cả bước.
-      if (!hasTime(ctx, LLM_MIN_REMAINING_MS)) {
-        return { step: "order", done: 0, total: kept.length };
-      }
-      const result = await callLlm(
-        ctx,
-        "list-subtopics",
-        (template) =>
-          buildSubtopicsPrompt(template, {
-            title: job.list.title,
-            topic: job.list.topic,
-            groupCount: Math.max(2, Math.round((groupCount * batch.length) / kept.length)),
-            existing,
-            items: batch.map((c, i) => ({ i, w: c.lemma ?? c.surface, m: meaningOf(c) })),
-          }),
-        SubtopicsSchema,
+    // Lô sau lần lượt (cần tên chủ đề của lô trước). Tiến độ lưu sau mỗi lượt worker
+    // (state.order) để lượt mới làm tiếp, không làm lại từ đầu.
+    const batches = chunks(kept, SUBTOPIC_BATCH);
+    const progress = job.state.order ?? { next: 0, topics: {}, existing: [] };
+    const found: Record<string, string> = { ...progress.topics };
+    const existing = [...progress.existing];
+    let next = progress.next;
+    if (next < batches.length) {
+      const words = new Map(
+        (await deps.store.getWords(kept.map((c) => c.wordId!))).map((w) => [w.id, w]),
       );
-      for (const [id, topic] of subtopicsFromLlm(
-        batch.map((c) => c.id),
-        result,
-      )) {
-        topics.set(id, topic);
-        if (!existing.includes(topic)) existing.push(topic);
+      const meaningOf = (c: Candidate) =>
+        words.get(c.wordId!)?.senses.find((s) => s.id === c.senseId)?.meaningVi ?? "";
+      const groupCount = subtopicCount(kept.length);
+      while (next < batches.length && llmSlots(ctx, 1) > 0) {
+        const batch = batches[next]!;
+        const result = await callLlm(
+          ctx,
+          "list-subtopics",
+          (template) =>
+            buildSubtopicsPrompt(template, {
+              title: job.list.title,
+              topic: job.list.topic,
+              groupCount: Math.max(2, Math.round((groupCount * batch.length) / kept.length)),
+              existing,
+              items: batch.map((c, i) => ({ i, w: c.lemma ?? c.surface, m: meaningOf(c) })),
+            }),
+          SubtopicsSchema,
+        );
+        for (const [id, topic] of subtopicsFromLlm(
+          batch.map((c) => c.id),
+          result,
+        )) {
+          found[id] = topic;
+          if (!existing.includes(topic)) existing.push(topic);
+        }
+        next += 1;
+      }
+      if (next < batches.length) {
+        return {
+          step: "order",
+          done: next,
+          total: batches.length,
+          state: { ...job.state, order: { next, topics: found, existing } },
+        };
       }
     }
+    topics = new Map(Object.entries(found));
   }
 
   const words = new Map(
@@ -613,6 +655,8 @@ export async function advanceJob(
   let current: AnalysisJob = job.state.startedAt
     ? job
     : { ...job, state: { ...job.state, startedAt: new Date(now()).toISOString() } };
+  const calls = { count: 0 };
+  let steps = 0;
 
   for (;;) {
     const ctx: Ctx = {
@@ -621,9 +665,11 @@ export async function advanceJob(
       now,
       deadline,
       usage: { inputTokens: 0, outputTokens: 0, costUsd: 0 },
+      calls,
     };
-    const need = LLM_STEPS.has(current.step) ? LLM_MIN_REMAINING_MS : PLAIN_MIN_REMAINING_MS;
-    if (!hasTime(ctx, need)) {
+    const llmStep = LLM_STEPS.has(current.step);
+    const need = llmStep ? LLM_MIN_REMAINING_MS : PLAIN_MIN_REMAINING_MS;
+    if (!hasTime(ctx, need) || (llmStep && calls.count >= MAX_LLM_CALLS_PER_RUN)) {
       await deps.store.saveJob(current.id, {
         step: current.step,
         done: current.done,
@@ -633,9 +679,16 @@ export async function advanceJob(
       return "continue";
     }
 
+    const started = now();
     const result = await STEPS[current.step](ctx);
+    console.info(
+      `analyze-list ${current.id}: ${current.step} → ${result.finished ? "xong" : result.step}` +
+        ` (${now() - started} ms, ${calls.count} lượt LLM)`,
+    );
     if (result.finished) return "finished";
 
+    steps += 1;
+    const more = !result.wait && steps < MAX_STEPS_PER_RUN;
     const state = result.state ?? current.state;
     await deps.store.saveJob(current.id, {
       step: result.step,
@@ -643,9 +696,10 @@ export async function advanceJob(
       total: result.total,
       state,
       usage: ctx.usage,
-      ...(result.wait ? { waitSeconds: CONTENT_POLL_SECONDS } : { keepLock: true }),
+      ...(result.wait ? { waitSeconds: CONTENT_POLL_SECONDS } : more ? { keepLock: true } : {}),
     });
     if (result.wait) return "wait";
+    if (!more) return "continue";
     current = { ...current, step: result.step, done: result.done, total: result.total, state };
   }
 }

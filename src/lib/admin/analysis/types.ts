@@ -91,6 +91,8 @@ export type AnalysisStep = "extract" | "normalize" | "sense" | "content" | "orde
 export type JobState = {
   /** Bước trích xuất: nguồn đang làm (theo thứ tự tạo) và số đoạn bài đọc đã xong. */
   extract?: { source: number; chunk: number; position: number };
+  /** Bước sắp xếp: số lô chia chủ đề con đã xong, chủ đề theo id dòng, tên chủ đề đã có. */
+  order?: { next: number; topics: Record<string, string>; existing: string[] };
   /** Lúc bắt đầu chạy (tính thời gian trong tóm tắt). */
   startedAt?: string;
   summary?: AnalysisSummary;

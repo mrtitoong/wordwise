@@ -24,6 +24,7 @@
     "ocr:accuracy": "tsx --env-file-if-exists=.env.local scripts/ocr-accuracy.ts",
     "pronunciation:smoke": "tsx --env-file-if-exists=.env.local scripts/pronunciation-smoke.ts",
     "srs:simulate": "tsx scripts/simulate-srs.ts",
+    "srs:retention-table": "tsx scripts/build-retention-table.ts",
     "stats:sql": "tsx scripts/build-stats-test.ts",
     "stats:perf": "tsx scripts/stats-perf.ts"
   },
@@ -51,6 +52,7 @@
     "tailwind-merge": "3.7.0",
     "ts-fsrs": "5.4.2",
     "uuid": "14.0.2",
+    "web-push": "3.6.7",
     "wink-lemmatizer": "3.0.4",
     "zod": "4.6.5"
   },
@@ -61,6 +63,7 @@
     "@types/papaparse": "5.5.2",
     "@types/react": "19.3.0",
     "@types/react-dom": "19.3.0",
+    "@types/web-push": "3.6.4",
     "esbuild": "0.28.2",
     "eslint": "9.39.5",
     "eslint-config-next": "16.3.8",

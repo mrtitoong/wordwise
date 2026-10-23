@@ -122,6 +122,8 @@ test.describe("Tập phát âm", () => {
         await expect(page.getByText("Điểm do máy chấm, chỉ mang tính tham khảo.")).toBeVisible();
       }
       await page.getByRole("button", { name: "Tiếp", exact: true }).click();
+      // Câu cũ còn hiện trong lúc lưu lượt ôn: chờ nó đi rồi mới xem câu sau hay màn kết quả.
+      await expect(score).toBeHidden();
     }
     await expect(done).toBeVisible();
 

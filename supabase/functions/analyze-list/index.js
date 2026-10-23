@@ -1123,7 +1123,7 @@ function buildSensePickerPrompt(template, items) {
     prompt: renderTemplate(template.user, vars)
   };
 }
-var SUBTOPIC_BATCH = 300;
+var SUBTOPIC_BATCH = 100;
 var SubtopicsSchema = z3.object({
   topics: z3.array(z3.string().trim().min(1).max(60)).min(1).max(30),
   items: z3.array(z3.object({ i: z3.number().int().min(0), t: z3.number().int().min(0) }))
@@ -1737,7 +1737,7 @@ var CONTENT_POLL_SECONDS = 10;
 var DOCUMENT_PARALLEL = 6;
 var TRIAGE_PARALLEL = 3;
 var SENSE_PARALLEL = 5;
-var MAX_LLM_CALLS_PER_RUN = 4;
+var MAX_LLM_CALLS_PER_RUN = 2;
 var MAX_STEPS_PER_RUN = 1;
 var ENQUEUE_BATCH = 200;
 function hasTime(ctx, ms) {

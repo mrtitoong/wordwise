@@ -152,7 +152,8 @@ export function buildSensePickerPrompt(
 
 /* ---------- list-subtopics ---------- */
 
-export const SUBTOPIC_BATCH = 300;
+/** Từ mỗi lượt chia chủ đề (300 từ một lượt vượt giới hạn CPU của Edge Function). */
+export const SUBTOPIC_BATCH = 100;
 
 export const SubtopicsSchema = z.object({
   topics: z.array(z.string().trim().min(1).max(60)).min(1).max(30),

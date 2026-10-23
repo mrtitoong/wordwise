@@ -79,10 +79,11 @@ export const TRIAGE_PARALLEL = 3;
 export const SENSE_PARALLEL = 5;
 /**
  * Số lượt gọi LLM tối đa trong một lượt worker. Edge Function còn giới hạn ~2 giây CPU mỗi lượt
- * (gọi SDK, kiểm tra schema tốn CPU): đo với 500 từ, ~20 lượt chia chủ đề con liền nhau bị dừng
- * "CPU Time exceeded" và làm lại mãi. Hết lượt thì lưu tiến độ, lượt worker mới làm tiếp.
+ * và CPU tăng theo độ dài câu trả lời: đo trên cloud, một lượt chia chủ đề 300 từ (~7.400 token
+ * đầu ra) đã dùng ~3,3 giây CPU, bị dừng "CPU Time exceeded" và làm lại mãi. Hết lượt thì lưu
+ * tiến độ, lượt worker mới làm tiếp.
  */
-export const MAX_LLM_CALLS_PER_RUN = 4;
+export const MAX_LLM_CALLS_PER_RUN = 2;
 /**
  * Mỗi lượt worker chỉ chạy ngần này phần việc (rồi gọi lượt mới) để CPU mỗi lượt luôn nhỏ:
  * đo trên cloud, lượt chạy liền nhiều bước với 500 từ dùng 3–47 giây CPU và bị dừng.

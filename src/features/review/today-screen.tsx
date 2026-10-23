@@ -7,7 +7,7 @@ import { Flame, Play, Sparkles, Timer } from "lucide-react";
 import { useTranslations } from "next-intl";
 import { EmptyState } from "@/components/empty-state";
 import { Button } from "@/components/ui/button";
-import { localDay } from "@/lib/notebooks/introductions";
+import { studyDay } from "@/lib/review/day";
 import { canResume } from "@/lib/review/session";
 import { computeStreak } from "@/lib/review/streak";
 import { planToday } from "@/lib/review/today";
@@ -55,7 +55,7 @@ export function TodayScreen() {
       })
       .filter((w, i, all) => all.findIndex((x) => x.wordId === w.wordId) === i)
       .slice(0, 3);
-    const day = localDay(now, data.settings.timezone);
+    const day = studyDay(now, data.settings.timezone);
     return {
       plan,
       tomorrowReviews: tomorrow.reviews,

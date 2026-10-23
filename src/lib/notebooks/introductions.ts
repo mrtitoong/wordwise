@@ -1,24 +1,9 @@
 /**
  * Mở dần từ ở hàng "Sắp học" theo số từ mới mỗi ngày (user_settings.daily_new_limit).
- * Ngày tính theo múi giờ của người dùng. Hàm thuần; repo ghi kết quả.
+ * Ngày học theo múi giờ của người dùng (bắt đầu lúc 4:00). Hàm thuần; repo ghi kết quả.
  */
 import type { UserWordRow } from "@/lib/db/types";
-
-/** Ngày (YYYY-MM-DD) của một thời điểm theo múi giờ; múi giờ sai thì dùng giờ Việt Nam. */
-export function localDay(date: Date, timeZone: string): string {
-  const format = (tz: string) =>
-    new Intl.DateTimeFormat("en-CA", {
-      timeZone: tz,
-      year: "numeric",
-      month: "2-digit",
-      day: "2-digit",
-    }).format(date);
-  try {
-    return format(timeZone);
-  } catch {
-    return format("Asia/Ho_Chi_Minh");
-  }
-}
+import { studyDay } from "@/lib/review/day";
 
 type UserWordLike = Pick<
   UserWordRow,
@@ -31,12 +16,12 @@ export function introducedToday(
   now: Date,
   timeZone: string,
 ): number {
-  const today = localDay(now, timeZone);
+  const today = studyDay(now, timeZone);
   return userWords.filter(
     (uw) =>
       !uw.deleted_at &&
       uw.introduced_at &&
-      localDay(new Date(uw.introduced_at), timeZone) === today,
+      studyDay(new Date(uw.introduced_at), timeZone) === today,
   ).length;
 }
 

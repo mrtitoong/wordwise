@@ -3,7 +3,7 @@
  * lần mở sau chạy tiếp; hết lượt từ mới trong ngày thì chờ tới ngày hôm sau (giờ Việt Nam).
  * Hàm thuần; phần chạy ở src/features/import/import-runner.ts.
  */
-import { localDay } from "@/lib/notebooks/introductions";
+import { localDay } from "@/lib/review/day";
 
 export type ImportItemState =
   /** Chưa xử lý. */

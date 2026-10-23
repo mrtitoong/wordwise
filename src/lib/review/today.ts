@@ -4,7 +4,7 @@
  */
 import type { FSRS } from "ts-fsrs";
 import type { CardRow, NotebookEntryRow, ReviewLogRow, UserWordRow } from "@/lib/db/types";
-import { localDay } from "@/lib/notebooks/introductions";
+import { studyDay } from "@/lib/review/day";
 import { medianResponseMs } from "@/lib/srs/grade";
 import {
   buildSession,
@@ -75,10 +75,10 @@ export function queueCards(input: TodayInput): QueueCard[] {
 }
 
 export function sessionSettings(input: TodayInput, now: Date): SessionSettings {
-  const today = localDay(now, input.settings.timeZone);
+  const today = studyDay(now, input.settings.timeZone);
   const scheduling = input.logs.filter((l) => !l.is_extra);
   const todays = scheduling.filter(
-    (l) => localDay(new Date(l.reviewed_at), input.settings.timeZone) === today,
+    (l) => studyDay(new Date(l.reviewed_at), input.settings.timeZone) === today,
   );
   // Từ mới = lượt đầu của thẻ Nghĩa (lượt đầu của thẻ Chính tả là lượt ôn, không phải từ mới).
   const meaningIds = new Set(input.cards.filter((c) => c.skill === "meaning").map((c) => c.id));

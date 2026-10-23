@@ -11,7 +11,7 @@ import { getLocalDb } from "@/lib/db/local";
 import { ensureSkillCards, openExtraWords, recordReview, weightsOf } from "@/lib/db/repo";
 import { clearSession, markSessionFinished, saveSession } from "@/lib/db/review-store";
 import type { Voice } from "@/lib/media/tts-azure";
-import { localDay } from "@/lib/notebooks/introductions";
+import { studyDay } from "@/lib/review/day";
 import { buildMcq, type ChoiceSense, type Mcq } from "@/lib/review/mcq";
 import {
   canResume,
@@ -244,7 +244,7 @@ export function SessionScreen({ options }: { options: SessionOptions }) {
         preferred: preferredVoice(fresh.settings),
         multi: fresh.settings.multi_accent ?? false,
       };
-      const day = localDay(now, fresh.settings.timezone);
+      const day = studyDay(now, fresh.settings.timezone);
       const learning = fresh.userWords.filter((u) => !u.deleted_at && u.status === "learning");
       const known = await readLocalWords(
         db,

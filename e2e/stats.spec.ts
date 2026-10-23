@@ -33,7 +33,10 @@ test.describe("Thống kê", () => {
     const heatmap = page.getByRole("group", { name: "Phút học mỗi ngày" });
     await expect(heatmap).toBeVisible();
     await heatmap.locator("rect[data-day]").last().click();
-    await expect(page.getByText(/^\d+\/\d+: (\d+ phút|chưa học)$/)).toBeVisible();
+    // Dòng trạng thái dưới heatmap (mỗi ô còn có <title> ẩn cùng nội dung).
+    await expect(
+      page.locator("p[role=status]").filter({ hasText: /^\d+\/\d+: (\d+ phút|chưa học)$/ }),
+    ).toBeVisible();
 
     await expect(page.getByRole("heading", { name: "Số từ theo trạng thái" })).toBeVisible();
     await expect(page.getByRole("heading", { name: "Dự báo số thẻ ôn 30 ngày tới" })).toBeVisible();

@@ -175,7 +175,9 @@ test.describe("Đăng nhập bằng email (Supabase cục bộ)", () => {
     // Admin mẫu chưa onboarding nên được đưa vào onboarding trước; /admin vẫn mở được.
     await adminPage.waitForURL(/\/(onboarding|admin)$/);
     await adminPage.goto("/admin");
-    await expect(adminPage.getByRole("heading", { level: 1, name: "Quản trị" })).toBeVisible();
+    await expect(
+      adminPage.getByRole("heading", { level: 1, name: "Danh sách có chủ đích" }),
+    ).toBeVisible();
     await adminContext.close();
   });
 });

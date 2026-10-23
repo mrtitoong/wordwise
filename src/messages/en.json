@@ -314,7 +314,152 @@
     }
   },
   "admin": {
-    "title": "Admin"
+    "title": "Admin",
+    "nav": {
+      "label": "Admin area",
+      "lists": "Lists",
+      "newList": "New list",
+      "reports": "Content reports",
+      "soon": "coming soon",
+      "backToApp": "Back to app"
+    },
+    "status": {
+      "draft": "Draft",
+      "processing": "Processing",
+      "review": "In review",
+      "published": "Published",
+      "all": "All"
+    },
+    "lists": {
+      "title": "Curated lists",
+      "create": "New list",
+      "empty": "No lists yet.",
+      "emptyAction": "Create the first list",
+      "filter": "Filter by status",
+      "colTitle": "Title",
+      "colStatus": "Status",
+      "colItems": "Words",
+      "colLearners": "Learners",
+      "colUpdated": "Updated",
+      "colVersion": "Version",
+      "step": "Step {step}/6",
+      "failedStep": "Failed at step {step}/6"
+    },
+    "form": {
+      "newTitle": "New list",
+      "editTitle": "List details",
+      "title": "Title",
+      "titlePlaceholder": "e.g. IELTS – Environment",
+      "language": "Language",
+      "languages": {
+        "en": "English"
+      },
+      "cefr": "Target level",
+      "none": "None",
+      "topic": "Topic",
+      "topicPlaceholder": "e.g. Environment",
+      "purpose": "Purpose",
+      "purposes": {
+        "ielts": "IELTS",
+        "toeic": "TOEIC",
+        "toefl": "TOEFL",
+        "communication": "Everyday talk",
+        "work": "Work",
+        "academic": "Academic",
+        "school": "School",
+        "other": "Other"
+      },
+      "description": "Description",
+      "days": "Suggested days",
+      "daysHint": "Learners get this as the default deadline (1–730 days).",
+      "cover": "Cover image",
+      "coverChoose": "Choose image",
+      "coverRemove": "Remove image",
+      "coverFailed": "Couldn't upload the cover. Try another JPG/PNG.",
+      "create": "Create list",
+      "save": "Save changes",
+      "saving": "Saving…",
+      "saved": "Saved",
+      "invalid": "Please check the fields.",
+      "failed": "Couldn't save. Try again."
+    },
+    "sources": {
+      "title": "Word sources",
+      "hint": "Add one or more sources, then press Analyze. Duplicates are merged.",
+      "empty": "No sources yet.",
+      "tabs": {
+        "table": "CSV/Excel",
+        "lines": "Paste text",
+        "document": "Reading/test"
+      },
+      "kind": {
+        "rows": "Table",
+        "lines": "Pasted",
+        "document": "Reading"
+      },
+      "items": "{count} words",
+      "chars": "{count} characters",
+      "delete": "Delete source {name}",
+      "locked": "Analyzing: sources can't change now.",
+      "file": "Choose a CSV or Excel file",
+      "sheet": "Sheet",
+      "hasHeader": "First row is a header",
+      "mapping": "Columns",
+      "fields": {
+        "word": "Word",
+        "meaning": "Meaning",
+        "example": "Example",
+        "note": "Note",
+        "tags": "Tags"
+      },
+      "skip": "Skip",
+      "needWord": "Pick the Word column.",
+      "valid": "{valid} valid words ({skipped} rows skipped).",
+      "preview": "Preview",
+      "pastePlaceholder": "One word per line, optionally with a meaning: climate - khí hậu",
+      "pasteCount": "{count} words",
+      "truncated": "Only the first {max} lines are used.",
+      "document": "Choose a PDF, image or text file",
+      "documentHint": "PDFs with text are read in the browser; scans and photos are read by AI (~$0.01/page). Up to 30 pages.",
+      "reading": "Reading page {done}/{total}…",
+      "readDone": "Read {chars} characters from {pages} pages ({ocr} read by AI).",
+      "readTruncated": "Longer than 30 pages: only the first 30 were read.",
+      "readErrors": {
+        "unsupported": "This file type can't be read.",
+        "ocr_failed": "Reading text from the image failed. Try again or use a clearer image.",
+        "empty": "No text found in the file."
+      },
+      "add": "Add source",
+      "adding": "Adding…",
+      "failed": "Couldn't add the source. Try again."
+    },
+    "analysis": {
+      "title": "Analysis",
+      "minCefr": "Only words from level",
+      "minCefrHint": "For readings: skips words easier than this level.",
+      "all": "Any level",
+      "start": "Analyze",
+      "starting": "Starting…",
+      "noSources": "Add at least one word source first.",
+      "busy": "This list is already being analyzed.",
+      "failed": "Couldn't start. Try again.",
+      "steps": {
+        "extract": "Extract",
+        "normalize": "Normalize",
+        "sense": "Pick senses",
+        "content": "Content",
+        "order": "Order",
+        "warn": "Warnings"
+      },
+      "queued": "Waiting in the queue…",
+      "running": "Running: {step}",
+      "progress": "{done}/{total} words",
+      "cost": "AI cost: ~${cost} ({tokens} tokens)",
+      "failedAt": "Failed at step: {step}",
+      "retry": "Retry from the failed step",
+      "done": "Analysis finished. The list is ready for review.",
+      "leave": "You can leave this page; it keeps running."
+    }
   },
   "sync": {
     "local": "Data is saved on this device",

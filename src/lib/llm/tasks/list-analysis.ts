@@ -66,7 +66,7 @@ export function buildListAnalyzerPrompt(
 
 /* ---------- list-triage ---------- */
 
-export const TRIAGE_BATCH = 100;
+export const TRIAGE_BATCH = 50;
 
 export const TriageSchema = z.object({
   items: z.array(
@@ -152,7 +152,8 @@ export function buildSensePickerPrompt(
 
 /* ---------- list-subtopics ---------- */
 
-export const SUBTOPIC_BATCH = 300;
+/** Từ mỗi lượt chia chủ đề: lô nhỏ để mỗi lượt worker ít CPU (300 từ/lượt từng bị dừng). */
+export const SUBTOPIC_BATCH = 50;
 
 export const SubtopicsSchema = z.object({
   topics: z.array(z.string().trim().min(1).max(60)).min(1).max(30),

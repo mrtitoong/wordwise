@@ -462,7 +462,9 @@ describe("pipeline phân tích danh sách", () => {
     const { llm, calls } = fakeLlm(clock, ANSWERS, ["sense-picker"]);
     const d = deps(db.store, llm, clock);
 
-    const first = await runListWorker(d);
+    // Mỗi lượt chạy một bước: chạy tới lượt gặp lỗi.
+    let first = await runListWorker(d);
+    while (first.runs[0]?.outcome === "continue") first = await runListWorker(d);
     expect(first.runs[0]!.outcome).toBe("retry");
     expect(db.job).toMatchObject({ step: "sense", attempts: 1, status: "running" });
     expect(db.job.errors[0]).toContain("sense-picker quá tải");
@@ -509,9 +511,9 @@ describe("pipeline phân tích danh sách", () => {
 
     expect(db.job.status).toBe("succeeded");
     expect(db.items).toHaveLength(260);
-    // 60 từ mới → 1 lô xem trước; 260 từ → 1 lượt chia chủ đề (≤ 300 từ/lượt).
-    expect(calls.filter((t) => t === "list-triage")).toHaveLength(1);
-    expect(calls.filter((t) => t === "list-subtopics")).toHaveLength(1);
+    // 60 từ mới → 2 lô xem trước (50 từ/lô); 260 từ → 6 lượt chia chủ đề (50 từ/lượt).
+    expect(calls.filter((t) => t === "list-triage")).toHaveLength(2);
+    expect(calls.filter((t) => t === "list-subtopics")).toHaveLength(6);
     const subtopics = new Set([...db.candidates.values()].map((c) => c.subtopic));
     expect(subtopics).toEqual(new Set(["A", "B"]));
     // Cùng chủ đề con đứng liền nhau.
@@ -519,6 +521,24 @@ describe("pipeline phân tích danh sách", () => {
       .sort((a, b) => a.itemOrder! - b.itemOrder!)
       .map((c) => c.subtopic);
     expect(order.indexOf("B")).toBe(order.lastIndexOf("A") + 1);
+  });
+
+  it("chia chủ đề con nhiều lô: lưu tiến độ, lượt sau làm tiếp, không gọi lại lô đã xong", async () => {
+    const clock = { now: 0 };
+    // 500 từ có sẵn trong kho → 10 lô chia chủ đề (50 từ/lô), mỗi lượt worker 1 lượt LLM.
+    const words = Array.from({ length: 500 }, (_, i) => `term${i.toString(36)}q`);
+    const library = words.map((w, i) => libWord(w, "noun", { frequencyRank: 1000 + i }));
+    const db = fakeStore({
+      clock,
+      sources: [{ id: "s", kind: "lines", rows: words.map((word) => ({ word, note: null })) }],
+      library,
+    });
+    const { llm, calls } = fakeLlm(clock, ANSWERS);
+    await runUntilDone(deps(db.store, llm, clock), db.job, clock);
+
+    expect(db.job.status).toBe("succeeded");
+    expect(calls.filter((t) => t === "list-subtopics")).toHaveLength(10);
+    expect([...db.candidates.values()].every((c) => c.subtopic !== null)).toBe(true);
   });
 
   it("hết giờ giữa chừng → trả việc, báo cần lượt mới", async () => {

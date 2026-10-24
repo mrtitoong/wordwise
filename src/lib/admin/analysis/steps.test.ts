@@ -422,6 +422,26 @@ describe("sắp xếp", () => {
     const short = separateConfusables(rows.slice(0, 4), words);
     expect(short.map((c) => c.lemma).at(-1)).toBe("effect");
   });
+
+  it("hai từ cùng nhầm với một từ phía trước không lặp vô hạn", () => {
+    // Lỗi trên cloud: artwork và artificial cùng nhầm với art, đổi chỗ nhau mãi.
+    const rows = Array.from({ length: 30 }, (_, i) =>
+      cand(`w${i}`, { lemma: `w${i}`, wordId: `id${i}` }),
+    );
+    rows[0] = cand("art", { lemma: "art", wordId: "id-art" });
+    rows[9] = cand("artwork", { lemma: "artwork", wordId: "id-artwork" });
+    rows[10] = cand("artificial", { lemma: "artificial", wordId: "id-artificial" });
+    const words = new Map([
+      ["id-artwork", word("artwork", { id: "id-artwork", confusables: ["art"] })],
+      ["id-artificial", word("artificial", { id: "id-artificial", confusables: ["art"] })],
+    ]);
+    const out = separateConfusables(rows, words);
+    const at = (lemma: string) => out.findIndex((c) => c.lemma === lemma);
+    expect(out).toHaveLength(30);
+    expect(new Set(out.map((c) => c.id)).size).toBe(30);
+    expect(at("artwork") - at("art")).toBeGreaterThanOrEqual(10);
+    expect(at("artificial") - at("art")).toBeGreaterThanOrEqual(10);
+  });
 });
 
 /* ---------- Cảnh báo ---------- */

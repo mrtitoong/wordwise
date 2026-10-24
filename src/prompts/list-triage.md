@@ -7,7 +7,7 @@ schema: src/lib/llm/tasks/list-analysis.ts (TriageSchema)
 <!--
 Xem trước từ chưa có trong kho của danh sách Admin (Prompt 7.2, bước 2): kiểm tra chính tả, ước
 lượng CEFR và độ hiếm TRƯỚC khi tạo nội dung, để không tốn tiền cho từ bị lọc hoặc gõ sai.
-Mỗi lượt tối đa 100 từ. Biến do buildTriagePrompt() điền. Sửa prompt → tăng version.
+Mỗi lượt tối đa 50 từ. Biến do buildTriagePrompt() điền. Sửa prompt → tăng version.
 -->
 
 === SYSTEM ===

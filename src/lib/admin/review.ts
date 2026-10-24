@@ -96,6 +96,11 @@ export function reviewProgress(items: readonly ReviewItem[]): ReviewProgress {
   };
 }
 
+/** Mục chưa chấp nhận (kể cả có cảnh báo): "Duyệt tất" chấp nhận các mục này trong `items`. */
+export function pendingIds(items: readonly ReviewItem[]): string[] {
+  return items.filter((i) => !i.accepted).map((i) => i.id);
+}
+
 /** Chuyển phần tử ở vị trí `from` sang vị trí `to` (0-based, kẹp trong khoảng hợp lệ). */
 export function moveItem<T>(list: readonly T[], from: number, to: number): T[] {
   if (from < 0 || from >= list.length) return [...list];

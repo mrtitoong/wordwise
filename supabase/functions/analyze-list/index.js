@@ -1556,24 +1556,22 @@ function clusterFamilies(seq, words2) {
   return out;
 }
 function separateConfusables(seq, words2, gap = CONFUSABLE_GAP) {
-  const out = [...seq];
-  const confusablesOf = (c) => new Set((c.wordId ? words2.get(c.wordId)?.confusables ?? [] : []).map((w) => w.toLowerCase()));
-  const conflict = (a, b) => a.lemma !== b.lemma && (confusablesOf(a).has((b.lemma ?? "").toLowerCase()) || confusablesOf(b).has((a.lemma ?? "").toLowerCase()));
-  for (let pass = 0; pass < 5; pass++) {
-    let changed = false;
-    for (let j = 1; j < out.length; j++) {
-      for (let i = Math.max(0, j - gap + 1); i < j; i++) {
-        if (!conflict(out[i], out[j])) continue;
-        const target = Math.min(i + gap, out.length - 1);
-        if (target <= j) break;
-        const [item] = out.splice(j, 1);
-        out.splice(target, 0, item);
-        changed = true;
-        j--;
-        break;
-      }
-    }
-    if (!changed) break;
+  const lemmaOf = (c) => (c.lemma ?? "").toLowerCase();
+  const confusables = new Map(
+    seq.map((c) => [
+      c.id,
+      new Set(
+        (c.wordId ? words2.get(c.wordId)?.confusables ?? [] : []).map((w) => w.toLowerCase())
+      )
+    ])
+  );
+  const conflict = (a, b) => a.lemma !== b.lemma && (confusables.get(a.id).has(lemmaOf(b)) || confusables.get(b.id).has(lemmaOf(a)));
+  const out = [];
+  const rest = [...seq];
+  while (rest.length > 0) {
+    const recent = out.slice(Math.max(0, out.length - gap + 1));
+    const index = rest.findIndex((c) => recent.every((r) => !conflict(r, c)));
+    out.push(...rest.splice(Math.max(0, index), 1));
   }
   return out;
 }

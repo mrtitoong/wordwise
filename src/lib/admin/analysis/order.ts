@@ -75,35 +75,36 @@ function clusterFamilies(seq: Candidate[], words: ReadonlyMap<string, LibraryWor
   return out;
 }
 
-/** Dời từ đứng sau trong cặp dễ nhầm ra xa ít nhất `gap` vị trí (nhiều lượt cho tới khi ổn). */
+/**
+ * Đẩy từ đứng sau trong cặp dễ nhầm ra xa ít nhất `gap` vị trí. Xếp lần lượt: mỗi vị trí lấy từ
+ * đầu tiên (theo thứ tự cũ) không nhầm với `gap - 1` từ vừa xếp; không còn từ nào hợp thì lấy từ
+ * đầu tiên (danh sách quá ngắn để tách xa hơn). Cách cũ dời từng từ ra sau có thể lặp vô hạn khi
+ * hai từ cùng nhầm với một từ phía trước (artwork/artificial đổi chỗ nhau mãi).
+ */
 export function separateConfusables(
   seq: Candidate[],
   words: ReadonlyMap<string, LibraryWord>,
   gap: number = CONFUSABLE_GAP,
 ): Candidate[] {
-  const out = [...seq];
-  const confusablesOf = (c: Candidate) =>
-    new Set((c.wordId ? (words.get(c.wordId)?.confusables ?? []) : []).map((w) => w.toLowerCase()));
+  const lemmaOf = (c: Candidate) => (c.lemma ?? "").toLowerCase();
+  const confusables = new Map(
+    seq.map((c) => [
+      c.id,
+      new Set(
+        (c.wordId ? (words.get(c.wordId)?.confusables ?? []) : []).map((w) => w.toLowerCase()),
+      ),
+    ]),
+  );
   const conflict = (a: Candidate, b: Candidate) =>
     a.lemma !== b.lemma &&
-    (confusablesOf(a).has((b.lemma ?? "").toLowerCase()) ||
-      confusablesOf(b).has((a.lemma ?? "").toLowerCase()));
+    (confusables.get(a.id)!.has(lemmaOf(b)) || confusables.get(b.id)!.has(lemmaOf(a)));
 
-  for (let pass = 0; pass < 5; pass++) {
-    let changed = false;
-    for (let j = 1; j < out.length; j++) {
-      for (let i = Math.max(0, j - gap + 1); i < j; i++) {
-        if (!conflict(out[i]!, out[j]!)) continue;
-        const target = Math.min(i + gap, out.length - 1);
-        if (target <= j) break; // danh sách quá ngắn để tách xa hơn
-        const [item] = out.splice(j, 1);
-        out.splice(target, 0, item!);
-        changed = true;
-        j--; // phần tử mới ở vị trí j cần kiểm tra lại
-        break;
-      }
-    }
-    if (!changed) break;
+  const out: Candidate[] = [];
+  const rest = [...seq];
+  while (rest.length > 0) {
+    const recent = out.slice(Math.max(0, out.length - gap + 1));
+    const index = rest.findIndex((c) => recent.every((r) => !conflict(r, c)));
+    out.push(...rest.splice(Math.max(0, index), 1));
   }
   return out;
 }

@@ -10,6 +10,7 @@ import {
   moveItem,
   NO_FILTER,
   parseWarnings,
+  pendingIds,
   reviewProgress,
   subtopicsOf,
   type ReviewItem,
@@ -78,6 +79,12 @@ describe("lọc và tiến độ", () => {
     });
     expect(reviewProgress(items.map((i) => ({ ...i, accepted: true }))).canPublish).toBe(true);
     expect(reviewProgress([]).canPublish).toBe(false);
+  });
+
+  it("Duyệt tất: mọi mục chưa duyệt kể cả có cảnh báo, theo bộ lọc đang dùng", () => {
+    expect(pendingIds(items)).toEqual(["a", "c"]);
+    expect(pendingIds(filterItems(items, { ...NO_FILTER, subtopic: "Food" }))).toEqual(["a"]);
+    expect(pendingIds(items.map((i) => ({ ...i, accepted: true })))).toEqual([]);
   });
 });
 

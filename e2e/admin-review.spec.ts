@@ -101,6 +101,39 @@ test.describe("Admin duyệt và xuất bản danh sách", () => {
     await expect(page.getByRole("button", { name: "Xuất bản phiên bản mới" })).toBeEnabled();
   });
 
+  test("Duyệt tất: cả từ có cảnh báo, theo bộ lọc, Hoàn tác được", async ({ page }) => {
+    test.setTimeout(90_000);
+    const { listId } = await seedList(`Duyệt tất E2E ${Date.now()}`);
+    await openAsAdmin(page, `/admin/lists/${listId}/review`);
+    await expect(page.getByText("Đã duyệt 0/3 từ")).toBeVisible();
+
+    // Có lọc: chỉ duyệt các từ đang hiện (bank, có cảnh báo).
+    await page.getByRole("button", { name: "Chỉ từ có cảnh báo" }).click();
+    await page.getByRole("button", { name: "Duyệt tất các từ đang hiện (1)" }).click();
+    await expect(page.getByText("Đã duyệt 1/3 từ")).toBeVisible();
+    await page.getByRole("button", { name: "Chỉ từ có cảnh báo" }).click();
+
+    await page.getByRole("button", { name: "Duyệt tất (2)" }).click();
+    await expect(page.getByText("Đã duyệt 3/3 từ")).toBeVisible();
+    const publish = page.getByRole("button", { name: "Xuất bản", exact: true });
+    await expect(publish).toBeEnabled();
+
+    // Hoàn tác chỉ gỡ lượt vừa duyệt (2 từ), bank vẫn giữ.
+    await page.getByRole("button", { name: "Hoàn tác" }).click();
+    await expect(page.getByText("Đã duyệt 1/3 từ")).toBeVisible();
+    await expect(publish).toBeDisabled();
+    await expect
+      .poll(async () => {
+        const { data } = await serverAdmin()!
+          .from("curated_list_items")
+          .select("accepted")
+          .eq("list_id", listId)
+          .eq("accepted", true);
+        return data?.length;
+      })
+      .toBe(1);
+  });
+
   test("sửa nội dung từ dùng chung: lưu vào kho và đánh dấu đã duyệt", async ({ page }) => {
     test.setTimeout(90_000);
     const { listId, rows } = await seedList(`Sửa từ E2E ${Date.now()}`);

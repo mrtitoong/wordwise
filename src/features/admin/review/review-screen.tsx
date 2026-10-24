@@ -28,6 +28,7 @@ import {
   moveById,
   moveItem,
   NO_FILTER,
+  pendingIds,
   reviewProgress,
   subtopicsOf,
   type ReviewFilter,
@@ -83,6 +84,7 @@ export function ReviewScreen({
   const progress = reviewProgress(items);
   const subtopics = useMemo(() => subtopicsOf(items), [items]);
   const filtered = visible.length !== items.length;
+  const visiblePending = useMemo(() => pendingIds(visible), [visible]);
   const canDrag = editable && !filtered;
   const selected = items.find((i) => i.id === selectedId) ?? null;
 
@@ -139,6 +141,41 @@ export function ReviewScreen({
       showToast({ text: t("acceptedCount", { count: result.data.count }) });
     });
 
+  /** Đánh dấu nhiều mục (cập nhật theo trạng thái mới nhất để Hoàn tác vẫn đúng sau 5 giây). */
+  const markMany = (ids: string[], accepted: boolean) => {
+    const set = new Set(ids);
+    setItems((all) => all.map((i) => (set.has(i.id) ? { ...i, accepted } : i)));
+  };
+
+  /** Duyệt tất các mục đang hiện (theo bộ lọc), kể cả có cảnh báo; Hoàn tác trong 5 giây. */
+  const acceptVisible = () => {
+    const ids = visiblePending;
+    markMany(ids, true);
+    startTransition(async () => {
+      const result = await acceptItems(list.id, ids, true);
+      if (!result.ok) {
+        markMany(ids, false);
+        return fail(result.error);
+      }
+      showToast({
+        text: t("acceptedCount", { count: ids.length }),
+        action: {
+          label: t("undo"),
+          run: () => {
+            markMany(ids, false);
+            startTransition(async () => {
+              const undone = await acceptItems(list.id, ids, false);
+              if (!undone.ok) {
+                markMany(ids, true);
+                fail(undone.error);
+              }
+            });
+          },
+        },
+      });
+    });
+  };
+
   const remove = (id: string) =>
     startTransition(async () => {
       const result = await removeItem(list.id, id);
@@ -183,6 +220,18 @@ export function ReviewScreen({
           {t("withWarnings", { count: progress.withWarnings })}
         </p>
         <div className="flex flex-wrap gap-2">
+          {editable && visiblePending.length > 0 && (
+            <Button
+              type="button"
+              variant="outline"
+              className="min-h-11"
+              disabled={pending}
+              onClick={acceptVisible}
+            >
+              <Check aria-hidden />
+              {t(filtered ? "acceptVisible" : "acceptAll", { count: visiblePending.length })}
+            </Button>
+          )}
           {editable && progress.pendingClean > 0 && (
             <Button
               type="button"

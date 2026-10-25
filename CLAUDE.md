@@ -515,4 +515,4 @@ Repo: https://github.com/mrtitoong/wordwise
   từ" = từ đã mở trước hôm nay mà chưa học. Từ đã có trong kho giữ lịch ôn, tính là đã học. Bản phát hành
   mới: sổ hỏi "có thêm N từ – Nhận/Bỏ qua" (`pendingListWords`, từ bị bỏ ở bản mới vẫn ở lại sổ; bản chỉ
   bỏ bớt từ thì tự ghi đã nhận). Giới hạn: tính lại thẻ từ lịch sử khi xung đột dùng tỉ lệ nhớ trong Cài
-  đặt (không biết lượt nào ở 14 ngày cuối). Kiểm tra đầu vào làm ở 7.4b (`gd7/placement`).
+  đặt (không biết lượt nào ở 14 ngày cuối). Đã áp lên cloud. Kiểm tra đầu vào làm ở 7.4b (`gd7/placement`).

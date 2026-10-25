@@ -718,6 +718,7 @@ export type Database = {
           language: string;
           name: string;
           source_list_id: string | null;
+          source_list_version: number | null;
           tags: string[];
           target_date: string | null;
           updated_at: string;
@@ -733,6 +734,7 @@ export type Database = {
           language?: string;
           name: string;
           source_list_id?: string | null;
+          source_list_version?: number | null;
           tags?: string[];
           target_date?: string | null;
           updated_at?: string;
@@ -748,6 +750,7 @@ export type Database = {
           language?: string;
           name?: string;
           source_list_id?: string | null;
+          source_list_version?: number | null;
           tags?: string[];
           target_date?: string | null;
           updated_at?: string;
@@ -1397,6 +1400,7 @@ export type Database = {
       finish_list_analysis: { Args: { p_job_id: string; p_summary: Json }; Returns: number };
       kick_list_worker_now: { Args: Record<PropertyKey, never>; Returns: number };
       kick_word_worker_now: { Args: Record<PropertyKey, never>; Returns: number };
+      library_lists: { Args: { p_list_id?: string }; Returns: Json };
       request_word_job: {
         Args: {
           p_context_image_url?: string;

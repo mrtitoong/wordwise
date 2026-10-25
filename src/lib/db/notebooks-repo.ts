@@ -39,6 +39,7 @@ export async function createNotebook(
     user_id: owner,
     language: "en",
     source_list_id: null,
+    source_list_version: null,
     target_date: null,
     is_archived: false,
     deleted_at: null,

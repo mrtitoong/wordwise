@@ -5,6 +5,7 @@ import Link from "next/link";
 import { useRouter } from "next/navigation";
 import {
   Archive,
+  CalendarClock,
   Download,
   ArchiveRestore,
   CheckSquare,
@@ -51,6 +52,7 @@ import { cn } from "@/lib/utils";
 import { wordHref } from "@/lib/words/links";
 import { NotebookCover } from "./notebook-cover";
 import { NotebookFormSheet } from "./notebook-form-sheet";
+import { NotebookPlan } from "./notebook-plan";
 import { usePersonalData, type PersonalView } from "./use-personal-data";
 
 const PAGE = 100;
@@ -85,6 +87,7 @@ function rowLabel(row: EntryRow, data: PersonalView) {
 export function NotebookDetailScreen({ notebookId }: { notebookId: string }) {
   const t = useTranslations("notebooks.detail");
   const tc = useTranslations("wordCard");
+  const tl = useTranslations("library");
   const router = useRouter();
   const owner = useOwner();
   const data = usePersonalData(owner);
@@ -93,6 +96,7 @@ export function NotebookDetailScreen({ notebookId }: { notebookId: string }) {
   const [selecting, setSelecting] = useState(false);
   const [selected, setSelected] = useState<Set<string>>(new Set());
   const [sheet, setSheet] = useState<SheetKind>(null);
+  const [planOpen, setPlanOpen] = useState(false);
   const press = useRef<ReturnType<typeof setTimeout> | undefined>(undefined);
   const longPressed = useRef(false);
 
@@ -263,6 +267,14 @@ export function NotebookDetailScreen({ notebookId }: { notebookId: string }) {
         </div>
       </header>
 
+      <NotebookPlan
+        notebook={notebook}
+        data={data}
+        owner={owner}
+        editing={planOpen}
+        onEditingChange={setPlanOpen}
+      />
+
       {rows.length === 0 ? (
         <section className="flex flex-col items-center gap-3 py-10 text-center">
           <h2 className="text-lg font-semibold">{t("emptyTitle")}</h2>
@@ -272,7 +284,9 @@ export function NotebookDetailScreen({ notebookId }: { notebookId: string }) {
               {t("addToThis")}
             </Link>
           </Button>
-          <p className="text-sm text-muted-foreground">{t("library")}</p>
+          <Button asChild variant="outline" className="min-h-11 w-full">
+            <Link href="/library">{t("library")}</Link>
+          </Button>
         </section>
       ) : (
         <>
@@ -494,6 +508,19 @@ export function NotebookDetailScreen({ notebookId }: { notebookId: string }) {
               )}
               {t(notebook.is_archived ? "unarchive" : "archive")}
             </button>
+            {!isDefault && (
+              <button
+                type="button"
+                onClick={() => {
+                  setSheet(null);
+                  setPlanOpen(true);
+                }}
+                className="flex min-h-12 items-center gap-3 rounded-lg px-2 hover:bg-muted"
+              >
+                <CalendarClock className="size-5" aria-hidden />
+                {tl(notebook.target_date ? "plan.change" : "plan.set")}
+              </button>
+            )}
             <button
               type="button"
               onClick={() => {

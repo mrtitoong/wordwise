@@ -3,8 +3,15 @@
  * ước tính thời gian. Hàm thuần; màn Hôm nay và phiên ôn dùng cùng cách tính nên số khớp nhau.
  */
 import type { FSRS } from "ts-fsrs";
-import type { CardRow, NotebookEntryRow, ReviewLogRow, UserWordRow } from "@/lib/db/types";
+import type {
+  CardRow,
+  NotebookEntryRow,
+  NotebookRow,
+  ReviewLogRow,
+  UserWordRow,
+} from "@/lib/db/types";
 import { studyDay } from "@/lib/review/day";
+import { pacedNewLimit } from "@/lib/srs/pacing";
 import { medianResponseMs } from "@/lib/srs/grade";
 import { DEFAULT_ANSWER_MS, estimateMinutes, NEW_WORD_MS } from "./estimate";
 import {
@@ -19,6 +26,8 @@ export type TodayInput = {
   cards: readonly CardRow[];
   entries: readonly NotebookEntryRow[];
   logs: readonly ReviewLogRow[];
+  /** Sổ tay: sổ có ngày mục tiêu cộng thêm chỉ tiêu từ mới hôm nay. */
+  notebooks?: readonly NotebookRow[];
   settings: {
     dailyNewLimit: number;
     dailyReviewLimit: number;
@@ -93,9 +102,16 @@ export function sessionSettings(input: TodayInput, now: Date): SessionSettings {
     (max, l) => (max === null || l.reviewed_at > max ? l.reviewed_at : max),
     null,
   );
+  const paced = pacedNewLimit({
+    notebooks: input.notebooks ?? [],
+    entries: input.entries,
+    userWords: input.userWords,
+    today,
+    timeZone: input.settings.timeZone,
+  });
   return {
     dailyReviewLimit: input.settings.dailyReviewLimit,
-    newLimit: Math.max(0, input.settings.dailyNewLimit - newToday),
+    newLimit: Math.max(0, input.settings.dailyNewLimit + paced - newToday),
     // Thẻ Chính tả/Phát âm mới mỗi ngày (mỗi loại) không quá số từ mới/ngày: từ học trước mở
     // dần, không dồn.
     newSkillLimits: Object.fromEntries(

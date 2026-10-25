@@ -76,7 +76,7 @@ export function TodayScreen() {
           <Link href="/add">{t("addFirst")}</Link>
         </Button>
         <Button asChild size="lg" variant="outline">
-          <Link href="/notebooks">{t("browseLibrary")}</Link>
+          <Link href="/library">{t("browseLibrary")}</Link>
         </Button>
       </EmptyState>
     );

@@ -1,7 +1,9 @@
 import type { Grade } from "ts-fsrs";
 import { missingSkillCards, type Skill } from "@/lib/srs/cards";
 import { applyReview, createScheduler, newCardFields } from "@/lib/srs/scheduler";
-import { introducedToday, planIntroductions } from "@/lib/notebooks/introductions";
+import { introducedToday } from "@/lib/notebooks/introductions";
+import { studyDay } from "@/lib/review/day";
+import { inFinalPhase, planDailyIntroductions, retentionFor } from "@/lib/srs/pacing";
 import { mergeCard } from "@/lib/sync/merge";
 import { addAddition, parseUserAdditions, serializeAdditions } from "@/lib/words/user-additions";
 import { rekeyOwnedData } from "@/lib/sync/rekey";
@@ -160,6 +162,7 @@ async function ensureDefaultNotebook(db: LocalDb, owner: string, name: string, i
       cover_url: null,
       tags: [],
       source_list_id: null,
+      source_list_version: null,
       target_date: null,
       is_archived: false,
       deleted_at: null,
@@ -322,11 +325,21 @@ export async function addSensesToDefaultNotebook(
   );
 }
 
-/** Mở từ "Sắp học" cho đủ số từ mới hôm nay (trong transaction đang chạy). */
+/**
+ * Mở từ "Sắp học" cho đủ số từ mới hôm nay (trong transaction đang chạy): số từ mới/ngày chung, cộng
+ * chỉ tiêu riêng của sổ có ngày mục tiêu.
+ */
 async function introduce(db: LocalDb, owner: string, now: Date): Promise<number> {
   const settings = (await db.user_settings.get(owner)) ?? defaultSettingsRow(owner, now);
-  const userWords = await db.user_words.where("user_id").equals(owner).toArray();
-  const ids = planIntroductions(userWords, {
+  const [userWords, notebooks, entries] = await Promise.all([
+    db.user_words.where("user_id").equals(owner).toArray(),
+    db.notebooks.where("user_id").equals(owner).toArray(),
+    db.notebook_entries.where("user_id").equals(owner).toArray(),
+  ]);
+  const ids = planDailyIntroductions({
+    notebooks,
+    entries,
+    userWords,
     dailyLimit: settings.daily_new_limit,
     now,
     timeZone: settings.timezone,
@@ -342,8 +355,10 @@ async function introduce(db: LocalDb, owner: string, now: Date): Promise<number>
 
 /** Mở dần từ "Sắp học" (gọi khi mở app và sau khi đồng bộ). Trả về số từ vừa mở. */
 export async function openNewWords(db: LocalDb, owner: string, now = new Date()): Promise<number> {
-  const opened = await db.transaction("rw", db.user_words, db.user_settings, db.outbox, () =>
-    introduce(db, owner, now),
+  const opened = await db.transaction(
+    "rw",
+    [db.user_words, db.user_settings, db.notebooks, db.notebook_entries, db.outbox],
+    () => introduce(db, owner, now),
   );
   if (opened > 0) notifyWrite();
   return opened;
@@ -475,14 +490,22 @@ export async function recordReview(
     const card = await db.cards.get(cardIdValue);
     if (!card || card.user_id !== owner) throw new Error(`Không có thẻ ${cardIdValue}`);
     const settings = await db.user_settings.get(owner);
+    const reviewedAt = input.reviewedAt ?? new Date();
+    // 14 ngày cuối của sổ có ngày mục tiêu: nâng tỉ lệ nhớ mục tiêu lên 0,95.
+    const finalPhase = inFinalPhase(
+      card.user_word_id,
+      await db.notebooks.where("user_id").equals(owner).toArray(),
+      await db.notebook_entries.where("user_word_id").equals(card.user_word_id).toArray(),
+      studyDay(reviewedAt, settings?.timezone ?? defaultSettingsRow(owner).timezone),
+    );
     const scheduler = createScheduler({
-      desiredRetention: settings?.desired_retention,
+      desiredRetention: retentionFor(settings?.desired_retention ?? 0.9, finalPhase),
       weights: weightsOf(settings),
     });
     const reviewed = applyReview(scheduler, card, {
       rating: input.rating,
       mode: input.mode,
-      reviewedAt: input.reviewedAt ?? new Date(),
+      reviewedAt,
       logId: randomId(),
       responseMs: input.responseMs ?? null,
       correct: input.correct ?? null,

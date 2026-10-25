@@ -501,3 +501,18 @@ Repo: https://github.com/mrtitoong/wordwise
   `readOnly` (ẩn nút thêm/sửa/báo lỗi). Thống kê `/admin/lists/[id]/stats` bằng `admin_list_stats()`
   (theo bản phát hành mới nhất): người học, tỉ lệ hoàn thành (đã bắt đầu học hết), tỉ lệ đã bắt đầu, tỉ
   lệ "Đã thuộc" (thẻ Nghĩa S ≥ 7), 10 nghĩa nhiều lượt Quên nhất 30 ngày.
+- 2026-10-25 (Prompt 7.4a, chủ sản phẩm duyệt 7 đề xuất): Thư viện `/library` (khách dùng được: xem,
+  thêm vào sổ; hàm SQL `library_lists()` theo bản phát hành mới nhất, số người học chỉ là số tổng
+  hợp). Mỗi danh sách **một sổ** (`notebooks.source_list_id`, `source_list_version` = bản đã nhận); sổ
+  đích là sổ mới mang tên danh sách hoặc sổ có sẵn chưa gắn danh sách (không phải "Sổ của tôi"). Thêm
+  từ theo thứ tự Admin sắp, chủ đề con thành tag, câu ngữ cảnh thành câu gặp, `input_method = 'list'`,
+  `source = 'list:<id>'`; "Chọn lọc từ" bỏ tích từng từ. Lộ trình `src/lib/srs/pacing.ts`: từ của sổ có
+  ngày mục tiêu **chỉ mở theo chỉ tiêu của sổ** (không dùng số từ mới/ngày chung; từ ở nhiều sổ theo sổ
+  có hạn sớm nhất), chỉ tiêu = ceil(từ chưa mở trước hôm nay ÷ (số ngày còn lại − 14)) nên không đổi
+  trong ngày; 14 ngày cuối (kể cả ngày mục tiêu) không mở từ mới, thẻ dùng tỉ lệ nhớ max(cài đặt, 0,95)
+  trong `recordReview`; qua ngày mục tiêu thì sổ thành sổ thường. Ngày mục tiêu sớm nhất = hôm nay + 15.
+  Quá 30 từ/ngày chỉ cảnh báo, không chặn. Tiến độ: "đã học" = thẻ Nghĩa đã ôn ít nhất một lần, "chậm X
+  từ" = từ đã mở trước hôm nay mà chưa học. Từ đã có trong kho giữ lịch ôn, tính là đã học. Bản phát hành
+  mới: sổ hỏi "có thêm N từ – Nhận/Bỏ qua" (`pendingListWords`, từ bị bỏ ở bản mới vẫn ở lại sổ; bản chỉ
+  bỏ bớt từ thì tự ghi đã nhận). Giới hạn: tính lại thẻ từ lịch sử khi xung đột dùng tỉ lệ nhớ trong Cài
+  đặt (không biết lượt nào ở 14 ngày cuối). Kiểm tra đầu vào làm ở 7.4b (`gd7/placement`).

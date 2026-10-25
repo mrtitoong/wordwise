@@ -167,13 +167,17 @@ export function NotebooksScreen() {
             </div>
           )}
 
-          <div className="flex items-center gap-3 rounded-xl bg-muted p-3 text-muted-foreground">
+          <Link
+            href="/library"
+            className="flex min-h-16 items-center gap-3 rounded-xl bg-muted p-3 text-muted-foreground hover:bg-muted/70 focus-visible:outline-2 focus-visible:outline-ring"
+          >
             <Library className="size-6 shrink-0" aria-hidden />
-            <span className="flex flex-col">
+            <span className="flex flex-1 flex-col">
               <span className="font-medium text-foreground">{t("libraryTitle")}</span>
               <span className="text-sm">{t("libraryBody")}</span>
             </span>
-          </div>
+            <ChevronRight className="size-4 shrink-0" aria-hidden />
+          </Link>
 
           {archived.length > 0 && (
             <section className="flex flex-col gap-2">

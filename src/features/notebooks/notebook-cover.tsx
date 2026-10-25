@@ -28,7 +28,9 @@ export function NotebookCover({
   owner: string | null;
   className?: string;
 }) {
-  const uploaded = useUserImageUrl(coverUrl?.startsWith("storage://") ? coverUrl : null, owner);
+  const signed = useUserImageUrl(coverUrl?.startsWith("storage://") ? coverUrl : null, owner);
+  // Sổ thêm từ Thư viện dùng ảnh bìa công khai của danh sách.
+  const uploaded = coverUrl?.startsWith("https://") ? coverUrl : signed;
   const preset = presetCover(coverUrl) ?? defaultCover(notebookId);
   return (
     <div

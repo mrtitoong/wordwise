@@ -68,6 +68,7 @@ function notebook(id: string, name: string): NotebookRow {
     cover_url: null,
     tags: [],
     source_list_id: null,
+    source_list_version: null,
     target_date: null,
     is_archived: false,
     deleted_at: null,

@@ -11,6 +11,7 @@ import { completedDays, getSavedSession } from "@/lib/db/review-store";
 import type {
   CardRow,
   NotebookEntryRow,
+  NotebookRow,
   ReviewLogRow,
   UserSettingsRow,
   UserWordRow,
@@ -26,6 +27,7 @@ export type ReviewData = {
   userWords: UserWordRow[];
   cards: CardRow[];
   entries: NotebookEntryRow[];
+  notebooks: NotebookRow[];
   logs: ReviewLogRow[];
   /** sense_id → từ và nghĩa (nội dung đã có trong máy). */
   senses: Map<string, { word: WordRow; sense: WordSenseRow }>;
@@ -40,11 +42,12 @@ export function useReviewData(owner: string | null): ReviewData | undefined {
 /** Đọc một lần (phiên ôn cần bản mới nhất ngay sau khi ghi). */
 export async function loadReviewData(owner: string): Promise<ReviewData> {
   const db = getLocalDb();
-  const [settings, userWords, cards, entries, logs, done, saved] = await Promise.all([
+  const [settings, userWords, cards, entries, notebooks, logs, done, saved] = await Promise.all([
     db.user_settings.get(owner),
     db.user_words.where("user_id").equals(owner).toArray(),
     db.cards.where("user_id").equals(owner).toArray(),
     db.notebook_entries.where("user_id").equals(owner).toArray(),
+    db.notebooks.where("user_id").equals(owner).toArray(),
     db.review_logs.where("user_id").equals(owner).toArray(),
     completedDays(db, owner),
     getSavedSession(db, owner),
@@ -68,6 +71,7 @@ export async function loadReviewData(owner: string): Promise<ReviewData> {
     userWords,
     cards,
     entries,
+    notebooks,
     logs,
     senses,
     completedDays: done,
@@ -81,6 +85,7 @@ export function toTodayInput(data: ReviewData, relatedOf?: TodayInput["relatedOf
     cards: data.cards,
     entries: data.entries,
     logs: data.logs,
+    notebooks: data.notebooks,
     settings: {
       dailyNewLimit: data.settings.daily_new_limit,
       dailyReviewLimit: data.settings.daily_review_limit,

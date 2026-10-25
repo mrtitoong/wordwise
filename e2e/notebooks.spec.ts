@@ -78,7 +78,7 @@ test.describe("Sổ tay và thêm từ", () => {
     );
 
     await page.goto("/notebooks");
-    await page.getByRole("link", { name: /IELTS/ }).click();
+    await page.getByRole("link", { name: /^IELTS \d+ từ/ }).click();
     const list = page.getByRole("list", { name: "IELTS" });
     await expect(list.getByRole("link", { name: /resilient/ })).toBeVisible();
     await noHorizontalScroll(page);

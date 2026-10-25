@@ -91,6 +91,7 @@ test.describe("Thư viện và học theo thời hạn", () => {
     await page.goto("/welcome");
     await page.getByRole("button", { name: "Dùng thử ngay" }).click();
     await completeOnboarding(page, { level: "B1", starters: false });
+    await expect(page).toHaveURL("/add");
 
     // Màn Hôm nay trống có lối vào Thư viện.
     await page.goto("/");

@@ -1,5 +1,5 @@
 import type { Grade } from "ts-fsrs";
-import { missingSkillCards, type Skill } from "@/lib/srs/cards";
+import { missingSkillCards, placedCardFields, type Skill } from "@/lib/srs/cards";
 import { applyReview, createScheduler, newCardFields } from "@/lib/srs/scheduler";
 import { introducedToday } from "@/lib/notebooks/introductions";
 import { studyDay } from "@/lib/review/day";
@@ -39,6 +39,9 @@ export function onLocalWrite(listener: (() => void) | null): void {
 export function notifyWrite() {
   writeListener?.();
 }
+
+/** Lịch mặc định, chỉ để lấy độ khó ban đầu cho từ đã biết qua kiểm tra đầu vào. */
+const placementScheduler = createScheduler();
 
 const SYNC_STORES = [
   "user_settings",
@@ -132,6 +135,11 @@ export type AddEntry = {
   tags?: string[];
   /** Ghi chú riêng → "Ghi chú của bạn" ở tab Nghĩa (không thêm trùng). */
   note?: string | null;
+  /**
+   * Đã biết qua kiểm tra đầu vào: từ chưa học thì vào lịch như "Đã thuộc" ngay (không qua Sắp học,
+   * không trừ số từ mới/ngày). Từ đã có lịch ôn thì giữ nguyên.
+   */
+  known?: boolean;
 };
 
 export type AddOptions = {
@@ -147,7 +155,17 @@ export type AddResult = {
   linked: string[];
   /** Đã có trong sổ này, bỏ qua. */
   skipped: string[];
+  /** Nghĩa vào lịch như "Đã thuộc" nhờ kiểm tra đầu vào (chỉ có khi có từ `known`). */
+  known?: string[];
 };
+
+/**
+ * Từ đã biết qua kiểm tra đầu vào tính như đã mở từ hôm qua: không trừ chỉ tiêu từ mới hôm nay (sổ
+ * có lộ trình và số từ mới/ngày chung chỉ đếm từ mở hôm nay), vẫn là "Đang học" khi bỏ tạm ngưng.
+ */
+export function placementIntroducedAt(now: Date): string {
+  return new Date(now.getTime() - 86_400_000).toISOString();
+}
 
 /** Tạo "Sổ của tôi" nếu chưa có (trong transaction đang chạy). */
 async function ensureDefaultNotebook(db: LocalDb, owner: string, name: string, iso: string) {
@@ -280,6 +298,27 @@ export async function addSensesToNotebook(
               },
         );
         await queue(db, "cards", meaningCardId, owner);
+      }
+
+      if (item.known) {
+        const current = (await db.cards.get(meaningCardId))!;
+        const row = (await db.user_words.get(uwId))!;
+        if (current.state === 0 && row.status === "queued") {
+          await db.cards.put({
+            ...current,
+            ...placedCardFields(placementScheduler, meaningCardId, now),
+            updated_at: iso,
+          });
+          await queue(db, "cards", meaningCardId, owner);
+          await db.user_words.put({
+            ...row,
+            status: "learning",
+            introduced_at: placementIntroducedAt(now),
+            updated_at: iso,
+          });
+          await queue(db, "user_words", uwId, owner);
+          (result.known ??= []).push(item.senseId);
+        }
       }
     }
     await introduce(db, owner, now);

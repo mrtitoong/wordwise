@@ -4,6 +4,10 @@ import { cardId, userWordId } from "./ids";
 import { acceptListUpdate, addListToNotebook, setTargetDate, skipListUpdate } from "./library-repo";
 import { LocalDb } from "./local";
 import { createNotebook } from "./notebooks-repo";
+import { masteryLevel } from "@/lib/srs/mastery";
+import { notebookProgress } from "@/lib/srs/pacing";
+import { createScheduler } from "@/lib/srs/scheduler";
+import { mergeCard } from "@/lib/sync/merge";
 import { addSensesToNotebook, openNewWords, recordReview, saveSettings } from "./repo";
 
 const USER = "11111111-1111-4111-8111-111111111111";
@@ -205,5 +209,99 @@ describe("tỉ lệ nhớ 14 ngày cuối", () => {
     const final = await setup("2026-11-30");
     const normal = await setup(null);
     expect(final).toBeLessThan(normal * 0.75);
+  });
+});
+
+describe("kiểm tra đầu vào", () => {
+  const known = (from: number, to: number, knownUpTo: number) =>
+    items(from, to).map((item, i) => ({ ...item, known: from + i <= knownUpTo }));
+
+  it("từ đã biết vào lịch như Đã thuộc, không trừ chỉ tiêu từ mới của sổ", async () => {
+    const { notebook, result } = await addListToNotebook(
+      db,
+      USER,
+      {
+        listId: LIST,
+        version: 1,
+        target: { kind: "new", name: "IELTS", coverUrl: null },
+        targetDate: "2026-11-25", // 10 ngày học từ mới
+        items: known(1, 30, 10),
+      },
+      NOW,
+    );
+    expect(result.added).toHaveLength(30);
+    expect(result.known).toEqual(Array.from({ length: 10 }, (_, i) => sense(i + 1)));
+
+    for (let n = 1; n <= 10; n++) {
+      const uw = (await db.user_words.get(userWordId(USER, sense(n))))!;
+      expect(uw.status).toBe("learning");
+      expect(Date.parse(uw.introduced_at!)).toBeLessThan(NOW.getTime() - 3_600_000);
+      const card = (await db.cards.get(cardId(uw.id, "meaning")))!;
+      expect(card).toMatchObject({ state: 2, reps: 0, lapses: 0 });
+      expect(masteryLevel(card)).toBe(3);
+      const days = (Date.parse(card.due) - NOW.getTime()) / 86_400_000;
+      expect(days).toBeGreaterThanOrEqual(7);
+      expect(days).toBeLessThanOrEqual(28);
+    }
+    // Còn 20 từ phải học / 10 ngày = 2 từ hôm nay, mở theo thứ tự trong số từ chưa biết.
+    const today = (await db.user_words.where("user_id").equals(USER).toArray())
+      .filter((uw) => uw.introduced_at === NOW.toISOString())
+      .map((uw) => uw.sense_id)
+      .sort();
+    expect(today).toEqual([sense(11), sense(12)]);
+
+    const [notebooks, entries, userWords, cards] = await Promise.all([
+      db.notebooks.toArray(),
+      db.notebook_entries.toArray(),
+      db.user_words.toArray(),
+      db.cards.toArray(),
+    ]);
+    const progress = notebookProgress({
+      notebook,
+      notebooks,
+      entries,
+      userWords,
+      cards,
+      now: NOW,
+      timeZone: "Asia/Ho_Chi_Minh",
+    })!;
+    expect(progress).toMatchObject({ total: 30, studied: 10, behind: 0, queued: 18, quota: 2 });
+  });
+
+  it("từ đã có lịch ôn thì giữ nguyên dù đánh dấu đã biết", async () => {
+    const mine = await createNotebook(db, USER, { name: "Của tôi" });
+    await addSensesToNotebook(db, USER, [{ senseId: sense(1) }], {
+      notebookId: mine.id,
+      inputMethod: "typed",
+    });
+    const id = cardId(userWordId(USER, sense(1)), "meaning");
+    await recordReview(db, USER, id, { rating: 3, mode: "flashcard" });
+    const before = await db.cards.get(id);
+    const { result } = await addListToNotebook(db, USER, {
+      listId: LIST,
+      version: 1,
+      target: { kind: "new", name: "IELTS", coverUrl: null },
+      targetDate: null,
+      items: known(1, 2, 2),
+    });
+    expect(result.known).toEqual([sense(2)]);
+    expect(await db.cards.get(id)).toEqual(before);
+  });
+
+  it("thẻ đặt sẵn không bị tính lại khi đồng bộ (không có lượt ôn nào)", async () => {
+    await addListToNotebook(
+      db,
+      USER,
+      {
+        listId: LIST,
+        version: 1,
+        target: { kind: "new", name: "IELTS", coverUrl: null },
+        targetDate: null,
+        items: known(1, 1, 1),
+      },
+      NOW,
+    );
+    const card = (await db.cards.get(cardId(userWordId(USER, sense(1)), "meaning")))!;
+    expect(mergeCard(undefined, card, false, [], createScheduler()).row).toEqual(card);
   });
 });

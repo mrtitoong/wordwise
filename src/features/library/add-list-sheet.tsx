@@ -12,27 +12,43 @@ import { addListToNotebook, type ListTarget } from "@/lib/db/library-repo";
 import { getLocalDb } from "@/lib/db/local";
 import type { NotebookRow } from "@/lib/db/types";
 import { targetNotebooks, type LibraryList } from "@/lib/library/library";
+import {
+  MIN_PLACEMENT_WORDS,
+  PLACEMENT_SAMPLE,
+  inferKnown,
+  planPlacement,
+  proposedKnown,
+  type PlacementAnswer,
+  type PlacementPlan,
+  type PlacementResult,
+} from "@/lib/library/placement";
 import { nameConflict } from "@/lib/notebooks/notebooks";
 import { studyDay } from "@/lib/review/day";
 import { defaultTargetDate, minTargetDate, previewPlan } from "@/lib/srs/pacing";
 import { useOnlineStatus } from "@/lib/sync/hooks";
 import { cn } from "@/lib/utils";
 import { cacheListContent, type ListWord } from "./library-data";
+import { PlacementQuiz } from "./placement-quiz";
+import { PlacementReview } from "./placement-result";
 import { formatDay } from "./shared";
 
-type Step = "notebook" | "plan" | "saving" | "done";
+type Step = "notebook" | "plan" | "placement" | "result" | "saving" | "done";
 type Summary = {
   notebook: NotebookRow;
   added: number;
   linked: number;
   skipped: number;
+  known: number;
   today: number;
   queued: number;
 };
 
 const NEW = "new";
 
-/** Bảng thêm danh sách vào sổ: chọn sổ → ngày mục tiêu + lộ trình → tải nội dung → tóm tắt. */
+/**
+ * Bảng thêm danh sách vào sổ: chọn sổ → ngày mục tiêu + lộ trình → (tùy chọn) kiểm tra đầu vào →
+ * tải nội dung → tóm tắt.
+ */
 export function AddListSheet({
   list,
   owner,
@@ -54,6 +70,7 @@ export function AddListSheet({
   onClose: () => void;
 }) {
   const t = useTranslations("library.add");
+  const tp = useTranslations("library.placement");
   const locale = useLocale();
   const online = useOnlineStatus();
   const [step, setStep] = useState<Step>("notebook");
@@ -63,6 +80,14 @@ export function AddListSheet({
   const [progress, setProgress] = useState(0);
   const [failed, setFailed] = useState(false);
   const [summary, setSummary] = useState<Summary | null>(null);
+  const [placement, setPlacement] = useState<PlacementPlan | null>(null);
+  const [outcome, setOutcome] = useState<PlacementResult | null>(null);
+  const [known, setKnown] = useState<Set<string>>(() => new Set());
+  const [reviewing, setReviewing] = useState(false);
+  const accent = useLiveQuery(
+    async () => (await getLocalDb().user_settings.get(owner))?.accent,
+    [owner],
+  );
 
   useEffect(() => {
     void loadWords().catch(() => {});
@@ -72,21 +97,46 @@ export function AddListSheet({
     () => (words ? words.filter((w) => !selected || selected.has(w.senseId)) : null),
     [words, selected],
   );
-  // Từ đã mở để học ở sổ khác thì không tính vào lộ trình.
-  const alreadyOpened = useLiveQuery(async () => {
-    if (!chosen) return 0;
+  // Từ đã mở để học ở sổ khác thì không tính vào lộ trình và không đưa vào kiểm tra đầu vào.
+  const opened = useLiveQuery(async () => {
+    if (!chosen) return new Set<string>();
     const rows = await getLocalDb().user_words.bulkGet(
       chosen.map((w) => userWordId(owner, w.senseId)),
     );
-    return rows.filter((r) => r && !r.deleted_at && r.introduced_at).length;
+    return new Set(
+      rows.flatMap((r) => (r && !r.deleted_at && r.introduced_at ? [r.sense_id] : [])),
+    );
   }, [chosen, owner]);
+  const eligible = useMemo(
+    () => (chosen && opened ? chosen.filter((w) => !opened.has(w.senseId)) : null),
+    [chosen, opened],
+  );
   const count = chosen?.length ?? selected?.size ?? list.word_count;
-  const remaining = Math.max(0, count - (alreadyOpened ?? 0));
+  const remaining = Math.max(0, count - (opened?.size ?? 0) - known.size);
+  const byId = useMemo(() => new Map((words ?? []).map((w) => [w.senseId, w])), [words]);
+
+  function startPlacement() {
+    if (!eligible) return;
+    setPlacement(planPlacement(eligible));
+    setOutcome(null);
+    setKnown(new Set());
+    setReviewing(false);
+    setStep("placement");
+  }
+
+  function finishPlacement(answers: Map<string, PlacementAnswer>) {
+    const inferred = inferKnown(placement!, answers);
+    setOutcome(inferred);
+    setKnown(new Set(proposedKnown(inferred)));
+    setStep("result");
+  }
 
   const choices = targetNotebooks(notebooks, defaultNotebookId(owner));
   const min = minTargetDate(today);
   const tooClose = usePlan && targetDate < min;
   const plan = usePlan && !tooClose ? previewPlan(remaining, targetDate, today) : null;
+  const canPlace = !!eligible && eligible.length >= MIN_PLACEMENT_WORDS;
+  const saving = step === "saving";
 
   async function submit() {
     setStep("saving");
@@ -94,7 +144,9 @@ export function AddListSheet({
     setProgress(0);
     try {
       const all = await loadWords();
-      const items = all.filter((w) => !selected || selected.has(w.senseId));
+      const items = all
+        .filter((w) => !selected || selected.has(w.senseId))
+        .map((w) => (known.has(w.senseId) ? { ...w, known: true } : w));
       const db = getLocalDb();
       await cacheListContent(
         db,
@@ -129,6 +181,7 @@ export function AddListSheet({
         added: result.added.length,
         linked: result.linked.length,
         skipped: result.skipped.length,
+        known: result.known?.length ?? 0,
         today: fresh.filter(
           (r) => r!.introduced_at && studyDay(new Date(r!.introduced_at), zone) === today,
         ).length,
@@ -137,7 +190,7 @@ export function AddListSheet({
       setStep("done");
     } catch {
       setFailed(true);
-      setStep("plan");
+      setStep(outcome ? "result" : "plan");
     }
   }
 
@@ -166,7 +219,7 @@ export function AddListSheet({
   return (
     <Sheet
       open
-      onOpenChange={(o) => !o && step !== "saving" && onClose()}
+      onOpenChange={(o) => !o && !saving && onClose()}
       title={
         step === "done" && summary ? t("doneTitle", { name: summary.notebook.name }) : t("title")
       }
@@ -188,7 +241,7 @@ export function AddListSheet({
         </>
       )}
 
-      {(step === "plan" || step === "saving") && (
+      {(step === "plan" || (saving && !outcome)) && (
         <>
           <p className="text-sm font-medium text-muted-foreground">{t("stepPlan")}</p>
           <label className="flex flex-col gap-1.5">
@@ -197,7 +250,7 @@ export function AddListSheet({
               type="date"
               value={targetDate}
               min={min}
-              disabled={!usePlan || step === "saving"}
+              disabled={!usePlan || saving}
               onChange={(e) => e.target.value && setTargetDate(e.target.value)}
               aria-invalid={tooClose}
               className="h-11 rounded-lg border bg-background px-3 text-base focus-visible:outline-2 focus-visible:outline-ring disabled:opacity-50 aria-invalid:border-destructive"
@@ -208,7 +261,7 @@ export function AddListSheet({
             <input
               type="checkbox"
               checked={!usePlan}
-              disabled={step === "saving"}
+              disabled={saving}
               onChange={(e) => setUsePlan(!e.target.checked)}
               className="size-5 shrink-0 accent-primary"
             />
@@ -245,23 +298,120 @@ export function AddListSheet({
             </p>
           )}
 
+          {canPlace && !saving && (
+            <div className="flex flex-col gap-2 rounded-xl border border-primary/40 p-3">
+              <p className="font-medium">{tp("offerTitle")}</p>
+              <p className="text-sm text-muted-foreground">
+                {tp("offerBody", { count: Math.min(eligible?.length ?? 0, PLACEMENT_SAMPLE) })}
+              </p>
+              <Button className="min-h-11" disabled={tooClose} onClick={startPlacement}>
+                {tp("start")}
+              </Button>
+            </div>
+          )}
+
           <div className="flex gap-2">
             <Button
               variant="outline"
               className="min-h-11"
-              disabled={step === "saving"}
+              disabled={saving}
               onClick={() => setStep("notebook")}
             >
               {t("back")}
             </Button>
             <Button
+              variant={canPlace && !saving ? "outline" : "default"}
               className="min-h-11 flex-1"
-              disabled={step === "saving" || tooClose || !online}
+              disabled={saving || tooClose || !online}
               onClick={() => void submit()}
             >
-              {step === "saving"
+              {saving
                 ? t("saving", { percent: Math.round(progress * 100) })
-                : t("submit", { count })}
+                : canPlace
+                  ? tp("skip", { count })
+                  : t("submit", { count })}
+            </Button>
+          </div>
+        </>
+      )}
+
+      {step === "placement" && placement && words && (
+        <>
+          <p className="text-sm font-medium text-muted-foreground">{tp("title")}</p>
+          <PlacementQuiz
+            sample={placement.sample.flatMap((id) => byId.get(id) ?? [])}
+            pool={words}
+            voice={accent === "uk" ? "uk" : "us"}
+            onFinish={finishPlacement}
+            onCancel={() => setStep("plan")}
+          />
+        </>
+      )}
+
+      {(step === "result" || (saving && outcome)) && outcome && (
+        <>
+          <p className="text-sm font-medium text-muted-foreground">{tp("resultTitle")}</p>
+          <div className="flex flex-col gap-1 rounded-xl bg-muted p-3 text-sm" aria-live="polite">
+            <p className="text-base font-semibold">
+              {tp("estimate", { percent: outcome.estimate })}
+            </p>
+            <p>{tp("counts", { known: known.size, learn: remaining })}</p>
+            {plan && (
+              <p className="text-muted-foreground">
+                {plan.perDay > 0 ? t("plan", { perDay: plan.perDay }) : t("planNone")}
+              </p>
+            )}
+          </div>
+          {plan?.overload && (
+            <p
+              className="flex gap-2 rounded-xl bg-amber-100 p-3 text-sm text-amber-900 dark:bg-amber-950 dark:text-amber-100"
+              role="status"
+            >
+              <AlertTriangle className="mt-0.5 size-4 shrink-0" aria-hidden />
+              {t("overload", { perDay: plan.perDay })}
+            </p>
+          )}
+          {failed && (
+            <p className="text-sm text-destructive" role="alert">
+              {t("failed")}
+            </p>
+          )}
+          {outcome.groups.length > 0 && (
+            <Button
+              variant="outline"
+              className="min-h-11"
+              aria-expanded={reviewing}
+              disabled={saving}
+              onClick={() => setReviewing(!reviewing)}
+            >
+              {reviewing
+                ? tp("hideReview")
+                : tp("review", { count: proposedKnown(outcome).length })}
+            </Button>
+          )}
+          {reviewing && (
+            <PlacementReview
+              groups={outcome.groups}
+              words={byId}
+              selected={known}
+              onChange={setKnown}
+            />
+          )}
+          <div className="flex gap-2">
+            <Button
+              variant="outline"
+              className="min-h-11"
+              disabled={saving}
+              onClick={startPlacement}
+            >
+              {tp("redo")}
+            </Button>
+            <Button
+              className="min-h-11 flex-1"
+              disabled={saving || !online}
+              onClick={() => void submit()}
+            >
+              {saving ? t("saving", { percent: Math.round(progress * 100) }) : tp("save")}
             </Button>
           </div>
         </>
@@ -279,6 +429,9 @@ export function AddListSheet({
                   queued: summary.queued,
                 })}
               </p>
+              {summary.known > 0 && (
+                <p className="text-muted-foreground">{tp("doneKnown", { count: summary.known })}</p>
+              )}
               {summary.linked > 0 && (
                 <p className="text-muted-foreground">
                   {t("doneLinked", { count: summary.linked })}

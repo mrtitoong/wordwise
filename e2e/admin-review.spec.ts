@@ -3,6 +3,7 @@ import {
   completeOnboarding,
   hasSupabase,
   serverAdmin,
+  signInAsAdmin,
   signInWithCode,
   uniqueEmail,
 } from "./helpers";
@@ -46,7 +47,7 @@ async function seedList(title: string) {
 }
 
 async function openAsAdmin(page: Page, path: string) {
-  await signInWithCode(page, "admin@wordwise.local", path);
+  await signInAsAdmin(page, path);
   await page.waitForURL(/\/(onboarding|admin)/);
   await page.goto(path);
 }

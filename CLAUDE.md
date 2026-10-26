@@ -516,3 +516,14 @@ Repo: https://github.com/mrtitoong/wordwise
   mới: sổ hỏi "có thêm N từ – Nhận/Bỏ qua" (`pendingListWords`, từ bị bỏ ở bản mới vẫn ở lại sổ; bản chỉ
   bỏ bớt từ thì tự ghi đã nhận). Giới hạn: tính lại thẻ từ lịch sử khi xung đột dùng tỉ lệ nhớ trong Cài
   đặt (không biết lượt nào ở 14 ngày cuối). Đã áp lên cloud. Kiểm tra đầu vào làm ở 7.4b (`gd7/placement`).
+- 2026-10-26 (Prompt 7.4b, chủ sản phẩm duyệt): Kiểm tra đầu vào trong bảng "Thêm vào sổ tay" (sau bước
+  ngày mục tiêu, tùy chọn, cần ≥ 10 từ chưa học; khách làm được). Logic thuần `src/lib/library/placement.ts`:
+  độ khó = thứ hạng tần suất, không có thì ước theo CEFR, không có nữa thì không suy ra; ≤ 30 từ hỏi hết,
+  nhiều hơn chia 5 nhóm độ khó × 6 từ. Biết → 1 câu trắc nghiệm (đáp án nhiễu từ chính danh sách), sai/Không
+  chắc/Chưa biết = chưa biết; nhóm ≥ 80% biết (≥ 3 câu đã trả lời) → đề xuất cả nhóm. **Mặc định nhận hết đề
+  xuất** (bấm Lưu), "Xem lại" là tùy chọn, theo nhóm có công tắc cả nhóm và mở từng từ (thay cho "xem lại
+  trước khi lưu" ở GĐ7). Từ đã biết: thẻ Nghĩa đặt sẵn mức Đã thuộc (`placedCardFields`: state Review,
+  7 ≤ S < 21, lần ôn đầu 7–28 ngày theo id thẻ, reps = 0), **không ghi review_logs** (thống kê không lẫn bài
+  kiểm tra; xung đột phải tính lại thẻ thì từ đó coi như mới), `introduced_at` = hôm qua để không trừ chỉ tiêu
+  từ mới; từ đã có lịch ôn giữ nguyên. Thẻ Chính tả của từ đã biết vẫn mở dần như thường. Chỉ làm lúc thêm
+  danh sách (nút kiểm tra ở trang sổ để sau).

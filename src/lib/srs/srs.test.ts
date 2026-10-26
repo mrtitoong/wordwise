@@ -6,6 +6,7 @@ import {
   createCards,
   missingSkillCards,
   nextDueByRating,
+  placedCardFields,
   retrievability,
   review,
   unlockedSkills,
@@ -234,6 +235,49 @@ describe("thẻ theo kỹ năng", () => {
     // Đã có (kể cả đã xóa mềm) thì không tạo lại.
     const existing = [...cards, { ...created[0]!, deleted_at: NOW.toISOString() }, created[1]!];
     expect(missingSkillCards(words, existing, ["meaning", "spelling"], NOW)).toEqual([]);
+  });
+});
+
+describe("thẻ đặt sẵn sau kiểm tra đầu vào", () => {
+  const scheduler = createScheduler();
+  const ids = Array.from({ length: 200 }, (_, i) => `card-${i}`);
+
+  it("vào lịch như Đã thuộc, lần ôn đầu rải 7–28 ngày, cùng id cho cùng ngày", () => {
+    const days = ids.map((id) => {
+      const fields = placedCardFields(scheduler, id, NOW);
+      expect(fields).toMatchObject({ state: State.Review, reps: 0, lapses: 0 });
+      expect(masteryLevel({ ...fields, deleted_at: null })).toBe(3);
+      expect(fields.difficulty).toBeGreaterThan(0);
+      return (Date.parse(fields.due) - NOW.getTime()) / DAY;
+    });
+    expect(Math.min(...days)).toBe(7);
+    expect(Math.max(...days)).toBe(28);
+    expect(new Set(days).size).toBeGreaterThan(15);
+    expect(placedCardFields(scheduler, "card-1", NOW)).toEqual(
+      placedCardFields(scheduler, "card-1", NOW),
+    );
+  });
+
+  it("ôn đúng hạn thì khoảng cách tăng; quên thì học lại", () => {
+    const card = { ...newCard(), ...placedCardFields(scheduler, "card-1", NOW) };
+    const due = new Date(card.due);
+    const good = review(scheduler, card, {
+      rating: Rating.Good,
+      mode: "mcq",
+      reviewedAt: due,
+      logId: "l1",
+    }).card;
+    expect(good.state).toBe(State.Review);
+    expect(Date.parse(good.due) - due.getTime()).toBeGreaterThan(
+      Date.parse(card.due) - NOW.getTime(),
+    );
+    const again = review(scheduler, card, {
+      rating: Rating.Again,
+      mode: "mcq",
+      reviewedAt: due,
+      logId: "l2",
+    }).card;
+    expect(again.state).toBe(State.Relearning);
   });
 });
 

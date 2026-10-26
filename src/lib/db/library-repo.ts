@@ -13,6 +13,8 @@ export type ListItem = {
   senseId: string;
   subtopic: string | null;
   contextSentence: string | null;
+  /** Đã biết qua kiểm tra đầu vào (Prompt 7.4b). */
+  known?: boolean;
 };
 
 export type ListTarget =
@@ -35,6 +37,7 @@ async function addItems(
       senseId: item.senseId,
       contextSentence: item.contextSentence,
       tags: subtopicTag(item.subtopic),
+      known: item.known,
     })),
     { notebookId, inputMethod: "list", source: listSource(listId) },
     now,

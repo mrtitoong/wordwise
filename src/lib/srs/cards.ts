@@ -9,7 +9,7 @@
 import { Rating, State, type FSRS, type Grade } from "ts-fsrs";
 import { cardId } from "@/lib/db/ids";
 import type { CardRow, UserWordRow } from "@/lib/db/types";
-import { masteryLevel } from "./mastery";
+import { KNOWN_STABILITY_DAYS, MASTERED_STABILITY_DAYS, masteryLevel } from "./mastery";
 import { applyReview, newCardFields, toFsrsCard, type ReviewInput } from "./scheduler";
 
 export const SKILLS = ["meaning", "spelling", "speaking"] as const;
@@ -94,6 +94,32 @@ export function createCards(
     created_at: iso,
     updated_at: iso,
   }));
+}
+
+/** Từ đã biết qua kiểm tra đầu vào: lần ôn đầu rải trong khoảng này (ngày). */
+export const PLACED_FIRST_REVIEW_DAYS = [7, 28] as const;
+
+/**
+ * Thẻ Nghĩa của từ đã biết qua kiểm tra đầu vào (Prompt 7.4b): vào lịch như "Đã thuộc" (mức 3,
+ * 7 ≤ S < 21), lần ôn đầu rải 1–4 tuần theo id thẻ (hai máy ra cùng ngày). Không ghi review_logs
+ * (chốt: thống kê không lẫn bài kiểm tra), nên reps = 0 để khớp số lượt ôn khi hợp nhất. Độ khó lấy
+ * như chấm "Dễ" lần đầu.
+ */
+export function placedCardFields(scheduler: FSRS, id: string, now: Date) {
+  const [min, max] = PLACED_FIRST_REVIEW_DAYS;
+  let hash = 0;
+  for (const ch of id) hash = (hash * 31 + ch.charCodeAt(0)) >>> 0;
+  const days = min + (hash % (max - min + 1));
+  const easy = scheduler.next(toFsrsCard(newCardFields(now)), now, Rating.Easy).card;
+  return {
+    ...newCardFields(now),
+    state: State.Review,
+    difficulty: easy.difficulty,
+    stability: Math.min(Math.max(days, KNOWN_STABILITY_DAYS), MASTERED_STABILITY_DAYS - 1),
+    scheduled_days: days,
+    due: new Date(now.getTime() + days * 86_400_000).toISOString(),
+    last_review: now.toISOString(),
+  };
 }
 
 /** Một lượt ôn: thẻ mới và dòng review_logs (gọi lại applyReview của scheduler). */

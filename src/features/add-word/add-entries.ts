@@ -9,6 +9,7 @@ import type { NormalizedEntry } from "@/lib/entry/normalize";
 import { createClient } from "@/lib/supabase/client";
 import { requestWord } from "@/lib/words/request-word";
 import type { EntryContext } from "./add-word-screen";
+import { notifyPreparing } from "./preparing-events";
 import { cacheSenses } from "./word-search";
 
 export type AddEntriesResult = {
@@ -67,7 +68,10 @@ export async function addEntries(
         skipped = fresh.length - i;
         break;
       }
-      if (response.status === "preparing") preparing++;
+      if (response.status === "preparing") {
+        preparing++;
+        notifyPreparing();
+      }
       if (response.status === "ready") {
         const senseId = response.words[0]!.senseIds[0]!;
         const result = await addSensesToNotebook(

@@ -1308,6 +1308,18 @@
       "inNotebook": "already in this notebook, skipped",
       "didYouMean": "Did you mean <b>{word}</b>? Tap to fix.",
       "imageFailed": "Couldn't save the context photo; the words were still added."
+    },
+    "preparingList": {
+      "title": "Preparing content ({count})",
+      "titleDone": "Just added",
+      "preparing": "preparing, about 30 seconds · going to “{notebook}”",
+      "done": "added to “{notebook}” · tap to view",
+      "failed": "couldn't create content",
+      "retry": "Retry",
+      "retryLimit": "Already retried several times. Check the spelling or add it again later.",
+      "retryFailed": "Couldn't retry. Check your connection and try again.",
+      "offline": "Will update when you're online.",
+      "notebookFallback": "notebook"
     }
   },
   "review": {

@@ -3,6 +3,7 @@
 import { useEffect } from "react";
 import { usePathname } from "next/navigation";
 import { useOwner } from "@/lib/sync/owner";
+import { listenForInstallPrompt } from "./install-prompt";
 import { setUpOffline } from "./offline-client";
 import { prefetchTomorrow } from "./prefetch-runner";
 
@@ -16,6 +17,9 @@ const PREFETCH_DELAY_MS = 10_000;
 export function OfflineSetup() {
   const owner = useOwner();
   const pathname = usePathname();
+
+  // Giữ sự kiện cài app ngay từ lúc mở (nút cài nằm ở Cài đặt).
+  useEffect(() => listenForInstallPrompt(), []);
 
   useEffect(() => {
     // Mỗi lần đổi trang: vừa xong onboarding/đăng nhập thì lưu sẵn trang chính ngay.

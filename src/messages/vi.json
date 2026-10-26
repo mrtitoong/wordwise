@@ -203,6 +203,20 @@
       "hint": "Cao hơn thì nhớ chắc hơn nhưng phải ôn nhiều hơn. Áp dụng cho các lần ôn sau.",
       "cancel": "Hủy",
       "save": "Lưu {percent}%"
+    },
+    "appSection": "Ứng dụng",
+    "install": {
+      "title": "Cài WordWise lên màn hình chính",
+      "body": "Mở nhanh như một ứng dụng, ôn được cả khi không có mạng.",
+      "button": "Cài WordWise",
+      "installed": "WordWise đã được cài trên máy này. Hãy mở từ biểu tượng trên màn hình chính.",
+      "done": "Đã cài xong! Mở WordWise từ biểu tượng trên màn hình chính.",
+      "iosIntro": "Trên iPhone/iPad, cài trong 2 bước:",
+      "iosStep1": "Bấm nút Chia sẻ (hình vuông có mũi tên lên) ở thanh công cụ của trình duyệt.",
+      "iosStep2": "Kéo xuống, chọn “Thêm vào Màn hình chính”, rồi bấm “Thêm”.",
+      "menuIntro": "Cài từ menu của trình duyệt:",
+      "menuStep1": "Bấm nút ⋮ (Chrome, Edge) ở góc trên bên phải, hoặc biểu tượng cài ở cuối thanh địa chỉ trên máy tính.",
+      "menuStep2": "Chọn “Cài đặt ứng dụng” hoặc “Thêm vào Màn hình chính”."
     }
   },
   "languages": {

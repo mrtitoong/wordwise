@@ -1,4 +1,4 @@
-import { expect, test } from "@playwright/test";
+import { devices, expect, test } from "@playwright/test";
 import { asOnboardedGuest, waitForOfflineShell } from "./helpers";
 
 // Test này cần Service Worker (cấu hình chung chặn nó).
@@ -57,5 +57,48 @@ test.describe("Cài app và offline", () => {
     await context.setOffline(false);
     await page.goto("/stats");
     await expect(page).toHaveURL("/stats");
+  });
+
+  test("Cài đặt → Ứng dụng: nút cài khi trình duyệt cho phép, hướng dẫn theo máy", async ({
+    page,
+    context,
+    baseURL,
+    browser,
+  }) => {
+    await asOnboardedGuest(context, baseURL);
+    await page.goto("/settings");
+    const card = page.locator("[data-install-mode]");
+    // Chromium không tự bắn beforeinstallprompt khi chạy test: hướng dẫn qua menu.
+    await expect(card).toHaveAttribute("data-install-mode", "menu");
+    await expect(card.getByText("Cài từ menu của trình duyệt:")).toBeVisible();
+
+    // Trình duyệt cho cài (giả lập sự kiện): bấm nút → hộp thoại → đồng ý.
+    await page.evaluate(() => {
+      const event = new Event("beforeinstallprompt", { cancelable: true });
+      Object.assign(event, {
+        prompt: () => Promise.resolve(),
+        userChoice: Promise.resolve({ outcome: "accepted" }),
+      });
+      window.dispatchEvent(event);
+    });
+    await expect(card).toHaveAttribute("data-install-mode", "prompt");
+    await page.getByRole("button", { name: "Cài WordWise" }).click();
+    await expect(
+      page.getByText("Đã cài xong! Mở WordWise từ biểu tượng trên màn hình chính."),
+    ).toBeVisible();
+
+    // iPhone: hướng dẫn Chia sẻ → Thêm vào Màn hình chính.
+    const iphone = await browser.newContext({
+      userAgent: devices["iPhone 13"].userAgent,
+      locale: "vi-VN",
+    });
+    await asOnboardedGuest(iphone, baseURL);
+    const ios = await iphone.newPage();
+    await ios.goto("/settings");
+    await expect(ios.locator("[data-install-mode]")).toHaveAttribute("data-install-mode", "ios");
+    await expect(
+      ios.getByText("Kéo xuống, chọn “Thêm vào Màn hình chính”, rồi bấm “Thêm”."),
+    ).toBeVisible();
+    await iphone.close();
   });
 });

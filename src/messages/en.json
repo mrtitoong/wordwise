@@ -1445,7 +1445,14 @@
       "ae": "/æ/: open your mouth wide, between \"a\" and \"e\" (as in \"cat\").",
       "schwa": "/ə/ is a short, relaxed \"uh\" in unstressed syllables."
     },
-    "gotItHint": "This word comes back later in the session as a quick check."
+    "gotItHint": "This word comes back later in the session as a quick check.",
+    "keyboard": {
+      "label": "Letter keyboard",
+      "space": "Space",
+      "hyphen": "Hyphen",
+      "apostrophe": "Apostrophe",
+      "backspace": "Delete"
+    }
   },
   "mic": {
     "explainTitle": "Allow the microphone",

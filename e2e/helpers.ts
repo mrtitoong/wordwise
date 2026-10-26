@@ -156,7 +156,7 @@ export async function signInAsAdmin(page: Page, next?: string) {
   const role = await admin
     .from("profiles")
     .update({ role: "admin" })
-    .eq("id", created.data.user.id);
+    .eq("user_id", created.data.user.id);
   if (role.error) throw new Error(role.error.message);
   await signInWithCode(page, email, next);
 }

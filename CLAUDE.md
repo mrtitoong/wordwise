@@ -541,3 +541,11 @@ Repo: https://github.com/mrtitoong/wordwise
   gợi ý (Gboard/Samsung bỏ qua autocomplete/autocorrect = off) và bộ gõ tiếng Việt không đổi chữ. Ô đáp án là
   `role="textbox"` chỉ hiển thị; bàn phím Bluetooth vẫn gõ được. Máy tính giữ ô nhập thường. **Ngoại lệ vùng
   chạm**: phím chữ cao 48px nhưng rộng ~1/10 màn hình (~33px ở 360px) như bàn phím hệ thống.
+- 2026-10-26 (danh sách "Đang chuẩn bị", chủ sản phẩm duyệt): Từ chưa có trong kho vừa thêm vào sổ (~30 giây
+  tạo nội dung) hiện trong khung **"Đang chuẩn bị nội dung"** ở màn Thêm từ (mọi sổ) và trang sổ tay (sổ đó)
+  (`src/features/add-word/preparing-list.tsx`, logic `src/lib/words/preparing.ts`): đọc `word_job_requests` +
+  `word_jobs` của chính người dùng (24 giờ, có sổ đích), hỏi lại mỗi 5 giây khi còn từ đang chờ, có từ xong thì
+  **đồng bộ ngay** (trước đây có thể chờ tới 5 phút); "đã vào sổ" hiện 10 phút rồi ẩn; lỗi có **Thử lại**
+  (`retry_word_job()`: xếp lại việc, không thêm yêu cầu nên không trừ lượt từ mới/ngày, giữ
+  `first_started_at`, tối đa 3 lần – cột `word_jobs.user_retries`). Chỉ tài khoản đã đăng nhập; không có từ
+  nào thì không hiện. Màn Hôm nay không có dòng nhắc.

@@ -29,6 +29,8 @@ jobs:
         run: npm run stats:perf
       - name: Bundle Edge Function khớp mã nguồn
         run: npm run functions:build -- --check
+      - name: Service Worker khớp mã nguồn
+        run: npm run sw:build -- --check
       # Build không cần Supabase: thiếu biến môi trường thì app chạy chế độ khách.
       - run: npm run build
 

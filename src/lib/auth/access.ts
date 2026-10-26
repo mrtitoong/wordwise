@@ -34,6 +34,8 @@ export function decideAccess({
 
   // /auth/*: xử lý link đăng nhập, ai cũng vào được.
   if (matches(pathname, "/auth")) return { action: "allow" };
+  // Trang báo mất mạng (Service Worker lưu sẵn để trả khi offline): ai cũng vào được.
+  if (matches(pathname, "/offline")) return { action: "allow" };
 
   if (matches(pathname, "/welcome") || matches(pathname, "/login")) {
     // Khách vẫn vào được /login để tạo tài khoản; người đã đăng nhập thì không cần.

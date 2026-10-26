@@ -1,7 +1,9 @@
 {
   "app": {
     "name": "WordWise",
-    "description": "Learn vocabulary and remember it with smart review scheduling."
+    "description": "Learn vocabulary and remember it with smart review scheduling.",
+    "shortName": "WordWise",
+    "shortcutReview": "Today's review"
   },
   "nav": {
     "main": "Main navigation",
@@ -201,6 +203,20 @@
       "hint": "Higher means you remember more but review more. Applies to future reviews.",
       "cancel": "Cancel",
       "save": "Save {percent}%"
+    },
+    "appSection": "App",
+    "install": {
+      "title": "Install WordWise on your home screen",
+      "body": "Opens quickly like an app and works even without internet.",
+      "button": "Install WordWise",
+      "installed": "WordWise is installed on this device. Open it from the home screen icon.",
+      "done": "Installed! Open WordWise from your home screen.",
+      "iosIntro": "On iPhone/iPad, install in 2 steps:",
+      "iosStep1": "Tap the Share button (a square with an up arrow) in the browser toolbar.",
+      "iosStep2": "Scroll down, choose “Add to Home Screen”, then tap “Add”.",
+      "menuIntro": "Install from the browser menu:",
+      "menuStep1": "Tap ⋮ (Chrome, Edge) in the top right corner, or the install icon at the end of the address bar on a computer.",
+      "menuStep2": "Choose “Install app” or “Add to Home screen”."
     }
   },
   "languages": {
@@ -1500,5 +1516,11 @@
     "wavSilent": "Too quiet, like silence",
     "wavFailed": "Couldn't convert",
     "again": "Record again"
+  },
+  "offline": {
+    "title": "You're offline",
+    "body": "This page isn't saved on this device yet. You can still review the words already on it.",
+    "home": "Go to Today",
+    "retry": "Try again"
   }
 }

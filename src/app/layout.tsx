@@ -5,6 +5,7 @@ import { getLocale, getTranslations } from "next-intl/server";
 import { SyncProvider } from "@/components/sync/sync-provider";
 import { ToastViewport } from "@/components/ui/toast";
 import { ImportProvider } from "@/features/import/import-provider";
+import { OfflineSetup } from "@/features/offline/offline-setup";
 import "./globals.css";
 
 const font = Be_Vietnam_Pro({
@@ -20,6 +21,8 @@ export async function generateMetadata(): Promise<Metadata> {
     title: { default: t("name"), template: `%s · ${t("name")}` },
     description: t("description"),
     applicationName: t("name"),
+    // iPhone/iPad: mở từ màn hình chính như app (không thanh địa chỉ).
+    appleWebApp: { capable: true, title: t("name"), statusBarStyle: "default" },
   };
 }
 
@@ -38,6 +41,7 @@ export default async function RootLayout({ children }: { children: React.ReactNo
         <NextIntlClientProvider>
           <SyncProvider />
           <ImportProvider />
+          <OfflineSetup />
           {children}
           <ToastViewport />
         </NextIntlClientProvider>

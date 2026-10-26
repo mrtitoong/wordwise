@@ -7,8 +7,12 @@ import {
   signInWithCode,
   uniqueEmail,
   userIdByEmail,
+  waitForOfflineShell,
 } from "../helpers";
 import { answerQuestion, finishSession, type Card, type Log } from "../review-helpers";
+
+// Service Worker lưu sẵn giao diện để chuyển trang được khi offline.
+test.use({ serviceWorkers: "allow" });
 
 test.describe("Luồng 3 – mất mạng giữa phiên ôn", () => {
   test.skip(!hasSupabase || !process.env.E2E_SUPABASE_SECRET_KEY, "cần Supabase cục bộ (CI)");
@@ -22,6 +26,9 @@ test.describe("Luồng 3 – mất mạng giữa phiên ôn", () => {
     await signInWithCode(page, email);
     await completeOnboarding(page, { level: "B1", stayInSession: true });
 
+    // App đã lưu sẵn các trang chính (vừa xong onboarding).
+    await waitForOfflineShell(page);
+
     // Vài câu đầu khi còn mạng.
     for (let i = 0; i < 3; i++) expect(await answerQuestion(page)).not.toBe("done");
 
@@ -32,19 +39,17 @@ test.describe("Luồng 3 – mất mạng giữa phiên ôn", () => {
     const local = await readLocalStore<Log & { id: string }>(page, "review_logs");
     expect(local.length).toBe(3 + offlineSteps.length);
 
-    // Lượt ôn khi offline nằm trong hàng chờ gửi.
-    expect((await readLocalStore(page, "outbox")).length).toBeGreaterThan(0);
-
-    // Có mạng lại (vẫn ở màn kết quả): tự đồng bộ, không cần bấm gì. Chưa bấm "Xong" khi offline:
-    // chưa có Service Worker lưu sẵn giao diện nên chuyển trang khi offline ra trang lỗi của trình
-    // duyệt (Prompt 8.2 làm phần mở app offline).
-    await context.setOffline(false);
-    await expect
-      .poll(async () => (await readLocalStore(page, "outbox")).length, { timeout: 20_000 })
-      .toBe(0);
+    // Hết phiên vẫn offline: về Hôm nay (trang đã lưu sẵn), lượt ôn chờ gửi.
     await page.getByRole("button", { name: "Xong", exact: true }).click();
     await expect(page).toHaveURL("/");
-    await expect(page.locator("[data-sync-state]")).toHaveAttribute("data-sync-state", "idle");
+    const icon = page.locator("[data-sync-state]");
+    await expect(icon).toHaveAttribute("data-sync-state", "offline");
+    await expect(icon).toHaveAccessibleName(/Đang offline, \d+ thay đổi chờ gửi/);
+
+    // Có mạng lại: tự đồng bộ, không cần bấm gì.
+    await context.setOffline(false);
+    await expect(icon).toHaveAttribute("data-sync-state", "idle", { timeout: 20_000 });
+    expect(await readLocalStore(page, "outbox")).toHaveLength(0);
 
     const admin = serverAdmin()!;
     const userId = await userIdByEmail(email);

@@ -1,5 +1,6 @@
 import { createClient } from "@supabase/supabase-js";
 import { expect, type BrowserContext, type Page } from "@playwright/test";
+import { CACHE_NAMES, SHELL_PAGES } from "../src/lib/offline/sw-policy";
 
 /** Có Supabase (cục bộ/CI) thì mới chạy được test đăng nhập. */
 export const hasSupabase = !!process.env.NEXT_PUBLIC_SUPABASE_URL;
@@ -8,9 +9,10 @@ const MAILPIT_URL = process.env.E2E_MAILPIT_URL ?? "http://127.0.0.1:54324";
 /** Vào thẳng app như khách đã xong onboarding (cho các test không về đăng nhập). */
 export async function asOnboardedGuest(context: BrowserContext, baseURL: string | undefined) {
   const url = baseURL ?? "http://localhost:3100";
+  // httpOnly như cookie thật (src/lib/auth/cookies.ts): app không đọc được bằng JavaScript.
   await context.addCookies([
-    { name: "ww_guest", value: "1", url },
-    { name: "ww_onboarded", value: "1", url },
+    { name: "ww_guest", value: "1", url, httpOnly: true },
+    { name: "ww_onboarded", value: "1", url, httpOnly: true },
   ]);
 }
 
@@ -198,4 +200,26 @@ export async function addTypedWord(page: Page, typed: string, lemma: string, not
   await expect(
     page.getByRole("status").filter({ hasText: `Đã thêm “${lemma}” vào ${notebook}` }),
   ).toBeVisible();
+}
+
+/**
+ * Đợi Service Worker điều khiển trang và lưu xong các trang chính (cần
+ * `test.use({ serviceWorkers: "allow" })`).
+ */
+export async function waitForOfflineShell(page: Page) {
+  await expect
+    .poll(() => page.evaluate(() => !!navigator.serviceWorker?.controller), { timeout: 15_000 })
+    .toBe(true);
+  await expect
+    .poll(
+      async () => {
+        const saved = await page.evaluate(async (name) => {
+          const cache = await caches.open(name);
+          return (await cache.keys()).map((r) => new URL(r.url).pathname);
+        }, CACHE_NAMES.pages);
+        return SHELL_PAGES.filter((path) => !saved.includes(path));
+      },
+      { timeout: 30_000, message: "Service Worker chưa lưu đủ trang chính" },
+    )
+    .toEqual([]);
 }

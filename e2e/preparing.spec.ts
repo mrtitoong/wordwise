@@ -40,7 +40,15 @@ test.describe("Danh sách Đang chuẩn bị", () => {
     const jobs = await admin
       .from("word_jobs")
       .insert([
-        { language: "en", lemma: `prep-a-${stamp}`, pos: "noun", status: "running" },
+        // Chèn nhiều dòng một lần: mọi dòng cần cùng các cột (cột thiếu thành null).
+        {
+          language: "en",
+          lemma: `prep-a-${stamp}`,
+          pos: "noun",
+          status: "running",
+          attempts: 1,
+          finished_at: null,
+        },
         {
           language: "en",
           lemma: `prep-b-${stamp}`,

@@ -559,3 +559,19 @@ Repo: https://github.com/mrtitoong/wordwise
   sản phẩm đã **tắt Deployment Protection** nên preview mở công khai, không cần khóa bypass (bật lại thì thêm
   secret `VERCEL_AUTOMATION_BYPASS_SECRET`). Chi tiết `docs/qa/e2e.md`. Còn để 8.2: offline bấm "Xong" ra
   trang lỗi của trình duyệt (chưa có Service Worker lưu giao diện).
+- 2026-10-26 (GĐ8 Prompt 8.2, chủ sản phẩm duyệt 5 đề xuất): chia **8.2a** (`gd8/pwa-offline`: cài app, offline,
+  tải trước) và **8.2b** (`gd8/perf-a11y`: hiệu năng, truy cập, chế độ tối, Lighthouse). Lighthouse 13 không còn
+  mục PWA: "4 mục" = Hiệu năng, Truy cập, Best Practices, SEO; đo trên bản build ở CI (preview Vercel luôn
+  `noindex` nên SEO thấp), 4 trang (Chào mừng, Hôm nay, Phiên ôn, Thống kê), job CI báo đỏ khi < 90.
+- 2026-10-26 (Prompt 8.2a): `src/app/manifest.ts` (mở bằng icon → Hôm nay; lối tắt Ôn hôm nay, Thêm từ), icon từ
+  `src/app/icon.svg` (`npm run icons:build`, vẽ bằng Chromium của Playwright). **Service Worker viết tay**
+  (`src/sw/sw.ts` → `public/sw.js` bằng `npm run sw:build`, CI kiểm tra khớp), quy tắc thuần ở
+  `src/lib/offline/sw-policy.ts`: JS/CSS lưu lần đầu; mở trang lấy mạng trước (chậm > 5 giây thì bản đã lưu), mất
+  mạng trả bản đã lưu, chưa có thì trang `/offline` (ai cũng vào được); không lưu /login, /auth, /admin. App lưu
+  sẵn 7 trang chính + /offline (kèm JS/CSS của chúng) khi vừa xong onboarding/đăng nhập và tối đa mỗi giờ một
+  lần; đăng xuất xóa trang đã lưu. Audio (bucket `audio`) và ảnh Pexels/Unsplash lưu khi đã tải, tối đa 1.500
+  file, trả đoạn byte (206) cho thẻ `<audio>`. **Tải trước** (`src/lib/offline/prefetch.ts`): thẻ đến hạn tới hết
+  ngày học mai, mỗi ngày học một lần, sau khi mở app 10 giây; audio của từ (giọng đang chọn) + audio 2 câu ví dụ
+  đầu mỗi nghĩa nếu đã có file (404 thì bỏ, không tạo mới); ảnh chỉ khi Wi-Fi/mạng dây; không tải khi 4G,
+  offline, Tiết kiệm dữ liệu; iPhone/máy tính (không biết loại mạng) chỉ audio. Audio câu ví dụ tìm trong máy
+  trước khi gọi word-media. Playwright chặn Service Worker mặc định (`serviceWorkers: "block"`), test offline bật lại.

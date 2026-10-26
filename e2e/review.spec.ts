@@ -11,13 +11,15 @@ import {
 
 test.describe("Phiên ôn", () => {
   test.skip(!hasSupabase, "cần Supabase cục bộ (chạy trong CI)");
+  // Học 5 từ khởi đầu (xem thẻ đủ 5 tab, mỗi từ quay lại 2 lần) rồi mới tới phần chính của test.
+  test.setTimeout(90_000);
 
   test("học 5 từ khởi đầu → ôn hết → lịch ôn cập nhật, chuỗi ngày học bắt đầu", async ({
     page,
   }) => {
     const seen = await learnStarterWords(page);
     expect(seen.filter((s) => s === "intro")).toHaveLength(5);
-    // Mỗi từ mới: xem thẻ → flashcard → quay lại sau bước học 10 phút trong cùng phiên.
+    // Mỗi từ mới: xem thẻ (tự ghi "Khó") → quay lại trong cùng phiên dưới dạng câu hỏi tự chấm.
     expect(seen.length).toBeGreaterThanOrEqual(15);
 
     await expect(page.getByText("Chuỗi 1 ngày")).toBeVisible();
@@ -39,10 +41,13 @@ test.describe("Phiên ôn", () => {
       expect(card.reps).toBeGreaterThanOrEqual(2);
       expect(Date.parse(card.due)).toBeGreaterThan(Date.now());
     }
-    expect(logs.length).toBe(seen.length - 5);
-    expect(logs.some((l) => l.mode === "flashcard")).toBe(true);
+    expect(logs.length).toBe(seen.length);
     expect(logs.every((l) => ["flashcard", "mcq", "listening"].includes(l.mode))).toBe(true);
-    expect(logs.every((l) => !l.is_extra && l.rating >= 3)).toBe(true);
+    expect(logs.every((l) => !l.is_extra)).toBe(true);
+    const intros = logs.filter((l) => l.correct === null);
+    expect(intros).toHaveLength(5);
+    expect(intros.every((l) => l.mode === "flashcard" && l.rating === 2)).toBe(true);
+    expect(logs.filter((l) => l.correct !== null).every((l) => l.rating >= 3)).toBe(true);
 
     await page.getByRole("button", { name: "Xong", exact: true }).click();
     await expect(page).toHaveURL("/");
@@ -57,12 +62,11 @@ test.describe("Phiên ôn", () => {
     await page.getByRole("button", { name: "Dùng thử ngay" }).click();
     await completeOnboarding(page, { level: "B1", stayInSession: true });
 
-    // Từ đầu tiên: xem thẻ, lật, "Quên" (vuốt trái tương đương) bằng phím 1.
-    await page.getByRole("button", { name: "Đã xem, kiểm tra" }).click();
-    await page.keyboard.press("Space");
-    await expect(page.getByRole("group", { name: "Bạn nhớ từ này thế nào?" })).toBeVisible();
-    await expect(page.getByRole("button", { name: /^Quên\s*1 phút$/ })).toBeVisible();
-    await page.keyboard.press("1");
+    // Từ đầu tiên: thẻ đủ 5 tab ngay trong phiên, xem tab Ví dụ rồi "Đã xem xong" (tự ghi "Khó").
+    await expect(page.getByRole("tab", { name: "Nghĩa" })).toHaveAttribute("aria-selected", "true");
+    await page.getByRole("tab", { name: "Ví dụ" }).click();
+    await expect(page.getByRole("link", { name: "Xem thẻ đầy đủ" })).toHaveCount(0);
+    await page.getByRole("button", { name: "Đã xem xong" }).click();
     await expect(page.getByText("2/")).toBeVisible();
 
     await page.getByRole("button", { name: "Thoát phiên" }).click();
@@ -70,7 +74,7 @@ test.describe("Phiên ôn", () => {
     await expect(page).toHaveURL("/");
     await expect(page.getByText("Tiếp tục phiên dở")).toBeVisible();
     const logs = await readLocalStore<Log>(page, "review_logs");
-    expect(logs.map((l) => l.rating)).toEqual([1]);
+    expect(logs.map((l) => [l.rating, l.correct])).toEqual([[2, null]]);
 
     await page.getByRole("button", { name: "Tiếp tục" }).click();
     await expect(page).toHaveURL("/review/session?resume=1");

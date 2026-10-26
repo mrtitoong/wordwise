@@ -25,6 +25,10 @@ export type CardContextValue = {
   addSense: (senseId: string) => void;
   /** Chỉ xem (Admin duyệt danh sách): ẩn nút thêm/sửa/báo lỗi, chip không bấm được. */
   readOnly?: boolean;
+  /** Nhúng trong phiên ôn (học từ mới): ẩn nút/link rời phiên, chip mở bảng thêm nhanh. */
+  inSession?: boolean;
+  /** Tự phát audio của từ theo giọng này khi thẻ hiện ra. */
+  autoPlay?: "us" | "uk" | null;
 };
 
 const CardContext = createContext<CardContextValue | null>(null);

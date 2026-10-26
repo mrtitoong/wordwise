@@ -527,3 +527,10 @@ Repo: https://github.com/mrtitoong/wordwise
   kiểm tra; xung đột phải tính lại thẻ thì từ đó coi như mới), `introduced_at` = hôm qua để không trừ chỉ tiêu
   từ mới; từ đã có lịch ôn giữ nguyên. Thẻ Chính tả của từ đã biết vẫn mở dần như thường. Chỉ làm lúc thêm
   danh sách (nút kiểm tra ở trang sổ để sau).
+- 2026-10-26 (sửa luồng học từ mới, chủ sản phẩm duyệt): Màn từ mới trong phiên hiện **thẻ đủ 5 tab**
+  (`WordCardBody` tách từ `word-card-screen.tsx`, `inSession`: mở sẵn tab Nghĩa, ẩn nút/link rời phiên,
+  thêm "Của bạn" được bằng bảng nổi; chip từ liên quan mở `SessionChipSheet`: nghĩa ngắn nếu có trong máy +
+  "Thêm vào Sắp học"). Bỏ link "Xem thẻ đầy đủ" và flashcard tự chấm ngay sau khi xem. "Đã xem xong" → **tự
+  ghi lượt đầu "Khó"** (`INTRO_RATING`, mode flashcard, `correct = null` = `isIntroLog`), từ quay lại trong
+  phiên dưới dạng trắc nghiệm/nghe → chọn nghĩa. Lượt này không tính vào độ chính xác (Thống kê, màn kết quả
+  phiên), vẫn tính cho chuỗi ngày học. Flashcard 4 nút khi ôn từ cũ giữ nguyên.

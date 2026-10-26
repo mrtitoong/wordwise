@@ -138,6 +138,17 @@ export const MEDIAN_MIN_SAMPLES = 10;
 /** Chỉ xét chừng này câu đúng gần nhất. */
 export const MEDIAN_WINDOW = 50;
 
+/**
+ * Xem xong thẻ từ mới trong phiên (chốt 2026-10-26): lượt đầu tự ghi "Khó" thay cho tự chấm, để từ
+ * quay lại sau vài phút dưới dạng câu hỏi app tự chấm. Lượt này không có câu trả lời: correct = null
+ * (mọi chế độ khác đều ghi đúng/sai), không tính vào độ chính xác.
+ */
+export const INTRO_RATING: Grade = Rating.Hard;
+
+export function isIntroLog(log: Partial<Pick<ReviewLogRow, "correct">>): boolean {
+  return log.correct === null;
+}
+
 /** Trung vị thời gian trả lời đúng gần đây của người học ở một chế độ. */
 export function medianResponseMs(
   logs: readonly Pick<ReviewLogRow, "mode" | "correct" | "response_ms" | "reviewed_at">[],

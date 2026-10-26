@@ -759,7 +759,11 @@
     "chip": {
       "open": "Open card",
       "add": "Add to notebook",
-      "title": "“{word}”"
+      "title": "“{word}”",
+      "addQueued": "Add to Up next",
+      "addedQueued": "Added “{word}” to {notebook} (Up next)",
+      "preparing": "This word's content is being prepared. Try adding it again after the session.",
+      "sessionHint": "You stay in the session. See this word's full card later in Notebooks."
     },
     "sheet": {
       "meaningTitle": "Your note",
@@ -1321,8 +1325,7 @@
     "stay": "Stay",
     "exit": "Leave",
     "newWord": "New word",
-    "openCard": "Open full card",
-    "gotIt": "Got it, test me",
+    "gotIt": "Done",
     "context": "Where you met it",
     "flip": "Tap to flip the card",
     "cardBack": "Back of the card",
@@ -1441,7 +1444,8 @@
       "long_vowel": "Long vowels (marked ː) are clearly longer: \"sheep\" is longer than \"ship\".",
       "ae": "/æ/: open your mouth wide, between \"a\" and \"e\" (as in \"cat\").",
       "schwa": "/ə/ is a short, relaxed \"uh\" in unstressed syllables."
-    }
+    },
+    "gotItHint": "This word comes back later in the session as a quick check."
   },
   "mic": {
     "explainTitle": "Allow the microphone",

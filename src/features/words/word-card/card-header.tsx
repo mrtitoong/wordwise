@@ -11,7 +11,7 @@ import { MineBadge, useCard } from "./parts";
 
 export function CardHeader() {
   const t = useTranslations("wordCard");
-  const { view, owner, open, addSense, readOnly } = useCard();
+  const { view, owner, open, addSense, readOnly, inSession, autoPlay } = useCard();
   const { content } = view;
 
   const customRef = view.image?.kind === "custom" ? view.image.path : null;
@@ -95,6 +95,7 @@ export function CardHeader() {
                 text={content.lemma}
                 voice={voice}
                 url={view.audio[voice]}
+                autoPlay={autoPlay === voice}
                 className="-ml-2"
               />
               <span className="text-xs font-semibold text-muted-foreground">
@@ -108,7 +109,7 @@ export function CardHeader() {
         )}
       </div>
 
-      {view.notebooks.length > 0 && (
+      {!inSession && view.notebooks.length > 0 && (
         <div className="flex flex-wrap items-center gap-2 text-sm">
           <span className="text-muted-foreground">{t("inNotebooks")}</span>
           {view.notebooks.map((n) => (
@@ -123,7 +124,7 @@ export function CardHeader() {
         </div>
       )}
 
-      {readOnly ? null : view.inNotebook ? (
+      {readOnly || inSession ? null : view.inNotebook ? (
         <div className="flex flex-wrap gap-2">
           {primary.userWordId && (
             <Button asChild className="min-h-11">

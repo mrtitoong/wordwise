@@ -8,6 +8,7 @@ export type Log = {
   mode: string;
   rating: number;
   is_extra: boolean;
+  correct: boolean | null;
   hint_level: number;
   reviewed_at: string;
 };
@@ -35,7 +36,7 @@ export async function currentAnswer(page: Page): Promise<string> {
 
 /** Trả lời đúng câu hiện tại (flashcard: "Nhớ"; trắc nghiệm, nghe → chọn nghĩa: chọn nghĩa đúng). */
 export async function answerCorrectly(page: Page): Promise<"intro" | "flashcard" | "mcq" | "done"> {
-  const intro = page.getByRole("button", { name: "Đã xem, kiểm tra" });
+  const intro = page.getByRole("button", { name: "Đã xem xong" });
   const show = page.getByRole("button", { name: "Hiện đáp án" });
   const options = page.getByRole("list", { name: "Các đáp án" });
   const done = page.getByRole("button", { name: "Xong", exact: true });
@@ -43,7 +44,11 @@ export async function answerCorrectly(page: Page): Promise<"intro" | "flashcard"
 
   if (await done.isVisible()) return "done";
   if (await intro.isVisible()) {
+    // Ghi lượt ôn chạy bất đồng bộ: đợi sang câu sau rồi mới trả lời tiếp (không bấm lại nút cũ).
+    const position = page.getByText(/^\d+\/\d+$/);
+    const before = await position.textContent();
     await intro.click();
+    await expect(position).not.toHaveText(before!);
     return "intro";
   }
   if (await show.isVisible()) {

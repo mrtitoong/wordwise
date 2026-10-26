@@ -3,11 +3,15 @@
 import { useState, type FormEvent } from "react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
+import { useLiveQuery } from "dexie-react-hooks";
 import { useTranslations } from "next-intl";
 import { Button } from "@/components/ui/button";
 import { Sheet } from "@/components/ui/sheet";
+import { showToast } from "@/components/ui/toast";
 import { removeUserImage, uploadUserImage } from "@/features/media/user-images";
 import { GUEST_OWNER } from "@/lib/db/ids";
+import { getLocalDb } from "@/lib/db/local";
+import { addSensesToDefaultNotebook } from "@/lib/db/repo";
 import type { Pos } from "@/lib/schema/word";
 import { createClient } from "@/lib/supabase/client";
 import { useOnlineStatus } from "@/lib/sync/hooks";
@@ -21,6 +25,7 @@ import {
 import { lookupHref } from "@/lib/words/links";
 import { CustomMeaningSchema, type AdditionLayer } from "@/lib/words/user-additions";
 import type { SenseView, WordCardView } from "@/lib/words/word-card";
+import { findLocal, lookupWord, type LookupResult } from "../word-data";
 
 const inputClass =
   "w-full rounded-lg border bg-background px-3 py-2.5 text-base focus-visible:outline-2 focus-visible:outline-ring";
@@ -338,6 +343,82 @@ export function ChipSheet({
         <Button asChild variant="outline" className="min-h-11">
           <Link href={lookupHref(word, pos, true)}>{t("chip.add")}</Link>
         </Button>
+      </div>
+    </Sheet>
+  );
+}
+
+/**
+ * Chip từ liên quan khi đang học từ mới trong phiên ôn: không rời phiên, chỉ xem nghĩa ngắn (nếu từ
+ * đã có trong máy) và thêm vào "Sổ của tôi" (vào Sắp học). Từ chưa có trong kho thì báo đang chuẩn bị.
+ */
+export function SessionChipSheet({
+  word,
+  pos,
+  owner,
+  onClose,
+}: {
+  word: string;
+  pos: Pos | null;
+  owner: string | null;
+  onClose: () => void;
+}) {
+  const t = useTranslations("wordCard");
+  const tRoot = useTranslations();
+  const [busy, setBusy] = useState(false);
+  const [problem, setProblem] = useState<LookupResult["status"] | null>(null);
+  const meaning = useLiveQuery(async () => {
+    const found = await findLocal(getLocalDb(), word, pos);
+    if (!found) return null;
+    return (await getLocalDb().word_senses.get(found.senseIds[0]!))?.meaning_vi ?? null;
+  }, [word, pos]);
+
+  async function add() {
+    if (!owner) return;
+    setBusy(true);
+    setProblem(null);
+    try {
+      const db = getLocalDb();
+      const found = await lookupWord(db, word, pos);
+      if (found.status !== "found") {
+        setProblem(found.status);
+        return;
+      }
+      const notebook = tRoot("onboarding.defaultNotebook");
+      await addSensesToDefaultNotebook(
+        db,
+        owner,
+        found.senseIds.slice(0, 1),
+        notebook,
+        "typed",
+        "word_card",
+      );
+      showToast({ text: t("chip.addedQueued", { word, notebook }) });
+      onClose();
+    } finally {
+      setBusy(false);
+    }
+  }
+
+  return (
+    <Sheet open onOpenChange={(open) => !open && onClose()} title={t("chip.title", { word })}>
+      <div className="flex flex-col gap-3">
+        {meaning && <p className="text-base">{meaning}</p>}
+        {problem && (
+          <p className="text-sm text-muted-foreground" role="alert">
+            {problem === "preparing"
+              ? t("chip.preparing")
+              : problem === "login_required"
+                ? t("state.loginRequired", { word })
+                : problem === "limit_reached"
+                  ? t("state.limitReached")
+                  : t("state.unavailable")}
+          </p>
+        )}
+        <Button className="min-h-11" disabled={!owner || busy} onClick={() => void add()}>
+          {t("chip.addQueued")}
+        </Button>
+        <p className="text-xs text-muted-foreground">{t("chip.sessionHint")}</p>
       </div>
     </Sheet>
   );

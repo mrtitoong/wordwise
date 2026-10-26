@@ -29,6 +29,8 @@ export type Answer = {
   correct: boolean;
   levelBefore: MasteryLevel;
   levelAfter: MasteryLevel;
+  /** Lượt xem xong từ mới (tự ghi "Khó"): không tính vào số câu và tỉ lệ đúng. */
+  intro?: boolean;
 };
 
 export type SessionSummary = {
@@ -48,14 +50,15 @@ export function summarize(
   startedAt: Date,
   endedAt: Date,
 ): SessionSummary {
-  const correct = answers.filter((a) => a.correct).length;
+  const asked = answers.filter((a) => !a.intro);
+  const correct = asked.filter((a) => a.correct).length;
   const first = new Map<string, MasteryLevel>();
   const last = new Map<string, MasteryLevel>();
   const missed = new Map<string, SessionSummary["missed"][number]>();
   for (const a of answers) {
     if (!first.has(a.cardId)) first.set(a.cardId, a.levelBefore);
     last.set(a.cardId, a.levelAfter);
-    if (!a.correct) {
+    if (!a.correct && !a.intro) {
       const m = missed.get(a.cardId) ?? {
         cardId: a.cardId,
         wordId: a.wordId,
@@ -67,9 +70,9 @@ export function summarize(
     }
   }
   return {
-    answers: answers.length,
+    answers: asked.length,
     correct,
-    accuracy: answers.length ? correct / answers.length : 0,
+    accuracy: asked.length ? correct / asked.length : 0,
     levelUps: [...last].filter(([id, level]) => level > (first.get(id) ?? 0)).length,
     missed: [...missed.values()].sort(
       (a, b) => b.times - a.times || a.lemma.localeCompare(b.lemma),

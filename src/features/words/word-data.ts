@@ -96,7 +96,8 @@ export type LookupResult =
 const normalize = (lemma: string) => lemma.trim().toLowerCase();
 
 /** Từ trong máy khớp chữ (và loại từ nếu có). */
-async function findLocal(db: LocalDb, lemma: string, pos: Pos | null) {
+/** Từ có sẵn trong máy theo chữ (loại từ nếu có), ưu tiên từ thông dụng hơn. */
+export async function findLocal(db: LocalDb, lemma: string, pos: Pos | null) {
   const key = normalize(lemma);
   const words = await db.words
     .filter((w) => w.language === "en" && w.lemma.toLowerCase() === key && (!pos || w.pos === pos))

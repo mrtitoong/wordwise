@@ -1,6 +1,6 @@
 "use client";
 
-import { useCallback, useEffect, useMemo, useState } from "react";
+import { useCallback, useEffect, useMemo, useState, type ReactNode } from "react";
 import { useRouter } from "next/navigation";
 import { useLiveQuery } from "dexie-react-hooks";
 import { ArrowLeft } from "lucide-react";
@@ -20,7 +20,7 @@ import { CardHeader } from "./card-header";
 import { ExamplesTab } from "./examples-tab";
 import { MeaningTab } from "./meaning-tab";
 import { MemoryTab } from "./memory-tab";
-import { ChipSheet, ImageSheet, MeaningSheet, ReportSheet } from "./other-sheets";
+import { ChipSheet, ImageSheet, MeaningSheet, ReportSheet, SessionChipSheet } from "./other-sheets";
 import { CardProvider, type SheetState } from "./parts";
 import { RelatedTab } from "./related-tab";
 import { UsageTab } from "./usage-tab";
@@ -95,12 +95,55 @@ export function CardTopBar({
 }
 
 export function WordCardScreen({ wordId }: { wordId: string }) {
-  const t = useTranslations();
-  const owner = useOwner();
-  const online = useOnlineStatus();
   // Lần render đầu (cả ở server) chưa có dữ liệu thẻ nên đọc lựa chọn ngay không lệch hydrate.
   const [quick, setQuick] = useState(() => typeof window !== "undefined" && readQuickView());
   const [tab, setTab] = useState<WordCardTab>("meaning");
+  const changeQuick = (value: boolean) => {
+    setQuick(value);
+    saveQuickView(value);
+    if (value) setTab("meaning");
+  };
+  return (
+    <WordCardBody
+      wordId={wordId}
+      quick={quick}
+      tab={tab}
+      onTabChange={setTab}
+      topBar={(ready) =>
+        ready ? <CardTopBar quick={quick} onQuickChange={changeQuick} /> : <CardTopBar />
+      }
+    />
+  );
+}
+
+/**
+ * Nội dung thẻ từ (đầu thẻ, 5 tab, các bảng thêm/sửa/báo lỗi). Trang /words/[id] có thanh trên;
+ * phiên ôn nhúng thẻ khi học từ mới (`inSession`: không có nút rời phiên, tab không dính đỉnh).
+ */
+export function WordCardBody({
+  wordId,
+  quick = false,
+  tab: controlledTab,
+  onTabChange,
+  topBar,
+  inSession = false,
+  autoPlay = null,
+}: {
+  wordId: string;
+  quick?: boolean;
+  tab?: WordCardTab;
+  onTabChange?: (tab: WordCardTab) => void;
+  /** Thanh trên (null: không có). `ready` = đã có nội dung thẻ. */
+  topBar?: (ready: boolean) => ReactNode;
+  inSession?: boolean;
+  autoPlay?: "us" | "uk" | null;
+}) {
+  const t = useTranslations();
+  const owner = useOwner();
+  const online = useOnlineStatus();
+  const [ownTab, setOwnTab] = useState<WordCardTab>("meaning");
+  const tab = controlledTab ?? ownTab;
+  const setTab = onTabChange ?? setOwnTab;
   const [sheet, setSheet] = useState<SheetState | null>(null);
   const [fetchFailed, setFetchFailed] = useState(false);
 
@@ -149,12 +192,6 @@ export function WordCardScreen({ wordId }: { wordId: string }) {
     [owner, t],
   );
 
-  const changeQuick = (value: boolean) => {
-    setQuick(value);
-    saveQuickView(value);
-    if (value) setTab("meaning");
-  };
-
   if (!view) {
     const message =
       word === undefined || !fetchFailed
@@ -164,7 +201,7 @@ export function WordCardScreen({ wordId }: { wordId: string }) {
           : t("wordCard.state.offline");
     return (
       <>
-        <CardTopBar />
+        {topBar?.(false)}
         {message ? (
           <p className="py-12 text-center text-muted-foreground" role="alert">
             {message}
@@ -191,9 +228,9 @@ export function WordCardScreen({ wordId }: { wordId: string }) {
   const imageRef = view.image?.kind === "custom" ? view.image.path : null;
 
   return (
-    <CardProvider value={{ view, owner, open: setSheet, addSense }}>
-      <CardTopBar quick={quick} onQuickChange={changeQuick} />
-      <div className="flex flex-col gap-4 pb-10">
+    <CardProvider value={{ view, owner, open: setSheet, addSense, inSession, autoPlay }}>
+      {topBar?.(true)}
+      <div className={cn("flex flex-col gap-4", !inSession && "pb-10")}>
         <CardHeader />
 
         {quick ? (
@@ -202,7 +239,12 @@ export function WordCardScreen({ wordId }: { wordId: string }) {
           <Tabs.Root value={activeTab} onValueChange={(v) => setTab(v as WordCardTab)}>
             <Tabs.List
               aria-label={t("wordCard.tabsLabel")}
-              className="sticky top-[calc(3.5rem+env(safe-area-inset-top,0px))] z-[5] -mx-4 grid border-b bg-background px-1"
+              className={cn(
+                "grid border-b bg-background px-1",
+                inSession
+                  ? "-mx-1"
+                  : "sticky top-[calc(3.5rem+env(safe-area-inset-top,0px))] z-[5] -mx-4",
+              )}
               style={{ gridTemplateColumns: `repeat(${view.tabs.length}, minmax(0, 1fr))` }}
             >
               {view.tabs.map((id) => (
@@ -270,7 +312,12 @@ export function WordCardScreen({ wordId }: { wordId: string }) {
           onSent={() => showToast({ text: t("wordCard.reportSheet.sent") })}
         />
       )}
-      {sheet?.kind === "chip" && <ChipSheet word={sheet.word} pos={sheet.pos} onClose={close} />}
+      {sheet?.kind === "chip" &&
+        (inSession ? (
+          <SessionChipSheet word={sheet.word} pos={sheet.pos} owner={owner} onClose={close} />
+        ) : (
+          <ChipSheet word={sheet.word} pos={sheet.pos} onClose={close} />
+        ))}
     </CardProvider>
   );
 }

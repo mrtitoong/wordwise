@@ -62,6 +62,13 @@ test.describe("Luồng 2 – onboarding, bộ từ có sẵn, ôn đủ 5 chế 
     const speaking = page.getByRole("switch", { name: "Luyện phát âm" });
     await speaking.click();
     await expect(speaking).toHaveAttribute("aria-checked", "true");
+    await expect(page.locator("[data-sync-state]")).toHaveAttribute("data-sync-state", "idle", {
+      timeout: 15_000,
+    });
+    // Thẻ sửa thẳng trong máy (giả như đã ôn 10 ngày trước) cũ hơn bản trên máy chủ (vừa học hôm
+    // nay), nên đồng bộ sẽ lấy lại bản máy chủ theo quy tắc "lượt ôn mới nhất thắng". Chặn đồng bộ
+    // thẻ và lượt ôn từ đây tới hết phiên để phiên dùng đúng thẻ đã sửa.
+    await page.route(/\/rest\/v1\/(cards|review_logs)\b/, (route) => route.abort());
 
     // Coi như đã học vài ngày: 4 thẻ Nghĩa, 3 thẻ Chính tả, 3 thẻ Phát âm đến hạn = 10 thẻ.
     await patchCards(page, "meaning", KNOWN_CARD, 4);

@@ -115,13 +115,25 @@ test.describe("Luồng 7 – Admin xuất bản danh sách, người học thêm
     await expect(page.getByText("Đã duyệt 3/3 từ")).toBeVisible();
     await page.getByRole("button", { name: "Xuất bản", exact: true }).click();
     await expect(page.getByText("Đã xuất bản phiên bản 1.")).toBeVisible();
+    const { data: releases } = await serverAdmin()!
+      .from("curated_list_releases")
+      .select("version, word_count")
+      .eq("list_id", listId);
+    expect(releases).toEqual([{ version: 1, word_count: 3 }]);
 
     // Người học (khách, trình duyệt khác): Thư viện → thêm vào sổ mới.
     const learner = await browser.newContext();
     const learnerPage = await learner.newPage();
     await startAsGuest(learnerPage, { starters: false });
     await learnerPage.goto("/library");
-    await learnerPage.getByRole("link", { name: new RegExp(title) }).click();
+    const card = learnerPage.getByRole("link", { name: new RegExp(title) });
+    try {
+      await card.waitFor({ timeout: 15_000 });
+    } catch {
+      const text = (await learnerPage.locator("body").innerText()).slice(0, 1500);
+      throw new Error(`Thư viện không có “${title}” (${learnerPage.url()}):\n${text}`);
+    }
+    await card.click();
     await expect(learnerPage).toHaveURL(`/library/${listId}`);
     await expect(learnerPage.getByText("Công việc", { exact: true })).toBeVisible();
     await noHorizontalScroll(learnerPage);

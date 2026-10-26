@@ -549,3 +549,12 @@ Repo: https://github.com/mrtitoong/wordwise
   (`retry_word_job()`: xếp lại việc, không thêm yêu cầu nên không trừ lượt từ mới/ngày, giữ
   `first_started_at`, tối đa 3 lần – cột `word_jobs.user_retries`). Chỉ tài khoản đã đăng nhập; không có từ
   nào thì không hiện. Màn Hôm nay không có dòng nhắc. Đã áp lên cloud.
+- 2026-10-26 (Prompt 8.1, chủ sản phẩm duyệt 4 đề xuất): 7 luồng đầy đủ ở `e2e/journeys` chạy trên dự án
+  Playwright **`iphone-13`** (kích thước/cảm ứng iPhone 13 nhưng bằng Chromium: micro giả, Web Speech) và
+  **`desktop`** (1280px); test theo tính năng giữ ở `mobile-360`. Dịch vụ ngoài giả lập (chấm phát âm, OCR,
+  generate-word); luồng Admin ghi kết quả phân tích rồi gọi `finish_list_analysis` thay worker. Cửa test
+  `ww_e2e_overrides` nhận mảng (các câu lần lượt từng dạng), `patchCards(skill, patch, limit)`. Bản preview
+  Vercel chỉ chạy **kiểm tra nhanh chế độ khách** (`e2e/smoke`, không ghi lên Supabase thật) qua workflow
+  `preview-e2e.yml` (sự kiện `status` "Vercel" – Vercel không tạo GitHub Deployment; chỉ chạy từ `main`), cần
+  secret `VERCEL_AUTOMATION_BYPASS_SECRET`. Chi tiết `docs/qa/e2e.md`. Còn để 8.2: offline bấm "Xong" ra
+  trang lỗi của trình duyệt (chưa có Service Worker lưu giao diện).

@@ -2,6 +2,10 @@ import { defineConfig, devices } from "@playwright/test";
 
 const PORT = Number(process.env.PORT ?? 3100);
 const baseURL = process.env.E2E_BASE_URL ?? `http://localhost:${PORT}`;
+// CI dùng Google Chrome có sẵn trên máy (PLAYWRIGHT_CHANNEL=chrome), khỏi tải Chromium mỗi lần.
+const channel = process.env.PLAYWRIGHT_CHANNEL ? { channel: process.env.PLAYWRIGHT_CHANNEL } : {};
+/** Luồng người dùng đầy đủ (Prompt 8.1): chạy trên iPhone 13 và máy tính, không chạy ở 360px. */
+const JOURNEYS = "**/journeys/**";
 
 export default defineConfig({
   testDir: "./e2e",
@@ -18,12 +22,24 @@ export default defineConfig({
     {
       // Màn hình điện thoại nhỏ nhất cần hỗ trợ (CLAUDE.md: 360px)
       name: "mobile-360",
+      testIgnore: JOURNEYS,
       use: {
         ...devices["Pixel 5"],
         viewport: { width: 360, height: 740 },
-        // CI dùng Google Chrome có sẵn trên máy (PLAYWRIGHT_CHANNEL=chrome), khỏi tải Chromium mỗi lần.
-        ...(process.env.PLAYWRIGHT_CHANNEL ? { channel: process.env.PLAYWRIGHT_CHANNEL } : {}),
+        ...channel,
       },
+    },
+    {
+      // Kích thước, cảm ứng và user agent của iPhone 13 nhưng chạy bằng Chromium: micro giả và Web
+      // Speech chỉ có ở Chromium. Safari thật thử tay theo docs/qa/recording.md.
+      name: "iphone-13",
+      testMatch: JOURNEYS,
+      use: { ...devices["iPhone 13"], browserName: "chromium", ...channel },
+    },
+    {
+      name: "desktop",
+      testMatch: JOURNEYS,
+      use: { ...devices["Desktop Chrome"], ...channel },
     },
   ],
   // Có E2E_BASE_URL (vd bản preview Vercel) thì không tự chạy server.

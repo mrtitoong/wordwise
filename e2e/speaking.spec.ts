@@ -1,53 +1,17 @@
-import { resolve } from "node:path";
-import { expect, test, type Page } from "@playwright/test";
+import { expect, test } from "@playwright/test";
 import { hasSupabase, readLocalStore, signInWithCode, uniqueEmail } from "./helpers";
+import { FAKE_MICROPHONE, mockPronunciation } from "./mocks";
 import { learnStarterWords, type Card } from "./review-helpers";
 
-// Micro giả của Chromium phát file mẫu (1,5 giây "nói" rồi im lặng, lặp lại) để có tiếng nói và
-// tự dừng khi im lặng; tự cho phép quyền micro; điểm chấm giả lập (CI không có khóa Azure).
-const FAKE_AUDIO = resolve("tests/fixtures/audio/speech-then-silence.wav");
-test.use({
-  launchOptions: {
-    args: [
-      "--use-fake-ui-for-media-stream",
-      "--use-fake-device-for-media-stream",
-      `--use-file-for-fake-audio-capture=${FAKE_AUDIO}`,
-    ],
-  },
-  permissions: ["microphone"],
-});
+// Micro giả phát file mẫu; điểm chấm giả lập (CI không có khóa Azure).
+test.use(FAKE_MICROPHONE);
 
 type Log = { mode: string; rating: number; pronunciation_score: number | null };
 type Hooks = { __wordwiseE2E: { patchCards: (skill: string, patch?: object) => Promise<number> } };
 
-const result = (overall: number) => ({
-  overall,
-  accuracy: overall,
-  fluency: 100,
-  completeness: 100,
-  recognized: "word",
-  words: [
-    {
-      word: "word",
-      accuracy: overall,
-      errorType: overall < 60 ? "Mispronunciation" : "None",
-      phonemes: [
-        { ipa: "θ", score: overall < 60 ? 30 : 90 },
-        { ipa: "ɪ", score: 92 },
-        { ipa: "k", score: overall < 60 ? 40 : 85 },
-      ],
-    },
-  ],
-});
-
 /** Lượt chấm đầu tiên được 45 điểm (có mẹo sửa âm), các lượt sau 86 điểm. */
-async function mockScoring(page: Page) {
-  let calls = 0;
-  await page.route("**/functions/v1/assess-pronunciation", async (route) => {
-    calls++;
-    await route.fulfill({ json: { status: "ok", result: result(calls === 1 ? 45 : 86) } });
-  });
-}
+const mockScoring = (page: Parameters<typeof mockPronunciation>[0]) =>
+  mockPronunciation(page, [45, 86]);
 
 /** Thẻ Nghĩa đã thuộc (mức 3) → mở thẻ Phát âm. */
 const KNOWN = {

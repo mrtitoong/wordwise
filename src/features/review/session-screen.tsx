@@ -157,6 +157,7 @@ export function SessionScreen({ options }: { options: SessionOptions }) {
         intervals: intervalsOf(scheduler.current!, prep.card, now),
       });
       const level = masteryLevel(prep.card);
+      const question = `${item.cardId}:${r.position}`;
       const voice = listeningVoice(voices.current.preferred, voices.current.multi);
       const can = {
         word: !!prep.word.media.audio[voice] || canSpeak(),
@@ -174,7 +175,7 @@ export function SessionScreen({ options }: { options: SessionOptions }) {
       if (prep.card.skill === "spelling") {
         // Luyện tập chọn chế độ: Tập viết luôn viết; Tập nghe thì nghe (không phát được thì viết).
         const kind =
-          e2eOverride("spellingKind") ??
+          e2eOverride("spellingKind", question) ??
           (item.mode === "writing"
             ? "writing"
             : item.mode === "listening"
@@ -198,7 +199,7 @@ export function SessionScreen({ options }: { options: SessionOptions }) {
       );
       const forced = item.mode && meaningModes.includes(item.mode) ? item.mode : undefined;
       const mode =
-        (e2eOverride("meaningMode") as ReviewMode | undefined) ??
+        (e2eOverride("meaningMode", question) as ReviewMode | undefined) ??
         forced ??
         (item.mode === "listening"
           ? "mcq"

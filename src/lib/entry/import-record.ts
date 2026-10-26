@@ -45,6 +45,8 @@ export type ImportRecord = {
   /** Chờ tới lúc này mới chạy tiếp (hết lượt trong ngày). */
   resumeAfter: string | null;
   items: ImportItem[];
+  /** Dòng bỏ ngay lúc xem trước (lỗi, trùng, đã có trong sổ): không thành mục nhập. */
+  rejected?: number;
   createdAt: string;
   updatedAt: string;
 };
@@ -57,9 +59,11 @@ export type ImportProgress = {
   preparing: number;
   failed: number;
   pending: number;
+  /** Dòng bỏ lúc xem trước. */
+  rejected: number;
 };
 
-export function importProgress(record: Pick<ImportRecord, "items">): ImportProgress {
+export function importProgress(record: Pick<ImportRecord, "items" | "rejected">): ImportProgress {
   const count = (state: ImportItemState) => record.items.filter((i) => i.state === state).length;
   const pending = count("pending");
   return {
@@ -70,6 +74,7 @@ export function importProgress(record: Pick<ImportRecord, "items">): ImportProgr
     preparing: count("preparing"),
     failed: count("failed"),
     pending,
+    rejected: record.rejected ?? 0,
   };
 }
 

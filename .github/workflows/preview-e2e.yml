@@ -1,0 +1,59 @@
+# Kiểm tra nhanh (chế độ khách) trên bản preview mỗi khi Vercel build xong một nhánh.
+# Bản preview dùng Supabase thật nên chỉ chạy e2e/smoke (không đăng nhập, không ghi lên máy chủ);
+# 7 luồng đầy đủ chạy trong ci.yml với Supabase cục bộ.
+#
+# Vercel không tạo GitHub Deployment cho repo này, chỉ gắn commit status "Vercel", nên workflow nghe
+# sự kiện `status`. GitHub chỉ chạy workflow `status` từ file trên nhánh mặc định (main).
+name: E2E bản preview
+
+on: status
+
+permissions:
+  contents: read
+
+jobs:
+  smoke:
+    name: Kiểm tra nhanh bản preview
+    if: >-
+      github.event.context == 'Vercel' &&
+      github.event.state == 'success' &&
+      github.event.branches[0].name != ''
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: ${{ github.event.sha }}
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: npm
+      - name: Địa chỉ bản preview và khóa bỏ qua bảo vệ Vercel
+        id: target
+        env:
+          BRANCH: ${{ github.event.branches[0].name }}
+          SECRET: ${{ secrets.VERCEL_AUTOMATION_BYPASS_SECRET }}
+        run: |
+          if [ -z "$SECRET" ]; then
+            echo "::notice::Chưa có secret VERCEL_AUTOMATION_BYPASS_SECRET – bỏ qua kiểm tra bản preview."
+            echo "skip=1" >> "$GITHUB_OUTPUT"
+            exit 0
+          fi
+          # Địa chỉ theo nhánh của Vercel: chữ thường, ký tự khác chữ/số thành "-".
+          slug=$(printf '%s' "$BRANCH" | tr '[:upper:]' '[:lower:]' | sed 's/[^a-z0-9]/-/g')
+          echo "url=https://wordwise-git-${slug}-mrtitoong.vercel.app" >> "$GITHUB_OUTPUT"
+      - run: npm ci
+        if: steps.target.outputs.skip != '1'
+      - name: Kiểm tra nhanh
+        if: steps.target.outputs.skip != '1'
+        run: npx playwright test e2e/smoke --project=mobile-360
+        env:
+          E2E_BASE_URL: ${{ steps.target.outputs.url }}
+          VERCEL_AUTOMATION_BYPASS_SECRET: ${{ secrets.VERCEL_AUTOMATION_BYPASS_SECRET }}
+          PLAYWRIGHT_CHANNEL: chrome
+      - uses: actions/upload-artifact@v4
+        if: failure()
+        with:
+          name: preview-playwright-report
+          path: playwright-report
+          retention-days: 7

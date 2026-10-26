@@ -1,4 +1,4 @@
-import { expect, test, type Page } from "@playwright/test";
+import { expect, test } from "@playwright/test";
 import {
   completeOnboarding,
   hasSupabase,
@@ -8,118 +8,7 @@ import {
   uniqueEmail,
   userIdByEmail,
 } from "./helpers";
-
-const TEXT =
-  "Resilient people do not see setbacks as proof of failure. They are tenacous and persevere.";
-
-/** Tài liệu OCR giả: mỗi từ một khung, xếp 6 từ một dòng (vị trí không cần khớp ảnh thật). */
-function fakeDocument() {
-  const parts = TEXT.match(/[A-Za-z]+|[.]/g)!;
-  let sentence = 0;
-  let word = 0;
-  return {
-    source: "vision",
-    meanConfidence: 0.97,
-    skewDegrees: 0.5,
-    tokens: parts.map((text, i) => {
-      const isWord = /[A-Za-z]/.test(text);
-      const slot = isWord ? word++ : word - 1;
-      const token = {
-        text,
-        kind: isWord ? "word" : "punct",
-        boxes: isWord
-          ? [{ x: 0.05 + (slot % 6) * 0.15, y: 0.1 + Math.floor(slot / 6) * 0.1, w: 0.13, h: 0.06 }]
-          : [],
-        confidence: isWord ? 0.97 : null,
-        spaceBefore: i > 0 && isWord,
-        paragraph: 0,
-        sentence,
-      };
-      if (text === ".") sentence++;
-      return token;
-    }),
-  };
-}
-
-/** Từ trong kho (seed) dùng cho tra từ giả; từ thường gặp cho CEFR A1 (không tự chọn). */
-const LIBRARY: Record<
-  string,
-  { lemma: string; cefr: string; senses: [string, string][] } | undefined
-> = {
-  resilient: {
-    lemma: "resilient",
-    cefr: "C1",
-    senses: [
-      ["51c8ac6a-0d9c-41f6-833e-7ec0dda38a1d", "kiên cường"],
-      ["b7b69480-9d73-4625-9deb-3e7d4d2d2235", "đàn hồi"],
-    ],
-  },
-  setbacks: {
-    lemma: "setback",
-    cefr: "C1",
-    senses: [["9e0a3013-a304-4fa6-8e72-14caca72f4cf", "sự thụt lùi"]],
-  },
-  tenacious: {
-    lemma: "tenacious",
-    cefr: "C2",
-    senses: [["e94c4fec-fe93-4f4d-9c96-8b80e0490084", "kiên trì"]],
-  },
-};
-const COMMON = new Set(["people", "see", "proof", "failure", "they", "are", "and"]);
-
-async function mockFunctions(page: Page) {
-  const requests: Record<string, unknown>[] = [];
-  await page.route("**/functions/v1/ocr-image", (route) =>
-    route.fulfill({ json: { status: "ok", document: fakeDocument() } }),
-  );
-  await page.route("**/functions/v1/generate-word", async (route) => {
-    const body = route.request().postDataJSON() as Record<string, unknown>;
-    requests.push(body);
-    if (body.action === "resolve") {
-      const items = (body.lemmas as string[]).map((input) => {
-        const known = LIBRARY[input];
-        if (known) {
-          return {
-            input,
-            lemma: known.lemma,
-            alternatives: [],
-            words: [
-              {
-                id: `w-${known.lemma}`,
-                lemma: known.lemma,
-                pos: "adjective",
-                cefr: known.cefr,
-                senses: known.senses.map(([id, meaning_vi]) => ({ id, meaning_vi })),
-              },
-            ],
-          };
-        }
-        if (COMMON.has(input)) {
-          return {
-            input,
-            lemma: input,
-            alternatives: [],
-            words: [
-              {
-                id: `w-${input}`,
-                lemma: input,
-                pos: "noun",
-                cefr: "A1",
-                senses: [{ id: `common-${input}`, meaning_vi: input }],
-              },
-            ],
-          };
-        }
-        return { input, lemma: input, alternatives: [], words: [] };
-      });
-      return route.fulfill({ json: { items } });
-    }
-    return route.fulfill({
-      json: { status: "preparing", lemma: body.lemma, alternatives: [], jobId: "job-1" },
-    });
-  });
-  return requests;
-}
+import { mockPhotoFunctions } from "./mocks";
 
 test.describe("Thêm từ bằng ảnh chụp", () => {
   test.skip(!hasSupabase, "cần Supabase cục bộ (chạy trong CI)");
@@ -151,7 +40,7 @@ test.describe("Thêm từ bằng ảnh chụp", () => {
       .update({ plan: "premium" })
       .eq("user_id", await userIdByEmail(email));
 
-    const requests = await mockFunctions(page);
+    const requests = await mockPhotoFunctions(page);
     await page.reload();
     await page.getByRole("tab", { name: "Ảnh" }).click();
     await page.getByTestId("photo-file").setInputFiles("tests/fixtures/ocr/print-clear.jpg");

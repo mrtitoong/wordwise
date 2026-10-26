@@ -87,9 +87,10 @@ export function SyncProvider() {
           },
           /**
            * Sửa thẻ của một kỹ năng để test không phải chờ sang ngày: mặc định cho đến hạn ngay,
-           * `patch` để đặt thêm mức thuộc (state, stability…).
+           * `patch` để đặt thêm mức thuộc (state, stability…). `limit`: chỉ chừng ấy thẻ (theo id)
+           * đến hạn ngay, các thẻ còn lại dời sang mai.
            */
-          async patchCards(skill: string, patch: Partial<CardRow> = {}) {
+          async patchCards(skill: string, patch: Partial<CardRow> = {}, limit?: number) {
             const owner = engine.getOwner();
             const db = getLocalDb();
             const cards = await db.cards
@@ -97,8 +98,17 @@ export function SyncProvider() {
               .equals(owner ?? "")
               .filter((c) => c.skill === skill)
               .toArray();
+            cards.sort((a, b) => a.id.localeCompare(b.id));
             const due = new Date(Date.now() - 1000).toISOString();
-            await db.cards.bulkPut(cards.map((c) => ({ ...c, due, ...patch })));
+            const later = new Date(Date.now() + 86_400_000).toISOString();
+            await db.cards.bulkPut(
+              cards.map((c, i) => ({
+                ...c,
+                due,
+                ...patch,
+                ...(limit !== undefined && i >= limit ? { due: later } : {}),
+              })),
+            );
             // Mức thuộc đổi thì có thể mở thêm thẻ kỹ năng (Chính tả, Phát âm).
             if (owner) await ensureSkillCards(db, owner);
             return cards.length;

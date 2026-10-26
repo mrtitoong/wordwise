@@ -17,6 +17,9 @@ export default defineConfig({
     baseURL,
     locale: "vi-VN",
     trace: "on-first-retry",
+    // Service Worker lấy yêu cầu trước khi page.route() thấy (giả lập Edge Function sẽ hỏng): tắt
+    // mặc định, test về offline/PWA bật lại bằng test.use({ serviceWorkers: "allow" }).
+    serviceWorkers: "block",
   },
   projects: [
     {

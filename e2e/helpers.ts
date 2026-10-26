@@ -1,5 +1,6 @@
 import { createClient } from "@supabase/supabase-js";
 import { expect, type BrowserContext, type Page } from "@playwright/test";
+import { CACHE_NAMES, SHELL_PAGES } from "../src/lib/offline/sw-policy";
 
 /** Có Supabase (cục bộ/CI) thì mới chạy được test đăng nhập. */
 export const hasSupabase = !!process.env.NEXT_PUBLIC_SUPABASE_URL;
@@ -198,4 +199,26 @@ export async function addTypedWord(page: Page, typed: string, lemma: string, not
   await expect(
     page.getByRole("status").filter({ hasText: `Đã thêm “${lemma}” vào ${notebook}` }),
   ).toBeVisible();
+}
+
+/**
+ * Đợi Service Worker điều khiển trang và lưu xong các trang chính (cần
+ * `test.use({ serviceWorkers: "allow" })`).
+ */
+export async function waitForOfflineShell(page: Page) {
+  await expect
+    .poll(() => page.evaluate(() => !!navigator.serviceWorker?.controller), { timeout: 15_000 })
+    .toBe(true);
+  await expect
+    .poll(
+      async () => {
+        const saved = await page.evaluate(async (name) => {
+          const cache = await caches.open(name);
+          return (await cache.keys()).map((r) => new URL(r.url).pathname);
+        }, CACHE_NAMES.pages);
+        return SHELL_PAGES.filter((path) => !saved.includes(path));
+      },
+      { timeout: 30_000, message: "Service Worker chưa lưu đủ trang chính" },
+    )
+    .toEqual([]);
 }

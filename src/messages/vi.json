@@ -1,7 +1,9 @@
 {
   "app": {
     "name": "WordWise",
-    "description": "Học từ vựng tiếng Anh, nhớ lâu với lịch ôn thông minh."
+    "description": "Học từ vựng tiếng Anh, nhớ lâu với lịch ôn thông minh.",
+    "shortName": "WordWise",
+    "shortcutReview": "Ôn hôm nay"
   },
   "nav": {
     "main": "Điều hướng chính",
@@ -1500,5 +1502,11 @@
     "wavSilent": "Quá nhỏ, như im lặng",
     "wavFailed": "Không đổi được",
     "again": "Thu lại"
+  },
+  "offline": {
+    "title": "Bạn đang offline",
+    "body": "Trang này chưa được lưu trên máy. Bạn vẫn ôn tiếp được những từ đã có trong máy.",
+    "home": "Về Hôm nay",
+    "retry": "Thử lại"
   }
 }

@@ -17,6 +17,8 @@ export default defineConfig([
     "design/**",
     // Sinh tự động bởi scripts/build-functions.ts
     "supabase/functions/*/index.js",
+    // Sinh tự động bởi scripts/build-sw.ts
+    "public/sw.js",
     "next-env.d.ts",
   ]),
 ]);

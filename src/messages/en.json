@@ -1,7 +1,9 @@
 {
   "app": {
     "name": "WordWise",
-    "description": "Learn vocabulary and remember it with smart review scheduling."
+    "description": "Learn vocabulary and remember it with smart review scheduling.",
+    "shortName": "WordWise",
+    "shortcutReview": "Today's review"
   },
   "nav": {
     "main": "Main navigation",
@@ -1500,5 +1502,11 @@
     "wavSilent": "Too quiet, like silence",
     "wavFailed": "Couldn't convert",
     "again": "Record again"
+  },
+  "offline": {
+    "title": "You're offline",
+    "body": "This page isn't saved on this device yet. You can still review the words already on it.",
+    "home": "Go to Today",
+    "retry": "Try again"
   }
 }

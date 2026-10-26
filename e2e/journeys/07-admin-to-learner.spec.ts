@@ -125,6 +125,7 @@ test.describe("Luồng 7 – Admin xuất bản danh sách, người học thêm
     const learner = await browser.newContext();
     const learnerPage = await learner.newPage();
     await startAsGuest(learnerPage, { starters: false });
+    await expect(learnerPage).toHaveURL("/add");
     await learnerPage.goto("/library");
     const card = learnerPage.getByRole("link", { name: new RegExp(title) });
     try {

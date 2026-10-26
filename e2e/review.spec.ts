@@ -4,6 +4,7 @@ import {
   currentAnswer,
   answerCorrectly,
   learnStarterWords,
+  typeAnswer,
   writeCorrectly,
   type Card,
   type Log,
@@ -167,7 +168,9 @@ test.describe("Phiên ôn", () => {
       learning_steps: 0,
       last_review: new Date(Date.now() - 10 * 86_400_000).toISOString(),
     };
+    const starts: string[] = [];
     const run = async (skill: string, overrides: object, title: string) => {
+      starts.push(new Date().toISOString());
       await page.evaluate(
         ([s, p, o]) => {
           localStorage.setItem("ww_e2e_overrides", JSON.stringify(o));
@@ -189,9 +192,7 @@ test.describe("Phiên ôn", () => {
         if (skill === "meaning") {
           await answerCorrectly(page);
         } else {
-          const input = page.getByRole("textbox", { name: "Câu trả lời của bạn" });
-          await input.fill(await currentAnswer(page));
-          await page.getByRole("button", { name: "Kiểm tra" }).click();
+          await typeAnswer(page, await currentAnswer(page));
           await expect(page.getByText("Chính xác!")).toBeVisible();
           await expect(page.getByText("Chính xác!")).toBeHidden();
         }
@@ -213,8 +214,14 @@ test.describe("Phiên ôn", () => {
       (l) => l.mode === "listening" && l.reviewed_at >= since,
     );
     expect(logs).toHaveLength(15);
-    // Câu đầu của mỗi lượt nghe lại 4 lần: chấm Khó; câu gõ có ghi cấp gợi ý.
-    expect(logs.filter((l) => l.rating === 2)).toHaveLength(3);
+    // Câu đầu của mỗi lượt nghe lại 4 lần: chấm Khó; câu gõ có ghi cấp gợi ý. (Câu khác có thể
+    // là Khó vì trả lời chậm hơn 2 lần trung vị – tùy tốc độ máy, nên không đếm cứng.)
+    for (const start of starts) {
+      const first = logs
+        .filter((l) => l.reviewed_at >= start)
+        .sort((a, b) => a.reviewed_at.localeCompare(b.reviewed_at))[0]!;
+      expect(first.rating).toBe(2);
+    }
     expect(logs.filter((l) => l.hint_level > 0)).toHaveLength(2);
     expect(logs.every((l) => l.rating >= 2)).toBe(true);
 

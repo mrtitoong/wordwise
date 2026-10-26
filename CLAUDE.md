@@ -534,3 +534,10 @@ Repo: https://github.com/mrtitoong/wordwise
   ghi lượt đầu "Khó"** (`INTRO_RATING`, mode flashcard, `correct = null` = `isIntroLog`), từ quay lại trong
   phiên dưới dạng trắc nghiệm/nghe → chọn nghĩa. Lượt này không tính vào độ chính xác (Thống kê, màn kết quả
   phiên), vẫn tính cho chuỗi ngày học. Flashcard 4 nút khi ôn từ cũ giữ nguyên.
+- 2026-10-26 (bàn phím chữ cái, chủ sản phẩm chọn): Trên màn hình cảm ứng (`(pointer: coarse) and (hover:
+  none)`), Tập viết, nghe → gõ lại, nghe câu → điền từ và ô "Gõ lại một lần cho nhớ" dùng **bàn phím chữ
+  cái của app** (`src/features/review/modes/letter-keyboard.tsx`, logic `src/lib/review/keyboard.ts`): QWERTY
+  chữ thường + gạch nối, nháy, dấu cách, xóa, nút Kiểm tra/Tiếp; không mở bàn phím hệ thống nên không có thanh
+  gợi ý (Gboard/Samsung bỏ qua autocomplete/autocorrect = off) và bộ gõ tiếng Việt không đổi chữ. Ô đáp án là
+  `role="textbox"` chỉ hiển thị; bàn phím Bluetooth vẫn gõ được. Máy tính giữ ô nhập thường. **Ngoại lệ vùng
+  chạm**: phím chữ cao 48px nhưng rộng ~1/10 màn hình (~33px ở 360px) như bàn phím hệ thống.

@@ -29,8 +29,15 @@ import {
 } from "@/lib/review/writing";
 import { cn } from "@/lib/utils";
 import { replaysAsHint } from "@/lib/review/listening";
+import { applyKey, type KeyboardKey } from "@/lib/review/keyboard";
 import type { PreparedCard } from "../session-content";
 import { e2eAnswer } from "../e2e";
+import {
+  AnswerDisplay,
+  LetterKeyboard,
+  useLetterKeyboard,
+  usePhysicalKeys,
+} from "./letter-keyboard";
 import { ListenPlayer, sentenceAudio } from "./listen-player";
 import type { ModeProps } from "./types";
 
@@ -139,6 +146,9 @@ export function Writing({ item, voice, muted, onAnswer, task }: ModeProps & { ta
   );
   const [retry, setRetry] = useState("");
   const input = useRef<HTMLInputElement>(null);
+  const answered = useRef(false);
+  // Điện thoại: bàn phím chữ cái của app (không có thanh gợi ý, không bị bộ gõ tiếng Việt đổi chữ).
+  const letterKeyboard = useLetterKeyboard();
   const letterCount = slotsOf(task.target).filter((s) => !s.fixed).length;
 
   function check(answer: string, revealed = false) {
@@ -157,7 +167,8 @@ export function Writing({ item, voice, muted, onAnswer, task }: ModeProps & { ta
   }
 
   function next() {
-    if (!result) return;
+    if (!result || answered.current) return;
+    answered.current = true;
     onAnswer({
       correct: result.correct,
       responseMs: result.ms,
@@ -168,6 +179,25 @@ export function Writing({ item, voice, muted, onAnswer, task }: ModeProps & { ta
       maxRating: maxRatingFor(level),
     });
   }
+
+  function typeAnswer(key: KeyboardKey) {
+    if (key.kind === "submit") {
+      if (text.trim()) check(text);
+    } else {
+      setText((current) => applyKey(current, key));
+    }
+  }
+
+  function typeRetry(key: KeyboardKey) {
+    if (key.kind === "submit") next();
+    else setRetry((current) => applyKey(current, key));
+  }
+
+  // Bàn phím vật lý khi đang dùng bàn phím của app. Enter sau khi trả lời do effect bên dưới xử lý.
+  usePhysicalKeys(letterKeyboard && level > 1 && !result?.correct, (key) => {
+    if (!result) typeAnswer(key);
+    else if (key.kind !== "submit") typeRetry(key);
+  });
 
   function hint() {
     if (result) return;
@@ -231,8 +261,24 @@ export function Writing({ item, voice, muted, onAnswer, task }: ModeProps & { ta
   });
 
   useEffect(() => {
-    if (level > 1 && !result) input.current?.focus();
-  }, [level, result]);
+    if (level > 1 && !result && !letterKeyboard) input.current?.focus();
+  }, [level, result, letterKeyboard]);
+
+  const hintRow = (
+    <div className="grid grid-cols-2 gap-2">
+      <Button variant="outline" className="min-h-11" onClick={hint}>
+        <Lightbulb className="size-4" aria-hidden />
+        {t("hint")}
+      </Button>
+      <Button
+        variant="ghost"
+        className="min-h-11 text-muted-foreground"
+        onClick={() => check(level === 1 ? "" : text, true)}
+      >
+        {t("dontKnow")}
+      </Button>
+    </div>
+  );
 
   const lemma = item.word.content.lemma;
   const { prompt } = task;
@@ -290,7 +336,25 @@ export function Writing({ item, voice, muted, onAnswer, task }: ModeProps & { ta
         />
       )}
 
-      {!result && level > 1 && (
+      {!result && level > 1 && letterKeyboard && (
+        <div className="flex flex-1 flex-col gap-3">
+          {(level === 2 || level === 3) && (
+            <Pattern pattern={patternOf(task.target, level, task.masked)} />
+          )}
+          <AnswerDisplay value={text} label={t("answerInput")} placeholder={t("typeHere")} />
+          {hintRow}
+          {/* Sát đáy màn hình như bàn phím hệ thống (dễ bấm bằng ngón cái). */}
+          <div className="mt-auto">
+            <LetterKeyboard
+              onKey={typeAnswer}
+              submitLabel={t("check")}
+              submitDisabled={!text.trim()}
+            />
+          </div>
+        </div>
+      )}
+
+      {!result && level > 1 && !letterKeyboard && (
         <form
           className="flex flex-col gap-3"
           onSubmit={(event) => {
@@ -316,24 +380,10 @@ export function Writing({ item, voice, muted, onAnswer, task }: ModeProps & { ta
         </form>
       )}
 
-      {!result && (
-        <div className="grid grid-cols-2 gap-2">
-          <Button variant="outline" className="min-h-11" onClick={hint}>
-            <Lightbulb className="size-4" aria-hidden />
-            {t("hint")}
-          </Button>
-          <Button
-            variant="ghost"
-            className="min-h-11 text-muted-foreground"
-            onClick={() => check(level === 1 ? "" : text, true)}
-          >
-            {t("dontKnow")}
-          </Button>
-        </div>
-      )}
+      {!result && !(letterKeyboard && level > 1) && hintRow}
 
       {result && (
-        <div className="flex flex-col gap-3">
+        <div className={cn("flex flex-col gap-3", letterKeyboard && !result.correct && "flex-1")}>
           <p
             role="status"
             className={cn(
@@ -369,7 +419,24 @@ export function Writing({ item, voice, muted, onAnswer, task }: ModeProps & { ta
               showRate
             />
           </div>
-          {!result.correct && (
+          {!result.correct && letterKeyboard && (
+            <div className="flex flex-1 flex-col gap-2 text-sm">
+              <span className="text-muted-foreground">{t("retype")}</span>
+              <div className="relative">
+                <AnswerDisplay value={retry} label={t("retype")} className="text-lg" />
+                {checkAnswer(retry, result.matched, { allowTypo: false }).correct && (
+                  <Check
+                    className="absolute top-1/2 right-3 size-5 -translate-y-1/2 text-green-700"
+                    aria-label={t("right")}
+                  />
+                )}
+              </div>
+              <div className="mt-auto pt-2">
+                <LetterKeyboard onKey={typeRetry} submitLabel={t("next")} />
+              </div>
+            </div>
+          )}
+          {!result.correct && !letterKeyboard && (
             <label className="flex flex-col gap-1 text-sm">
               <span className="text-muted-foreground">{t("retype")}</span>
               <span className="relative">
@@ -394,9 +461,11 @@ export function Writing({ item, voice, muted, onAnswer, task }: ModeProps & { ta
               </span>
             </label>
           )}
-          <Button className="min-h-12" onClick={next}>
-            {t("next")}
-          </Button>
+          {!(letterKeyboard && !result.correct) && (
+            <Button className="min-h-12" onClick={next}>
+              {t("next")}
+            </Button>
+          )}
         </div>
       )}
     </div>

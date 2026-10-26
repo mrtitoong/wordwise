@@ -1445,7 +1445,14 @@
       "ae": "/æ/: mở miệng rộng, giữa \"a\" và \"e\" tiếng Việt (như trong \"cat\").",
       "schwa": "/ə/: âm \"ơ\" rất nhẹ và ngắn ở âm tiết không nhấn, đừng đọc rõ như nguyên âm đầy đủ."
     },
-    "gotItHint": "Từ này sẽ quay lại cuối phiên để bạn kiểm tra."
+    "gotItHint": "Từ này sẽ quay lại cuối phiên để bạn kiểm tra.",
+    "keyboard": {
+      "label": "Bàn phím chữ cái",
+      "space": "Dấu cách",
+      "hyphen": "Gạch nối",
+      "apostrophe": "Dấu nháy",
+      "backspace": "Xóa"
+    }
   },
   "mic": {
     "explainTitle": "Cho phép dùng micro",

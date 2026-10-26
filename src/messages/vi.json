@@ -1308,6 +1308,18 @@
       "inNotebook": "đã có trong sổ này, bỏ qua",
       "didYouMean": "Có phải <b>{word}</b>? Chạm để sửa.",
       "imageFailed": "Chưa lưu được ảnh ngữ cảnh, từ vẫn được thêm."
+    },
+    "preparingList": {
+      "title": "Đang chuẩn bị nội dung ({count})",
+      "titleDone": "Vừa thêm vào sổ",
+      "preparing": "đang chuẩn bị, khoảng 30 giây · sẽ vào “{notebook}”",
+      "done": "đã vào “{notebook}” · chạm để xem",
+      "failed": "chưa tạo được nội dung",
+      "retry": "Thử lại",
+      "retryLimit": "Đã thử lại nhiều lần. Hãy kiểm tra chính tả hoặc thêm lại sau.",
+      "retryFailed": "Chưa thử lại được. Kiểm tra kết nối mạng rồi thử lại.",
+      "offline": "Sẽ cập nhật khi có mạng.",
+      "notebookFallback": "sổ"
     }
   },
   "review": {

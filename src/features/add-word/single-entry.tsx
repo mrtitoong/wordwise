@@ -16,6 +16,7 @@ import { cn } from "@/lib/utils";
 import { toWordSummary, type InputMethod, type WordSummary } from "@/lib/words/api";
 import { requestWord, resolveWords } from "@/lib/words/request-word";
 import type { EntryContext } from "./add-word-screen";
+import { notifyPreparing } from "./preparing-events";
 import { cacheSenses, findExact, useWordSuggestions } from "./word-search";
 
 type Picked = { word: WordSummary; typed: string; senseId: string };
@@ -110,6 +111,7 @@ export function SingleEntry({
           pick(toWordSummary(response.words[0]!), text);
           break;
         case "preparing":
+          notifyPreparing();
           showToast({
             text: t("preparing", { word: response.lemma, notebook: context.notebookName }),
           });

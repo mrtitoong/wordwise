@@ -16,6 +16,7 @@ import { FileEntry } from "./file-entry";
 import { PhotoEntry } from "./photo/photo-entry";
 import { VoiceEntry } from "./voice-entry";
 import { PremiumSheet } from "./premium-sheet";
+import { PreparingList } from "./preparing-list";
 import { SingleEntry } from "./single-entry";
 
 const LAST_NOTEBOOK_KEY = "ww_last_notebook";
@@ -204,6 +205,8 @@ export function AddWordScreen({ initialNotebookId }: { initialNotebookId: string
         ) : (
           <SingleEntry context={context} onPasteList={setBulkText} />
         ))}
+
+      <PreparingList />
 
       {limit && <PremiumSheet {...limit} onClose={() => setLimit(null)} />}
     </div>

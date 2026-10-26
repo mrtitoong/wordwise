@@ -53,6 +53,7 @@ import { wordHref } from "@/lib/words/links";
 import { NotebookCover } from "./notebook-cover";
 import { NotebookFormSheet } from "./notebook-form-sheet";
 import { NotebookPlan } from "./notebook-plan";
+import { PreparingList } from "@/features/add-word/preparing-list";
 import { usePersonalData, type PersonalView } from "./use-personal-data";
 
 const PAGE = 100;
@@ -274,6 +275,8 @@ export function NotebookDetailScreen({ notebookId }: { notebookId: string }) {
         editing={planOpen}
         onEditingChange={setPlanOpen}
       />
+
+      <PreparingList notebookId={notebook.id} />
 
       {rows.length === 0 ? (
         <section className="flex flex-col items-center gap-3 py-10 text-center">

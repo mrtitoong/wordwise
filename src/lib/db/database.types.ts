@@ -1142,6 +1142,7 @@ export type Database = {
           source: string;
           status: string;
           updated_at: string;
+          user_retries: number;
           word_id: string | null;
         };
         Insert: {
@@ -1163,6 +1164,7 @@ export type Database = {
           source?: string;
           status?: string;
           updated_at?: string;
+          user_retries?: number;
           word_id?: string | null;
         };
         Update: {
@@ -1184,6 +1186,7 @@ export type Database = {
           source?: string;
           status?: string;
           updated_at?: string;
+          user_retries?: number;
           word_id?: string | null;
         };
         Relationships: [
@@ -1417,6 +1420,7 @@ export type Database = {
         Returns: Json;
       };
       retry_list_analysis: { Args: { p_job_id: string }; Returns: undefined };
+      retry_word_job: { Args: { p_job_id: string }; Returns: string };
       save_generated_word: {
         Args: { p_details: Json; p_job_id: string; p_senses: Json; p_word: Json };
         Returns: string;

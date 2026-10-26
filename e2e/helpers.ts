@@ -144,6 +144,23 @@ export function serverAdmin() {
   });
 }
 
+/**
+ * Đăng nhập một tài khoản admin riêng cho từng test. Các test chạy song song mà dùng chung
+ * admin@wordwise.local thì email mã đăng nhập của test này làm mất hiệu lực mã của test kia.
+ */
+export async function signInAsAdmin(page: Page, next?: string) {
+  const admin = serverAdmin()!;
+  const email = uniqueEmail("admin");
+  const created = await admin.auth.admin.createUser({ email, email_confirm: true });
+  if (created.error || !created.data.user) throw new Error(created.error?.message);
+  const role = await admin
+    .from("profiles")
+    .update({ role: "admin" })
+    .eq("id", created.data.user.id);
+  if (role.error) throw new Error(role.error.message);
+  await signInWithCode(page, email, next);
+}
+
 export async function userIdByEmail(email: string): Promise<string> {
   const admin = serverAdmin()!;
   const { data } = await admin.auth.admin.listUsers({ perPage: 1000 });

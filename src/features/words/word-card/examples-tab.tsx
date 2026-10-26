@@ -5,6 +5,7 @@ import { useTranslations } from "next-intl";
 import { AudioButton } from "@/components/audio-button";
 import { useUserImageUrl } from "@/features/media/user-images";
 import type { Voice } from "@/lib/media/tts-azure";
+import { cachedSentenceAudioUrl } from "@/features/offline/media-cache";
 import { requestSentenceAudioUrl } from "@/lib/media/request-sentence-audio";
 import { createClient } from "@/lib/supabase/client";
 import { getSupabaseEnv } from "@/lib/supabase/env";
@@ -27,10 +28,11 @@ function ExampleItem({ sense, index, voice }: { sense: SenseView; index: number;
           text={example.sentence}
           voice={voice}
           className="-ml-2"
-          resolveUrl={() =>
-            getSupabaseEnv()
+          resolveUrl={async () =>
+            (await cachedSentenceAudioUrl(example.sentence, voice)) ??
+            (getSupabaseEnv()
               ? requestSentenceAudioUrl(createClient(), { senseId: sense.senseId, index, voice })
-              : Promise.resolve(null)
+              : null)
           }
         />
         <button

@@ -284,7 +284,7 @@ export function Writing({ item, voice, muted, onAnswer, task }: ModeProps & { ta
   const { prompt } = task;
   const cloze = prompt.kind === "cloze" || prompt.kind === "listen-cloze" ? prompt.cloze : null;
   const sentence = cloze ? item.example!.sentence : null;
-  const sentenceUrl = sentence ? sentenceAudio(item.senseId, 0, voice) : undefined;
+  const sentenceUrl = sentence ? sentenceAudio(item.senseId, 0, voice, sentence) : undefined;
 
   return (
     <div className="flex flex-1 flex-col gap-4" {...e2eAnswer(task.target)}>

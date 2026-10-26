@@ -38,8 +38,9 @@ theo nhánh `https://wordwise-git-<nhánh>-mrtitoong.vercel.app`: khách → onb
 Thống kê, Thư viện. Bản preview nối với **Supabase thật**, nên chỉ dùng chế độ khách: không đăng
 nhập, không ghi gì lên máy chủ, không gọi AI. 7 luồng đầy đủ chỉ chạy với Supabase cục bộ.
 
-Cần secret GitHub `VERCEL_AUTOMATION_BYPASS_SECRET` (Vercel → Project → Settings → Deployment
-Protection → Protection Bypass for Automation). Chưa có secret thì workflow ghi chú và bỏ qua.
+Bản preview đang mở công khai (đã tắt Deployment Protection) nên không cần khóa. Nếu bật lại bảo vệ:
+thêm secret GitHub `VERCEL_AUTOMATION_BYPASS_SECRET` (Vercel → Project → Settings → Deployment
+Protection → Protection Bypass for Automation), test tự dùng khóa này.
 GitHub chỉ chạy workflow sự kiện `status` từ file trên `main`, nên workflow bắt đầu chạy sau khi gộp
 nhánh này vào `main`.
 

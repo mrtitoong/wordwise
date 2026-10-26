@@ -96,7 +96,7 @@ Repo: https://github.com/mrtitoong/wordwise
   format:check, typecheck, unit test, build, E2E Playwright (Chromium, 360px).
 - 2026-10-20: Vercel: project `mrtitoong/wordwise`, `vercel.json` khai báo
   framework nextjs. Preview mỗi nhánh: `https://wordwise-git-<nhánh>-mrtitoong.vercel.app`
-  (dấu "/" thành "-"), có bảo vệ đăng nhập Vercel. Công cụ Vercel MCP trong
+  (dấu "/" thành "-"), từ 2026-10-26 mở công khai (đã tắt bảo vệ đăng nhập Vercel). Công cụ Vercel MCP trong
   phiên Claude không có quyền vào scope `mrtitoong` (403); thao tác trên
   dashboard do chủ sản phẩm làm, trạng thái build đọc qua GitHub commit status.
 - 2026-10-20 (Prompt 1.2): 13 bảng theo plan.md §5 + cột `words.details` (JSONB).
@@ -555,6 +555,7 @@ Repo: https://github.com/mrtitoong/wordwise
   generate-word); luồng Admin ghi kết quả phân tích rồi gọi `finish_list_analysis` thay worker. Cửa test
   `ww_e2e_overrides` nhận mảng (các câu lần lượt từng dạng), `patchCards(skill, patch, limit)`. Bản preview
   Vercel chỉ chạy **kiểm tra nhanh chế độ khách** (`e2e/smoke`, không ghi lên Supabase thật) qua workflow
-  `preview-e2e.yml` (sự kiện `status` "Vercel" – Vercel không tạo GitHub Deployment; chỉ chạy từ `main`), cần
-  secret `VERCEL_AUTOMATION_BYPASS_SECRET`. Chi tiết `docs/qa/e2e.md`. Còn để 8.2: offline bấm "Xong" ra
+  `preview-e2e.yml` (sự kiện `status` "Vercel" – Vercel không tạo GitHub Deployment; chỉ chạy từ `main`). Chủ
+  sản phẩm đã **tắt Deployment Protection** nên preview mở công khai, không cần khóa bypass (bật lại thì thêm
+  secret `VERCEL_AUTOMATION_BYPASS_SECRET`). Chi tiết `docs/qa/e2e.md`. Còn để 8.2: offline bấm "Xong" ra
   trang lỗi của trình duyệt (chưa có Service Worker lưu giao diện).

@@ -83,6 +83,8 @@ export async function completeOnboarding(
   );
   if (!starters) {
     await page.getByRole("button", { name: "Tự thêm từ của tôi" }).click();
+    // Đợi chuyển trang xong: mở trang khác ngay sau đó sẽ bị lần chuyển này đè lên.
+    await expect(page).toHaveURL(/\/add(\?|$)/);
     return;
   }
   await page.getByRole("button", { name: "Học 5 từ này" }).click();

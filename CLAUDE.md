@@ -548,4 +548,4 @@ Repo: https://github.com/mrtitoong/wordwise
   **đồng bộ ngay** (trước đây có thể chờ tới 5 phút); "đã vào sổ" hiện 10 phút rồi ẩn; lỗi có **Thử lại**
   (`retry_word_job()`: xếp lại việc, không thêm yêu cầu nên không trừ lượt từ mới/ngày, giữ
   `first_started_at`, tối đa 3 lần – cột `word_jobs.user_retries`). Chỉ tài khoản đã đăng nhập; không có từ
-  nào thì không hiện. Màn Hôm nay không có dòng nhắc.
+  nào thì không hiện. Màn Hôm nay không có dòng nhắc. Đã áp lên cloud.

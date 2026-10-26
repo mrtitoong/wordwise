@@ -227,6 +227,13 @@ describe("skillAccuracy", () => {
       speaking: { answers: 0, correct: 0, rate: null },
     });
   });
+  it("bỏ lượt tự ghi khi xem xong từ mới (correct = null)", () => {
+    const logs = [
+      log("a", 1, { mode: "flashcard", rating: Rating.Hard, correct: null, state: State.New }),
+      log("a", 1, { mode: "mcq", rating: Rating.Again, correct: false }),
+    ];
+    expect(skillAccuracy(logs, NOW, TZ).meaning).toEqual({ answers: 1, correct: 0, rate: 0 });
+  });
 });
 
 describe("từ hay quên", () => {

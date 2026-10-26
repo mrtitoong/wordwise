@@ -759,7 +759,11 @@
     "chip": {
       "open": "Mở thẻ",
       "add": "Thêm vào sổ",
-      "title": "Từ “{word}”"
+      "title": "Từ “{word}”",
+      "addQueued": "Thêm vào Sắp học",
+      "addedQueued": "Đã thêm “{word}” vào {notebook} (Sắp học)",
+      "preparing": "Từ này đang được chuẩn bị nội dung. Thêm lại sau phiên học nhé.",
+      "sessionHint": "Bạn vẫn ở lại phiên học. Xem thẻ đầy đủ của từ này sau trong Sổ tay."
     },
     "sheet": {
       "meaningTitle": "Ghi chú của bạn",
@@ -1321,8 +1325,7 @@
     "stay": "Ở lại",
     "exit": "Thoát",
     "newWord": "Từ mới",
-    "openCard": "Xem thẻ đầy đủ",
-    "gotIt": "Đã xem, kiểm tra",
+    "gotIt": "Đã xem xong",
     "context": "Câu bạn gặp",
     "flip": "Chạm để lật thẻ",
     "cardBack": "Mặt sau thẻ",
@@ -1441,7 +1444,8 @@
       "long_vowel": "Nguyên âm dài (có dấu ː): kéo dài hơn hẳn nguyên âm ngắn, ví dụ \"sheep\" dài hơn \"ship\".",
       "ae": "/æ/: mở miệng rộng, giữa \"a\" và \"e\" tiếng Việt (như trong \"cat\").",
       "schwa": "/ə/: âm \"ơ\" rất nhẹ và ngắn ở âm tiết không nhấn, đừng đọc rõ như nguyên âm đầy đủ."
-    }
+    },
+    "gotItHint": "Từ này sẽ quay lại cuối phiên để bạn kiểm tra."
   },
   "mic": {
     "explainTitle": "Cho phép dùng micro",

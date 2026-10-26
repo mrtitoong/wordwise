@@ -13,13 +13,15 @@ import { createEmptyCard, Rating, State, type Card, type FSRS, type Grade } from
 import type { CardRow, ReviewLogRow, UserWordRow } from "@/lib/db/types";
 import { addDays, daysBetween, studyDay, weekOf } from "@/lib/review/day";
 import { computeStreak, type Streak } from "@/lib/review/streak";
+import { isIntroLog } from "@/lib/srs/grade";
 import { LEECH_LAPSES, masteryLevel, type MasteryLevel } from "@/lib/srs/mastery";
 import { schedulingLogs } from "@/lib/srs/scheduler";
 
 type LogLike = Pick<
   ReviewLogRow,
   "id" | "card_id" | "mode" | "rating" | "state" | "is_extra" | "response_ms" | "reviewed_at"
->;
+> &
+  Partial<Pick<ReviewLogRow, "correct">>;
 type CardLike = Pick<
   CardRow,
   "id" | "user_word_id" | "skill" | "state" | "stability" | "due" | "lapses" | "deleted_at"
@@ -196,7 +198,8 @@ export function skillAccuracy(
   ) as Record<SkillGroup, Accuracy>;
   for (const log of inLastDays(logs, now, timeZone, days)) {
     const group = GROUP_OF_MODE[log.mode];
-    if (!group) continue;
+    // Lượt tự ghi khi xem xong từ mới không phải câu trả lời.
+    if (!group || isIntroLog(log)) continue;
     result[group].answers++;
     if (log.rating !== Rating.Again) result[group].correct++;
   }

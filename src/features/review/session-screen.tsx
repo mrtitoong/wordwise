@@ -24,6 +24,7 @@ import {
 import { planToday } from "@/lib/review/today";
 import { nextDueByRating } from "@/lib/srs/cards";
 import {
+  INTRO_RATING,
   gradeFromOutcome,
   medianResponseMs,
   modesForSkill,
@@ -357,7 +358,8 @@ export function SessionScreen({ options }: { options: SessionOptions }) {
     setPhase("done");
   }
 
-  async function handleAnswer(answer: ModeAnswer) {
+  /** `intro`: vừa xem xong thẻ từ mới – tự ghi "Khó", không có câu trả lời (correct = null). */
+  async function handleAnswer(answer: ModeAnswer, intro = false) {
     if (!run || !owner || !data || busy || !ask) return;
     const item = run.queue[run.position]!;
     const prep = prepared.get(item.cardId)!;
@@ -374,19 +376,21 @@ export function SessionScreen({ options }: { options: SessionOptions }) {
             ? "speaking"
             : "flashcard";
       const levelBefore = masteryLevel(prep.card);
-      const rating = gradeFromOutcome({
-        mode,
-        ...answer,
-        cardLevel: levelBefore,
-        userMedianMs: medianResponseMs(data.logs, mode),
-      });
+      const rating = intro
+        ? INTRO_RATING
+        : gradeFromOutcome({
+            mode,
+            ...answer,
+            cardLevel: levelBefore,
+            userMedianMs: medianResponseMs(data.logs, mode),
+          });
       const extra = extraIds.current.has(item.cardId);
       const result = await recordReview(db, owner, item.cardId, {
         rating,
         mode,
         reviewedAt: now,
         responseMs: answer.responseMs,
-        correct: answer.correct,
+        correct: intro ? undefined : answer.correct,
         hintLevel: answer.hintLevel,
         pronunciationScore: answer.pronunciationScore,
         extra,
@@ -404,6 +408,7 @@ export function SessionScreen({ options }: { options: SessionOptions }) {
           correct: answer.correct,
           levelBefore,
           levelAfter: masteryLevel(result.card),
+          ...(intro ? { intro: true } : {}),
         },
       ];
       const queue = result.log.is_extra
@@ -557,13 +562,7 @@ export function SessionScreen({ options }: { options: SessionOptions }) {
             item={prep}
             voice={voice}
             muted={muted}
-            onContinue={() =>
-              setAsk({
-                step: "flashcard",
-                reverse: false,
-                intervals: intervalsOf(scheduler.current!, prep.card, new Date()),
-              })
-            }
+            onContinue={(viewMs) => void handleAnswer({ correct: true, responseMs: viewMs }, true)}
           />
         ) : ask.step === "speaking" ? (
           <Speaking

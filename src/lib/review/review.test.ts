@@ -326,6 +326,19 @@ describe("session", () => {
     ]);
   });
 
+  it("summarize: lượt xem xong từ mới không tính vào số câu, tỉ lệ đúng; vẫn tính lên mức", () => {
+    const base = { cardId: "c-new", wordId: "w-new", lemma: "new" };
+    const s = summarize(
+      [
+        { ...base, rating: Rating.Hard, correct: true, levelBefore: 0, levelAfter: 1, intro: true },
+        { ...base, rating: Rating.Good, correct: true, levelBefore: 1, levelAfter: 1 },
+      ],
+      NOW,
+      NOW,
+    );
+    expect(s).toMatchObject({ answers: 1, correct: 1, accuracy: 1, levelUps: 1 });
+  });
+
   it("canResume: cùng người, cùng ngày, còn câu", () => {
     const saved = {
       owner: "u1",

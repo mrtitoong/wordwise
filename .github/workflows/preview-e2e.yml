@@ -28,27 +28,21 @@ jobs:
         with:
           node-version: 22
           cache: npm
-      - name: Địa chỉ bản preview và khóa bỏ qua bảo vệ Vercel
+      - name: Địa chỉ bản preview
         id: target
         env:
           BRANCH: ${{ github.event.branches[0].name }}
-          SECRET: ${{ secrets.VERCEL_AUTOMATION_BYPASS_SECRET }}
         run: |
-          if [ -z "$SECRET" ]; then
-            echo "::notice::Chưa có secret VERCEL_AUTOMATION_BYPASS_SECRET – bỏ qua kiểm tra bản preview."
-            echo "skip=1" >> "$GITHUB_OUTPUT"
-            exit 0
-          fi
           # Địa chỉ theo nhánh của Vercel: chữ thường, ký tự khác chữ/số thành "-".
           slug=$(printf '%s' "$BRANCH" | tr '[:upper:]' '[:lower:]' | sed 's/[^a-z0-9]/-/g')
           echo "url=https://wordwise-git-${slug}-mrtitoong.vercel.app" >> "$GITHUB_OUTPUT"
       - run: npm ci
-        if: steps.target.outputs.skip != '1'
       - name: Kiểm tra nhanh
-        if: steps.target.outputs.skip != '1'
         run: npx playwright test e2e/smoke --project=mobile-360
         env:
           E2E_BASE_URL: ${{ steps.target.outputs.url }}
+          # Bản preview đang mở công khai (đã tắt Deployment Protection). Bật lại thì thêm secret này
+          # (Vercel → Deployment Protection → Protection Bypass for Automation).
           VERCEL_AUTOMATION_BYPASS_SECRET: ${{ secrets.VERCEL_AUTOMATION_BYPASS_SECRET }}
           PLAYWRIGHT_CHANNEL: chrome
       - uses: actions/upload-artifact@v4

@@ -79,6 +79,24 @@ export function classifyRequest(request: RequestInfo, origin: string): RouteKind
   return "bypass";
 }
 
+/** Trang trước khi bắt đầu dùng app: trang chính còn chuyển hướng về đây nên chưa lưu được. */
+const BEFORE_START = ["/welcome", "/onboarding", "/login", "/auth", "/offline", "/admin"];
+/** Lưu lại trang chính tối đa mỗi giờ một lần; lần trước chưa lưu được trang Hôm nay thì thử lại sớm. */
+export const WARM_EVERY_MS = 60 * 60 * 1000;
+export const WARM_RETRY_MS = 30_000;
+
+export type WarmRecord = { at: number; ok: boolean };
+
+/**
+ * Có nên nhờ Service Worker lưu sẵn trang chính khi đang ở `pathname`? (App không đọc được cookie
+ * trạng thái – httpOnly – nên dựa vào trang đang mở: đã vào trang trong app là đã bắt đầu dùng.)
+ */
+export function shouldWarmPages(pathname: string, last: WarmRecord | null, now: number): boolean {
+  if (BEFORE_START.some((base) => startsWithPath(pathname, base))) return false;
+  if (!last) return true;
+  return now - last.at > (last.ok ? WARM_EVERY_MS : WARM_RETRY_MS);
+}
+
 /** Đường dẫn JS/CSS của Next trong một trang HTML, để lưu kèm trang (mở offline vẫn chạy được). */
 export function assetUrlsInHtml(html: string): string[] {
   const found = html.match(/\/_next\/static\/[^"'\s)\\]+/g) ?? [];

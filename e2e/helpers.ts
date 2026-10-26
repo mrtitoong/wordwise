@@ -9,9 +9,10 @@ const MAILPIT_URL = process.env.E2E_MAILPIT_URL ?? "http://127.0.0.1:54324";
 /** Vào thẳng app như khách đã xong onboarding (cho các test không về đăng nhập). */
 export async function asOnboardedGuest(context: BrowserContext, baseURL: string | undefined) {
   const url = baseURL ?? "http://localhost:3100";
+  // httpOnly như cookie thật (src/lib/auth/cookies.ts): app không đọc được bằng JavaScript.
   await context.addCookies([
-    { name: "ww_guest", value: "1", url },
-    { name: "ww_onboarded", value: "1", url },
+    { name: "ww_guest", value: "1", url, httpOnly: true },
+    { name: "ww_onboarded", value: "1", url, httpOnly: true },
   ]);
 }
 

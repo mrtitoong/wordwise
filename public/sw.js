@@ -41,6 +41,7 @@
     if (request.destination === "image" && IMAGE_HOSTS.includes(url.hostname)) return "media";
     return "bypass";
   }
+  var WARM_EVERY_MS = 60 * 60 * 1e3;
   function assetUrlsInHtml(html) {
     const found = html.match(/\/_next\/static\/[^"'\s)\\]+/g) ?? [];
     return [...new Set(found)];
@@ -71,7 +72,7 @@
     for (const key of keysToTrim(await cache.keys(), max)) await cache.delete(key);
   }
   async function savePage(url, response) {
-    if (!response.ok || response.redirected || response.type !== "basic") return;
+    if (!response.ok || response.redirected || response.type !== "basic") return false;
     const html = await response.clone().text();
     const pages = await caches.open(CACHE_NAMES.pages);
     await pages.put(url, response);
@@ -83,12 +84,16 @@
     }
     await trim(CACHE_NAMES.pages, PAGES_MAX_ENTRIES);
     await trim(CACHE_NAMES.static, STATIC_MAX_ENTRIES);
+    return true;
   }
   async function warmPages(paths) {
+    const saved = [];
     for (const path of paths) {
       const response = await fetch(path, { credentials: "same-origin" }).catch(() => null);
-      if (response) await savePage(new URL(path, ORIGIN).href, response).catch(() => void 0);
+      const ok = response ? await savePage(new URL(path, ORIGIN).href, response).catch(() => false) : false;
+      if (ok) saved.push(path);
     }
+    return saved;
   }
   async function cachedPage(request) {
     const pages = await caches.open(CACHE_NAMES.pages);
@@ -177,7 +182,7 @@
     const data = event.data;
     if (data?.type !== "warm" || !Array.isArray(data.pages)) return;
     event.waitUntil(
-      warmPages(data.pages).then(() => event.ports[0]?.postMessage({ type: "warmed" }))
+      warmPages(data.pages).then((saved) => event.ports[0]?.postMessage({ type: "warmed", saved }))
     );
   });
   sw.addEventListener("push", (event) => {

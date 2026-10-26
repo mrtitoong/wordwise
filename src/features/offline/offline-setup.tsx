@@ -19,7 +19,7 @@ export function OfflineSetup() {
 
   useEffect(() => {
     // Mỗi lần đổi trang: vừa xong onboarding/đăng nhập thì lưu sẵn trang chính ngay.
-    const run = () => void setUpOffline().catch(() => undefined);
+    const run = () => void setUpOffline(pathname).catch(() => undefined);
     // Chờ trang tải xong để không tranh băng thông với lần mở đầu.
     if (document.readyState === "complete") run();
     else window.addEventListener("load", run, { once: true });

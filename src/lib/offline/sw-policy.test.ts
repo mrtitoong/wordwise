@@ -4,6 +4,9 @@ import {
   classifyRequest,
   keysToTrim,
   parseRange,
+  shouldWarmPages,
+  WARM_EVERY_MS,
+  WARM_RETRY_MS,
   type RequestInfo,
 } from "./sw-policy";
 
@@ -96,5 +99,24 @@ describe("parseRange", () => {
     expect(parseRange("items=0-1", 1000)).toBeNull();
     expect(parseRange("bytes=2000-", 1000)).toBeNull();
     expect(parseRange("bytes=5-1", 1000)).toBeNull();
+  });
+});
+
+describe("shouldWarmPages", () => {
+  const now = 1_000_000_000;
+
+  it("chưa bắt đầu dùng app (chào mừng, onboarding, đăng nhập): chưa lưu", () => {
+    for (const path of ["/welcome", "/onboarding", "/login", "/auth/finish", "/admin/lists"]) {
+      expect(shouldWarmPages(path, null, now)).toBe(false);
+    }
+  });
+
+  it("trang trong app: lưu lần đầu, rồi mỗi giờ; lần trước hỏng thì thử lại sau 30 giây", () => {
+    expect(shouldWarmPages("/review/session", null, now)).toBe(true);
+    const ok = { at: now - WARM_EVERY_MS + 1, ok: true };
+    expect(shouldWarmPages("/", ok, now)).toBe(false);
+    expect(shouldWarmPages("/", { ...ok, at: now - WARM_EVERY_MS - 1 }, now)).toBe(true);
+    expect(shouldWarmPages("/", { at: now - WARM_RETRY_MS + 1, ok: false }, now)).toBe(false);
+    expect(shouldWarmPages("/", { at: now - WARM_RETRY_MS - 1, ok: false }, now)).toBe(true);
   });
 });

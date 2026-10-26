@@ -160,7 +160,12 @@ export async function finishSession(page: Page, max = 60): Promise<Step[]> {
     if (step === "done") return seen;
     seen.push(step);
   }
-  throw new Error(`phiên chưa xong sau ${max} câu`);
+  const position = await page
+    .getByText(/^\d+\/\d+$/)
+    .first()
+    .textContent({ timeout: 1_000 })
+    .catch(() => null);
+  throw new Error(`phiên chưa xong sau ${max} câu (đang ở ${position}): ${seen.join(", ")}`);
 }
 
 /** Thẻ Nghĩa đã thuộc (mức 3: S = 10 ngày) để mở thẻ Chính tả, Phát âm và hỏi mọi dạng. */

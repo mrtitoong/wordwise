@@ -32,16 +32,19 @@ test.describe("Luồng 3 – mất mạng giữa phiên ôn", () => {
     const local = await readLocalStore<Log & { id: string }>(page, "review_logs");
     expect(local.length).toBe(3 + offlineSteps.length);
 
+    // Lượt ôn khi offline nằm trong hàng chờ gửi.
+    expect((await readLocalStore(page, "outbox")).length).toBeGreaterThan(0);
+
+    // Có mạng lại (vẫn ở màn kết quả): tự đồng bộ, không cần bấm gì. Chưa bấm "Xong" khi offline:
+    // chưa có Service Worker lưu sẵn giao diện nên chuyển trang khi offline ra trang lỗi của trình
+    // duyệt (Prompt 8.2 làm phần mở app offline).
+    await context.setOffline(false);
+    await expect
+      .poll(async () => (await readLocalStore(page, "outbox")).length, { timeout: 20_000 })
+      .toBe(0);
     await page.getByRole("button", { name: "Xong", exact: true }).click();
     await expect(page).toHaveURL("/");
-    const icon = page.locator("[data-sync-state]");
-    await expect(icon).toHaveAttribute("data-sync-state", "offline");
-    await expect(icon).toHaveAccessibleName(/Đang offline, \d+ thay đổi chờ gửi/);
-
-    // Có mạng lại: tự đồng bộ, máy chủ có đúng các lượt ôn trong máy.
-    await context.setOffline(false);
-    await expect(icon).toHaveAttribute("data-sync-state", "idle", { timeout: 20_000 });
-    expect(await readLocalStore(page, "outbox")).toHaveLength(0);
+    await expect(page.locator("[data-sync-state]")).toHaveAttribute("data-sync-state", "idle");
 
     const admin = serverAdmin()!;
     const userId = await userIdByEmail(email);

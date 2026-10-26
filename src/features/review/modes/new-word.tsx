@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { useTranslations } from "next-intl";
 import { Button } from "@/components/ui/button";
 import { WordCardBody } from "@/features/words/word-card/word-card-screen";
@@ -25,6 +25,15 @@ export function NewWordIntro({
 }) {
   const t = useTranslations("review");
   const [shownAt] = useState(() => Date.now());
+  // Ghi lượt ôn chạy bất đồng bộ: chặn chạm lần hai (ghi trùng) trong lúc chờ sang câu sau.
+  const sent = useRef(false);
+  const [leaving, setLeaving] = useState(false);
+  const finish = () => {
+    if (sent.current) return;
+    sent.current = true;
+    setLeaving(true);
+    onContinue(Date.now() - shownAt);
+  };
 
   useEffect(() => {
     function onKey(event: KeyboardEvent) {
@@ -32,12 +41,12 @@ export function NewWordIntro({
       if (event.target !== document.body) return;
       if (event.key === "Enter") {
         event.preventDefault();
-        onContinue(Date.now() - shownAt);
+        finish();
       }
     }
     window.addEventListener("keydown", onKey);
     return () => window.removeEventListener("keydown", onKey);
-  }, [onContinue, shownAt]);
+  });
 
   return (
     <div className="flex flex-1 flex-col gap-4">
@@ -48,7 +57,7 @@ export function NewWordIntro({
         <WordCardBody wordId={item.word.id} inSession autoPlay={muted ? null : voice} />
       </div>
       <div className="sticky bottom-0 -mx-4 bg-background/95 px-4 pt-2 pb-[max(0.5rem,env(safe-area-inset-bottom))] backdrop-blur">
-        <Button className="min-h-12 w-full" onClick={() => onContinue(Date.now() - shownAt)}>
+        <Button className="min-h-12 w-full" disabled={leaving} onClick={finish}>
           {t("gotIt")}
         </Button>
         <p className="pt-1 text-center text-xs text-muted-foreground">{t("gotItHint")}</p>

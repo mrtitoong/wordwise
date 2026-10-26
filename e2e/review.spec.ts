@@ -11,6 +11,8 @@ import {
 
 test.describe("Phiên ôn", () => {
   test.skip(!hasSupabase, "cần Supabase cục bộ (chạy trong CI)");
+  // Học 5 từ khởi đầu (xem thẻ đủ 5 tab, mỗi từ quay lại 2 lần) rồi mới tới phần chính của test.
+  test.setTimeout(90_000);
 
   test("học 5 từ khởi đầu → ôn hết → lịch ôn cập nhật, chuỗi ngày học bắt đầu", async ({
     page,

@@ -44,7 +44,11 @@ export async function answerCorrectly(page: Page): Promise<"intro" | "flashcard"
 
   if (await done.isVisible()) return "done";
   if (await intro.isVisible()) {
+    // Ghi lượt ôn chạy bất đồng bộ: đợi sang câu sau rồi mới trả lời tiếp (không bấm lại nút cũ).
+    const position = page.getByText(/^\d+\/\d+$/);
+    const before = await position.textContent();
     await intro.click();
+    await expect(position).not.toHaveText(before!);
     return "intro";
   }
   if (await show.isVisible()) {

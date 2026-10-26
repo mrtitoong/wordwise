@@ -15,13 +15,25 @@ import { createSupabaseRemote } from "@/lib/sync/remote";
 const PAGE = 1000;
 const CONTENT_CHUNK = 200;
 
-export type ListWord = ListItem & { lemma: string; pos: string; meaning: string };
+export type ListWord = ListItem & {
+  wordId: string;
+  lemma: string;
+  pos: string;
+  meaning: string;
+  /** Độ khó cho kiểm tra đầu vào. */
+  frequencyRank: number | null;
+  cefr: string | null;
+};
 
 type ItemRow = {
   sense_id: string;
   subtopic: string | null;
   context_sentence: string | null;
-  word_senses: { meaning_vi: string; words: { lemma: string; pos: string } } | null;
+  word_senses: {
+    meaning_vi: string;
+    word_id: string;
+    words: { lemma: string; pos: string; cefr: string | null; frequency_rank: number | null };
+  } | null;
 };
 
 function toListWord(row: ItemRow): ListWord {
@@ -29,9 +41,12 @@ function toListWord(row: ItemRow): ListWord {
     senseId: row.sense_id,
     subtopic: row.subtopic,
     contextSentence: row.context_sentence,
+    wordId: row.word_senses?.word_id ?? "",
     lemma: row.word_senses?.words.lemma ?? "",
     pos: row.word_senses?.words.pos ?? "",
     meaning: row.word_senses?.meaning_vi ?? "",
+    frequencyRank: row.word_senses?.words.frequency_rank ?? null,
+    cefr: row.word_senses?.words.cefr ?? null,
   };
 }
 
@@ -49,7 +64,9 @@ export async function fetchListWords(listId: string, version: number): Promise<L
   for (let from = 0; ; from += PAGE) {
     const { data, error } = await client
       .from("curated_list_release_items")
-      .select("sense_id, subtopic, context_sentence, word_senses (meaning_vi, words (lemma, pos))")
+      .select(
+        "sense_id, subtopic, context_sentence, word_senses (meaning_vi, word_id, words (lemma, pos, cefr, frequency_rank))",
+      )
       .eq("list_id", listId)
       .eq("version", version)
       .order("item_order")

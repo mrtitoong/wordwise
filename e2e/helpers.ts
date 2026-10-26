@@ -166,3 +166,34 @@ export async function userIdByEmail(email: string): Promise<string> {
   const { data } = await admin.auth.admin.listUsers({ perPage: 1000 });
   return data.users.find((u) => u.email === email)!.id;
 }
+
+/** Trang không cuộn ngang ở kích thước màn hình hiện tại. */
+export async function noHorizontalScroll(page: Page) {
+  const overflow = await page.evaluate(
+    () => document.documentElement.scrollWidth - document.documentElement.clientWidth,
+  );
+  expect(overflow).toBeLessThanOrEqual(0);
+}
+
+/** Khách bấm "Dùng thử ngay" rồi đi hết onboarding. */
+export async function startAsGuest(
+  page: Page,
+  options: Parameters<typeof completeOnboarding>[1] = {},
+) {
+  await page.goto("/welcome");
+  await page.getByRole("button", { name: "Dùng thử ngay" }).click();
+  await completeOnboarding(page, { level: "B1", ...options });
+}
+
+/** Tab Gõ: gõ vài chữ, chọn gợi ý đầu tiên (Enter) rồi thêm vào sổ đang chọn. */
+export async function addTypedWord(page: Page, typed: string, lemma: string, notebook: string) {
+  await page.getByLabel("Từ cần thêm").fill(typed);
+  await expect(
+    page.getByRole("list", { name: "Gợi ý" }).getByRole("button", { name: new RegExp(lemma) }),
+  ).toBeVisible();
+  await page.getByLabel("Từ cần thêm").press("Enter");
+  await page.getByRole("button", { name: "Thêm", exact: true }).click();
+  await expect(
+    page.getByRole("status").filter({ hasText: `Đã thêm “${lemma}” vào ${notebook}` }),
+  ).toBeVisible();
+}

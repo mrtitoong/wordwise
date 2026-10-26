@@ -56,19 +56,152 @@ export async function answerCorrectly(page: Page): Promise<"intro" | "flashcard"
     await page.getByRole("button", { name: /^Nhớ/ }).click();
     return "flashcard";
   }
+  await chooseOption(page);
+  return "mcq";
+}
+
+/**
+ * Trắc nghiệm, nghe → chọn nghĩa: chọn đáp án đúng (hỏi nghĩa hoặc hỏi từ tiếng Anh), hoặc một đáp
+ * án sai rồi bấm Tiếp.
+ */
+async function chooseOption(page: Page, { wrong = false } = {}) {
+  const options = page.getByRole("list", { name: "Các đáp án" });
   const lemma = await currentAnswer(page);
   const correct = (await meanings(page)).get(lemma) ?? [];
   const buttons = options.getByRole("button");
-  const labels = await buttons.allTextContents();
-  const index = labels.findIndex((label) => correct.some((m) => label.endsWith(m)));
-  expect(index, `không thấy nghĩa đúng của "${lemma}" trong ${labels.join(" | ")}`).toBeGreaterThan(
-    -1,
-  );
+  const labels = (await buttons.allTextContents()).map((label) => label.trim());
+  let index = labels.findIndex((label) => correct.some((m) => label.endsWith(m)));
+  // Thẻ từ mức 2 trở lên có khi hỏi ngược: cho nghĩa, chọn từ tiếng Anh.
+  if (index < 0) index = labels.findIndex((label) => label.endsWith(lemma));
+  expect(
+    index,
+    `không thấy đáp án đúng của "${lemma}" trong ${labels.join(" | ")}`,
+  ).toBeGreaterThan(-1);
+  if (wrong) {
+    await buttons.nth(index === 0 ? 1 : 0).click();
+    await expect(page.getByText("Chưa đúng")).toBeVisible();
+    await page.getByRole("button", { name: "Tiếp", exact: true }).click();
+    await expect(page.getByText("Chưa đúng")).toBeHidden();
+    return;
+  }
   await buttons.nth(index).click();
   await expect(page.getByText("Chính xác!")).toBeVisible();
   // Đúng thì tự chuyển câu sau ~0,7 giây.
   await expect(page.getByText("Chính xác!")).toBeHidden();
-  return "mcq";
+}
+
+export type Step = "intro" | "flashcard" | "mcq" | "listening" | "writing" | "speaking" | "done";
+
+/**
+ * Trả lời câu đang hỏi ở bất kỳ chế độ nào (cả 5 chế độ và màn từ mới), trả về chế độ đã gặp.
+ * `wrong`: trả lời sai có chủ đích (chỉ trắc nghiệm/nghe → chọn nghĩa). Phát âm cần micro giả và
+ * chấm điểm giả lập (xem `useFakeMicrophone`, `mockPronunciation`).
+ */
+export async function answerQuestion(page: Page, { wrong = false } = {}): Promise<Step> {
+  const intro = page.getByRole("button", { name: "Đã xem xong" });
+  const show = page.getByRole("button", { name: "Hiện đáp án" });
+  const options = page.getByRole("list", { name: "Các đáp án" });
+  const writing = page
+    .getByRole("group", { name: "Các chữ cái" })
+    .or(page.getByRole("textbox", { name: "Câu trả lời của bạn" }));
+  const speaking = page.getByText("Nghe mẫu rồi đọc to từ này");
+  const done = page.getByRole("button", { name: "Xong", exact: true });
+  await expect(
+    intro.or(show).or(options).or(writing.first()).or(speaking).or(done).first(),
+  ).toBeVisible({ timeout: 15_000 });
+
+  if (await done.isVisible()) return "done";
+  if ((await intro.isVisible()) || (await show.isVisible())) {
+    const step = await answerCorrectly(page);
+    return step as Step;
+  }
+  if (await options.isVisible()) {
+    const listening = await page.getByText("Nghe rồi chọn nghĩa đúng").isVisible();
+    await chooseOption(page, { wrong });
+    return listening ? "listening" : "mcq";
+  }
+  if (await speaking.isVisible()) {
+    await speak(page);
+    return "speaking";
+  }
+  const listening = await page
+    .getByText(/^(Nghe rồi gõ lại từ|Nghe câu rồi điền từ còn thiếu)$/)
+    .isVisible();
+  if (await page.getByRole("group", { name: "Các chữ cái" }).isVisible()) {
+    await writeCorrectly(page);
+  } else {
+    await typeAnswer(page, await currentAnswer(page));
+  }
+  await expect(page.getByText("Chính xác!")).toBeVisible();
+  await expect(page.getByText("Chính xác!")).toBeHidden();
+  return listening ? "listening" : "writing";
+}
+
+/** Phát âm: thu âm bằng micro giả, chờ điểm rồi sang câu sau. */
+async function speak(page: Page) {
+  await page.getByRole("button", { name: "Bắt đầu đọc" }).click();
+  const explain = page.getByRole("dialog", { name: "Cho phép dùng micro" });
+  const score = page.getByText(/^(?:✗ |✓ |~ )?\d+ điểm$/);
+  const problem = page.locator("[data-e2e-answer] [role=alert]");
+  await expect(explain.or(score).or(problem).first()).toBeVisible({ timeout: 10_000 });
+  if (await explain.isVisible()) await page.getByRole("button", { name: "Cho phép micro" }).click();
+  await expect(score.or(problem).first()).toBeVisible({ timeout: 10_000 });
+  expect(await problem.allTextContents()).toEqual([]);
+  await page.getByRole("button", { name: "Tiếp", exact: true }).click();
+  // Câu cũ còn hiện trong lúc lưu lượt ôn: chờ nó đi rồi mới xem câu sau hay màn kết quả.
+  await expect(score).toBeHidden();
+}
+
+/** Trả lời tới hết phiên (tối đa `max` câu), trả về các chế độ đã gặp theo thứ tự. */
+export async function finishSession(page: Page, max = 60): Promise<Step[]> {
+  const seen: Step[] = [];
+  for (let i = 0; i < max; i++) {
+    const step = await answerQuestion(page);
+    if (step === "done") return seen;
+    seen.push(step);
+  }
+  throw new Error(`phiên chưa xong sau ${max} câu`);
+}
+
+/** Thẻ Nghĩa đã thuộc (mức 3: S = 10 ngày) để mở thẻ Chính tả, Phát âm và hỏi mọi dạng. */
+export const KNOWN_CARD = {
+  state: 2,
+  stability: 10,
+  difficulty: 5,
+  reps: 3,
+  scheduled_days: 10,
+  learning_steps: 0,
+  last_review: new Date(Date.now() - 10 * 86_400_000).toISOString(),
+};
+
+type Hooks = {
+  __wordwiseE2E: {
+    patchCards: (skill: string, patch?: object, limit?: number) => Promise<number>;
+  };
+};
+
+/** Sửa thẻ trong máy qua cửa test (xem sync-provider.tsx): đến hạn ngay, `limit` thẻ đầu. */
+export async function patchCards(page: Page, skill: string, patch: object = {}, limit?: number) {
+  return page.evaluate(
+    ([s, p, l]) =>
+      (window as unknown as Hooks).__wordwiseE2E.patchCards(
+        s as string,
+        p as object,
+        l as number | undefined,
+      ),
+    [skill, patch, limit] as const,
+  );
+}
+
+/** Ép dạng câu hỏi (mảng: các câu lần lượt nhận từng dạng). */
+export async function forceModes(
+  page: Page,
+  overrides: { meaningMode?: string | string[]; spellingKind?: string | string[] },
+) {
+  await page.evaluate(
+    (o) => localStorage.setItem("ww_e2e_overrides", JSON.stringify(o)),
+    overrides,
+  );
 }
 
 /** Học hết 5 từ khởi đầu (dùng thử, trình độ B1), trả lời đúng mọi câu. Trả về các bước đã qua. */

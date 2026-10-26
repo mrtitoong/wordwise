@@ -171,7 +171,10 @@ describe("việc nhập chạy nền", () => {
       preparing: 1,
       pending: 1,
       skipped: 1,
+      rejected: 0,
     });
+    // Dòng bỏ lúc xem trước (lỗi, trùng) vẫn được đếm khi báo nhập xong.
+    expect(importProgress({ items, rejected: 3 }).rejected).toBe(3);
   });
 
   it("chờ tới 0 giờ ngày hôm sau giờ Việt Nam", () => {

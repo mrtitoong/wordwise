@@ -209,6 +209,7 @@ export function FileEntry({ context }: { context: EntryContext }) {
       notebookName: context.notebookName,
       fileName: fileName ?? "file",
       items,
+      rejected: previews.length - items.length,
     });
     setTables(null);
     setResolved(null);
@@ -521,7 +522,7 @@ function ImportProgressCard({ record }: { record: ImportRecord }) {
           ? t("doneBody", {
               added: progress.added,
               preparing: progress.preparing,
-              skipped: progress.skipped + progress.failed,
+              skipped: progress.skipped + progress.failed + progress.rejected,
             })
           : t("progress", { ...progress })}
       </p>

@@ -104,8 +104,7 @@ export async function writeCorrectly(
   const input = page.getByRole("textbox", { name: "Câu trả lời của bạn" });
   await expect(letters.or(input)).toBeVisible();
   if (await input.isVisible()) {
-    await input.fill(lemma);
-    await page.getByRole("button", { name: "Kiểm tra" }).click();
+    await typeAnswer(page, lemma);
     return "typed";
   }
   // Cấp 1: chạm từng chữ cái theo thứ tự (gợi ý có thể đã đặt sẵn chữ đầu).
@@ -115,4 +114,28 @@ export async function writeCorrectly(
     await letters.getByRole("button", { name: letter, exact: true }).first().click();
   }
   return "tiles";
+}
+
+const KEY_NAMES: Record<string, string> = { " ": "Dấu cách", "-": "Gạch nối", "'": "Dấu nháy" };
+
+/**
+ * Gõ đáp án rồi bấm Kiểm tra. Màn hình cảm ứng (dự án mobile-360) dùng bàn phím chữ cái của app;
+ * máy tính dùng ô nhập thường.
+ */
+export async function typeAnswer(page: Page, text: string) {
+  const keyboard = page.getByRole("group", { name: "Bàn phím chữ cái" });
+  if (await keyboard.isVisible()) {
+    // Không có ô nhập thật: bàn phím hệ thống (và thanh gợi ý) không mở.
+    await expect(page.locator("input:visible")).toHaveCount(0);
+    for (const ch of Array.from(text.toLowerCase())) {
+      await keyboard.getByRole("button", { name: KEY_NAMES[ch] ?? ch, exact: true }).click();
+    }
+    await expect(page.getByRole("textbox", { name: "Câu trả lời của bạn" })).toHaveText(
+      text.toLowerCase(),
+    );
+    await keyboard.getByRole("button", { name: "Kiểm tra", exact: true }).click();
+    return;
+  }
+  await page.getByRole("textbox", { name: "Câu trả lời của bạn" }).fill(text);
+  await page.getByRole("button", { name: "Kiểm tra" }).click();
 }

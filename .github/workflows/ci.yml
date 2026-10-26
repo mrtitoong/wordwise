@@ -33,9 +33,10 @@ jobs:
       - run: npm run build
 
   e2e:
-    name: E2E (Playwright 360px + Supabase cục bộ)
+    name: E2E (Playwright 360px, iPhone 13, máy tính + Supabase cục bộ)
     runs-on: ubuntu-latest
-    timeout-minutes: 25
+    # 7 luồng đầy đủ (e2e/journeys) chạy thêm ở iPhone 13 và máy tính.
+    timeout-minutes: 35
     steps:
       - uses: actions/checkout@v4
       - uses: supabase/setup-cli@v1

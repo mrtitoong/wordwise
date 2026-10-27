@@ -591,3 +591,17 @@ Repo: https://github.com/mrtitoong/wordwise
   ngày): `--primary` #6c4cf5 (chữ trắng 5,3:1), accent #ece8fe/#4b2fc9, bản tối #a897ff; biểu đồ Thống kê giữ dải
   xanh dương. Thanh trạng thái/màn chờ (`theme_color`, `themeColor`) màu trắng. Màn Chào mừng dùng logo. Thanh trên: màn Hôm nay hiện logo + "WordWise" (bỏ lời chào), các tab chính có logo nhỏ
   cạnh tiêu đề, trang con có nút quay lại không có logo (`<Logo>` ở `src/components/brand/logo.tsx`).
+- 2026-10-27: **Giữ chấm "Khó" khi trả lời đúng nhưng chậm** (> 2 lần trung vị) cả ở bước học (chủ sản phẩm
+  chốt không sửa), nên mẫu số phiên ôn còn tăng khi trả lời chậm/dùng gợi ý/gõ sai 1 chữ.
+- 2026-10-27 (Prompt 8.2b, chủ sản phẩm duyệt): Lighthouse trên CI (job "Lighthouse", `npm run lighthouse`, 4
+  trang, trung vị 5 lượt): Hiệu năng Chào mừng 94, Hôm nay/Phiên ôn/Thống kê **87** (trước 81/79/80), Truy cập,
+  Best Practices, SEO 100. **Mục tiêu ≥ 90 chưa đạt, chủ sản phẩm chấp nhận; CI chặn khi dưới 85.** Báo cáo
+  `docs/qa/performance.md`. Giao diện đọc chủ dữ liệu qua `src/lib/sync/bridge.ts` (gợi ý `ww_owner` trong máy,
+  không có cookie phiên Supabase = khách) thay vì chờ sync engine; `DeferredProviders` (đồng bộ, nhập file,
+  Service Worker + tải trước) chỉ tải sau khi trang tải xong + 1,5 giây + lúc rảnh. Nội dung từ, audio câu ví dụ,
+  màn xem thẻ từ mới và tập phát âm tải khi cần; code tải khi cần được lưu sẵn cho offline mỗi lần mở app có
+  mạng. Cửa test E2E chờ bằng `waitForTestHooks(page)`. Chuyển câu trong phiên ôn đo bằng mốc `ww:next-question`
+  (CI: trung vị ~13 ms, E2E chặn ≥ 100 ms).
+- 2026-10-27: **Chế độ tối**: mặc định theo máy, Cài đặt → Giao diện (Theo máy/Sáng/Tối) lưu riêng từng máy trong
+  cookie `ww_theme` (`src/lib/theme.ts`); máy chủ đặt lớp `dark`, script trong `<head>` áp trước khi vẽ. Mọi
+  `role="radiogroup"` dùng phím mũi tên/Home/End (`radioGroupKeys`).

@@ -1,3 +1,4 @@
+import { timed } from "@/lib/diagnostics/slow-log";
 import { GUEST_OWNER } from "@/lib/db/ids";
 import type { LocalDb } from "@/lib/db/local";
 import { cacheWordContent, weightsOf } from "@/lib/db/repo";
@@ -154,12 +155,12 @@ export class SyncEngine {
     }
     await this.refresh("syncing");
 
-    const pushed = await this.push(owner);
+    const pushed = await timed("sync", "push", () => this.push(owner));
     if (!pushed.ok && pushed.kind === "network") return this.finish(pushed);
-    const pulled = await this.pull(owner);
+    const pulled = await timed("sync", "pull", () => this.pull(owner));
     if (!pulled.ok) return this.finish(pulled);
     // Lỗi server ở bước này không chặn đồng bộ dữ liệu học (lần sau tải lại).
-    const refreshed = await this.refreshEditedWords();
+    const refreshed = await timed("sync", "edited-words", () => this.refreshEditedWords());
     if (!refreshed.ok && refreshed.kind === "network") return this.finish(refreshed);
 
     // Gộp thẻ có thể sinh việc mới (thẻ tính lại): gửi luôn trong lượt này.

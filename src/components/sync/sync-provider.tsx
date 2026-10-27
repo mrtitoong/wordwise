@@ -5,6 +5,7 @@ import { GUEST_OWNER } from "@/lib/db/ids";
 import { getLocalDb } from "@/lib/db/local";
 import { ensureSkillCards, openNewWords, recordReview } from "@/lib/db/repo";
 import type { CardRow, ReviewLogRow } from "@/lib/db/types";
+import { timed } from "@/lib/diagnostics/slow-log";
 import { createClient } from "@/lib/supabase/client";
 import { getSupabaseEnv } from "@/lib/supabase/env";
 import { getSyncEngine } from "@/lib/sync/client";
@@ -43,8 +44,9 @@ export function SyncProvider() {
       const settled = state === "idle" || state === "local";
       if (settled && state !== lastState && owner && !opening) {
         opening = true;
-        void openNewWords(getLocalDb(), owner)
-          .then(() => ensureSkillCards(getLocalDb(), owner))
+        void timed("write", "open-new-words", () =>
+          openNewWords(getLocalDb(), owner).then(() => ensureSkillCards(getLocalDb(), owner)),
+        )
           .catch((error) => console.error("Mở từ mới lỗi:", error))
           .finally(() => (opening = false));
       }

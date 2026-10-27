@@ -1363,6 +1363,16 @@
   },
   "review": {
     "title": "Review session",
+    "loadingTips": {
+      "0": "Saying a word out loud while reviewing helps it stick.",
+      "1": "A little every day beats one long cram session.",
+      "2": "Forgetting is fine: the word comes back sooner so you can review it again.",
+      "3": "Put the word in a sentence of your own to remember it better.",
+      "4": "Keep forgetting a word? Add your own memory tip in the Memory tab of its card.",
+      "5": "Took a while to recall it? Choose \"Hard\" and it will come back sooner.",
+      "6": "Listen to the audio and repeat it to remember the pronunciation too.",
+      "7": "Your streak allows 1 rest day a week, so missing a day won't break it."
+    },
     "loading": "Preparing your session…",
     "emptyTitle": "Nothing to review right now",
     "emptyBody": "You're all caught up, or the word content hasn't been downloaded yet (needs a connection the first time).",

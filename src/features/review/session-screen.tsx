@@ -70,6 +70,7 @@ import {
   relatedOf,
   type PreparedCard,
 } from "./session-content";
+import { SessionLoading } from "./session-loading";
 import { SessionResult } from "./session-result";
 import { loadReviewData, toTodayInput, type ReviewData } from "./use-review-data";
 
@@ -599,13 +600,7 @@ export function SessionScreen({ options }: { options: SessionOptions }) {
     }
   }
 
-  if (phase === "loading") {
-    return (
-      <p className="py-24 text-center text-muted-foreground" role="status">
-        {t("loading")}
-      </p>
-    );
-  }
+  if (phase === "loading") return <SessionLoading />;
 
   if (phase === "empty") {
     return (

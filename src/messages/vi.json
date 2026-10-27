@@ -1363,6 +1363,16 @@
   },
   "review": {
     "title": "Phiên ôn",
+    "loadingTips": {
+      "0": "Nói to từ khi ôn giúp nhớ lâu hơn.",
+      "1": "Ôn một chút mỗi ngày hiệu quả hơn ôn dồn một lần.",
+      "2": "Quên cũng không sao: từ đó sẽ quay lại sớm hơn để bạn ôn tiếp.",
+      "3": "Đặt từ vào một câu của riêng bạn để nhớ sâu hơn.",
+      "4": "Từ hay quên? Thêm mẹo nhớ của bạn ở tab Ghi nhớ của thẻ từ.",
+      "5": "Phải nghĩ lâu mới nhớ ra thì chọn \"Khó\": từ đó sẽ quay lại sớm hơn.",
+      "6": "Nghe audio rồi đọc theo để nhớ cả cách phát âm.",
+      "7": "Chuỗi ngày học có 1 ngày nghỉ mỗi tuần, lỡ một hôm cũng không mất chuỗi."
+    },
     "loading": "Đang chuẩn bị phiên ôn…",
     "emptyTitle": "Không có gì cần ôn lúc này",
     "emptyBody": "Thẻ đã ôn hết, hoặc nội dung từ chưa tải về máy (cần có mạng lần đầu).",

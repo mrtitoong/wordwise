@@ -5,7 +5,6 @@ import { introducedToday } from "@/lib/notebooks/introductions";
 import { studyDay } from "@/lib/review/day";
 import { inFinalPhase, planDailyIntroductions, retentionFor } from "@/lib/srs/pacing";
 import { mergeCard } from "@/lib/sync/merge";
-import { addAddition, parseUserAdditions, serializeAdditions } from "@/lib/words/user-additions";
 import { rekeyOwnedData } from "@/lib/sync/rekey";
 import type { WordContent } from "@/lib/sync/remote";
 import {
@@ -206,6 +205,11 @@ export async function addSensesToNotebook(
 ): Promise<AddResult> {
   const iso = now.toISOString();
   const result: AddResult = { added: [], linked: [], skipped: [] };
+  // Ghi chú → "Của bạn" cần Zod (nặng): chỉ tải khi có ghi chú, trước transaction (chờ việc ngoài
+  // IndexedDB trong transaction thì transaction tự đóng).
+  const additionsLib = items.some((item) => item.note?.trim())
+    ? await import("@/lib/words/user-additions")
+    : null;
   await db.transaction("rw", personalTables(db), async () => {
     const notebook = await db.notebooks.get(options.notebookId);
     if (!notebook || notebook.user_id !== owner || notebook.deleted_at) {
@@ -240,7 +244,8 @@ export async function addSensesToNotebook(
       }
 
       const note = item.note?.trim();
-      if (note) {
+      if (note && additionsLib) {
+        const { addAddition, parseUserAdditions, serializeAdditions } = additionsLib;
         const row = (await db.user_words.get(uwId))!;
         const additions = parseUserAdditions(row.user_additions);
         if (!additions.meaning.some((n) => n.text === note)) {

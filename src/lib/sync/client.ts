@@ -5,6 +5,7 @@ import { getLocalDb } from "@/lib/db/local";
 import { onLocalWrite } from "@/lib/db/repo";
 import { createClient } from "@/lib/supabase/client";
 import { getSupabaseEnv } from "@/lib/supabase/env";
+import { attachEngine } from "./bridge";
 import { SyncEngine } from "./engine";
 import { createSupabaseRemote } from "./remote";
 
@@ -17,6 +18,7 @@ export function getSyncEngine(): SyncEngine | null {
     const remote = getSupabaseEnv() ? createSupabaseRemote(createClient()) : null;
     engine = new SyncEngine(getLocalDb(), remote);
     onLocalWrite(() => engine?.schedule());
+    attachEngine(engine);
   }
   return engine;
 }

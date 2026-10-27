@@ -1,6 +1,7 @@
 "use client";
 
 import { useCallback, useEffect, useRef, useState } from "react";
+import dynamic from "next/dynamic";
 import { useRouter } from "next/navigation";
 import { MicOff, Volume2, VolumeX, X } from "lucide-react";
 import { Rating, type FSRS, type Grade } from "ts-fsrs";
@@ -41,8 +42,6 @@ import { createScheduler } from "@/lib/srs/scheduler";
 import { useOwner } from "@/lib/sync/owner";
 import { Flashcard } from "./modes/flashcard";
 import { MultipleChoice } from "./modes/multiple-choice";
-import { NewWordIntro } from "./modes/new-word";
-import { Speaking } from "./modes/speaking";
 import type { Intervals, ModeAnswer } from "./modes/types";
 import { e2eOverride } from "./e2e";
 import { canSpeak } from "./modes/listen-player";
@@ -54,7 +53,8 @@ import {
   type WritingTask,
 } from "./modes/writing";
 import {
-  loadChoicePool,
+  loadLocalChoices,
+  moreChoices,
   prepareCards,
   readLocalWords,
   relatedOf,
@@ -77,6 +77,20 @@ export type SessionOptions = {
   /** Tiếp tục phiên dở. */
   resume?: boolean;
 };
+
+/**
+ * Màn xem thẻ từ mới (thẻ đủ 5 tab) và tập phát âm kéo theo Supabase/Zod: tải riêng, và tải trước
+ * ngay khi biết phiên có câu loại đó (`preloadModes`) để chuyển câu vẫn tức thì.
+ */
+const loadNewWord = () => import("./modes/new-word");
+const loadSpeaking = () => import("./modes/speaking");
+const NewWordIntro = dynamic(() => loadNewWord().then((m) => m.NewWordIntro), { ssr: false });
+const Speaking = dynamic(() => loadSpeaking().then((m) => m.Speaking), { ssr: false });
+
+function preloadModes(queue: readonly SessionItem[], cards: Map<string, PreparedCard>) {
+  if (queue.some((i) => i.isNew)) void loadNewWord();
+  if (queue.some((i) => cards.get(i.cardId)?.card.skill === "speaking")) void loadSpeaking();
+}
 
 type Kind = "full" | "short" | "single" | "retry" | "practice";
 
@@ -352,12 +366,16 @@ export function SessionScreen({ options }: { options: SessionOptions }) {
         kept.length,
       );
       next = { ...next, queue: kept, position };
-      const choices = await loadChoicePool(db);
+      preloadModes(next.queue, cards);
+      const empty = next.position >= next.queue.length;
+      // Đáp án nhiễu: trong máy đủ thì không gọi mạng; ít (người mới) thì lấy thêm trong kho. Phiên
+      // trống thì không cần.
+      const choices = empty ? [] : await moreChoices(await loadLocalChoices(db));
       setData(fresh);
       setPrepared(cards);
       setPool(choices);
       setRun(next);
-      if (next.position >= next.queue.length) {
+      if (empty) {
         setPhase("empty");
         return;
       }

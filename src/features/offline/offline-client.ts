@@ -51,6 +51,23 @@ function warm(worker: ServiceWorker, pages: readonly string[]): Promise<string[]
 }
 
 /**
+ * Phần code tải sau (chỉ khi cần, xem DeferredProviders, session-screen, session-content): tải sẵn
+ * cùng lúc lưu trang để Service Worker giữ lại – lần đầu dùng tới mà đang offline vẫn chạy được.
+ */
+function warmLazyModules() {
+  return Promise.allSettled([
+    import("@/components/sync/sync-provider"),
+    import("@/features/words/word-data"),
+    import("@/features/review/modes/new-word"),
+    import("@/features/review/modes/speaking"),
+    import("@/features/media/sentence-audio"),
+    import("@/lib/media/request-sentence-audio"),
+    import("@/lib/supabase/client"),
+    import("@/lib/words/user-additions"),
+  ]);
+}
+
+/**
  * Đăng ký Service Worker và lưu sẵn trang chính (gọi mỗi lần đổi trang; quy tắc ở
  * shouldWarmPages). Trả về khi đã lưu xong (hoặc bỏ qua).
  */
@@ -65,7 +82,7 @@ export async function setUpOffline(pathname: string): Promise<void> {
   if (!worker) return;
   warming = true;
   try {
-    const saved = await warm(worker, SHELL_PAGES);
+    const [saved] = await Promise.all([warm(worker, SHELL_PAGES), warmLazyModules()]);
     // Chưa lưu được Hôm nay (vd vẫn bị chuyển về onboarding): thử lại sớm.
     markWarmed({ at: now, ok: saved.includes("/") });
   } finally {

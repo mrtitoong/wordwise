@@ -1,8 +1,8 @@
 "use client";
 
 import { useSyncExternalStore } from "react";
+import { currentStatus, subscribe } from "./bridge";
 import type { SyncStatus } from "./engine";
-import { getSyncEngine } from "./client";
 
 const subscribeOnline = (callback: () => void) => {
   window.addEventListener("online", callback);
@@ -23,14 +23,8 @@ export function useOnlineStatus(): boolean {
 }
 
 const SERVER_STATUS: SyncStatus = { state: "local", pending: 0, failed: 0, lastSyncedAt: null };
-const noop = () => () => {};
 
 /** Trạng thái đồng bộ hiện tại (cập nhật mỗi khi engine đổi trạng thái). */
 export function useSyncStatus(): SyncStatus {
-  const engine = typeof window === "undefined" ? null : getSyncEngine();
-  return useSyncExternalStore(
-    engine?.subscribe ?? noop,
-    engine?.getStatus ?? (() => SERVER_STATUS),
-    () => SERVER_STATUS,
-  );
+  return useSyncExternalStore(subscribe, currentStatus, () => SERVER_STATUS);
 }

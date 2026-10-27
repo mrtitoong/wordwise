@@ -618,6 +618,6 @@ Repo: https://github.com/mrtitoong/wordwise
   slow-log.ts`: đứng luồng chính, ghi/đồng bộ/lưu offline lâu) chỉ trong máy, xem ở trang ẩn `/settings/diagnostics`
   (không có link – chủ sản phẩm thấy rối với người dùng). Cửa test `ww_e2e_overrides.saveDelayMs` làm ghi chậm.
 - 2026-10-27: **Tạm hoãn toàn bộ Prompt 8.3** (chủ sản phẩm chốt): Góp ý, trang quyền riêng tư/ghi nguồn, xuất dữ
-  liệu và xóa tài khoản, Sentry/PostHog; mục 1 (học ngay 5 từ sau onboarding) đã có từ GĐ3. Sentry/PostHog: Khi làm: DSN của Sentry và
+  liệu và xóa tài khoản, Sentry/PostHog; mục 1 (học ngay 5 từ sau onboarding) đã có từ GĐ3. Khi làm Sentry/PostHog: DSN của Sentry và
   Project API key `phc_` của PostHog là khóa công khai; auth token của Sentry (tải source map) là bí mật, chủ sản
   phẩm tự đặt vào Vercel/GitHub Secrets. Cần chốt vùng dữ liệu, tắt ghi lại màn hình, có theo dõi khách không.

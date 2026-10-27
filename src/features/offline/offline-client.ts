@@ -10,6 +10,8 @@ import {
 } from "@/lib/offline/sw-policy";
 
 const WARM_KEY = "ww_sw_warm";
+/** Mã bản app (next.config.ts): bản mới thì lưu lại trang chính và code ngay, không đợi một giờ. */
+const BUILD_ID = process.env.NEXT_PUBLIC_BUILD_ID;
 
 export function offlineSupported(): boolean {
   return (
@@ -51,26 +53,6 @@ function warm(worker: ServiceWorker, pages: readonly string[]): Promise<string[]
 }
 
 /**
- * Phần code tải sau (chỉ khi cần, xem DeferredProviders, session-screen, session-content): tải sẵn
- * mỗi lần mở app khi có mạng để Service Worker giữ lại – lần đầu dùng tới mà đang offline vẫn chạy
- * được, kể cả ngay sau khi có bản mới (tên file đổi theo bản). Đã có trong máy thì không tốn mạng.
- */
-let lazyWarmed = false;
-function warmLazyModules() {
-  lazyWarmed = true;
-  return Promise.allSettled([
-    import("@/components/sync/sync-provider"),
-    import("@/features/words/word-data"),
-    import("@/features/review/modes/new-word"),
-    import("@/features/review/modes/speaking"),
-    import("@/features/media/sentence-audio"),
-    import("@/lib/media/request-sentence-audio"),
-    import("@/lib/supabase/client"),
-    import("@/lib/words/user-additions"),
-  ]);
-}
-
-/**
  * Đăng ký Service Worker và lưu sẵn trang chính (gọi mỗi lần đổi trang; quy tắc ở
  * shouldWarmPages). Trả về khi đã lưu xong (hoặc bỏ qua).
  */
@@ -80,16 +62,16 @@ export async function setUpOffline(pathname: string): Promise<void> {
   const registration = await registering;
   await navigator.serviceWorker.ready;
   const now = Date.now();
-  if (!navigator.onLine) return;
-  if (!lazyWarmed) void warmLazyModules();
-  if (warming || !shouldWarmPages(pathname, lastWarm(), now)) return;
+  if (warming || !navigator.onLine || !shouldWarmPages(pathname, lastWarm(), now, BUILD_ID)) {
+    return;
+  }
   const worker = registration.active;
   if (!worker) return;
   warming = true;
   try {
     const saved = await warm(worker, SHELL_PAGES);
     // Chưa lưu được Hôm nay (vd vẫn bị chuyển về onboarding): thử lại sớm.
-    markWarmed({ at: now, ok: saved.includes("/") });
+    markWarmed({ at: now, ok: saved.includes("/"), build: BUILD_ID });
   } finally {
     warming = false;
   }

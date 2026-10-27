@@ -4,6 +4,7 @@ import {
   classifyRequest,
   keysToTrim,
   parseRange,
+  chunkUrlsInScript,
   shouldWarmPages,
   WARM_EVERY_MS,
   WARM_RETRY_MS,
@@ -118,5 +119,27 @@ describe("shouldWarmPages", () => {
     expect(shouldWarmPages("/", { ...ok, at: now - WARM_EVERY_MS - 1 }, now)).toBe(true);
     expect(shouldWarmPages("/", { at: now - WARM_RETRY_MS + 1, ok: false }, now)).toBe(false);
     expect(shouldWarmPages("/", { at: now - WARM_RETRY_MS - 1, ok: false }, now)).toBe(true);
+  });
+
+  it("có bản app mới thì lưu lại ngay, không đợi một giờ", () => {
+    const fresh = { at: now - 1000, ok: true, build: "abc" };
+    expect(shouldWarmPages("/", fresh, now, "abc")).toBe(false);
+    expect(shouldWarmPages("/", fresh, now, "def")).toBe(true);
+    expect(shouldWarmPages("/", { at: now - 1000, ok: true }, now, "def")).toBe(true);
+    expect(shouldWarmPages("/welcome", fresh, now, "def")).toBe(false);
+  });
+});
+
+describe("chunkUrlsInScript", () => {
+  it("lấy tên file JS/CSS mà code tải sau (import động của Turbopack), không trùng", () => {
+    const source =
+      'e.v(t=>Promise.all(["static/chunks/06zp0akcuwzo7.js","static/chunks/3p1w-mlic_vzhw2.js"].map(e.l)));' +
+      'x("static/chunks/06zp0akcuwzo7.js");y("static/chunks/3i6e7e561hend.css");z("static/media/a.woff2")';
+    expect(chunkUrlsInScript(source)).toEqual([
+      "/_next/static/chunks/06zp0akcuwzo7.js",
+      "/_next/static/chunks/3p1w-mlic_vzhw2.js",
+      "/_next/static/chunks/3i6e7e561hend.css",
+    ]);
+    expect(chunkUrlsInScript("console.log(1)")).toEqual([]);
   });
 });

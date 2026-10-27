@@ -203,8 +203,8 @@ export async function addTypedWord(page: Page, typed: string, lemma: string, not
 }
 
 /**
- * Đợi Service Worker điều khiển trang và lưu xong các trang chính (cần
- * `test.use({ serviceWorkers: "allow" })`).
+ * Đợi Service Worker điều khiển trang và lưu xong các trang chính kèm code của chúng, cả phần tải
+ * khi cần (cần `test.use({ serviceWorkers: "allow" })`).
  */
 export async function waitForOfflineShell(page: Page) {
   await expect
@@ -222,6 +222,21 @@ export async function waitForOfflineShell(page: Page) {
       { timeout: 30_000, message: "Service Worker chưa lưu đủ trang chính" },
     )
     .toEqual([]);
+  // App ghi mốc sau khi Service Worker lưu xong (gồm các file code tải khi cần).
+  await expect
+    .poll(
+      () =>
+        page.evaluate(() => {
+          try {
+            return (JSON.parse(localStorage.getItem("ww_sw_warm") ?? "null") as { ok?: boolean })
+              ?.ok;
+          } catch {
+            return false;
+          }
+        }),
+      { timeout: 30_000, message: "Service Worker chưa lưu xong code" },
+    )
+    .toBe(true);
 }
 
 /**

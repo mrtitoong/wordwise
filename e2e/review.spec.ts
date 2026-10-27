@@ -109,7 +109,8 @@ test.describe("Phiên ôn", () => {
     expect(count).toBe(5);
 
     await page.goto("/review/session");
-    await expect(page.getByText(/^1\/5$/)).toBeVisible();
+    // 5 thẻ Chính tả mới, mỗi thẻ quay lại một lần ở bước học 10 phút: phiên tính đủ 10 câu.
+    await expect(page.getByText(/^1\/10$/)).toBeVisible();
     await expect(page.getByText("Viết từ tiếng Anh có nghĩa này")).toBeVisible();
     // Thẻ mới qua bước học 10 phút nên quay lại trong cùng phiên: viết tới khi hết phiên.
     const done = page.getByRole("button", { name: "Xong", exact: true });
@@ -269,7 +270,8 @@ test.describe("Phiên ôn", () => {
     await modes.getByRole("radio", { name: "Trắc nghiệm" }).click();
     await page.getByRole("button", { name: "Bắt đầu luyện" }).click();
     await expect(page).toHaveURL(/\/review\/session\?practice=1&mode=mcq&n=10/);
-    await expect(page.getByText(/^1\/5$/)).toBeVisible();
+    // 5 thẻ Chính tả mới, mỗi thẻ quay lại một lần ở bước học 10 phút: phiên tính đủ 10 câu.
+    await expect(page.getByText(/^1\/10$/)).toBeVisible();
     for (let i = 0; i < 5; i++) expect(await answerCorrectly(page)).toBe("mcq");
     await page.getByRole("button", { name: "Xong", exact: true }).click();
 

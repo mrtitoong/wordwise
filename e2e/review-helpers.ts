@@ -220,12 +220,17 @@ export async function learnStarterWords(page: Page, totals?: number[]): Promise<
   await expect(page.getByRole("progressbar", { name: "Tiến độ phiên" })).toBeVisible();
   const seen: string[] = [];
   for (let i = 0; i < 40; i++) {
-    if (totals) {
-      const text = await page
-        .getByText(/^\d+\/\d+$/)
+    // Câu cuối xong thì màn kết quả hiện, không còn số câu.
+    const done = page.getByRole("button", { name: "Xong", exact: true });
+    const position = page.getByText(/^\d+\/\d+$/);
+    await expect(position.or(done).first()).toBeVisible();
+    if (totals && !(await done.isVisible())) {
+      // Câu cuối vừa trả lời thì số câu có thể biến mất ngay sau khi kiểm tra.
+      const text = await position
         .first()
-        .textContent();
-      totals.push(Number(text!.split("/")[1]));
+        .textContent({ timeout: 2_000 })
+        .catch(() => null);
+      if (text) totals.push(Number(text.split("/")[1]));
     }
     const step = await answerCorrectly(page);
     if (step === "done") break;

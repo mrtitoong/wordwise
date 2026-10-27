@@ -128,6 +128,15 @@ describe("shouldWarmPages", () => {
     expect(shouldWarmPages("/", { at: now - 1000, ok: true }, now, "def")).toBe(true);
     expect(shouldWarmPages("/welcome", fresh, now, "def")).toBe(false);
   });
+
+  it("đang ôn: chỉ lưu khi chưa lưu được lần nào; lưu lại (bản mới, quá giờ) đợi rời phiên", () => {
+    expect(shouldWarmPages("/review/session", null, now)).toBe(true);
+    const old = { at: now - WARM_EVERY_MS - 1, ok: true, build: "abc" };
+    expect(shouldWarmPages("/review/session", old, now, "def")).toBe(false);
+    const failed = { at: now - WARM_RETRY_MS - 1, ok: false, build: "abc" };
+    expect(shouldWarmPages("/review/session", failed, now, "abc")).toBe(true);
+    expect(shouldWarmPages("/", old, now, "def")).toBe(true);
+  });
 });
 
 describe("chunkUrlsInScript", () => {

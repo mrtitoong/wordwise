@@ -70,6 +70,12 @@ async function saveAsset(statics: Cache, asset: string): Promise<string | null> 
 }
 
 /**
+ * File JS đã đọc để tìm file con (tên có mã băm nên nội dung không đổi): các trang dùng chung phần
+ * lớn code, đọc lại cho từng trang làm máy chậm hẳn (điện thoại: chuyển câu trong phiên ôn bị treo).
+ */
+const crawled = new Set<string>();
+
+/**
  * Lưu một trang và JS/CSS của nó (để mở offline chạy được). Bỏ qua trang bị chuyển hướng.
  * `deep` (lưu sẵn trang chính): lưu cả các file mà JS của trang có thể tải sau (import động) –
  * phần code tải khi cần (vd màn xem thẻ từ mới trong phiên ôn) cũng chạy được offline.
@@ -86,12 +92,14 @@ async function savePage(url: string, response: Response, deep = false): Promise<
     const asset = queue.shift()!;
     if (seen.has(asset)) continue;
     seen.add(asset);
-    if (!deep) {
+    if (!deep || crawled.has(asset)) {
       if (!(await statics.match(asset))) await saveAsset(statics, asset);
       continue;
     }
     const source = await saveAsset(statics, asset);
-    if (source) queue.push(...chunkUrlsInScript(source).filter((next) => !seen.has(next)));
+    if (source === null) continue;
+    crawled.add(asset);
+    queue.push(...chunkUrlsInScript(source).filter((next) => !seen.has(next)));
   }
   await trim(CACHE_NAMES.pages, PAGES_MAX_ENTRIES);
   await trim(CACHE_NAMES.static, STATIC_MAX_ENTRIES);

@@ -85,6 +85,7 @@
     }
     return asset.endsWith(".js") ? res.text() : null;
   }
+  var crawled = /* @__PURE__ */ new Set();
   async function savePage(url, response, deep = false) {
     if (!response.ok || response.redirected || response.type !== "basic") return false;
     const html = await response.clone().text();
@@ -97,12 +98,14 @@
       const asset = queue.shift();
       if (seen.has(asset)) continue;
       seen.add(asset);
-      if (!deep) {
+      if (!deep || crawled.has(asset)) {
         if (!await statics.match(asset)) await saveAsset(statics, asset);
         continue;
       }
       const source = await saveAsset(statics, asset);
-      if (source) queue.push(...chunkUrlsInScript(source).filter((next) => !seen.has(next)));
+      if (source === null) continue;
+      crawled.add(asset);
+      queue.push(...chunkUrlsInScript(source).filter((next) => !seen.has(next)));
     }
     await trim(CACHE_NAMES.pages, PAGES_MAX_ENTRIES);
     await trim(CACHE_NAMES.static, STATIC_MAX_ENTRIES);

@@ -89,6 +89,13 @@ export const WARM_RETRY_MS = 30_000;
 export type WarmRecord = { at: number; ok: boolean; build?: string };
 
 /**
+ * Đang ôn: lưu lại trang chính (tải và đọc lại mọi file JS) làm máy chậm đúng lúc chuyển câu, nên
+ * chỉ lưu khi chưa lưu được lần nào (vừa xong onboarding là vào thẳng phiên ôn); lưu lại (bản mới,
+ * quá giờ) đợi tới khi rời phiên.
+ */
+const BUSY = ["/review"];
+
+/**
  * Có nên nhờ Service Worker lưu sẵn trang chính khi đang ở `pathname`? (App không đọc được cookie
  * trạng thái – httpOnly – nên dựa vào trang đang mở: đã vào trang trong app là đã bắt đầu dùng.)
  */
@@ -99,7 +106,10 @@ export function shouldWarmPages(
   build?: string,
 ): boolean {
   if (BEFORE_START.some((base) => startsWithPath(pathname, base))) return false;
-  if (!last || (build !== undefined && last.build !== build)) return true;
+  if (!last) return true;
+  // Đang ôn: chỉ thử lại khi lần đầu chưa lưu được (vd trang Hôm nay còn chuyển hướng).
+  if (BUSY.some((base) => startsWithPath(pathname, base)) && last.ok) return false;
+  if (build !== undefined && last.build !== build) return true;
   return now - last.at > (last.ok ? WARM_EVERY_MS : WARM_RETRY_MS);
 }
 

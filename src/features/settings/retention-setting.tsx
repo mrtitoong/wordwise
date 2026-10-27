@@ -16,6 +16,7 @@ import {
 } from "@/lib/srs/retention";
 import { useOwner } from "@/lib/sync/owner";
 import { cn } from "@/lib/utils";
+import { radioGroupKeys } from "@/components/ui/radio-keys";
 
 /**
  * Tỉ lệ nhớ mong muốn 80–95% (Prompt 6.3): chọn một mức thì xem ước tính số thẻ ôn/ngày trước,
@@ -40,6 +41,7 @@ export function RetentionSetting() {
     <div className="flex flex-col gap-2">
       <div
         role="radiogroup"
+        onKeyDown={radioGroupKeys}
         aria-label={t("title")}
         aria-busy={settings === undefined}
         className="grid grid-cols-4 gap-2"

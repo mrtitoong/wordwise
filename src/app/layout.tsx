@@ -2,8 +2,11 @@ import type { Metadata, Viewport } from "next";
 import { Be_Vietnam_Pro } from "next/font/google";
 import { NextIntlClientProvider } from "next-intl";
 import { getLocale, getTranslations } from "next-intl/server";
+import { cookies } from "next/headers";
 import { DeferredProviders } from "@/components/deferred-providers";
 import { ToastViewport } from "@/components/ui/toast";
+import { cn } from "@/lib/utils";
+import { THEME_COOKIE, THEME_SCRIPT, parseTheme } from "@/lib/theme";
 import "./globals.css";
 
 const font = Be_Vietnam_Pro({
@@ -28,13 +31,27 @@ export const viewport: Viewport = {
   width: "device-width",
   initialScale: 1,
   viewportFit: "cover",
-  themeColor: "#ffffff",
+  // Thanh trạng thái theo nền trang (sáng/tối theo máy; chọn Sáng/Tối trong app thì script đổi lớp).
+  themeColor: [
+    { media: "(prefers-color-scheme: light)", color: "#ffffff" },
+    { media: "(prefers-color-scheme: dark)", color: "#11181d" },
+  ],
 };
 
 export default async function RootLayout({ children }: { children: React.ReactNode }) {
   const locale = await getLocale();
+  // Chọn Tối thì máy chủ đặt sẵn lớp; Theo máy thì script trong <head> áp trước khi vẽ.
+  const theme = parseTheme((await cookies()).get(THEME_COOKIE)?.value);
   return (
-    <html lang={locale} className={font.variable}>
+    <html
+      lang={locale}
+      className={cn(font.variable, theme === "dark" && "dark")}
+      // Script đổi lớp `dark` trước khi React chạy.
+      suppressHydrationWarning
+    >
+      <head>
+        <script dangerouslySetInnerHTML={{ __html: THEME_SCRIPT }} />
+      </head>
       <body className="min-h-dvh font-sans">
         <NextIntlClientProvider>
           <DeferredProviders />

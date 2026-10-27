@@ -24,6 +24,7 @@ import { createScheduler } from "@/lib/srs/scheduler";
 import { GUEST_OWNER } from "@/lib/db/ids";
 import { useOwner } from "@/lib/sync/owner";
 import { cn } from "@/lib/utils";
+import { radioGroupKeys } from "@/components/ui/radio-keys";
 
 /**
  * Luyện tập tự chọn (Prompt 4.4): chọn phạm vi (sổ tay, chủ đề, trạng thái), chế độ và số câu rồi
@@ -179,7 +180,12 @@ function Group({ label, children }: { label: string; children: React.ReactNode }
       <h2 className="text-sm font-semibold tracking-wide text-muted-foreground uppercase">
         {label}
       </h2>
-      <div role="radiogroup" aria-label={label} className="flex flex-wrap gap-2">
+      <div
+        role="radiogroup"
+        onKeyDown={radioGroupKeys}
+        aria-label={label}
+        className="flex flex-wrap gap-2"
+      >
         {children}
       </div>
     </section>

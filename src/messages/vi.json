@@ -160,6 +160,13 @@
     "language": "Ngôn ngữ giao diện",
     "languageHint": "Đổi ngay, không cần tải lại trang.",
     "saving": "Đang đổi…",
+    "theme": "Giao diện",
+    "themeHint": "Lưu riêng trên máy này.",
+    "themes": {
+      "system": "Theo máy",
+      "light": "Sáng",
+      "dark": "Tối"
+    },
     "account": "Tài khoản",
     "signedInAs": "Đang đăng nhập: {email}",
     "signOut": "Đăng xuất",

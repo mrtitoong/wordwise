@@ -160,6 +160,13 @@
     "language": "App language",
     "languageHint": "Changes right away, no reload needed.",
     "saving": "Switching…",
+    "theme": "Appearance",
+    "themeHint": "Saved on this device only.",
+    "themes": {
+      "system": "Match device",
+      "light": "Light",
+      "dark": "Dark"
+    },
     "account": "Account",
     "signedInAs": "Signed in as {email}",
     "signOut": "Sign out",

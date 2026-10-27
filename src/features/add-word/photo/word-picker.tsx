@@ -18,6 +18,7 @@ import {
   type WordInfo,
 } from "@/lib/ocr/pick";
 import { cn } from "@/lib/utils";
+import { radioGroupKeys } from "@/components/ui/radio-keys";
 
 /** Tối đa số mục chọn một lần (một lượt tra kho). */
 export const MAX_PICKS = 50;
@@ -162,6 +163,7 @@ export function WordPicker({
         {hasBoxes && (
           <div
             role="radiogroup"
+            onKeyDown={radioGroupKeys}
             aria-label={t("viewLabel")}
             className="grid flex-1 grid-cols-2 gap-1 rounded-xl bg-muted p-1"
           >

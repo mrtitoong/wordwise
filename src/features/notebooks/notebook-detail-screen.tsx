@@ -55,6 +55,7 @@ import { NotebookFormSheet } from "./notebook-form-sheet";
 import { NotebookPlan } from "./notebook-plan";
 import { PreparingList } from "@/features/add-word/preparing-list";
 import { usePersonalData, type PersonalView } from "./use-personal-data";
+import { radioGroupKeys } from "@/components/ui/radio-keys";
 
 const PAGE = 100;
 const LONG_PRESS_MS = 500;
@@ -296,6 +297,7 @@ export function NotebookDetailScreen({ notebookId }: { notebookId: string }) {
           <div className="flex items-center gap-2">
             <div
               role="radiogroup"
+              onKeyDown={radioGroupKeys}
               aria-label={t("filters")}
               className="-mx-4 flex flex-1 [scrollbar-width:none] gap-2 overflow-x-auto px-4 pb-1 [&::-webkit-scrollbar]:hidden"
             >

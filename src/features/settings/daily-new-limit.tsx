@@ -8,6 +8,7 @@ import { saveSettings } from "@/lib/db/repo";
 import { DAILY_NEW_OPTIONS, DEFAULT_DAILY_NEW } from "@/lib/onboarding/settings";
 import { useOwner } from "@/lib/sync/owner";
 import { cn } from "@/lib/utils";
+import { radioGroupKeys } from "@/components/ui/radio-keys";
 
 /** Đổi số từ mới/ngày: ghi vào máy trước (dùng được khi offline), đồng bộ sau. */
 export function DailyNewLimit() {
@@ -24,6 +25,7 @@ export function DailyNewLimit() {
     <div className="flex flex-col gap-2">
       <div
         role="radiogroup"
+        onKeyDown={radioGroupKeys}
         aria-label={t("settings.dailyNew")}
         aria-busy={owner === null}
         className="grid grid-cols-4 gap-2"

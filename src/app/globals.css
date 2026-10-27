@@ -102,3 +102,38 @@
     @apply bg-background text-foreground antialiased;
   }
 }
+
+/* Màn chờ phiên ôn: logo nhún nhẹ, ba chấm nhảy, mẹo học hiện dần (tắt khi máy bật giảm chuyển động). */
+@theme {
+  --animate-bob: ww-bob 1.6s ease-in-out infinite;
+  --animate-dot: ww-dot 1.2s ease-in-out infinite;
+  --animate-fade-in: ww-fade-in 0.4s ease-out;
+
+  @keyframes ww-bob {
+    0%,
+    100% {
+      transform: translateY(0) rotate(0deg);
+    }
+    50% {
+      transform: translateY(-10px) rotate(-3deg);
+    }
+  }
+  @keyframes ww-dot {
+    0%,
+    80%,
+    100% {
+      transform: translateY(0);
+      opacity: 0.4;
+    }
+    40% {
+      transform: translateY(-6px);
+      opacity: 1;
+    }
+  }
+  @keyframes ww-fade-in {
+    from {
+      opacity: 0;
+      transform: translateY(4px);
+    }
+  }
+}

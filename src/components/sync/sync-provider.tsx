@@ -8,7 +8,6 @@ import type { CardRow, ReviewLogRow } from "@/lib/db/types";
 import { createClient } from "@/lib/supabase/client";
 import { getSupabaseEnv } from "@/lib/supabase/env";
 import { getSyncEngine } from "@/lib/sync/client";
-import { subscribeReminders } from "@/features/settings/push-client";
 
 /**
  * Đã đặt giờ nhắc (kể cả lúc onboarding khi còn là khách) và trình duyệt đã cho phép thông báo:
@@ -19,6 +18,8 @@ async function restoreReminders(owner: string) {
   const settings = await getLocalDb().user_settings.get(owner);
   if (!settings?.reminder_time) return;
   if (typeof Notification === "undefined" || Notification.permission !== "granted") return;
+  // Tải code Web Push chỉ khi cần (ít người bật nhắc học).
+  const { subscribeReminders } = await import("@/features/settings/push-client");
   await subscribeReminders({ ask: false }).catch(() => undefined);
 }
 

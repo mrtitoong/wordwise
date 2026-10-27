@@ -2,10 +2,9 @@ import type { Metadata, Viewport } from "next";
 import { Be_Vietnam_Pro } from "next/font/google";
 import { NextIntlClientProvider } from "next-intl";
 import { getLocale, getTranslations } from "next-intl/server";
+import { DeferredProviders } from "@/components/deferred-providers";
 import { SyncProvider } from "@/components/sync/sync-provider";
 import { ToastViewport } from "@/components/ui/toast";
-import { ImportProvider } from "@/features/import/import-provider";
-import { OfflineSetup } from "@/features/offline/offline-setup";
 import "./globals.css";
 
 const font = Be_Vietnam_Pro({
@@ -40,8 +39,7 @@ export default async function RootLayout({ children }: { children: React.ReactNo
       <body className="min-h-dvh font-sans">
         <NextIntlClientProvider>
           <SyncProvider />
-          <ImportProvider />
-          <OfflineSetup />
+          <DeferredProviders />
           {children}
           <ToastViewport />
         </NextIntlClientProvider>

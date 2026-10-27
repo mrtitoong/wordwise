@@ -605,3 +605,15 @@ Repo: https://github.com/mrtitoong/wordwise
 - 2026-10-27: **Chế độ tối**: mặc định theo máy, Cài đặt → Giao diện (Theo máy/Sáng/Tối) lưu riêng từng máy trong
   cookie `ww_theme` (`src/lib/theme.ts`); máy chủ đặt lớp `dark`, script trong `<head>` áp trước khi vẽ. Mọi
   `role="radiogroup"` dùng phím mũi tên/Home/End (`radioGroupKeys`).
+- 2026-10-27 (sửa treo phiên ôn trên điện thoại, chủ sản phẩm duyệt): Nguyên nhân là **app đã cài + tab trình
+  duyệt cùng địa chỉ** dùng chung IndexedDB; nơi đang ẩn bị Android đóng băng khi đang giữ giao dịch/khóa đồng bộ,
+  nơi đang dùng chờ 1–3 phút. Sửa: (1) `InstanceGate` (`src/components/instance-gate.tsx`, logic
+  `src/lib/sync/instance.ts`): nơi khác được mở lên mà trang này đang ẩn thì **tạm nghỉ** (gỡ giao diện, đóng
+  kết nối IndexedDB, hiện "đang mở ở cửa sổ khác"), hiện lại thì chạy lại (phiên ôn dở mở lại từ đầu, lượt đã
+  trả lời vẫn giữ); (2) sync engine không đồng bộ khi trang ẩn; (3) phiên ôn **tính lượt ôn trong bộ nhớ**
+  (`planReview()`, cùng hàm `recordReview` dùng) và hiện câu sau ngay, ghi IndexedDB chạy nền theo thứ tự, hết
+  phiên mới chờ ghi xong (ghi lỗi thì báo toast; đóng app khi máy đang kẹt có thể mất vài lượt cuối); câu, đáp án,
+  tổng số câu đổi cùng một lần vẽ; lưu phiên dở chạy nền; (4) Service Worker không lưu lại trang chính khi đang ở
+  /review (chỉ khi chưa lưu được lần nào), mỗi file JS chỉ đọc một lần. **Nhật ký chậm** (`src/lib/diagnostics/
+  slow-log.ts`: đứng luồng chính, ghi/đồng bộ/lưu offline lâu) chỉ trong máy, xem ở trang ẩn `/settings/diagnostics`
+  (không có link – chủ sản phẩm thấy rối với người dùng). Cửa test `ww_e2e_overrides.saveDelayMs` làm ghi chậm.

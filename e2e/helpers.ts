@@ -223,3 +223,18 @@ export async function waitForOfflineShell(page: Page) {
     )
     .toEqual([]);
 }
+
+/**
+ * Cửa test `window.__wordwiseE2E` do SyncProvider gắn – phần này tải sau khi trang đã tải xong (xem
+ * DeferredProviders): chờ cửa test có và đã biết chủ dữ liệu rồi mới gọi.
+ */
+export async function waitForTestHooks(page: Page) {
+  await page.waitForFunction(
+    () =>
+      !!(
+        window as unknown as { __wordwiseE2E?: { owner: () => string | null } }
+      ).__wordwiseE2E?.owner(),
+    undefined,
+    { timeout: 15_000 },
+  );
+}

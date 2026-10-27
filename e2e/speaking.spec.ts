@@ -1,5 +1,11 @@
 import { expect, test } from "@playwright/test";
-import { hasSupabase, readLocalStore, signInWithCode, uniqueEmail } from "./helpers";
+import {
+  hasSupabase,
+  readLocalStore,
+  signInWithCode,
+  uniqueEmail,
+  waitForTestHooks,
+} from "./helpers";
 import { FAKE_MICROPHONE, mockPronunciation } from "./mocks";
 import { learnStarterWords, type Card } from "./review-helpers";
 
@@ -44,6 +50,7 @@ test.describe("Tập phát âm", () => {
 
     await signInWithCode(page, uniqueEmail("speak"));
     await expect(page).toHaveURL("/");
+    await waitForTestHooks(page);
     await page.evaluate(
       (patch) => (window as unknown as Hooks).__wordwiseE2E.patchCards("meaning", patch),
       KNOWN,
@@ -107,6 +114,7 @@ test.describe("Tập phát âm", () => {
     await toggle.click();
     await expect(toggle).toHaveAttribute("aria-checked", "true");
     // Chỉ thẻ Phát âm đến hạn (thẻ Nghĩa dời sang mai).
+    await waitForTestHooks(page);
     await page.evaluate(
       async (tomorrow) => {
         const hooks = (window as unknown as Hooks).__wordwiseE2E;

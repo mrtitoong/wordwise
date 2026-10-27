@@ -1,5 +1,5 @@
 import { expect, test } from "@playwright/test";
-import { completeOnboarding, hasSupabase, readLocalStore } from "./helpers";
+import { completeOnboarding, hasSupabase, readLocalStore, waitForTestHooks } from "./helpers";
 import {
   currentAnswer,
   answerCorrectly,
@@ -101,6 +101,7 @@ test.describe("Phiên ôn", () => {
     await page.getByRole("button", { name: "Xong", exact: true }).click();
     await expect(page).toHaveURL("/");
 
+    await waitForTestHooks(page);
     const count = await page.evaluate(() =>
       (
         window as unknown as { __wordwiseE2E: { patchCards: (skill: string) => Promise<number> } }
@@ -144,6 +145,7 @@ test.describe("Phiên ôn", () => {
     await expect(toggle).toHaveAttribute("aria-checked", "true");
     await toggle.click();
     await expect(toggle).toHaveAttribute("aria-checked", "false");
+    await waitForTestHooks(page);
     await page.evaluate(() =>
       (
         window as unknown as { __wordwiseE2E: { patchCards: (skill: string) => Promise<number> } }
@@ -176,6 +178,7 @@ test.describe("Phiên ôn", () => {
     const starts: string[] = [];
     const run = async (skill: string, overrides: object, title: string) => {
       starts.push(new Date().toISOString());
+      await waitForTestHooks(page);
       await page.evaluate(
         ([s, p, o]) => {
           localStorage.setItem("ww_e2e_overrides", JSON.stringify(o));

@@ -7,6 +7,7 @@ import {
   signInWithCode,
   uniqueEmail,
   userIdByEmail,
+  waitForTestHooks,
 } from "./helpers";
 
 test.describe("Offline-first và đồng bộ", () => {
@@ -34,6 +35,7 @@ test.describe("Offline-first và đồng bộ", () => {
       "aria-checked",
       "true",
     );
+    await waitForTestHooks(page);
     await page.evaluate(() =>
       (
         window as unknown as { __wordwiseE2E: { reviewFirstCard: () => Promise<unknown> } }

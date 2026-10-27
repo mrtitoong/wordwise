@@ -1,6 +1,6 @@
 /** Helper dùng chung cho E2E phiên ôn (review.spec.ts, speaking.spec.ts). */
 import { expect, type Page } from "@playwright/test";
-import { completeOnboarding, readLocalStore } from "./helpers";
+import { completeOnboarding, readLocalStore, waitForTestHooks } from "./helpers";
 
 export type Card = { id: string; skill: string; state: number; due: string; reps: number };
 export type Log = {
@@ -187,6 +187,7 @@ type Hooks = {
 
 /** Sửa thẻ trong máy qua cửa test (xem sync-provider.tsx): đến hạn ngay, `limit` thẻ đầu. */
 export async function patchCards(page: Page, skill: string, patch: object = {}, limit?: number) {
+  await waitForTestHooks(page);
   return page.evaluate(
     ([s, p, l]) =>
       (window as unknown as Hooks).__wordwiseE2E.patchCards(

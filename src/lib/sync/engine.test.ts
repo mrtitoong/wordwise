@@ -1,5 +1,5 @@
 import "fake-indexeddb/auto";
-import { afterEach, beforeEach, describe, expect, it } from "vitest";
+import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
 import { Rating } from "ts-fsrs";
 import { GUEST_OWNER, cardId, userWordId } from "@/lib/db/ids";
 import { LocalDb } from "@/lib/db/local";
@@ -133,6 +133,22 @@ describe("SyncEngine", () => {
     expect(remote.table("notebook_entries").size).toBe(1 * 2);
     expect(remote.table("notebooks").size).toBe(1);
     expect(await db.outbox.count()).toBe(0);
+  });
+
+  it("trang đang ẩn (app chạy ngầm): không đồng bộ, hiện lại mới gửi", async () => {
+    await addSensesToDefaultNotebook(db, USER, [SENSE_A], "Sổ của tôi");
+    const doc = { visibilityState: "hidden" };
+    vi.stubGlobal("document", doc);
+    try {
+      await engine.syncNow();
+      expect(remote.upsertCalls).toHaveLength(0);
+      expect(await db.outbox.count()).toBeGreaterThan(0);
+      doc.visibilityState = "visible";
+      expect((await engine.syncNow()).state).toBe("idle");
+      expect(await db.outbox.count()).toBe(0);
+    } finally {
+      vi.unstubAllGlobals();
+    }
   });
 
   it("offline: giữ trong hàng đợi, có mạng lại thì gửi", async () => {

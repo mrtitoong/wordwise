@@ -46,6 +46,9 @@ const EPOCH = "1970-01-01T00:00:00.000Z";
 
 type Listener = (status: SyncStatus) => void;
 
+/** Trang đang ẩn (chạy ngầm, tab nền). */
+const isHidden = () => typeof document !== "undefined" && document.visibilityState === "hidden";
+
 /**
  * Đồng bộ dữ liệu cá nhân giữa IndexedDB và Supabase: đẩy outbox theo lô 50
  * dòng, rồi kéo thay đổi theo updated_at (review_logs theo created_at).
@@ -96,8 +99,13 @@ export class SyncEngine {
     }, delay);
   }
 
-  /** Đồng bộ ngay. Đang chạy thì chạy thêm một lượt sau lượt hiện tại. */
+  /**
+   * Đồng bộ ngay. Đang chạy thì chạy thêm một lượt sau lượt hiện tại. Trang đang ẩn (app cài và
+   * tab trình duyệt cùng mở, app chạy ngầm) thì không đồng bộ: Android hay đóng băng trang ẩn đúng
+   * lúc nó giữ khóa đồng bộ/IndexedDB, làm trang đang dùng đứng cả phút. Hiện lại thì tự đồng bộ.
+   */
   syncNow(): Promise<SyncStatus> {
+    if (isHidden()) return Promise.resolve(this.getStatus());
     if (!this.canSync) return this.refresh("local");
     if (this.running) {
       this.rerun = true;
@@ -107,7 +115,7 @@ export class SyncEngine {
       do {
         this.rerun = false;
         await this.runOnce();
-      } while (this.rerun && this.status.state !== "offline");
+      } while (this.rerun && this.status.state !== "offline" && !isHidden());
       return this.status;
     }).finally(() => {
       this.running = null;

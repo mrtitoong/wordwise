@@ -183,7 +183,6 @@
     "reviewSection": "Reviews",
     "multiAccent": "Mixed accents",
     "multiAccentHint": "Listening practice switches randomly between American and British voices.",
-    "diagnosticsSection": "Diagnostics",
     "slowLog": {
       "title": "Slow log",
       "hint": "Times the app was unusually slow on this device (kept on this device only). If it freezes, tap Copy and send it to the developers.",

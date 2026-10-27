@@ -12,7 +12,6 @@ import { DailyNewLimit } from "@/features/settings/daily-new-limit";
 import { ReminderSettings } from "@/features/settings/reminder-settings";
 import { RetentionSetting } from "@/features/settings/retention-setting";
 import { SettingSwitch } from "@/features/settings/setting-switch";
-import { SlowLogCard } from "@/features/settings/slow-log-card";
 import { getCurrentUser } from "@/lib/supabase/server";
 import { THEME_COOKIE, parseTheme } from "@/lib/theme";
 
@@ -130,15 +129,6 @@ export default async function SettingsPage() {
           {t("theme")}
         </h2>
         <ThemeSwitcher initial={parseTheme((await cookies()).get(THEME_COOKIE)?.value)} />
-      </section>
-      <section aria-labelledby="diagnostics-heading" className="flex flex-col gap-3 pt-6">
-        <h2
-          id="diagnostics-heading"
-          className="text-sm font-semibold tracking-wide text-muted-foreground uppercase"
-        >
-          {t("diagnosticsSection")}
-        </h2>
-        <SlowLogCard />
       </section>
     </main>
   );

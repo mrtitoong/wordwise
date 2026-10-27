@@ -519,7 +519,10 @@ export function SessionScreen({ options }: { options: SessionOptions }) {
         answers: next.answers,
         startedAt: next.startedAt,
       };
-      void saveSession(getLocalDb(), saved).catch(() => undefined);
+      const delay = e2eOverride("saveDelayMs") ?? 0;
+      void new Promise((resolve) => setTimeout(resolve, delay))
+        .then(() => saveSession(getLocalDb(), saved))
+        .catch(() => undefined);
     }
   }
 

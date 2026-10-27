@@ -3,6 +3,7 @@ import { completeOnboarding, hasSupabase, readLocalStore, waitForTestHooks } fro
 import {
   currentAnswer,
   answerCorrectly,
+  forceModes,
   learnStarterWords,
   typeAnswer,
   writeCorrectly,
@@ -69,7 +70,7 @@ test.describe("Phiên ôn", () => {
     await expect(page.getByText("Chuỗi 1 ngày")).toBeVisible();
   });
 
-  test("máy bận (IndexedDB giữ bảng lưu phiên dở): câu sau vẫn hiện ngay, đáp án khớp từ đang hỏi", async ({
+  test("lưu phiên dở chậm (máy bận): câu sau vẫn hiện ngay, đáp án khớp từ đang hỏi", async ({
     page,
   }) => {
     await page.goto("/welcome");
@@ -77,23 +78,9 @@ test.describe("Phiên ôn", () => {
     await completeOnboarding(page, { level: "B1", stayInSession: true });
     await expect(page.getByRole("progressbar", { name: "Tiến độ phiên" })).toBeVisible();
 
-    // Giữ một giao dịch ghi trên bảng meta (nơi lưu phiên dở) 30 giây, như khi máy bận thật: trước
-    // đây câu sau chờ lưu xong mới có đáp án, nên chữ của câu mới đi với đáp án của câu cũ.
-    await page.evaluate(
-      () =>
-        new Promise<void>((resolve) => {
-          const open = indexedDB.open("wordwise");
-          open.onsuccess = () => {
-            const until = Date.now() + 30_000;
-            const store = open.result.transaction("meta", "readwrite").objectStore("meta");
-            const spin = () => {
-              if (Date.now() < until) store.get("e2e-busy").onsuccess = spin;
-            };
-            spin();
-            resolve();
-          };
-        }),
-    );
+    // Lưu phiên dở chậm 30 giây (như khi máy bận): trước đây câu sau chờ lưu xong mới có đáp án,
+    // nên chữ/tiếng của câu mới đi với đáp án của câu cũ.
+    await forceModes(page, { saveDelayMs: 30_000 });
 
     // Mỗi câu trắc nghiệm: answerCorrectly kiểm tra đáp án đúng của từ đang hỏi có trong 4 đáp án.
     const seen: string[] = [];

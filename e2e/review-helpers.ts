@@ -199,10 +199,14 @@ export async function patchCards(page: Page, skill: string, patch: object = {}, 
   );
 }
 
-/** Ép dạng câu hỏi (mảng: các câu lần lượt nhận từng dạng). */
+/** Ép dạng câu hỏi (mảng: các câu lần lượt nhận từng dạng); `saveDelayMs`: lưu phiên dở chậm. */
 export async function forceModes(
   page: Page,
-  overrides: { meaningMode?: string | string[]; spellingKind?: string | string[] },
+  overrides: {
+    meaningMode?: string | string[];
+    spellingKind?: string | string[];
+    saveDelayMs?: number;
+  },
 ) {
   await page.evaluate(
     (o) => localStorage.setItem("ww_e2e_overrides", JSON.stringify(o)),

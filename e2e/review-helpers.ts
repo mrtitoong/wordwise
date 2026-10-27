@@ -199,7 +199,7 @@ export async function patchCards(page: Page, skill: string, patch: object = {}, 
   );
 }
 
-/** Ép dạng câu hỏi (mảng: các câu lần lượt nhận từng dạng); `saveDelayMs`: lưu phiên dở chậm. */
+/** Ép dạng câu hỏi (mảng: các câu lần lượt nhận từng dạng); `saveDelayMs`: ghi vào máy chậm. */
 export async function forceModes(
   page: Page,
   overrides: {

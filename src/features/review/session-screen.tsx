@@ -8,8 +8,18 @@ import { Rating, type FSRS, type Grade } from "ts-fsrs";
 import { useTranslations } from "next-intl";
 import { Button } from "@/components/ui/button";
 import { Sheet } from "@/components/ui/sheet";
+import { showToast } from "@/components/ui/toast";
 import { getLocalDb } from "@/lib/db/local";
-import { ensureSkillCards, openExtraWords, recordReview, weightsOf } from "@/lib/db/repo";
+import { randomId } from "@/lib/db/ids";
+import {
+  ensureSkillCards,
+  openExtraWords,
+  planReview,
+  recordReview,
+  weightsOf,
+  type ReviewInput,
+} from "@/lib/db/repo";
+import { recordSlow, timed, watchMainThread } from "@/lib/diagnostics/slow-log";
 import { clearSession, markSessionFinished, saveSession } from "@/lib/db/review-store";
 import type { Voice } from "@/lib/media/tts-azure";
 import { studyDay, studyDayEnd } from "@/lib/review/day";
@@ -156,6 +166,8 @@ export function SessionScreen({ options }: { options: SessionOptions }) {
   /** Số câu của phiên (đã làm + còn lại nếu trả lời đúng hết), tính lại mỗi khi sang câu mới. */
   const [total, setTotal] = useState(0);
   const started = useRef(false);
+  /** Hàng ghi lượt ôn chạy nền (xem saveReview). */
+  const writes = useRef<Promise<void>>(Promise.resolve());
   /** Thẻ ôn ngoài lịch ("Ôn từ này", "Ôn lại từ sai" khi chưa đến hạn). */
   const extraIds = useRef(new Set<string>());
 
@@ -282,6 +294,9 @@ export function SessionScreen({ options }: { options: SessionOptions }) {
     });
     return () => cancelAnimationFrame(frame);
   }, [ask, position]);
+
+  // Nhật ký chậm: luồng chính bị đứng trong lúc ôn (xem Cài đặt → Nhật ký chậm).
+  useEffect(() => watchMainThread(), []);
 
   // Xếp hàng phiên (một lần khi đã biết người dùng).
   useEffect(() => {
@@ -413,21 +428,42 @@ export function SessionScreen({ options }: { options: SessionOptions }) {
 
   async function finish(r: Run) {
     const db = getLocalDb();
+    // Các lượt ôn còn đang ghi nền phải xong trước khi đóng phiên (kết quả đọc từ IndexedDB).
+    await writes.current;
     await clearSession(db, owner!);
     await markSessionFinished(db, owner!, r.day, r.kind === "full");
     setSummary(summarize(r.answers, new Date(r.startedAt), new Date()));
     setPhase("done");
   }
 
+  /**
+   * Ghi lượt ôn chạy nền, lần lượt theo thứ tự trả lời (IndexedDB trước, đồng bộ sau). Lỗi thì báo
+   * (thẻ trong máy giữ lịch cũ, lần ôn sau vẫn gặp lại).
+   */
+  function saveReview(cardId: string, input: ReviewInput) {
+    const db = getLocalDb();
+    const delay = e2eOverride("saveDelayMs") ?? 0;
+    writes.current = writes.current
+      .then(() => new Promise((resolve) => setTimeout(resolve, delay)))
+      .then(() => timed("write", input.mode, () => recordReview(db, owner!, cardId, input)))
+      .then(
+        () => undefined,
+        (error: unknown) => {
+          console.error("Ghi lượt ôn lỗi:", error);
+          showToast({ text: t("saveFailed") });
+        },
+      );
+  }
+
   /** `intro`: vừa xem xong thẻ từ mới – tự ghi "Khó", không có câu trả lời (correct = null). */
   async function handleAnswer(answer: ModeAnswer, intro = false) {
     if (!run || !owner || !data || busy || !ask) return;
     performance.mark(ANSWER_MARK);
+    const answeredAt = Date.now();
     const item = run.queue[run.position]!;
     const prep = prepared.get(item.cardId)!;
     setBusy(true);
     try {
-      const db = getLocalDb();
       const now = new Date();
       const mode: ReviewMode =
         ask.step === "mcq" || ask.step === "writing"
@@ -447,7 +483,7 @@ export function SessionScreen({ options }: { options: SessionOptions }) {
             userMedianMs: medianResponseMs(data.logs, mode),
           });
       const extra = extraIds.current.has(item.cardId);
-      const result = await recordReview(db, owner, item.cardId, {
+      const input: ReviewInput = {
         rating,
         mode,
         reviewedAt: now,
@@ -456,7 +492,16 @@ export function SessionScreen({ options }: { options: SessionOptions }) {
         hintLevel: answer.hintLevel,
         pronunciationScore: answer.pronunciationScore,
         extra,
-      });
+        logId: randomId(),
+      };
+      // Tính lịch mới trong bộ nhớ và sang câu sau ngay; ghi IndexedDB chạy nền (máy bận có lúc
+      // ghi mất cả phút – trước đây cả phiên đứng chờ).
+      const result = planReview(
+        prep.card,
+        { owner, settings: data.settings, notebooks: data.notebooks, entries: data.entries },
+        input,
+      );
+      saveReview(item.cardId, input);
       // Quên khi ôn ngoài lịch: lượt đó đã tính vào lịch, các lượt sau là ôn thật.
       if (extra && rating === Rating.Again) extraIds.current.delete(item.cardId);
       const cards = new Map(prepared).set(item.cardId, { ...prep, card: result.card });
@@ -492,7 +537,10 @@ export function SessionScreen({ options }: { options: SessionOptions }) {
             Math.random,
             (a, b) => wordOf(a) === wordOf(b),
           );
-      await goTo({ ...run, queue, position: run.position + 1, answers }, cards);
+      const next = { ...run, queue, position: run.position + 1, answers };
+      if (next.position < next.queue.length)
+        recordSlow("answer", answeredAt, Date.now() - answeredAt);
+      await goTo(next, cards);
     } finally {
       setBusy(false);
     }

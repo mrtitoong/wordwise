@@ -18,6 +18,8 @@ import {
 import type { LocalDb } from "./local";
 import type {
   CardRow,
+  NotebookEntryRow,
+  NotebookRow,
   OutboxItem,
   ReviewLogRow,
   SyncTable,
@@ -514,49 +516,83 @@ export async function updateUserWord(
   return updated;
 }
 
+export type ReviewInput = {
+  rating: Grade;
+  mode: ReviewLogRow["mode"];
+  reviewedAt?: Date;
+  responseMs?: number;
+  correct?: boolean;
+  hintLevel?: number;
+  pronunciationScore?: number;
+  extra?: boolean;
+  /** Mã lượt ôn (phiên ôn tính trước trong bộ nhớ rồi ghi với đúng mã đó). */
+  logId?: string;
+};
+
+/**
+ * Kết quả một lượt ôn (hàm thuần): thẻ sau khi ôn và dòng review_logs. `notebooks`/`entries` để
+ * biết thẻ có ở 14 ngày cuối của sổ có ngày mục tiêu không (tỉ lệ nhớ 0,95). Phiên ôn dùng để hiện
+ * câu sau ngay, không chờ ghi IndexedDB; recordReview dùng cùng hàm nên ghi ra đúng kết quả đó.
+ */
+export function planReview(
+  card: CardRow,
+  context: {
+    owner: string;
+    settings: UserSettingsRow | undefined;
+    notebooks: readonly NotebookRow[];
+    entries: readonly NotebookEntryRow[];
+  },
+  input: ReviewInput,
+): { card: CardRow; log: ReviewLogRow } {
+  const { owner, settings } = context;
+  const reviewedAt = input.reviewedAt ?? new Date();
+  // 14 ngày cuối của sổ có ngày mục tiêu: nâng tỉ lệ nhớ mục tiêu lên 0,95.
+  const finalPhase = inFinalPhase(
+    card.user_word_id,
+    context.notebooks.filter((n) => n.user_id === owner),
+    context.entries.filter((e) => e.user_word_id === card.user_word_id),
+    studyDay(reviewedAt, settings?.timezone ?? defaultSettingsRow(owner).timezone),
+  );
+  const scheduler = createScheduler({
+    desiredRetention: retentionFor(settings?.desired_retention ?? 0.9, finalPhase),
+    weights: weightsOf(settings),
+  });
+  return applyReview(scheduler, card, {
+    rating: input.rating,
+    mode: input.mode,
+    reviewedAt,
+    logId: input.logId ?? randomId(),
+    responseMs: input.responseMs ?? null,
+    correct: input.correct ?? null,
+    hintLevel: input.hintLevel ?? 0,
+    pronunciationScore: input.pronunciationScore ?? null,
+    extra: input.extra ?? false,
+  });
+}
+
 /** Ghi một lượt ôn: cập nhật thẻ và thêm review_logs (chỉ thêm), cùng một transaction. */
 export async function recordReview(
   db: LocalDb,
   owner: string,
   cardIdValue: string,
-  input: {
-    rating: Grade;
-    mode: ReviewLogRow["mode"];
-    reviewedAt?: Date;
-    responseMs?: number;
-    correct?: boolean;
-    hintLevel?: number;
-    pronunciationScore?: number;
-    extra?: boolean;
-  },
+  input: ReviewInput,
 ): Promise<{ card: CardRow; log: ReviewLogRow }> {
   const result = await db.transaction("rw", personalTables(db), async () => {
     const card = await db.cards.get(cardIdValue);
     if (!card || card.user_id !== owner) throw new Error(`Không có thẻ ${cardIdValue}`);
-    const settings = await db.user_settings.get(owner);
-    const reviewedAt = input.reviewedAt ?? new Date();
-    // 14 ngày cuối của sổ có ngày mục tiêu: nâng tỉ lệ nhớ mục tiêu lên 0,95.
-    const finalPhase = inFinalPhase(
-      card.user_word_id,
-      await db.notebooks.where("user_id").equals(owner).toArray(),
-      await db.notebook_entries.where("user_word_id").equals(card.user_word_id).toArray(),
-      studyDay(reviewedAt, settings?.timezone ?? defaultSettingsRow(owner).timezone),
+    const reviewed = planReview(
+      card,
+      {
+        owner,
+        settings: await db.user_settings.get(owner),
+        notebooks: await db.notebooks.where("user_id").equals(owner).toArray(),
+        entries: await db.notebook_entries
+          .where("user_word_id")
+          .equals(card.user_word_id)
+          .toArray(),
+      },
+      { ...input, reviewedAt: input.reviewedAt ?? new Date() },
     );
-    const scheduler = createScheduler({
-      desiredRetention: retentionFor(settings?.desired_retention ?? 0.9, finalPhase),
-      weights: weightsOf(settings),
-    });
-    const reviewed = applyReview(scheduler, card, {
-      rating: input.rating,
-      mode: input.mode,
-      reviewedAt,
-      logId: randomId(),
-      responseMs: input.responseMs ?? null,
-      correct: input.correct ?? null,
-      hintLevel: input.hintLevel ?? 0,
-      pronunciationScore: input.pronunciationScore ?? null,
-      extra: input.extra ?? false,
-    });
     await db.review_logs.add(reviewed.log);
     await queue(db, "review_logs", reviewed.log.id, owner);
     // Lượt ôn ngoài lịch mà nhớ được: thẻ giữ nguyên, không cần gửi lại.

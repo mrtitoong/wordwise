@@ -70,7 +70,7 @@ test.describe("Phiên ôn", () => {
     await expect(page.getByText("Chuỗi 1 ngày")).toBeVisible();
   });
 
-  test("lưu phiên dở chậm (máy bận): câu sau vẫn hiện ngay, đáp án khớp từ đang hỏi", async ({
+  test("ghi vào máy chậm (máy bận): câu sau vẫn hiện ngay, đáp án khớp từ đang hỏi", async ({
     page,
   }) => {
     await page.goto("/welcome");
@@ -78,8 +78,8 @@ test.describe("Phiên ôn", () => {
     await completeOnboarding(page, { level: "B1", stayInSession: true });
     await expect(page.getByRole("progressbar", { name: "Tiến độ phiên" })).toBeVisible();
 
-    // Lưu phiên dở chậm 30 giây (như khi máy bận): trước đây câu sau chờ lưu xong mới có đáp án,
-    // nên chữ/tiếng của câu mới đi với đáp án của câu cũ.
+    // Ghi lượt ôn và lưu phiên dở chậm 30 giây mỗi lần (như khi máy bận): trước đây câu sau chờ ghi
+    // xong mới hiện (treo cả phút), và chờ lưu xong mới có đáp án (chữ của câu mới đi với đáp án cũ).
     await forceModes(page, { saveDelayMs: 30_000 });
 
     // Mỗi câu trắc nghiệm: answerCorrectly kiểm tra đáp án đúng của từ đang hỏi có trong 4 đáp án.

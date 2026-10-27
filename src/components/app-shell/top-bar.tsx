@@ -1,11 +1,15 @@
 import Link from "next/link";
 import { ArrowLeft, Settings } from "lucide-react";
 import { getTranslations } from "next-intl/server";
+import { Logo } from "@/components/brand/logo";
 import { SyncStatusIcon } from "@/components/sync/sync-status-icon";
 
 type TopBarProps = {
   title: string;
-  /** Có backHref thì hiện nút quay lại thay cho nút Cài đặt. */
+  /**
+   * Có backHref thì hiện nút quay lại thay cho nút Cài đặt; không có (các tab chính) thì có logo
+   * đứng trước tiêu đề.
+   */
   backHref?: string;
 };
 
@@ -22,7 +26,10 @@ export async function TopBar({ title, backHref }: TopBarProps) {
             <ArrowLeft className="size-5" aria-hidden />
           </Link>
         )}
-        <h1 className="flex-1 truncate text-xl font-semibold">{title}</h1>
+        <h1 className="flex min-w-0 flex-1 items-center gap-2 text-xl font-semibold">
+          {!backHref && <Logo />}
+          <span className="truncate">{title}</span>
+        </h1>
         <SyncStatusIcon />
         {!backHref && (
           <Link href="/settings" aria-label={t("settings")} className={`-mr-2 ${iconLink}`}>

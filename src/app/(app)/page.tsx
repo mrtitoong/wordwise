@@ -9,10 +9,11 @@ export async function generateMetadata(): Promise<Metadata> {
 }
 
 export default async function TodayPage() {
-  const t = await getTranslations("today");
+  const app = await getTranslations("app");
   return (
     <>
-      <TopBar title={t("greeting")} />
+      {/* Màn chính: logo + tên app thay cho lời chào. */}
+      <TopBar title={app("name")} />
       <TodayScreen />
     </>
   );

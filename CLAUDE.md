@@ -584,3 +584,10 @@ Repo: https://github.com/mrtitoong/wordwise
   (`isDueToday`; thẻ ở bước học 1/10 phút vẫn theo giờ thật): áp cho phiên ôn, màn Hôm nay, số từ đến hạn của sổ
   tay, Luyện tập (đến hạn hôm nay = lượt ôn thật). ts-fsrs tính số ngày đã qua theo ngày UTC nên ôn sáng hôm sau
   cho lịch như ôn đủ 24 giờ.
+- 2026-10-27 (logo, chủ sản phẩm duyệt 3 đề xuất): Logo `public/brand/logo.svg` (nền tím `#6C4CF5`, bong bóng thoại
+  chữ W, chấm xanh chanh) làm icon app: `npm run icons:build` sinh `src/app/icon.svg` (favicon SVG), `favicon.ico`
+  (32px), icon 192/512, **maskable 192/512 thu hình vào 75%** trên nền tím tràn viền (chấm ở góc vẫn trong vùng an
+  toàn), `apple-icon.png` 180 vuông. **Màu nhấn của giao diện đổi sang tím logo** (chủ sản phẩm yêu cầu cùng
+  ngày): `--primary` #6c4cf5 (chữ trắng 5,3:1), accent #ece8fe/#4b2fc9, bản tối #a897ff; biểu đồ Thống kê giữ dải
+  xanh dương. Thanh trạng thái/màn chờ (`theme_color`, `themeColor`) màu trắng. Màn Chào mừng dùng logo. Thanh trên: màn Hôm nay hiện logo + "WordWise" (bỏ lời chào), các tab chính có logo nhỏ
+  cạnh tiêu đề, trang con có nút quay lại không có logo (`<Logo>` ở `src/components/brand/logo.tsx`).

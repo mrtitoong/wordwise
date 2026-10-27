@@ -1,7 +1,7 @@
 import Link from "next/link";
 import type { Metadata } from "next";
 import { getTranslations } from "next-intl/server";
-import { BookOpenCheck } from "lucide-react";
+import { Logo } from "@/components/brand/logo";
 import { Button } from "@/components/ui/button";
 import { safeNextPath } from "@/lib/auth/access";
 import { startGuest } from "@/features/onboarding/actions";
@@ -23,9 +23,7 @@ export default async function WelcomePage({
   return (
     <main className="mx-auto flex min-h-dvh max-w-md flex-col px-4 pt-[env(safe-area-inset-top,0px)] pb-[calc(2rem+env(safe-area-inset-bottom,0px))]">
       <div className="flex flex-1 flex-col items-center justify-center gap-4 text-center">
-        <span className="flex size-16 items-center justify-center rounded-2xl bg-primary text-primary-foreground">
-          <BookOpenCheck className="size-9" aria-hidden />
-        </span>
+        <Logo className="size-20" />
         <h1 className="text-3xl font-bold">{t("app.name")}</h1>
         <p className="max-w-xs text-lg text-balance text-muted-foreground">
           {t("welcome.tagline")}

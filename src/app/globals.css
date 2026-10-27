@@ -3,7 +3,8 @@
 
 @custom-variant dark (&:is(.dark *));
 
-/* Bảng màu theo wireframe GĐ0: nền xám lạnh, màu nhấn xanh mòng két. */
+/* Nền xám lạnh theo wireframe GĐ0; màu nhấn tím theo nền logo (public/brand/logo.svg, 2026-10-27).
+   Chữ trắng trên tím 5,3:1; chữ tím trên nền trắng 5,3:1, trên nền muted 4,7:1. */
 :root {
   --radius: 0.75rem;
   --background: #ffffff;
@@ -12,18 +13,18 @@
   --card-foreground: #1d2830;
   --popover: #ffffff;
   --popover-foreground: #1d2830;
-  --primary: #1f7396;
+  --primary: #6c4cf5;
   --primary-foreground: #ffffff;
   --secondary: #eef2f4;
   --secondary-foreground: #1d2830;
   --muted: #eef2f4;
   --muted-foreground: #5f6f7a;
-  --accent: #d5ecf3;
-  --accent-foreground: #195d7a;
+  --accent: #ece8fe;
+  --accent-foreground: #4b2fc9;
   --destructive: #c62828;
   --border: #d3dce1;
   --input: #cfd8de;
-  --ring: #2b8bb0;
+  --ring: #6c4cf5;
   /* Biểu đồ thống kê (một sắc xanh, đã kiểm tra bằng bộ kiểm tra bảng màu): bậc trạng thái từ Mới tới
      Thành thạo, bậc heatmap phút học, cột một chuỗi. */
   --chart-step-1: #86b6ef;
@@ -44,18 +45,18 @@
   --card-foreground: #e4ecf0;
   --popover: #1a242b;
   --popover-foreground: #e4ecf0;
-  --primary: #6cc0de;
-  --primary-foreground: #0d2a35;
+  --primary: #a897ff;
+  --primary-foreground: #1b1145;
   --secondary: #23313a;
   --secondary-foreground: #e4ecf0;
   --muted: #23313a;
   --muted-foreground: #98a8b3;
-  --accent: #173845;
-  --accent-foreground: #9fd7ea;
+  --accent: #2a2253;
+  --accent-foreground: #cfc5ff;
   --destructive: #ef6b6b;
   --border: #2c3a43;
   --input: #34444e;
-  --ring: #6cc0de;
+  --ring: #a897ff;
   --chart-step-1: #1c5cab;
   --chart-step-2: #3987e5;
   --chart-step-3: #86b6ef;

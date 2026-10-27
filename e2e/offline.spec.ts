@@ -19,9 +19,25 @@ test.describe("Cài app và offline", () => {
     for (const icon of manifest.icons) {
       expect((await request.get(icon.src)).ok(), icon.src).toBe(true);
     }
+    expect(manifest.icons.map((i) => i.src)).toEqual(
+      expect.arrayContaining([
+        "/icons/icon-192.png",
+        "/icons/icon-512.png",
+        "/icons/maskable-192.png",
+      ]),
+    );
     await page.goto("/welcome");
     await expect(page.locator('link[rel="manifest"]')).toHaveCount(1);
     await expect(page.locator('link[rel="apple-touch-icon"]')).toHaveCount(1);
+    // Favicon: SVG (logo) và PNG 32px; /favicon.ico cho trình duyệt cũ.
+    await expect(page.locator('link[rel="icon"][type="image/svg+xml"]')).toHaveCount(1);
+    await expect(page.locator('link[rel="icon"][sizes="32x32"]')).toHaveCount(1);
+    for (const href of await page
+      .locator('link[rel="icon"], link[rel="apple-touch-icon"]')
+      .evaluateAll((links) => links.map((l) => (l as HTMLLinkElement).href))) {
+      expect((await request.get(href)).ok(), href).toBe(true);
+    }
+    expect((await request.get("/favicon.ico")).ok()).toBe(true);
     await expect(
       page.locator(
         'meta[name="apple-mobile-web-app-capable"], meta[name="mobile-web-app-capable"]',

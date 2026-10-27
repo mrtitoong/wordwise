@@ -25,6 +25,16 @@ test.describe("Phiên ôn", () => {
     expect(seen).toHaveLength(15);
     // Số câu của phiên tính đủ ngay từ đầu: trả lời đúng hết thì không tăng.
     expect(new Set(totals)).toEqual(new Set([15]));
+    // Chuyển câu (trả lời → khung hình có câu sau, gồm ghi lượt ôn vào IndexedDB): mục tiêu < 100 ms.
+    const transitions = await page.evaluate(() =>
+      performance.getEntriesByName("ww:next-question").map((e) => Math.round(e.duration)),
+    );
+    test.info().annotations.push({ type: "chuyển câu (ms)", description: transitions.join(", ") });
+    // CI: in thành ghi chú của GitHub Actions (xem được ở trang Actions, ghi vào docs/qa/performance.md).
+    if (process.env.CI) console.log(`::notice title=Chuyển câu (ms)::${transitions.join(", ")}`);
+    expect(transitions.length).toBeGreaterThanOrEqual(10);
+    const sorted = [...transitions].sort((x, y) => x - y);
+    expect(sorted[Math.floor(sorted.length / 2)]!).toBeLessThan(100);
 
     await expect(page.getByText("Chuỗi 1 ngày")).toBeVisible();
     await expect(page.getByText("Không sai câu nào!")).toBeVisible();

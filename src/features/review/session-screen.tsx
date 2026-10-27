@@ -112,6 +112,9 @@ type Ask =
   | { step: "speaking"; voice: Voice; locale: PronunciationLocale };
 
 const MUTE_KEY = "ww_review_muted";
+/** Mốc đo chuyển câu (Performance API; E2E đọc NEXT_QUESTION_MEASURE). */
+const ANSWER_MARK = "ww:answer";
+const NEXT_QUESTION_MEASURE = "ww:next-question";
 /** Chế độ đã có (GĐ4 thêm tập viết, tập nghe; phát âm ở GĐ5). */
 const AVAILABLE_MODES: ReviewMode[] = ["flashcard", "mcq", "listening", "writing", "speaking"];
 
@@ -256,6 +259,18 @@ export function SessionScreen({ options }: { options: SessionOptions }) {
     [],
   );
 
+  // Đo thời gian chuyển câu (mục tiêu < 100 ms): từ lúc trả lời tới khung hình có câu sau.
+  const position = run?.position;
+  useEffect(() => {
+    if (!ask) return;
+    const frame = requestAnimationFrame(() => {
+      if (performance.getEntriesByName(ANSWER_MARK).length === 0) return;
+      performance.measure(NEXT_QUESTION_MEASURE, ANSWER_MARK);
+      performance.clearMarks(ANSWER_MARK);
+    });
+    return () => cancelAnimationFrame(frame);
+  }, [ask, position]);
+
   // Xếp hàng phiên (một lần khi đã biết người dùng).
   useEffect(() => {
     if (!owner || started.current) return;
@@ -395,6 +410,7 @@ export function SessionScreen({ options }: { options: SessionOptions }) {
   /** `intro`: vừa xem xong thẻ từ mới – tự ghi "Khó", không có câu trả lời (correct = null). */
   async function handleAnswer(answer: ModeAnswer, intro = false) {
     if (!run || !owner || !data || busy || !ask) return;
+    performance.mark(ANSWER_MARK);
     const item = run.queue[run.position]!;
     const prep = prepared.get(item.cardId)!;
     setBusy(true);

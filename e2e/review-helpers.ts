@@ -209,14 +209,24 @@ export async function forceModes(
   );
 }
 
-/** Học hết 5 từ khởi đầu (dùng thử, trình độ B1), trả lời đúng mọi câu. Trả về các bước đã qua. */
-export async function learnStarterWords(page: Page): Promise<string[]> {
+/**
+ * Học hết 5 từ khởi đầu (dùng thử, trình độ B1), trả lời đúng mọi câu. Trả về các bước đã qua;
+ * `totals` nhận số câu của phiên hiện ra trước mỗi câu ("3/15" → 15).
+ */
+export async function learnStarterWords(page: Page, totals?: number[]): Promise<string[]> {
   await page.goto("/welcome");
   await page.getByRole("button", { name: "Dùng thử ngay" }).click();
   await completeOnboarding(page, { level: "B1", stayInSession: true });
   await expect(page.getByRole("progressbar", { name: "Tiến độ phiên" })).toBeVisible();
   const seen: string[] = [];
   for (let i = 0; i < 40; i++) {
+    if (totals) {
+      const text = await page
+        .getByText(/^\d+\/\d+$/)
+        .first()
+        .textContent();
+      totals.push(Number(text!.split("/")[1]));
+    }
     const step = await answerCorrectly(page);
     if (step === "done") break;
     seen.push(step);

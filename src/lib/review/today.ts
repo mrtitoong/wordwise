@@ -10,7 +10,7 @@ import type {
   ReviewLogRow,
   UserWordRow,
 } from "@/lib/db/types";
-import { studyDay } from "@/lib/review/day";
+import { studyDay, studyDayEnd } from "@/lib/review/day";
 import { pacedNewLimit } from "@/lib/srs/pacing";
 import { medianResponseMs } from "@/lib/srs/grade";
 import { DEFAULT_ANSWER_MS, estimateMinutes, NEW_WORD_MS } from "./estimate";
@@ -122,6 +122,7 @@ export function sessionSettings(input: TodayInput, now: Date): SessionSettings {
     ),
     reviewsDoneToday: todays.filter((l) => !firstOfMeaning(l)).length,
     lastReviewAt: last ? new Date(last) : null,
+    dayEnd: studyDayEnd(now, input.settings.timeZone),
   };
 }
 

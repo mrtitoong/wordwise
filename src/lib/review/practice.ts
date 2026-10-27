@@ -11,7 +11,7 @@ import type { CardRow, NotebookEntryRow, UserWordRow } from "@/lib/db/types";
 import { learningStatus } from "@/lib/notebooks/progress";
 import { retrievability } from "@/lib/srs/cards";
 import { isLeech, masteryLevel } from "@/lib/srs/mastery";
-import type { SessionItem } from "@/lib/srs/queue";
+import { isDueToday, type SessionItem } from "@/lib/srs/queue";
 
 export const PRACTICE_MODES = [
   "auto",
@@ -51,11 +51,13 @@ export type PracticeInput = {
   entries: readonly NotebookEntryRow[];
   /** "Luyện chính tả" trong Cài đặt: Trộn tự động có cả thẻ Chính tả. */
   practiceSpelling: boolean;
+  /** Hết ngày học hôm nay: thẻ đến hạn trước lúc này là lượt ôn thật như "Ôn hôm nay". */
+  dayEnd?: Date;
 };
 
 export type PracticePlan = {
   items: SessionItem[];
-  /** Thẻ chưa đến hạn (ôn ngoài lịch). */
+  /** Thẻ chưa đến hạn hôm nay (ôn ngoài lịch). */
   extra: string[];
   /** Số từ phù hợp phạm vi và chế độ (trước khi cắt theo số câu). */
   available: number;
@@ -152,7 +154,7 @@ export function buildPractice(
   return {
     items: picked.map(({ card }) => ({ cardId: card.id, isNew: false, ...(mode ? { mode } : {}) })),
     extra: picked
-      .filter(({ card }) => card.state === 0 || Date.parse(card.due) > now.getTime())
+      .filter(({ card }) => card.state === 0 || !isDueToday(card, now, input.dayEnd))
       .map(({ card }) => card.id),
     available: chosen.length,
   };

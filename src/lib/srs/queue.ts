@@ -2,10 +2,11 @@
  * Xếp hàng câu hỏi cho phiên "Ôn hôm nay" (Prompt 3.2, docs/plan.md §3.4, ux-flows §2.5, §4.2).
  * Hàm thuần: dữ liệu thẻ và thời điểm truyền vào, ngẫu nhiên truyền vào để test được.
  */
-import type { FSRS } from "ts-fsrs";
+import { Rating, State, type FSRS, type Grade } from "ts-fsrs";
 import type { CardRow } from "@/lib/db/types";
 import { retrievability } from "./cards";
-import type { ReviewMode } from "./grade";
+import { INTRO_RATING, type ReviewMode } from "./grade";
+import { toFsrsCard } from "./scheduler";
 
 /** Một thẻ có thể vào phiên, kèm thông tin để trộn thứ tự. */
 export type QueueCard = {
@@ -46,7 +47,26 @@ export type SessionSettings = {
   reviewsDoneToday: number;
   /** Lần ôn gần nhất (bất kỳ thẻ nào); null khi chưa ôn bao giờ. */
   lastReviewAt: Date | null;
+  /**
+   * Hết ngày học hôm nay (4:00 sáng mai, `studyDayEnd`): thẻ lịch theo ngày đến hạn trước lúc này
+   * vào phiên hôm nay. Bỏ trống = chỉ thẻ đã đến hạn tới lúc `now`.
+   */
+  dayEnd?: Date;
 };
+
+/**
+ * Thẻ đã là việc của hôm nay: thẻ đang ở bước học (1 phút, 10 phút, học lại) theo giờ thật; thẻ
+ * lịch theo ngày (đã vào lịch dài hạn, thẻ kỹ năng mới) đến hạn trước khi hết ngày học là đủ – học
+ * lúc 21:00 thì sáng mai đã ôn được, không phải đợi đúng 21:00.
+ */
+export function isDueToday(
+  card: Pick<CardRow, "state" | "due">,
+  now: Date,
+  dayEnd: Date = now,
+): boolean {
+  const inSteps = card.state === State.Learning || card.state === State.Relearning;
+  return Date.parse(card.due) <= Math.max(now.getTime(), inSteps ? 0 : dayEnd.getTime());
+}
 
 export type SessionItem = {
   cardId: string;
@@ -134,11 +154,12 @@ export function buildSession(
   now: Date,
 ): SessionPlan {
   const isMeaning = (c: QueueCard) => (c.skill ?? "meaning") === "meaning";
+  const isDue = (c: QueueCard) => isDueToday(c.card, now, settings.dayEnd);
   // Thẻ kỹ năng mới (Chính tả, Phát âm của từ đã học) không phải "từ mới": xếp sau thẻ đến hạn,
   // tính vào giới hạn ôn/ngày; mỗi kỹ năng có giới hạn mở mới riêng.
   const opened = new Map<string, number>();
   const newSkill = cards
-    .filter((c) => c.card.state === 0 && !isMeaning(c) && Date.parse(c.card.due) <= now.getTime())
+    .filter((c) => c.card.state === 0 && !isMeaning(c) && isDue(c))
     .sort(
       (a, b) => Date.parse(a.card.due) - Date.parse(b.card.due) || a.lemma.localeCompare(b.lemma),
     )
@@ -151,7 +172,7 @@ export function buildSession(
     })
     .map((entry) => ({ entry, r: 1 }));
   const due = cards
-    .filter((c) => c.card.state !== 0 && Date.parse(c.card.due) <= now.getTime())
+    .filter((c) => c.card.state !== 0 && isDue(c))
     .map((entry) => ({ entry, r: retrievability(scheduler, entry.card, now) }))
     .sort((a, b) => a.r - b.r || Date.parse(a.entry.card.due) - Date.parse(b.entry.card.due))
     .concat(newSkill);
@@ -201,23 +222,96 @@ export const ITEMS_PER_MINUTE = 6;
 export const IN_SESSION_MINUTES = 20;
 
 /**
+ * Một thẻ chấm "Quên" chừng này lần trong phiên thì không quay lại phiên này nữa (phiên luôn kết
+ * thúc). Thẻ vẫn đến hạn sau 10 phút nên gặp lại ở phiên sau hoặc "Ôn lại từ sai".
+ */
+export const MAX_AGAIN_PER_SESSION = 3;
+
+/**
  * Sau khi trả lời: thẻ còn đến hạn trong phiên (bước học 1 phút/10 phút, học lại) thì chèn lại vào
- * hàng. Quên → sau 3–5 câu; bước học khác → theo số phút còn lại (≥ 3 câu). Trả về hàng mới.
+ * hàng. Quên → sau 3–5 câu; bước học khác → theo số phút còn lại (≥ 3 câu); hàng ngắn hơn thì xuống
+ * cuối. `againCount`: số lần Quên thẻ này trong phiên, kể cả lần này – tới MAX_AGAIN_PER_SESSION thì
+ * không chèn lại. Không đặt cạnh câu cùng từ (`sameWord`) nếu còn chỗ khác. Trả về hàng mới.
  */
 export function requeue(
   queue: readonly SessionItem[],
   answeredIndex: number,
   item: SessionItem,
-  outcome: { again: boolean; nextDue: Date },
+  outcome: { again: boolean; nextDue: Date; againCount?: number },
   now: Date,
   random: () => number = Math.random,
+  sameWord: (a: SessionItem, b: SessionItem) => boolean = (a, b) => a.cardId === b.cardId,
 ): SessionItem[] {
   const minutes = (outcome.nextDue.getTime() - now.getTime()) / 60_000;
   if (!outcome.again && minutes > IN_SESSION_MINUTES) return [...queue];
+  if (outcome.again && (outcome.againCount ?? 1) >= MAX_AGAIN_PER_SESSION) return [...queue];
   const [min, max] = AGAIN_GAP;
   const gap = outcome.again
     ? min + Math.floor(random() * (max - min + 1))
     : Math.max(min, Math.round(minutes * ITEMS_PER_MINUTE));
-  const at = Math.min(queue.length, answeredIndex + 1 + gap);
-  return [...queue.slice(0, at), { ...item, isNew: false }, ...queue.slice(at)];
+  const ideal = Math.min(queue.length, answeredIndex + 1 + gap);
+  const back = { ...item, isNew: false };
+  // Câu trả lời vừa xong ở answeredIndex, nên chỗ sớm nhất là ngay sau nó.
+  const clear = (at: number) =>
+    !sameWord(queue[at - 1]!, back) && (at >= queue.length || !sameWord(queue[at]!, back));
+  const candidates = [
+    ...Array.from({ length: queue.length - ideal + 1 }, (_, k) => ideal + k),
+    ...Array.from({ length: ideal - answeredIndex - 1 }, (_, k) => ideal - 1 - k),
+  ];
+  const at = candidates.find(clear) ?? ideal;
+  return [...queue.slice(0, at), back, ...queue.slice(at)];
+}
+
+/** Thẻ đủ để mô phỏng lịch (cùng các cột như QueueCard.card) và kỹ năng. */
+export type ProgressCard = QueueCard["card"] & { skill?: string };
+
+/** Mô phỏng tối đa chừng này lượt một thẻ (bước học chỉ có vài bước, đây chỉ là chặn vòng lặp). */
+const MAX_SIMULATED = 10;
+
+/**
+ * Số câu còn lại của phiên nếu từ đây trả lời đúng hết: mỗi thẻ trong phần còn lại của hàng được
+ * tính đủ số lần nó sẽ quay lại (từ mới: xem thẻ → 2 câu theo bước 1 phút/10 phút). Nhờ vậy số câu
+ * hiện ra không tăng khi trả lời đúng, chỉ tăng khi trả lời sai (hoặc đúng nhưng chậm/dùng gợi ý –
+ * chấm "Khó" ở bước học thì lặp lại bước đó). `extra`: thẻ ôn ngoài lịch, không quay lại.
+ */
+export function remainingItems(
+  queue: readonly SessionItem[],
+  position: number,
+  cardOf: (cardId: string) => ProgressCard | undefined,
+  scheduler: FSRS,
+  now: Date,
+  extra: ReadonlySet<string> = new Set(),
+): number {
+  const rest = queue.slice(position);
+  const seen = new Map<string, { count: number; first: SessionItem }>();
+  for (const item of rest) {
+    const entry = seen.get(item.cardId);
+    if (entry) entry.count++;
+    else seen.set(item.cardId, { count: 1, first: item });
+  }
+  let total = 0;
+  for (const [cardId, { count, first }] of seen) {
+    const card = cardOf(cardId);
+    total +=
+      card && !extra.has(cardId)
+        ? Math.max(count, appearances(card, first, scheduler, now))
+        : count;
+  }
+  return total;
+}
+
+/** Số lần thẻ còn hiện trong phiên nếu trả lời đúng hết (lượt xem từ mới chấm INTRO_RATING). */
+function appearances(card: ProgressCard, first: SessionItem, scheduler: FSRS, now: Date): number {
+  // Như phiên ôn: thẻ Nghĩa mới, câu đánh dấu từ mới → màn xem thẻ, tự ghi INTRO_RATING.
+  const intro = first.isNew && card.state === State.New && (card.skill ?? "meaning") === "meaning";
+  let current = toFsrsCard(card);
+  let at = new Date(Math.max(now.getTime(), Date.parse(card.due)));
+  for (let n = 1; n <= MAX_SIMULATED; n++) {
+    const rating: Grade = n === 1 && intro ? INTRO_RATING : Rating.Good;
+    const next = scheduler.next(current, at, rating).card;
+    if ((next.due.getTime() - at.getTime()) / 60_000 > IN_SESSION_MINUTES) return n;
+    current = next;
+    at = next.due;
+  }
+  return MAX_SIMULATED;
 }

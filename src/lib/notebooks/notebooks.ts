@@ -117,6 +117,7 @@ export function summarizeNotebooks(
   data: PersonalData,
   now: Date,
   defaultNotebookId?: string,
+  dayEnd?: Date,
 ): NotebookSummary[] {
   const { userWords, cards, entries } = liveIndex(data);
   const byNotebook = new Map<string, { words: number; due: number }>();
@@ -124,7 +125,7 @@ export function summarizeNotebooks(
     const stat = byNotebook.get(entry.notebook_id) ?? { words: 0, due: 0 };
     stat.words++;
     const uw = userWords.get(entry.user_word_id)!;
-    if (isDue(uw, cards.get(uw.id), now)) stat.due++;
+    if (isDue(uw, cards.get(uw.id), now, dayEnd)) stat.due++;
     byNotebook.set(entry.notebook_id, stat);
   }
   return data.notebooks

@@ -11,7 +11,7 @@ import { getLocalDb } from "@/lib/db/local";
 import { ensureSkillCards, openExtraWords, recordReview, weightsOf } from "@/lib/db/repo";
 import { clearSession, markSessionFinished, saveSession } from "@/lib/db/review-store";
 import type { Voice } from "@/lib/media/tts-azure";
-import { studyDay } from "@/lib/review/day";
+import { studyDay, studyDayEnd } from "@/lib/review/day";
 import { buildMcq, type ChoiceSense, type Mcq } from "@/lib/review/mcq";
 import {
   canResume,
@@ -36,7 +36,7 @@ import { buildPractice, type PracticeRequest } from "@/lib/review/practice";
 import type { PronunciationLocale } from "@/lib/pronunciation/api";
 import { masteryLevel, type MasteryLevel } from "@/lib/srs/mastery";
 import { getSupabaseEnv } from "@/lib/supabase/env";
-import { requeue, type SessionItem } from "@/lib/srs/queue";
+import { remainingItems, requeue, type SessionItem } from "@/lib/srs/queue";
 import { createScheduler } from "@/lib/srs/scheduler";
 import { useOwner } from "@/lib/sync/owner";
 import { Flashcard } from "./modes/flashcard";
@@ -136,6 +136,8 @@ export function SessionScreen({ options }: { options: SessionOptions }) {
   const [muted, setMuted] = useState(readMuted);
   const [confirmExit, setConfirmExit] = useState(false);
   const [busy, setBusy] = useState(false);
+  /** Số câu của phiên (đã làm + còn lại nếu trả lời đúng hết), tính lại mỗi khi sang câu mới. */
+  const [total, setTotal] = useState(0);
   const started = useRef(false);
   /** Thẻ ôn ngoài lịch ("Ôn từ này", "Ôn lại từ sai" khi chưa đến hạn). */
   const extraIds = useRef(new Set<string>());
@@ -151,6 +153,18 @@ export function SessionScreen({ options }: { options: SessionOptions }) {
       const prep = item && cards.get(item.cardId);
       if (!item || !prep) return setAsk(null);
       const now = new Date();
+      // Đếm đủ số lần từ đang học còn quay lại: trả lời đúng thì số câu không tăng.
+      setTotal(
+        r.position +
+          remainingItems(
+            r.queue,
+            r.position,
+            (id) => cards.get(id)?.card,
+            scheduler.current!,
+            now,
+            extraIds.current,
+          ),
+      );
       const flashcard = (reverse: boolean): Ask => ({
         step: "flashcard",
         reverse,
@@ -277,6 +291,7 @@ export function SessionScreen({ options }: { options: SessionOptions }) {
             cards: fresh.cards,
             entries: fresh.entries,
             practiceSpelling: fresh.settings.practice_spelling ?? true,
+            dayEnd: studyDayEnd(now, fresh.settings.timezone),
           },
           options.practice,
           scheduler.current,
@@ -412,14 +427,24 @@ export function SessionScreen({ options }: { options: SessionOptions }) {
           ...(intro ? { intro: true } : {}),
         },
       ];
+      const again = rating === Rating.Again;
+      const wordOf = (i: SessionItem) => cards.get(i.cardId)?.word.id ?? i.cardId;
       const queue = result.log.is_extra
         ? run.queue
         : requeue(
             run.queue,
             run.position,
             item,
-            { again: rating === Rating.Again, nextDue: new Date(result.card.due) },
+            {
+              again,
+              nextDue: new Date(result.card.due),
+              againCount: answers.filter(
+                (a) => a.cardId === item.cardId && a.rating === Rating.Again,
+              ).length,
+            },
             now,
+            Math.random,
+            (a, b) => wordOf(a) === wordOf(b),
           );
       await goTo({ ...run, queue, position: run.position + 1, answers }, cards);
     } finally {
@@ -502,7 +527,6 @@ export function SessionScreen({ options }: { options: SessionOptions }) {
   const prep = item && prepared.get(item.cardId);
   if (!run || !item || !prep || !ask || !data) return null;
   const voice = preferredVoice(data.settings);
-  const total = run.queue.length;
 
   return (
     <div className="flex min-h-dvh flex-col gap-4 pt-[env(safe-area-inset-top,0px)] pb-[calc(1rem+env(safe-area-inset-bottom,0px))]">

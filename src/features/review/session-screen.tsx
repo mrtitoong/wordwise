@@ -1,14 +1,25 @@
 "use client";
 
 import { useCallback, useEffect, useRef, useState } from "react";
+import dynamic from "next/dynamic";
 import { useRouter } from "next/navigation";
 import { MicOff, Volume2, VolumeX, X } from "lucide-react";
 import { Rating, type FSRS, type Grade } from "ts-fsrs";
 import { useTranslations } from "next-intl";
 import { Button } from "@/components/ui/button";
 import { Sheet } from "@/components/ui/sheet";
+import { showToast } from "@/components/ui/toast";
 import { getLocalDb } from "@/lib/db/local";
-import { ensureSkillCards, openExtraWords, recordReview, weightsOf } from "@/lib/db/repo";
+import { randomId } from "@/lib/db/ids";
+import {
+  ensureSkillCards,
+  openExtraWords,
+  planReview,
+  recordReview,
+  weightsOf,
+  type ReviewInput,
+} from "@/lib/db/repo";
+import { recordSlow, timed, watchMainThread } from "@/lib/diagnostics/slow-log";
 import { clearSession, markSessionFinished, saveSession } from "@/lib/db/review-store";
 import type { Voice } from "@/lib/media/tts-azure";
 import { studyDay, studyDayEnd } from "@/lib/review/day";
@@ -41,8 +52,6 @@ import { createScheduler } from "@/lib/srs/scheduler";
 import { useOwner } from "@/lib/sync/owner";
 import { Flashcard } from "./modes/flashcard";
 import { MultipleChoice } from "./modes/multiple-choice";
-import { NewWordIntro } from "./modes/new-word";
-import { Speaking } from "./modes/speaking";
 import type { Intervals, ModeAnswer } from "./modes/types";
 import { e2eOverride } from "./e2e";
 import { canSpeak } from "./modes/listen-player";
@@ -54,7 +63,8 @@ import {
   type WritingTask,
 } from "./modes/writing";
 import {
-  loadChoicePool,
+  loadLocalChoices,
+  moreChoices,
   prepareCards,
   readLocalWords,
   relatedOf,
@@ -78,6 +88,20 @@ export type SessionOptions = {
   resume?: boolean;
 };
 
+/**
+ * Màn xem thẻ từ mới (thẻ đủ 5 tab) và tập phát âm kéo theo Supabase/Zod: tải riêng, và tải trước
+ * ngay khi biết phiên có câu loại đó (`preloadModes`) để chuyển câu vẫn tức thì.
+ */
+const loadNewWord = () => import("./modes/new-word");
+const loadSpeaking = () => import("./modes/speaking");
+const NewWordIntro = dynamic(() => loadNewWord().then((m) => m.NewWordIntro), { ssr: false });
+const Speaking = dynamic(() => loadSpeaking().then((m) => m.Speaking), { ssr: false });
+
+function preloadModes(queue: readonly SessionItem[], cards: Map<string, PreparedCard>) {
+  if (queue.some((i) => i.isNew)) void loadNewWord();
+  if (queue.some((i) => cards.get(i.cardId)?.card.skill === "speaking")) void loadSpeaking();
+}
+
 type Kind = "full" | "short" | "single" | "retry" | "practice";
 
 type Run = {
@@ -98,6 +122,9 @@ type Ask =
   | { step: "speaking"; voice: Voice; locale: PronunciationLocale };
 
 const MUTE_KEY = "ww_review_muted";
+/** Mốc đo chuyển câu (Performance API; E2E đọc NEXT_QUESTION_MEASURE). */
+const ANSWER_MARK = "ww:answer";
+const NEXT_QUESTION_MEASURE = "ww:next-question";
 /** Chế độ đã có (GĐ4 thêm tập viết, tập nghe; phát âm ở GĐ5). */
 const AVAILABLE_MODES: ReviewMode[] = ["flashcard", "mcq", "listening", "writing", "speaking"];
 
@@ -139,6 +166,8 @@ export function SessionScreen({ options }: { options: SessionOptions }) {
   /** Số câu của phiên (đã làm + còn lại nếu trả lời đúng hết), tính lại mỗi khi sang câu mới. */
   const [total, setTotal] = useState(0);
   const started = useRef(false);
+  /** Hàng ghi lượt ôn chạy nền (xem saveReview). */
+  const writes = useRef<Promise<void>>(Promise.resolve());
   /** Thẻ ôn ngoài lịch ("Ôn từ này", "Ôn lại từ sai" khi chưa đến hạn). */
   const extraIds = useRef(new Set<string>());
 
@@ -146,25 +175,13 @@ export function SessionScreen({ options }: { options: SessionOptions }) {
   /** Giọng trong Cài đặt và "Luyện nhiều giọng" (tập nghe đổi ngẫu nhiên Mỹ/Anh). */
   const voices = useRef<{ preferred: Voice; multi: boolean }>({ preferred: "us", multi: false });
 
-  /** Chọn cách hỏi cho câu ở vị trí `position`. */
-  const setupAsk = useCallback(
-    (r: Run, cards: Map<string, PreparedCard>, choices: ChoiceSense[]) => {
+  /** Chọn cách hỏi cho câu ở vị trí `position` (không đổi state – xem showQuestion). */
+  const buildAsk = useCallback(
+    (r: Run, cards: Map<string, PreparedCard>, choices: ChoiceSense[]): Ask | null => {
       const item = r.queue[r.position];
       const prep = item && cards.get(item.cardId);
-      if (!item || !prep) return setAsk(null);
+      if (!item || !prep) return null;
       const now = new Date();
-      // Đếm đủ số lần từ đang học còn quay lại: trả lời đúng thì số câu không tăng.
-      setTotal(
-        r.position +
-          remainingItems(
-            r.queue,
-            r.position,
-            (id) => cards.get(id)?.card,
-            scheduler.current!,
-            now,
-            extraIds.current,
-          ),
-      );
       const flashcard = (reverse: boolean): Ask => ({
         step: "flashcard",
         reverse,
@@ -180,11 +197,11 @@ export function SessionScreen({ options }: { options: SessionOptions }) {
       // Phát âm chấm theo giọng trong Cài đặt (không đổi giọng ngẫu nhiên như tập nghe).
       if (prep.card.skill === "speaking") {
         const preferred = voices.current.preferred;
-        return setAsk({
+        return {
           step: "speaking",
           voice: preferred,
           locale: preferred === "uk" ? "en-GB" : "en-US",
-        });
+        };
       }
       if (prep.card.skill === "spelling") {
         // Luyện tập chọn chế độ: Tập viết luôn viết; Tập nghe thì nghe (không phát được thì viết).
@@ -195,18 +212,16 @@ export function SessionScreen({ options }: { options: SessionOptions }) {
             : item.mode === "listening"
               ? (listeningTaskKind(level, can) ?? "writing")
               : spellingTaskKind(level, can));
-        return setAsk(
-          kind === "writing"
-            ? { step: "writing", task: buildWritingTask(prep, level), listen: false, voice }
-            : {
-                step: "writing",
-                task: buildListeningTask(prep, kind === "listen-type" ? "listen" : "listen-cloze"),
-                listen: true,
-                voice,
-              },
-        );
+        return kind === "writing"
+          ? { step: "writing", task: buildWritingTask(prep, level), listen: false, voice }
+          : {
+              step: "writing",
+              task: buildListeningTask(prep, kind === "listen-type" ? "listen" : "listen-cloze"),
+              listen: true,
+              voice,
+            };
       }
-      if (prep.card.state === 0) return setAsk(item.isNew ? { step: "intro" } : flashcard(false));
+      if (prep.card.state === 0) return item.isNew ? { step: "intro" } : flashcard(false);
       // Thẻ Nghĩa chỉ có chế độ nhận biết: từ mức 1 trở lên trộn trắc nghiệm và nghe → chọn nghĩa.
       const meaningModes = modesForSkill("meaning", AVAILABLE_MODES).filter(
         (m) => m !== "listening" || can.word,
@@ -235,12 +250,53 @@ export function SessionScreen({ options }: { options: SessionOptions }) {
             confusables: prep.confusables,
           },
         );
-        if (mcq) return setAsk({ step: "mcq", mcq, listen, voice });
+        if (mcq) return { step: "mcq", mcq, listen, voice };
       }
-      setAsk(flashcard(level >= 2 && Math.random() < 0.3));
+      return flashcard(level >= 2 && Math.random() < 0.3);
     },
     [],
   );
+
+  /**
+   * Hiện câu ở `r.position`: câu, nội dung thẻ, cách hỏi (đáp án) và tổng số câu đổi cùng một lần
+   * vẽ – không bao giờ có lúc chữ/tiếng của câu mới đi với đáp án của câu cũ.
+   */
+  const showQuestion = useCallback(
+    (r: Run, cards: Map<string, PreparedCard>, choices: ChoiceSense[]) => {
+      const now = new Date();
+      setPrepared(cards);
+      setRun(r);
+      // Đếm đủ số lần từ đang học còn quay lại: trả lời đúng thì số câu không tăng.
+      setTotal(
+        r.position +
+          remainingItems(
+            r.queue,
+            r.position,
+            (id) => cards.get(id)?.card,
+            scheduler.current!,
+            now,
+            extraIds.current,
+          ),
+      );
+      setAsk(buildAsk(r, cards, choices));
+    },
+    [buildAsk],
+  );
+
+  // Đo thời gian chuyển câu (mục tiêu < 100 ms): từ lúc trả lời tới khung hình có câu sau.
+  const position = run?.position;
+  useEffect(() => {
+    if (!ask) return;
+    const frame = requestAnimationFrame(() => {
+      if (performance.getEntriesByName(ANSWER_MARK).length === 0) return;
+      performance.measure(NEXT_QUESTION_MEASURE, ANSWER_MARK);
+      performance.clearMarks(ANSWER_MARK);
+    });
+    return () => cancelAnimationFrame(frame);
+  }, [ask, position]);
+
+  // Nhật ký chậm: luồng chính bị đứng trong lúc ôn (xem Cài đặt → Nhật ký chậm).
+  useEffect(() => watchMainThread(), []);
 
   // Xếp hàng phiên (một lần khi đã biết người dùng).
   useEffect(() => {
@@ -352,36 +408,62 @@ export function SessionScreen({ options }: { options: SessionOptions }) {
         kept.length,
       );
       next = { ...next, queue: kept, position };
-      const choices = await loadChoicePool(db);
+      preloadModes(next.queue, cards);
+      const empty = next.position >= next.queue.length;
+      // Đáp án nhiễu: trong máy đủ thì không gọi mạng; ít (người mới) thì lấy thêm trong kho. Phiên
+      // trống thì không cần.
+      const choices = empty ? [] : await moreChoices(await loadLocalChoices(db));
       setData(fresh);
-      setPrepared(cards);
       setPool(choices);
-      setRun(next);
-      if (next.position >= next.queue.length) {
+      if (empty) {
+        setPrepared(cards);
+        setRun(next);
         setPhase("empty");
         return;
       }
-      setupAsk(next, cards, choices);
+      showQuestion(next, cards, choices);
       setPhase("run");
     })();
-  }, [owner, options, setupAsk]);
+  }, [owner, options, showQuestion]);
 
   async function finish(r: Run) {
     const db = getLocalDb();
+    // Các lượt ôn còn đang ghi nền phải xong trước khi đóng phiên (kết quả đọc từ IndexedDB).
+    await writes.current;
     await clearSession(db, owner!);
     await markSessionFinished(db, owner!, r.day, r.kind === "full");
     setSummary(summarize(r.answers, new Date(r.startedAt), new Date()));
     setPhase("done");
   }
 
+  /**
+   * Ghi lượt ôn chạy nền, lần lượt theo thứ tự trả lời (IndexedDB trước, đồng bộ sau). Lỗi thì báo
+   * (thẻ trong máy giữ lịch cũ, lần ôn sau vẫn gặp lại).
+   */
+  function saveReview(cardId: string, input: ReviewInput) {
+    const db = getLocalDb();
+    const delay = e2eOverride("saveDelayMs") ?? 0;
+    writes.current = writes.current
+      .then(() => new Promise((resolve) => setTimeout(resolve, delay)))
+      .then(() => timed("write", input.mode, () => recordReview(db, owner!, cardId, input)))
+      .then(
+        () => undefined,
+        (error: unknown) => {
+          console.error("Ghi lượt ôn lỗi:", error);
+          showToast({ text: t("saveFailed") });
+        },
+      );
+  }
+
   /** `intro`: vừa xem xong thẻ từ mới – tự ghi "Khó", không có câu trả lời (correct = null). */
   async function handleAnswer(answer: ModeAnswer, intro = false) {
     if (!run || !owner || !data || busy || !ask) return;
+    performance.mark(ANSWER_MARK);
+    const answeredAt = Date.now();
     const item = run.queue[run.position]!;
     const prep = prepared.get(item.cardId)!;
     setBusy(true);
     try {
-      const db = getLocalDb();
       const now = new Date();
       const mode: ReviewMode =
         ask.step === "mcq" || ask.step === "writing"
@@ -401,7 +483,7 @@ export function SessionScreen({ options }: { options: SessionOptions }) {
             userMedianMs: medianResponseMs(data.logs, mode),
           });
       const extra = extraIds.current.has(item.cardId);
-      const result = await recordReview(db, owner, item.cardId, {
+      const input: ReviewInput = {
         rating,
         mode,
         reviewedAt: now,
@@ -410,7 +492,16 @@ export function SessionScreen({ options }: { options: SessionOptions }) {
         hintLevel: answer.hintLevel,
         pronunciationScore: answer.pronunciationScore,
         extra,
-      });
+        logId: randomId(),
+      };
+      // Tính lịch mới trong bộ nhớ và sang câu sau ngay; ghi IndexedDB chạy nền (máy bận có lúc
+      // ghi mất cả phút – trước đây cả phiên đứng chờ).
+      const result = planReview(
+        prep.card,
+        { owner, settings: data.settings, notebooks: data.notebooks, entries: data.entries },
+        input,
+      );
+      saveReview(item.cardId, input);
       // Quên khi ôn ngoài lịch: lượt đó đã tính vào lịch, các lượt sau là ôn thật.
       if (extra && rating === Rating.Again) extraIds.current.delete(item.cardId);
       const cards = new Map(prepared).set(item.cardId, { ...prep, card: result.card });
@@ -446,20 +537,27 @@ export function SessionScreen({ options }: { options: SessionOptions }) {
             Math.random,
             (a, b) => wordOf(a) === wordOf(b),
           );
-      await goTo({ ...run, queue, position: run.position + 1, answers }, cards);
+      const next = { ...run, queue, position: run.position + 1, answers };
+      if (next.position < next.queue.length)
+        recordSlow("answer", answeredAt, Date.now() - answeredAt);
+      await goTo(next, cards);
     } finally {
       setBusy(false);
     }
   }
 
-  /** Sang câu ở vị trí `next.position` (hết hàng thì kết thúc), lưu phiên dở nếu cần. */
+  /**
+   * Sang câu ở vị trí `next.position` (hết hàng thì kết thúc). Phiên dở lưu chạy nền: câu sau hiện
+   * ngay, không chờ IndexedDB (máy bận có lúc chờ rất lâu); lưu lỗi thì chỉ mất chỗ tiếp tục.
+   */
   async function goTo(next: Run, cards: Map<string, PreparedCard>) {
-    setPrepared(cards);
-    setRun(next);
     if (next.position >= next.queue.length) {
+      setPrepared(cards);
+      setRun(next);
       await finish(next);
       return;
     }
+    showQuestion(next, cards, pool);
     if (next.kind === "full" || next.kind === "short") {
       const saved: SavedSession = {
         owner: owner!,
@@ -469,9 +567,11 @@ export function SessionScreen({ options }: { options: SessionOptions }) {
         answers: next.answers,
         startedAt: next.startedAt,
       };
-      await saveSession(getLocalDb(), saved);
+      const delay = e2eOverride("saveDelayMs") ?? 0;
+      void new Promise((resolve) => setTimeout(resolve, delay))
+        .then(() => saveSession(getLocalDb(), saved))
+        .catch(() => undefined);
     }
-    setupAsk(next, cards, pool);
   }
 
   /** Bỏ qua câu hiện tại mà không ghi lượt ôn (tập phát âm không chấm được). */

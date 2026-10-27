@@ -22,6 +22,7 @@ import {
 import type { EntryContext } from "./add-word-screen";
 import { BulkEntry } from "./bulk-entry";
 import { SingleEntry } from "./single-entry";
+import { radioGroupKeys } from "@/components/ui/radio-keys";
 
 /** Giữ nút lâu hơn mức này thì thả ra là dừng (bấm giữ); ngắn hơn là chạm (tự dừng khi im). */
 const HOLD_MS = 400;
@@ -174,6 +175,7 @@ export function VoiceEntry({
     <section className="flex flex-col gap-4">
       <div
         role="radiogroup"
+        onKeyDown={radioGroupKeys}
         aria-label={t("modeLabel")}
         className="grid grid-cols-2 gap-1 rounded-xl bg-muted p-1"
       >

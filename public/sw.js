@@ -46,6 +46,10 @@
     const found = html.match(/\/_next\/static\/[^"'\s)\\]+/g) ?? [];
     return [...new Set(found)];
   }
+  function chunkUrlsInScript(source) {
+    const found = source.match(/static\/chunks\/[\w.-]+\.(?:js|css)/g) ?? [];
+    return [...new Set(found.map((path) => `/_next/${path}`))];
+  }
   function keysToTrim(keys, max) {
     return keys.length > max ? keys.slice(0, keys.length - max) : [];
   }
@@ -71,16 +75,37 @@
     const cache = await caches.open(cacheName);
     for (const key of keysToTrim(await cache.keys(), max)) await cache.delete(key);
   }
-  async function savePage(url, response) {
+  async function saveAsset(statics, asset) {
+    let res = await statics.match(asset);
+    if (!res) {
+      const fresh = await fetch(asset).catch(() => null);
+      if (!fresh?.ok) return null;
+      await statics.put(asset, fresh.clone());
+      res = fresh;
+    }
+    return asset.endsWith(".js") ? res.text() : null;
+  }
+  var crawled = /* @__PURE__ */ new Set();
+  async function savePage(url, response, deep = false) {
     if (!response.ok || response.redirected || response.type !== "basic") return false;
     const html = await response.clone().text();
     const pages = await caches.open(CACHE_NAMES.pages);
     await pages.put(url, response);
     const statics = await caches.open(CACHE_NAMES.static);
-    for (const asset of assetUrlsInHtml(html)) {
-      if (await statics.match(asset)) continue;
-      const res = await fetch(asset).catch(() => null);
-      if (res?.ok) await statics.put(asset, res);
+    const queue = assetUrlsInHtml(html);
+    const seen = /* @__PURE__ */ new Set();
+    while (queue.length > 0) {
+      const asset = queue.shift();
+      if (seen.has(asset)) continue;
+      seen.add(asset);
+      if (!deep || crawled.has(asset)) {
+        if (!await statics.match(asset)) await saveAsset(statics, asset);
+        continue;
+      }
+      const source = await saveAsset(statics, asset);
+      if (source === null) continue;
+      crawled.add(asset);
+      queue.push(...chunkUrlsInScript(source).filter((next) => !seen.has(next)));
     }
     await trim(CACHE_NAMES.pages, PAGES_MAX_ENTRIES);
     await trim(CACHE_NAMES.static, STATIC_MAX_ENTRIES);
@@ -90,7 +115,7 @@
     const saved = [];
     for (const path of paths) {
       const response = await fetch(path, { credentials: "same-origin" }).catch(() => null);
-      const ok = response ? await savePage(new URL(path, ORIGIN).href, response).catch(() => false) : false;
+      const ok = response ? await savePage(new URL(path, ORIGIN).href, response, true).catch(() => false) : false;
       if (ok) saved.push(path);
     }
     return saved;

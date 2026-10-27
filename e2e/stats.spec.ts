@@ -1,5 +1,5 @@
 import { expect, test } from "@playwright/test";
-import { asOnboardedGuest, hasSupabase } from "./helpers";
+import { asOnboardedGuest, hasSupabase, waitForTestHooks } from "./helpers";
 import { learnStarterWords } from "./review-helpers";
 
 type Hooks = { __wordwiseE2E: { seedHistory: (days?: number) => Promise<number> } };
@@ -19,6 +19,7 @@ test.describe("Thống kê", () => {
     await learnStarterWords(page);
     await page.getByRole("button", { name: "Xong", exact: true }).click();
     // 30 ngày ôn giả (mỗi ngày mỗi thẻ một lượt, cứ 5 lượt có 1 lượt Quên).
+    await waitForTestHooks(page);
     const seeded = await page.evaluate(() =>
       (window as unknown as Hooks).__wordwiseE2E.seedHistory(30),
     );

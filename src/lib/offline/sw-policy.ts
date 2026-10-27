@@ -85,15 +85,31 @@ const BEFORE_START = ["/welcome", "/onboarding", "/login", "/auth", "/offline", 
 export const WARM_EVERY_MS = 60 * 60 * 1000;
 export const WARM_RETRY_MS = 30_000;
 
-export type WarmRecord = { at: number; ok: boolean };
+/** `build`: mã bản app lúc lưu – có bản mới thì lưu lại ngay (tên file JS đổi theo bản). */
+export type WarmRecord = { at: number; ok: boolean; build?: string };
+
+/**
+ * Đang ôn: lưu lại trang chính (tải và đọc lại mọi file JS) làm máy chậm đúng lúc chuyển câu, nên
+ * chỉ lưu khi chưa lưu được lần nào (vừa xong onboarding là vào thẳng phiên ôn); lưu lại (bản mới,
+ * quá giờ) đợi tới khi rời phiên.
+ */
+const BUSY = ["/review"];
 
 /**
  * Có nên nhờ Service Worker lưu sẵn trang chính khi đang ở `pathname`? (App không đọc được cookie
  * trạng thái – httpOnly – nên dựa vào trang đang mở: đã vào trang trong app là đã bắt đầu dùng.)
  */
-export function shouldWarmPages(pathname: string, last: WarmRecord | null, now: number): boolean {
+export function shouldWarmPages(
+  pathname: string,
+  last: WarmRecord | null,
+  now: number,
+  build?: string,
+): boolean {
   if (BEFORE_START.some((base) => startsWithPath(pathname, base))) return false;
   if (!last) return true;
+  // Đang ôn: chỉ thử lại khi lần đầu chưa lưu được (vd trang Hôm nay còn chuyển hướng).
+  if (BUSY.some((base) => startsWithPath(pathname, base)) && last.ok) return false;
+  if (build !== undefined && last.build !== build) return true;
   return now - last.at > (last.ok ? WARM_EVERY_MS : WARM_RETRY_MS);
 }
 
@@ -101,6 +117,16 @@ export function shouldWarmPages(pathname: string, last: WarmRecord | null, now: 
 export function assetUrlsInHtml(html: string): string[] {
   const found = html.match(/\/_next\/static\/[^"'\s)\\]+/g) ?? [];
   return [...new Set(found)];
+}
+
+/**
+ * File JS/CSS mà một file JS có thể tải sau (import động: Next/Turbopack ghi tên file trong code).
+ * Lưu sẵn theo chuỗi này thì phần code tải khi cần cũng chạy được offline – đúng file của từng nơi
+ * gọi (cùng một module có thể nằm ở file khác nhau tùy trang gọi nó).
+ */
+export function chunkUrlsInScript(source: string): string[] {
+  const found = source.match(/static\/chunks\/[\w.-]+\.(?:js|css)/g) ?? [];
+  return [...new Set(found.map((path) => `/_next/${path}`))];
 }
 
 /** Khóa cũ nhất cần xóa để còn tối đa `max` mục (Cache Storage giữ thứ tự thêm vào). */

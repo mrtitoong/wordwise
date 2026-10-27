@@ -2,7 +2,7 @@
 
 import { Cloud, CloudAlert, CloudCheck, CloudOff, RefreshCw } from "lucide-react";
 import { useTranslations } from "next-intl";
-import { getSyncEngine } from "@/lib/sync/client";
+import { syncNow } from "@/lib/sync/bridge";
 import { useSyncStatus } from "@/lib/sync/hooks";
 import { cn } from "@/lib/utils";
 
@@ -32,7 +32,7 @@ export function SyncStatusIcon() {
       aria-label={label}
       title={label}
       data-sync-state={state}
-      onClick={() => void getSyncEngine()?.syncNow()}
+      onClick={syncNow}
       className={cn(
         "relative flex size-11 items-center justify-center rounded-full text-muted-foreground hover:bg-muted focus-visible:outline-2 focus-visible:outline-ring",
         state === "error" && "text-destructive",

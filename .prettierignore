@@ -11,3 +11,4 @@ CLAUDE.md
 supabase/functions/*/index.js
 # Sinh tự động bởi scripts/build-sw.ts
 public/sw.js
+lighthouse-report

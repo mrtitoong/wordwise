@@ -7,6 +7,7 @@
 import {
   assetUrlsInHtml,
   CACHE_NAMES,
+  chunkUrlsInScript,
   classifyRequest,
   keysToTrim,
   MEDIA_MAX_ENTRIES,
@@ -56,17 +57,49 @@ async function trim(cacheName: string, max: number) {
   for (const key of keysToTrim(await cache.keys(), max)) await cache.delete(key);
 }
 
-/** Lưu một trang và JS/CSS của nó (để mở offline chạy được). Bỏ qua trang bị chuyển hướng. */
-async function savePage(url: string, response: Response): Promise<boolean> {
+/** Lưu một file JS/CSS (chưa có thì tải); trả về nội dung nếu là JS để tìm tiếp file nó gọi. */
+async function saveAsset(statics: Cache, asset: string): Promise<string | null> {
+  let res = await statics.match(asset);
+  if (!res) {
+    const fresh = await fetch(asset).catch(() => null);
+    if (!fresh?.ok) return null;
+    await statics.put(asset, fresh.clone());
+    res = fresh;
+  }
+  return asset.endsWith(".js") ? res.text() : null;
+}
+
+/**
+ * File JS đã đọc để tìm file con (tên có mã băm nên nội dung không đổi): các trang dùng chung phần
+ * lớn code, đọc lại cho từng trang làm máy chậm hẳn (điện thoại: chuyển câu trong phiên ôn bị treo).
+ */
+const crawled = new Set<string>();
+
+/**
+ * Lưu một trang và JS/CSS của nó (để mở offline chạy được). Bỏ qua trang bị chuyển hướng.
+ * `deep` (lưu sẵn trang chính): lưu cả các file mà JS của trang có thể tải sau (import động) –
+ * phần code tải khi cần (vd màn xem thẻ từ mới trong phiên ôn) cũng chạy được offline.
+ */
+async function savePage(url: string, response: Response, deep = false): Promise<boolean> {
   if (!response.ok || response.redirected || response.type !== "basic") return false;
   const html = await response.clone().text();
   const pages = await caches.open(CACHE_NAMES.pages);
   await pages.put(url, response);
   const statics = await caches.open(CACHE_NAMES.static);
-  for (const asset of assetUrlsInHtml(html)) {
-    if (await statics.match(asset)) continue;
-    const res = await fetch(asset).catch(() => null);
-    if (res?.ok) await statics.put(asset, res);
+  const queue = assetUrlsInHtml(html);
+  const seen = new Set<string>();
+  while (queue.length > 0) {
+    const asset = queue.shift()!;
+    if (seen.has(asset)) continue;
+    seen.add(asset);
+    if (!deep || crawled.has(asset)) {
+      if (!(await statics.match(asset))) await saveAsset(statics, asset);
+      continue;
+    }
+    const source = await saveAsset(statics, asset);
+    if (source === null) continue;
+    crawled.add(asset);
+    queue.push(...chunkUrlsInScript(source).filter((next) => !seen.has(next)));
   }
   await trim(CACHE_NAMES.pages, PAGES_MAX_ENTRIES);
   await trim(CACHE_NAMES.static, STATIC_MAX_ENTRIES);
@@ -79,7 +112,7 @@ async function warmPages(paths: readonly string[]): Promise<string[]> {
   for (const path of paths) {
     const response = await fetch(path, { credentials: "same-origin" }).catch(() => null);
     const ok = response
-      ? await savePage(new URL(path, ORIGIN).href, response).catch(() => false)
+      ? await savePage(new URL(path, ORIGIN).href, response, true).catch(() => false)
       : false;
     if (ok) saved.push(path);
   }

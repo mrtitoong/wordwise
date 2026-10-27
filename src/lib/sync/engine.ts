@@ -1,3 +1,4 @@
+import { timed } from "@/lib/diagnostics/slow-log";
 import { GUEST_OWNER } from "@/lib/db/ids";
 import type { LocalDb } from "@/lib/db/local";
 import { cacheWordContent, weightsOf } from "@/lib/db/repo";
@@ -44,6 +45,9 @@ const INTERVAL_MS = 5 * 60_000;
 const EPOCH = "1970-01-01T00:00:00.000Z";
 
 type Listener = (status: SyncStatus) => void;
+
+/** Trang đang ẩn (chạy ngầm, tab nền). */
+const isHidden = () => typeof document !== "undefined" && document.visibilityState === "hidden";
 
 /**
  * Đồng bộ dữ liệu cá nhân giữa IndexedDB và Supabase: đẩy outbox theo lô 50
@@ -95,8 +99,13 @@ export class SyncEngine {
     }, delay);
   }
 
-  /** Đồng bộ ngay. Đang chạy thì chạy thêm một lượt sau lượt hiện tại. */
+  /**
+   * Đồng bộ ngay. Đang chạy thì chạy thêm một lượt sau lượt hiện tại. Trang đang ẩn (app cài và
+   * tab trình duyệt cùng mở, app chạy ngầm) thì không đồng bộ: Android hay đóng băng trang ẩn đúng
+   * lúc nó giữ khóa đồng bộ/IndexedDB, làm trang đang dùng đứng cả phút. Hiện lại thì tự đồng bộ.
+   */
   syncNow(): Promise<SyncStatus> {
+    if (isHidden()) return Promise.resolve(this.getStatus());
     if (!this.canSync) return this.refresh("local");
     if (this.running) {
       this.rerun = true;
@@ -106,7 +115,7 @@ export class SyncEngine {
       do {
         this.rerun = false;
         await this.runOnce();
-      } while (this.rerun && this.status.state !== "offline");
+      } while (this.rerun && this.status.state !== "offline" && !isHidden());
       return this.status;
     }).finally(() => {
       this.running = null;
@@ -154,12 +163,12 @@ export class SyncEngine {
     }
     await this.refresh("syncing");
 
-    const pushed = await this.push(owner);
+    const pushed = await timed("sync", "push", () => this.push(owner));
     if (!pushed.ok && pushed.kind === "network") return this.finish(pushed);
-    const pulled = await this.pull(owner);
+    const pulled = await timed("sync", "pull", () => this.pull(owner));
     if (!pulled.ok) return this.finish(pulled);
     // Lỗi server ở bước này không chặn đồng bộ dữ liệu học (lần sau tải lại).
-    const refreshed = await this.refreshEditedWords();
+    const refreshed = await timed("sync", "edited-words", () => this.refreshEditedWords());
     if (!refreshed.ok && refreshed.kind === "network") return this.finish(refreshed);
 
     // Gộp thẻ có thể sinh việc mới (thẻ tính lại): gửi luôn trong lượt này.

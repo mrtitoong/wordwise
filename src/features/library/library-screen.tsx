@@ -15,6 +15,7 @@ import {
 } from "@/lib/library/library";
 import { useOwner } from "@/lib/sync/owner";
 import { ListCover, chipClass, useNotebooks } from "./shared";
+import { radioGroupKeys } from "@/components/ui/radio-keys";
 
 function ChipRow<T extends string>({
   label,
@@ -35,6 +36,7 @@ function ChipRow<T extends string>({
   return (
     <div
       role="radiogroup"
+      onKeyDown={radioGroupKeys}
       aria-label={label}
       className="-mx-4 flex [scrollbar-width:none] gap-2 overflow-x-auto px-4 pb-1 [&::-webkit-scrollbar]:hidden"
     >

@@ -1,5 +1,6 @@
 {
   "app": {
+    "otherWindow": "WordWise is open in another window. Come back here to keep using it.",
     "name": "WordWise",
     "description": "Learn vocabulary and remember it with smart review scheduling.",
     "shortName": "WordWise",
@@ -160,6 +161,13 @@
     "language": "App language",
     "languageHint": "Changes right away, no reload needed.",
     "saving": "Switching…",
+    "theme": "Appearance",
+    "themeHint": "Saved on this device only.",
+    "themes": {
+      "system": "Match device",
+      "light": "Light",
+      "dark": "Dark"
+    },
     "account": "Account",
     "signedInAs": "Signed in as {email}",
     "signOut": "Sign out",
@@ -176,6 +184,22 @@
     "reviewSection": "Reviews",
     "multiAccent": "Mixed accents",
     "multiAccentHint": "Listening practice switches randomly between American and British voices.",
+    "slowLog": {
+      "title": "Slow log",
+      "hint": "Times the app was unusually slow on this device (kept on this device only). If it freezes, tap Copy and send it to the developers.",
+      "empty": "Nothing slow recorded yet.",
+      "copy": "Copy",
+      "clear": "Clear log",
+      "copied": "Log copied.",
+      "copyFailed": "Couldn't copy, please take a screenshot.",
+      "kind": {
+        "freeze": "App froze",
+        "answer": "Slow next question",
+        "write": "Slow save on device",
+        "sync": "Slow sync",
+        "warm": "Long offline save"
+      }
+    },
     "micTest": "Microphone check",
     "practiceSpeaking": "Speaking practice",
     "practiceSpeakingHint": "Add say-it-out-loud questions to daily reviews (needs sign-in, a microphone and a quiet place). You can still pick Speaking on the Practice page when this is off.",
@@ -1347,6 +1371,7 @@
     "progress": "Session progress",
     "mute": "Mute sound",
     "unmute": "Unmute sound",
+    "saveFailed": "Couldn't save that answer on this device. You'll see the word again next time.",
     "exitTitle": "Leave the session?",
     "exitBody": "Your answers so far are saved. You can continue this session later from Today.",
     "stay": "Stay",

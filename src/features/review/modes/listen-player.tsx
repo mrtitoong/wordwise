@@ -5,10 +5,7 @@ import { Volume2 } from "lucide-react";
 import { useTranslations } from "next-intl";
 import { browserPlayerEnv, createPlayer, type PlaybackRate } from "@/lib/audio/player";
 import type { Voice } from "@/lib/media/tts-azure";
-import { cachedSentenceAudioUrl } from "@/features/offline/media-cache";
-import { requestSentenceAudioUrl } from "@/lib/media/request-sentence-audio";
-import { createClient } from "@/lib/supabase/client";
-import { getSupabaseEnv } from "@/lib/supabase/env";
+import { sentenceAudioUrl } from "@/features/media/sentence-audio";
 import { cn } from "@/lib/utils";
 
 /** Trình duyệt đọc được bằng giọng máy (dự phòng khi chưa có file MP3). */
@@ -16,14 +13,9 @@ export function canSpeak(): boolean {
   return typeof window !== "undefined" && "speechSynthesis" in window;
 }
 
-/**
- * Audio câu ví dụ: đã có trên máy thì dùng luôn (cả khi offline); chưa có thì xin máy chủ (tạo khi
- * cần, trong giới hạn ngày); không được thì null.
- */
+/** Audio câu ví dụ (xem sentenceAudioUrl) dạng hàm để nút nghe gọi khi cần. */
 export function sentenceAudio(senseId: string, index: number, voice: Voice, sentence: string) {
-  return async () =>
-    (await cachedSentenceAudioUrl(sentence, voice)) ??
-    (getSupabaseEnv() ? requestSentenceAudioUrl(createClient(), { senseId, index, voice }) : null);
+  return () => sentenceAudioUrl(senseId, index, voice, sentence);
 }
 
 /**

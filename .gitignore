@@ -33,3 +33,6 @@ tests/fixtures/ocr/real-*
 
 # Thư mục tạm của Supabase CLI (project ref, phiên bản).
 supabase/.temp/
+
+# Báo cáo Lighthouse (npm run lighthouse)
+/lighthouse-report

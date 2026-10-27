@@ -27,6 +27,7 @@ import { getSupabaseEnv } from "@/lib/supabase/env";
 import { resolveOwner, syncWithTimeout } from "@/lib/sync/client";
 import { createSupabaseRemote } from "@/lib/sync/remote";
 import { completeOnboarding } from "./actions";
+import { radioGroupKeys } from "@/components/ui/radio-keys";
 
 const SETTING_STEPS = 3;
 
@@ -372,6 +373,7 @@ function ChoiceGroup({
   return (
     <div
       role="radiogroup"
+      onKeyDown={radioGroupKeys}
       aria-label={label}
       className={cn("grid gap-2", columns && "grid-cols-2")}
     >

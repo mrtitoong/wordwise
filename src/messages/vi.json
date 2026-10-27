@@ -1,5 +1,6 @@
 {
   "app": {
+    "otherWindow": "WordWise đang mở ở cửa sổ khác. Quay lại đây là dùng tiếp được ngay.",
     "name": "WordWise",
     "description": "Học từ vựng tiếng Anh, nhớ lâu với lịch ôn thông minh.",
     "shortName": "WordWise",
@@ -160,6 +161,13 @@
     "language": "Ngôn ngữ giao diện",
     "languageHint": "Đổi ngay, không cần tải lại trang.",
     "saving": "Đang đổi…",
+    "theme": "Giao diện",
+    "themeHint": "Lưu riêng trên máy này.",
+    "themes": {
+      "system": "Theo máy",
+      "light": "Sáng",
+      "dark": "Tối"
+    },
     "account": "Tài khoản",
     "signedInAs": "Đang đăng nhập: {email}",
     "signOut": "Đăng xuất",
@@ -176,6 +184,22 @@
     "reviewSection": "Phiên ôn",
     "multiAccent": "Luyện nhiều giọng",
     "multiAccentHint": "Tập nghe đổi ngẫu nhiên giọng Mỹ và giọng Anh, quen tai cả hai cách đọc.",
+    "slowLog": {
+      "title": "Nhật ký chậm",
+      "hint": "Các lần app chậm bất thường trên máy này (chỉ lưu trong máy). Khi gặp treo, bấm Sao chép rồi gửi cho nhóm phát triển.",
+      "empty": "Chưa ghi nhận lần chậm nào.",
+      "copy": "Sao chép",
+      "clear": "Xóa nhật ký",
+      "copied": "Đã sao chép nhật ký.",
+      "copyFailed": "Không sao chép được, hãy chụp màn hình.",
+      "kind": {
+        "freeze": "App bị đứng",
+        "answer": "Chuyển câu chậm",
+        "write": "Ghi vào máy chậm",
+        "sync": "Đồng bộ chậm",
+        "warm": "Lưu offline lâu"
+      }
+    },
     "micTest": "Kiểm tra micro",
     "practiceSpeaking": "Luyện phát âm",
     "practiceSpeakingHint": "Thêm câu đọc to vào phiên ôn hằng ngày (cần đăng nhập, micro và chỗ yên tĩnh). Luyện tập vẫn chọn được Phát âm khi tắt.",
@@ -1347,6 +1371,7 @@
     "progress": "Tiến độ phiên",
     "mute": "Tắt âm thanh",
     "unmute": "Bật âm thanh",
+    "saveFailed": "Không lưu được lượt ôn vừa rồi trên máy. Từ này sẽ được hỏi lại ở lần ôn sau.",
     "exitTitle": "Thoát phiên?",
     "exitBody": "Kết quả các câu đã làm đã được lưu. Bạn có thể tiếp tục phiên này sau từ màn Hôm nay.",
     "stay": "Ở lại",

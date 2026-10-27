@@ -45,7 +45,7 @@ export function MicErrorHelp({ error }: { error: RecorderError }) {
     typeof navigator !== "undefined" && /iPhone|iPad|iPod/.test(navigator.userAgent ?? "");
   return (
     <div role="alert" className="flex gap-3 rounded-xl border border-amber-300 p-3 text-sm">
-      <MicOff className="mt-0.5 size-5 shrink-0 text-amber-700" aria-hidden />
+      <MicOff className="mt-0.5 size-5 shrink-0 text-amber-700 dark:text-amber-300" aria-hidden />
       <div className="flex flex-col gap-1">
         <p className="font-medium">{t(`error.${error}`)}</p>
         {error === "not-allowed" && (

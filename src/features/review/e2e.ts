@@ -10,6 +10,8 @@ type SpellingKind = "writing" | "listen-type" | "listen-cloze";
 type Overrides = {
   spellingKind?: SpellingKind | SpellingKind[];
   meaningMode?: string | string[];
+  /** Ghi lượt ôn và lưu phiên dở chậm thêm chừng này mili giây (giả lập máy bận). */
+  saveDelayMs?: number;
 };
 type Single<K extends keyof Overrides> = Exclude<Overrides[K], unknown[]>;
 

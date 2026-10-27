@@ -1,8 +1,9 @@
 import { expect, test } from "@playwright/test";
-import { completeOnboarding, hasSupabase, readLocalStore } from "./helpers";
+import { completeOnboarding, hasSupabase, readLocalStore, waitForTestHooks } from "./helpers";
 import {
   currentAnswer,
   answerCorrectly,
+  forceModes,
   learnStarterWords,
   typeAnswer,
   writeCorrectly,
@@ -25,6 +26,16 @@ test.describe("Phiên ôn", () => {
     expect(seen).toHaveLength(15);
     // Số câu của phiên tính đủ ngay từ đầu: trả lời đúng hết thì không tăng.
     expect(new Set(totals)).toEqual(new Set([15]));
+    // Chuyển câu (trả lời → khung hình có câu sau, gồm ghi lượt ôn vào IndexedDB): mục tiêu < 100 ms.
+    const transitions = await page.evaluate(() =>
+      performance.getEntriesByName("ww:next-question").map((e) => Math.round(e.duration)),
+    );
+    test.info().annotations.push({ type: "chuyển câu (ms)", description: transitions.join(", ") });
+    // CI: in thành ghi chú của GitHub Actions (xem được ở trang Actions, ghi vào docs/qa/performance.md).
+    if (process.env.CI) console.log(`::notice title=Chuyển câu (ms)::${transitions.join(", ")}`);
+    expect(transitions.length).toBeGreaterThanOrEqual(10);
+    const sorted = [...transitions].sort((x, y) => x - y);
+    expect(sorted[Math.floor(sorted.length / 2)]!).toBeLessThan(100);
 
     await expect(page.getByText("Chuỗi 1 ngày")).toBeVisible();
     await expect(page.getByText("Không sai câu nào!")).toBeVisible();
@@ -57,6 +68,29 @@ test.describe("Phiên ôn", () => {
     await expect(page).toHaveURL("/");
     await expect(page.getByRole("heading", { name: "Xong hôm nay!" })).toBeVisible();
     await expect(page.getByText("Chuỗi 1 ngày")).toBeVisible();
+  });
+
+  test("ghi vào máy chậm (máy bận): câu sau vẫn hiện ngay, đáp án khớp từ đang hỏi", async ({
+    page,
+  }) => {
+    await page.goto("/welcome");
+    await page.getByRole("button", { name: "Dùng thử ngay" }).click();
+    await completeOnboarding(page, { level: "B1", stayInSession: true });
+    await expect(page.getByRole("progressbar", { name: "Tiến độ phiên" })).toBeVisible();
+
+    // Ghi lượt ôn và lưu phiên dở chậm 30 giây mỗi lần (như khi máy bận): trước đây câu sau chờ ghi
+    // xong mới hiện (treo cả phút), và chờ lưu xong mới có đáp án (chữ của câu mới đi với đáp án cũ).
+    await forceModes(page, { saveDelayMs: 30_000 });
+
+    // Mỗi câu trắc nghiệm: answerCorrectly kiểm tra đáp án đúng của từ đang hỏi có trong 4 đáp án.
+    const seen: string[] = [];
+    for (let i = 0; i < 10; i++) seen.push(await answerCorrectly(page));
+    expect(seen).toContain("mcq");
+    const transitions = await page.evaluate(() =>
+      performance.getEntriesByName("ww:next-question").map((e) => Math.round(e.duration)),
+    );
+    expect(transitions.length).toBeGreaterThanOrEqual(8);
+    expect(Math.max(...transitions)).toBeLessThan(1_000);
   });
 
   test("thoát giữa phiên → kết quả đã lưu, Hôm nay có Tiếp tục phiên dở; Ôn từ này ngoài lịch", async ({
@@ -101,6 +135,7 @@ test.describe("Phiên ôn", () => {
     await page.getByRole("button", { name: "Xong", exact: true }).click();
     await expect(page).toHaveURL("/");
 
+    await waitForTestHooks(page);
     const count = await page.evaluate(() =>
       (
         window as unknown as { __wordwiseE2E: { patchCards: (skill: string) => Promise<number> } }
@@ -144,6 +179,7 @@ test.describe("Phiên ôn", () => {
     await expect(toggle).toHaveAttribute("aria-checked", "true");
     await toggle.click();
     await expect(toggle).toHaveAttribute("aria-checked", "false");
+    await waitForTestHooks(page);
     await page.evaluate(() =>
       (
         window as unknown as { __wordwiseE2E: { patchCards: (skill: string) => Promise<number> } }
@@ -176,6 +212,7 @@ test.describe("Phiên ôn", () => {
     const starts: string[] = [];
     const run = async (skill: string, overrides: object, title: string) => {
       starts.push(new Date().toISOString());
+      await waitForTestHooks(page);
       await page.evaluate(
         ([s, p, o]) => {
           localStorage.setItem("ww_e2e_overrides", JSON.stringify(o));

@@ -71,4 +71,44 @@ test.describe("Luồng 3 – mất mạng giữa phiên ôn", () => {
       expect(Date.parse(row!.due)).toBe(Date.parse(card.due));
     }
   });
+
+  test("máy chưa từng mở phiên ôn khi có mạng: offline vẫn bắt đầu được phiên (code tải khi cần đã lưu sẵn)", async ({
+    page,
+    browser,
+    baseURL,
+  }) => {
+    test.setTimeout(150_000);
+    // Máy 1: tạo tài khoản, chọn 5 từ khởi đầu rồi thoát phiên ngay (từ chưa học).
+    const email = uniqueEmail("journey-offline-cold");
+    await signInWithCode(page, email);
+    await completeOnboarding(page, { level: "B1" });
+    await expect(page).toHaveURL("/");
+    await expect(page.locator("[data-sync-state]")).toHaveAttribute("data-sync-state", "idle", {
+      timeout: 20_000,
+    });
+
+    // Máy 2: chỉ đăng nhập, ở màn Hôm nay – chưa mở phiên ôn nên chưa tải code của phiên.
+    const other = await browser.newContext({
+      baseURL,
+      serviceWorkers: "allow",
+      viewport: { width: 390, height: 844 },
+      hasTouch: true,
+    });
+    const second = await other.newPage();
+    await signInWithCode(second, email);
+    await expect(second).toHaveURL("/");
+    await expect
+      .poll(async () => (await readLocalStore(second, "word_senses")).length, { timeout: 20_000 })
+      .toBeGreaterThanOrEqual(5);
+    await waitForOfflineShell(second);
+
+    // Mất mạng rồi mới mở phiên: màn xem thẻ từ mới và nội dung từ vẫn chạy.
+    await other.setOffline(true);
+    await second.goto("/review/session");
+    expect(await answerQuestion(second)).toBe("intro");
+    const steps = await finishSession(second);
+    expect(steps.filter((s) => s === "intro")).toHaveLength(4);
+    await expect(second.getByRole("button", { name: "Xong", exact: true })).toBeVisible();
+    await other.close();
+  });
 });

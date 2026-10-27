@@ -5,10 +5,10 @@ import { GUEST_OWNER } from "@/lib/db/ids";
 import { getLocalDb } from "@/lib/db/local";
 import { ensureSkillCards, openNewWords, recordReview } from "@/lib/db/repo";
 import type { CardRow, ReviewLogRow } from "@/lib/db/types";
+import { timed } from "@/lib/diagnostics/slow-log";
 import { createClient } from "@/lib/supabase/client";
 import { getSupabaseEnv } from "@/lib/supabase/env";
 import { getSyncEngine } from "@/lib/sync/client";
-import { subscribeReminders } from "@/features/settings/push-client";
 
 /**
  * Đã đặt giờ nhắc (kể cả lúc onboarding khi còn là khách) và trình duyệt đã cho phép thông báo:
@@ -19,6 +19,8 @@ async function restoreReminders(owner: string) {
   const settings = await getLocalDb().user_settings.get(owner);
   if (!settings?.reminder_time) return;
   if (typeof Notification === "undefined" || Notification.permission !== "granted") return;
+  // Tải code Web Push chỉ khi cần (ít người bật nhắc học).
+  const { subscribeReminders } = await import("@/features/settings/push-client");
   await subscribeReminders({ ask: false }).catch(() => undefined);
 }
 
@@ -42,8 +44,9 @@ export function SyncProvider() {
       const settled = state === "idle" || state === "local";
       if (settled && state !== lastState && owner && !opening) {
         opening = true;
-        void openNewWords(getLocalDb(), owner)
-          .then(() => ensureSkillCards(getLocalDb(), owner))
+        void timed("write", "open-new-words", () =>
+          openNewWords(getLocalDb(), owner).then(() => ensureSkillCards(getLocalDb(), owner)),
+        )
           .catch((error) => console.error("Mở từ mới lỗi:", error))
           .finally(() => (opening = false));
       }

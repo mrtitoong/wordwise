@@ -25,6 +25,7 @@ import { CardProvider, type SheetState } from "./parts";
 import { RelatedTab } from "./related-tab";
 import { UsageTab } from "./usage-tab";
 import { WordCardSkeleton } from "./skeleton";
+import { radioGroupKeys } from "@/components/ui/radio-keys";
 
 const VIEW_KEY = "ww_word_view";
 
@@ -69,6 +70,7 @@ export function CardTopBar({
         {onQuickChange && (
           <div
             role="radiogroup"
+            onKeyDown={radioGroupKeys}
             aria-label={t("wordCard.viewMode")}
             className="flex rounded-full bg-muted p-0.5 text-sm"
           >

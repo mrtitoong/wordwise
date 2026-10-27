@@ -7,6 +7,7 @@ import { Check } from "lucide-react";
 import { locales } from "@/i18n/config";
 import { setLocale } from "@/i18n/actions";
 import { cn } from "@/lib/utils";
+import { radioGroupKeys } from "@/components/ui/radio-keys";
 
 export function LanguageSwitcher() {
   const t = useTranslations();
@@ -25,6 +26,7 @@ export function LanguageSwitcher() {
   return (
     <div
       role="radiogroup"
+      onKeyDown={radioGroupKeys}
       aria-label={t("settings.language")}
       aria-busy={pending}
       className="grid gap-2"

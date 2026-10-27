@@ -2,6 +2,7 @@
  * Phía app của chế độ offline: đăng ký Service Worker (public/sw.js), nhờ nó lưu sẵn trang chính,
  * xóa trang đã lưu khi đăng xuất. Chỉ bản build thật (next dev không dùng Service Worker).
  */
+import { timed } from "@/lib/diagnostics/slow-log";
 import {
   CACHE_NAMES,
   SHELL_PAGES,
@@ -10,6 +11,8 @@ import {
 } from "@/lib/offline/sw-policy";
 
 const WARM_KEY = "ww_sw_warm";
+/** Mã bản app (next.config.ts): bản mới thì lưu lại trang chính và code ngay, không đợi một giờ. */
+const BUILD_ID = process.env.NEXT_PUBLIC_BUILD_ID;
 
 export function offlineSupported(): boolean {
   return (
@@ -60,14 +63,16 @@ export async function setUpOffline(pathname: string): Promise<void> {
   const registration = await registering;
   await navigator.serviceWorker.ready;
   const now = Date.now();
-  if (warming || !navigator.onLine || !shouldWarmPages(pathname, lastWarm(), now)) return;
+  if (warming || !navigator.onLine || !shouldWarmPages(pathname, lastWarm(), now, BUILD_ID)) {
+    return;
+  }
   const worker = registration.active;
   if (!worker) return;
   warming = true;
   try {
-    const saved = await warm(worker, SHELL_PAGES);
+    const saved = await timed("warm", pathname, () => warm(worker, SHELL_PAGES));
     // Chưa lưu được Hôm nay (vd vẫn bị chuyển về onboarding): thử lại sớm.
-    markWarmed({ at: now, ok: saved.includes("/") });
+    markWarmed({ at: now, ok: saved.includes("/"), build: BUILD_ID });
   } finally {
     warming = false;
   }

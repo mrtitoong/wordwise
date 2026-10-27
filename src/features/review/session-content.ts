@@ -8,10 +8,8 @@ import type { LocalDb } from "@/lib/db/local";
 import type { CardRow, UserWordRow, WordRow, WordSenseRow } from "@/lib/db/types";
 import type { ChoiceSense } from "@/lib/review/mcq";
 import type { Pos } from "@/lib/schema/word";
-import { createClient } from "@/lib/supabase/client";
 import { getSupabaseEnv } from "@/lib/supabase/env";
 import type { StoredWord } from "@/lib/words/api";
-import { fetchWordToLocal, readLocalWord } from "@/features/words/word-data";
 import type { ReviewData } from "./use-review-data";
 
 export type PreparedCard = {
@@ -26,6 +24,10 @@ export type PreparedCard = {
   context: string | null;
   confusables: string[];
 };
+
+/** Đọc/tải nội dung từ (kiểm tra bằng Zod, tải bằng Supabase – nặng): chỉ tải khi có thẻ cần đọc. */
+const wordData = () => import("@/features/words/word-data");
+const supabase = () => import("@/lib/supabase/client").then((m) => m.createClient());
 
 /** Từ cùng họ và từ dễ nhầm (không cho đứng liền nhau trong phiên). */
 export function relatedOf(word: StoredWord): string[] {
@@ -47,6 +49,8 @@ export async function readLocalWords(
     ),
   ];
   const out = new Map<string, StoredWord>();
+  if (wordIds.length === 0) return out;
+  const { readLocalWord } = await wordData();
   for (const id of wordIds) {
     const word = await readLocalWord(db, id);
     if (word) out.set(id, word);
@@ -62,6 +66,8 @@ export async function prepareCards(
   known: Map<string, StoredWord>,
 ): Promise<Map<string, PreparedCard>> {
   const out = new Map<string, PreparedCard>();
+  if (cardIds.length === 0) return out;
+  const { fetchWordToLocal, readLocalWord } = await wordData();
   for (const cardId of cardIds) {
     const card = data.cards.find((c) => c.id === cardId);
     const userWord = card && data.userWords.find((u) => u.id === card.user_word_id);
@@ -99,7 +105,9 @@ export async function prepareCards(
 async function findWordOfSense(senseId: string): Promise<string | null> {
   if (!getSupabaseEnv()) return null;
   try {
-    const { data } = await createClient()
+    const { data } = await (
+      await supabase()
+    )
       .from("word_senses")
       .select("word_id")
       .eq("id", senseId)
@@ -113,13 +121,23 @@ async function findWordOfSense(senseId: string): Promise<string | null> {
 /** Nguồn đáp án nhiễu tối thiểu; ít hơn thì lấy thêm từ thông dụng trên máy chủ. */
 const POOL_TARGET = 40;
 
-/** Các nghĩa có thể làm đáp án trắc nghiệm: từ trong máy, thêm từ thông dụng trong kho nếu ít. */
-export async function loadChoicePool(db: LocalDb): Promise<ChoiceSense[]> {
+/** Các nghĩa trong máy có thể làm đáp án trắc nghiệm (không gọi mạng). */
+export async function loadLocalChoices(db: LocalDb): Promise<ChoiceSense[]> {
   const [words, senses] = await Promise.all([db.words.toArray(), db.word_senses.toArray()]);
-  const pool = toChoices(words, senses);
-  if (pool.length >= POOL_TARGET || !getSupabaseEnv()) return pool;
+  return toChoices(words, senses);
+}
+
+/**
+ * Trong máy ít đáp án (người mới): lấy thêm từ thông dụng trong kho. Trả về nguồn mới, hoặc chính
+ * `local` khi đã đủ (không gọi mạng) hoặc không lấy được.
+ */
+export async function moreChoices(local: ChoiceSense[]): Promise<ChoiceSense[]> {
+  if (local.length >= POOL_TARGET || !getSupabaseEnv()) return local;
+  const pool = [...local];
   try {
-    const { data } = await createClient()
+    const { data } = await (
+      await supabase()
+    )
       .from("words")
       .select("id, lemma, pos, word_senses (id, meaning_vi, sense_order)")
       .eq("language", "en")
@@ -140,6 +158,7 @@ export async function loadChoicePool(db: LocalDb): Promise<ChoiceSense[]> {
     }
   } catch {
     // Không có mạng: dùng những gì có; thiếu đáp án thì app chuyển sang flashcard.
+    return local;
   }
   return pool;
 }

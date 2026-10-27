@@ -18,10 +18,13 @@ test.describe("Phiên ôn", () => {
   test("học 5 từ khởi đầu → ôn hết → lịch ôn cập nhật, chuỗi ngày học bắt đầu", async ({
     page,
   }) => {
-    const seen = await learnStarterWords(page);
+    const totals: number[] = [];
+    const seen = await learnStarterWords(page, totals);
     expect(seen.filter((s) => s === "intro")).toHaveLength(5);
-    // Mỗi từ mới: xem thẻ (tự ghi "Khó") → quay lại trong cùng phiên dưới dạng câu hỏi tự chấm.
-    expect(seen.length).toBeGreaterThanOrEqual(15);
+    // Mỗi từ mới: xem thẻ (tự ghi "Khó") → quay lại 2 lần trong cùng phiên dưới dạng câu hỏi tự chấm.
+    expect(seen).toHaveLength(15);
+    // Số câu của phiên tính đủ ngay từ đầu: trả lời đúng hết thì không tăng.
+    expect(new Set(totals)).toEqual(new Set([15]));
 
     await expect(page.getByText("Chuỗi 1 ngày")).toBeVisible();
     await expect(page.getByText("Không sai câu nào!")).toBeVisible();
@@ -87,7 +90,8 @@ test.describe("Phiên ôn", () => {
     await page.getByRole("list", { name: "Sổ của tôi" }).getByRole("link").first().click();
     await page.getByRole("link", { name: "Ôn từ này" }).click();
     await expect(page).toHaveURL(/\/review\/session\?card=/);
-    await expect(page.getByText("1/1")).toBeVisible();
+    // Một câu nếu từ đã xem (ôn ngoài lịch); từ chưa học thì tính đủ xem thẻ + 2 lần quay lại.
+    await expect(page.getByText(/^1\/(1|3)$/)).toBeVisible();
   });
 
   test("tập viết: thẻ Chính tả đến hạn → viết đúng, dùng gợi ý thì Khó; tắt Luyện chính tả thì không hỏi", async ({
@@ -105,7 +109,8 @@ test.describe("Phiên ôn", () => {
     expect(count).toBe(5);
 
     await page.goto("/review/session");
-    await expect(page.getByText(/^1\/5$/)).toBeVisible();
+    // 5 thẻ Chính tả mới, mỗi thẻ quay lại một lần ở bước học 10 phút: phiên tính đủ 10 câu.
+    await expect(page.getByText(/^1\/10$/)).toBeVisible();
     await expect(page.getByText("Viết từ tiếng Anh có nghĩa này")).toBeVisible();
     // Thẻ mới qua bước học 10 phút nên quay lại trong cùng phiên: viết tới khi hết phiên.
     const done = page.getByRole("button", { name: "Xong", exact: true });

@@ -209,14 +209,29 @@ export async function forceModes(
   );
 }
 
-/** Học hết 5 từ khởi đầu (dùng thử, trình độ B1), trả lời đúng mọi câu. Trả về các bước đã qua. */
-export async function learnStarterWords(page: Page): Promise<string[]> {
+/**
+ * Học hết 5 từ khởi đầu (dùng thử, trình độ B1), trả lời đúng mọi câu. Trả về các bước đã qua;
+ * `totals` nhận số câu của phiên hiện ra trước mỗi câu ("3/15" → 15).
+ */
+export async function learnStarterWords(page: Page, totals?: number[]): Promise<string[]> {
   await page.goto("/welcome");
   await page.getByRole("button", { name: "Dùng thử ngay" }).click();
   await completeOnboarding(page, { level: "B1", stayInSession: true });
   await expect(page.getByRole("progressbar", { name: "Tiến độ phiên" })).toBeVisible();
   const seen: string[] = [];
   for (let i = 0; i < 40; i++) {
+    // Câu cuối xong thì màn kết quả hiện, không còn số câu.
+    const done = page.getByRole("button", { name: "Xong", exact: true });
+    const position = page.getByText(/^\d+\/\d+$/);
+    await expect(position.or(done).first()).toBeVisible();
+    if (totals && !(await done.isVisible())) {
+      // Câu cuối vừa trả lời thì số câu có thể biến mất ngay sau khi kiểm tra.
+      const text = await position
+        .first()
+        .textContent({ timeout: 2_000 })
+        .catch(() => null);
+      if (text) totals.push(Number(text.split("/")[1]));
+    }
     const step = await answerCorrectly(page);
     if (step === "done") break;
     seen.push(step);

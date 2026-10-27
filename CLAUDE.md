@@ -575,3 +575,12 @@ Repo: https://github.com/mrtitoong/wordwise
   đầu mỗi nghĩa nếu đã có file (404 thì bỏ, không tạo mới); ảnh chỉ khi Wi-Fi/mạng dây; không tải khi 4G,
   offline, Tiết kiệm dữ liệu; iPhone/máy tính (không biết loại mạng) chỉ audio. Audio câu ví dụ tìm trong máy
   trước khi gọi word-media. Playwright chặn Service Worker mặc định (`serviceWorkers: "block"`), test offline bật lại.
+- 2026-10-27 (sửa số câu phiên ôn, chủ sản phẩm duyệt): Mẫu số "x/N" của phiên tính **đủ ngay từ đầu**
+  (`remainingItems` trong `src/lib/srs/queue.ts`, mô phỏng bằng bộ lập lịch thật: từ mới = xem thẻ + 2 bước học
+  = 3 câu); trả lời đúng thì N không đổi, chỉ tăng khi sai (hoặc đúng nhưng "Khó" ở bước học). Một thẻ chấm Quên
+  **3 lần trong phiên** (`MAX_AGAIN_PER_SESSION`) thì không quay lại phiên đó (vẫn đến hạn, gặp ở phiên sau/"Ôn
+  lại từ sai"). Câu quay lại không đặt cạnh câu cùng từ nếu còn chỗ khác (chỉ còn đúng từ đó thì vẫn hỏi ngay).
+  **Thẻ lịch theo ngày đến hạn trước khi hết ngày học (4:00 sáng mai, `studyDayEnd`) là việc hôm nay**
+  (`isDueToday`; thẻ ở bước học 1/10 phút vẫn theo giờ thật): áp cho phiên ôn, màn Hôm nay, số từ đến hạn của sổ
+  tay, Luyện tập (đến hạn hôm nay = lượt ôn thật). ts-fsrs tính số ngày đã qua theo ngày UTC nên ôn sáng hôm sau
+  cho lịch như ôn đủ 24 giờ.

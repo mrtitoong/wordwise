@@ -56,6 +56,53 @@ export function studyDay(date: Date, timeZone: string): string {
   return localDay(new Date(date.getTime() - DAY_START_HOUR * 3_600_000), timeZone);
 }
 
+const offsetFormatters = new Map<string, Intl.DateTimeFormat>();
+
+/** Độ lệch của múi giờ so với UTC (ms) tại một thời điểm; múi giờ sai thì dùng giờ Việt Nam. */
+function zoneOffsetMs(date: Date, timeZone: string): number {
+  let format = offsetFormatters.get(timeZone);
+  if (!format) {
+    try {
+      format = new Intl.DateTimeFormat("en-US", {
+        timeZone,
+        hourCycle: "h23",
+        year: "numeric",
+        month: "numeric",
+        day: "numeric",
+        hour: "numeric",
+        minute: "numeric",
+        second: "numeric",
+      });
+    } catch {
+      return zoneOffsetMs(date, DEFAULT_TIME_ZONE);
+    }
+    offsetFormatters.set(timeZone, format);
+  }
+  const part = Object.fromEntries(
+    format.formatToParts(date).map((p) => [p.type, Number(p.value)] as const),
+  );
+  const asUtc = Date.UTC(
+    part.year!,
+    part.month! - 1,
+    part.day!,
+    part.hour!,
+    part.minute!,
+    part.second!,
+  );
+  return asUtc - Math.floor(date.getTime() / 1000) * 1000;
+}
+
+/**
+ * Thời điểm kết thúc ngày học hiện tại (4:00 sáng hôm sau theo múi giờ người dùng). Thẻ có lịch
+ * theo ngày đến hạn trước lúc này là việc của hôm nay.
+ */
+export function studyDayEnd(now: Date, timeZone: string): Date {
+  const next = addDays(studyDay(now, timeZone), 1);
+  const local = Date.parse(`${next}T${String(DAY_START_HOUR).padStart(2, "0")}:00:00Z`);
+  const guess = local - zoneOffsetMs(now, timeZone);
+  return new Date(local - zoneOffsetMs(new Date(guess), timeZone));
+}
+
 const DAY_MS = 86_400_000;
 
 /** Cộng/trừ ngày cho chuỗi YYYY-MM-DD. */

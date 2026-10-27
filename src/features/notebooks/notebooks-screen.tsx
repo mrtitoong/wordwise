@@ -7,6 +7,7 @@ import { ChevronDown, ChevronRight, Library, Plus, Search } from "lucide-react";
 import { useTranslations } from "next-intl";
 import { Button } from "@/components/ui/button";
 import { defaultNotebookId } from "@/lib/db/ids";
+import { studyDayEnd } from "@/lib/review/day";
 import {
   countOwnedWords,
   summarizeNotebooks,
@@ -64,10 +65,11 @@ export function NotebooksScreen() {
   const [showArchived, setShowArchived] = useState(false);
   const [creating, setCreating] = useState(false);
 
-  const summaries = useMemo(
-    () => (data && owner ? summarizeNotebooks(data, new Date(), defaultNotebookId(owner)) : []),
-    [data, owner],
-  );
+  const summaries = useMemo(() => {
+    if (!data || !owner) return [];
+    const now = new Date();
+    return summarizeNotebooks(data, now, defaultNotebookId(owner), studyDayEnd(now, data.timeZone));
+  }, [data, owner]);
   const ownedCount = useMemo(() => (data ? countOwnedWords(data) : 0), [data]);
 
   const results = useMemo(() => {

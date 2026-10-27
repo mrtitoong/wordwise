@@ -4,6 +4,7 @@
  */
 import type { CardRow, UserWordRow } from "@/lib/db/types";
 import { masteryLevel } from "@/lib/srs/mastery";
+import { isDueToday } from "@/lib/srs/queue";
 
 export { masteryLevel };
 
@@ -24,17 +25,21 @@ export function learningStatus(
   return "learning";
 }
 
-/** Từ đã mở để học, chưa tạm ngưng, thẻ đến hạn ôn (kể cả từ mới mở hôm nay). */
+/**
+ * Từ đã mở để học, chưa tạm ngưng, thẻ là việc ôn của hôm nay (kể cả từ mới mở hôm nay; `dayEnd`
+ * như phiên ôn – `isDueToday`).
+ */
 export function isDue(
   userWord: Pick<UserWordRow, "status" | "deleted_at">,
   card: CardLike | null | undefined,
   now: Date,
+  dayEnd?: Date,
 ): boolean {
   return (
     !userWord.deleted_at &&
     userWord.status === "learning" &&
     !!card &&
     !card.deleted_at &&
-    Date.parse(card.due) <= now.getTime()
+    isDueToday(card, now, dayEnd)
   );
 }

@@ -575,3 +575,10 @@ Repo: https://github.com/mrtitoong/wordwise
   đầu mỗi nghĩa nếu đã có file (404 thì bỏ, không tạo mới); ảnh chỉ khi Wi-Fi/mạng dây; không tải khi 4G,
   offline, Tiết kiệm dữ liệu; iPhone/máy tính (không biết loại mạng) chỉ audio. Audio câu ví dụ tìm trong máy
   trước khi gọi word-media. Playwright chặn Service Worker mặc định (`serviceWorkers: "block"`), test offline bật lại.
+- 2026-10-27 (logo, chủ sản phẩm duyệt 3 đề xuất): Logo `public/brand/logo.svg` (nền tím `#6C4CF5`, bong bóng thoại
+  chữ W, chấm xanh chanh) làm icon app: `npm run icons:build` sinh `src/app/icon.svg` (favicon SVG), `favicon.ico`
+  (32px), icon 192/512, **maskable 192/512 thu hình vào 75%** trên nền tím tràn viền (chấm ở góc vẫn trong vùng an
+  toàn), `apple-icon.png` 180 vuông. **Đợt này chỉ đổi icon**: giao diện giữ màu xanh `#1f7396`, màu thanh trạng
+  thái/màn chờ (`theme_color`, `themeColor`) đổi sang trắng; đổi màu giao diện sang tím để việc riêng (cần kiểm tra
+  tương phản, chế độ tối). Thanh trên: màn Hôm nay hiện logo + "WordWise" (bỏ lời chào), các tab chính có logo nhỏ
+  cạnh tiêu đề, trang con có nút quay lại không có logo (`<Logo>` ở `src/components/brand/logo.tsx`).

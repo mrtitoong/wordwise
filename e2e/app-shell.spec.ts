@@ -48,6 +48,25 @@ test.describe("Khung ứng dụng ở 360px", () => {
     }
   });
 
+  test("thanh trên: logo + WordWise ở Hôm nay, logo cạnh tiêu đề ở các tab, trang con không có logo", async ({
+    page,
+  }) => {
+    await page.goto("/");
+    const heading = page.getByRole("heading", { level: 1 });
+    await expect(heading).toHaveText("WordWise");
+    await expect(heading.locator("svg")).toBeVisible();
+    for (const { path, title } of [
+      { path: "/notebooks", title: "Từ của tôi" },
+      { path: "/stats", title: "Thống kê" },
+    ]) {
+      await page.goto(path);
+      await expect(page.getByRole("heading", { level: 1, name: title })).toBeVisible();
+      await expect(page.getByRole("heading", { level: 1 }).locator("svg")).toBeVisible();
+    }
+    await page.goto("/library");
+    await expect(page.getByRole("heading", { level: 1 }).locator("svg")).toHaveCount(0);
+  });
+
   test("nút + Thêm từ mở màn Thêm từ", async ({ page }) => {
     await page.goto("/");
     await page.getByRole("link", { name: "Thêm từ", exact: true }).click();

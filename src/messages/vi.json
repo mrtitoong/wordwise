@@ -21,7 +21,6 @@
   },
   "today": {
     "title": "Hôm nay",
-    "greeting": "Chào bạn",
     "emptyTitle": "Bắt đầu với từ đầu tiên",
     "emptyBody": "Thêm từ bạn vừa gặp, hoặc chọn một bộ từ có sẵn theo mục tiêu của bạn.",
     "addFirst": "Thêm từ đầu tiên",

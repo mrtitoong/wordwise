@@ -21,7 +21,6 @@
   },
   "today": {
     "title": "Today",
-    "greeting": "Hello",
     "emptyTitle": "Start with your first word",
     "emptyBody": "Add a word you just came across, or pick a ready-made set for your goal.",
     "addFirst": "Add your first word",

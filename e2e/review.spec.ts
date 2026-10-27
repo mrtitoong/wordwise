@@ -69,6 +69,43 @@ test.describe("Phiên ôn", () => {
     await expect(page.getByText("Chuỗi 1 ngày")).toBeVisible();
   });
 
+  test("máy bận (IndexedDB giữ bảng lưu phiên dở): câu sau vẫn hiện ngay, đáp án khớp từ đang hỏi", async ({
+    page,
+  }) => {
+    await page.goto("/welcome");
+    await page.getByRole("button", { name: "Dùng thử ngay" }).click();
+    await completeOnboarding(page, { level: "B1", stayInSession: true });
+    await expect(page.getByRole("progressbar", { name: "Tiến độ phiên" })).toBeVisible();
+
+    // Giữ một giao dịch ghi trên bảng meta (nơi lưu phiên dở) 30 giây, như khi máy bận thật: trước
+    // đây câu sau chờ lưu xong mới có đáp án, nên chữ của câu mới đi với đáp án của câu cũ.
+    await page.evaluate(
+      () =>
+        new Promise<void>((resolve) => {
+          const open = indexedDB.open("wordwise");
+          open.onsuccess = () => {
+            const until = Date.now() + 30_000;
+            const store = open.result.transaction("meta", "readwrite").objectStore("meta");
+            const spin = () => {
+              if (Date.now() < until) store.get("e2e-busy").onsuccess = spin;
+            };
+            spin();
+            resolve();
+          };
+        }),
+    );
+
+    // Mỗi câu trắc nghiệm: answerCorrectly kiểm tra đáp án đúng của từ đang hỏi có trong 4 đáp án.
+    const seen: string[] = [];
+    for (let i = 0; i < 10; i++) seen.push(await answerCorrectly(page));
+    expect(seen).toContain("mcq");
+    const transitions = await page.evaluate(() =>
+      performance.getEntriesByName("ww:next-question").map((e) => Math.round(e.duration)),
+    );
+    expect(transitions.length).toBeGreaterThanOrEqual(8);
+    expect(Math.max(...transitions)).toBeLessThan(1_000);
+  });
+
   test("thoát giữa phiên → kết quả đã lưu, Hôm nay có Tiếp tục phiên dở; Ôn từ này ngoài lịch", async ({
     page,
   }) => {

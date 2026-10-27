@@ -163,25 +163,13 @@ export function SessionScreen({ options }: { options: SessionOptions }) {
   /** Giọng trong Cài đặt và "Luyện nhiều giọng" (tập nghe đổi ngẫu nhiên Mỹ/Anh). */
   const voices = useRef<{ preferred: Voice; multi: boolean }>({ preferred: "us", multi: false });
 
-  /** Chọn cách hỏi cho câu ở vị trí `position`. */
-  const setupAsk = useCallback(
-    (r: Run, cards: Map<string, PreparedCard>, choices: ChoiceSense[]) => {
+  /** Chọn cách hỏi cho câu ở vị trí `position` (không đổi state – xem showQuestion). */
+  const buildAsk = useCallback(
+    (r: Run, cards: Map<string, PreparedCard>, choices: ChoiceSense[]): Ask | null => {
       const item = r.queue[r.position];
       const prep = item && cards.get(item.cardId);
-      if (!item || !prep) return setAsk(null);
+      if (!item || !prep) return null;
       const now = new Date();
-      // Đếm đủ số lần từ đang học còn quay lại: trả lời đúng thì số câu không tăng.
-      setTotal(
-        r.position +
-          remainingItems(
-            r.queue,
-            r.position,
-            (id) => cards.get(id)?.card,
-            scheduler.current!,
-            now,
-            extraIds.current,
-          ),
-      );
       const flashcard = (reverse: boolean): Ask => ({
         step: "flashcard",
         reverse,
@@ -197,11 +185,11 @@ export function SessionScreen({ options }: { options: SessionOptions }) {
       // Phát âm chấm theo giọng trong Cài đặt (không đổi giọng ngẫu nhiên như tập nghe).
       if (prep.card.skill === "speaking") {
         const preferred = voices.current.preferred;
-        return setAsk({
+        return {
           step: "speaking",
           voice: preferred,
           locale: preferred === "uk" ? "en-GB" : "en-US",
-        });
+        };
       }
       if (prep.card.skill === "spelling") {
         // Luyện tập chọn chế độ: Tập viết luôn viết; Tập nghe thì nghe (không phát được thì viết).
@@ -212,18 +200,16 @@ export function SessionScreen({ options }: { options: SessionOptions }) {
             : item.mode === "listening"
               ? (listeningTaskKind(level, can) ?? "writing")
               : spellingTaskKind(level, can));
-        return setAsk(
-          kind === "writing"
-            ? { step: "writing", task: buildWritingTask(prep, level), listen: false, voice }
-            : {
-                step: "writing",
-                task: buildListeningTask(prep, kind === "listen-type" ? "listen" : "listen-cloze"),
-                listen: true,
-                voice,
-              },
-        );
+        return kind === "writing"
+          ? { step: "writing", task: buildWritingTask(prep, level), listen: false, voice }
+          : {
+              step: "writing",
+              task: buildListeningTask(prep, kind === "listen-type" ? "listen" : "listen-cloze"),
+              listen: true,
+              voice,
+            };
       }
-      if (prep.card.state === 0) return setAsk(item.isNew ? { step: "intro" } : flashcard(false));
+      if (prep.card.state === 0) return item.isNew ? { step: "intro" } : flashcard(false);
       // Thẻ Nghĩa chỉ có chế độ nhận biết: từ mức 1 trở lên trộn trắc nghiệm và nghe → chọn nghĩa.
       const meaningModes = modesForSkill("meaning", AVAILABLE_MODES).filter(
         (m) => m !== "listening" || can.word,
@@ -252,11 +238,37 @@ export function SessionScreen({ options }: { options: SessionOptions }) {
             confusables: prep.confusables,
           },
         );
-        if (mcq) return setAsk({ step: "mcq", mcq, listen, voice });
+        if (mcq) return { step: "mcq", mcq, listen, voice };
       }
-      setAsk(flashcard(level >= 2 && Math.random() < 0.3));
+      return flashcard(level >= 2 && Math.random() < 0.3);
     },
     [],
+  );
+
+  /**
+   * Hiện câu ở `r.position`: câu, nội dung thẻ, cách hỏi (đáp án) và tổng số câu đổi cùng một lần
+   * vẽ – không bao giờ có lúc chữ/tiếng của câu mới đi với đáp án của câu cũ.
+   */
+  const showQuestion = useCallback(
+    (r: Run, cards: Map<string, PreparedCard>, choices: ChoiceSense[]) => {
+      const now = new Date();
+      setPrepared(cards);
+      setRun(r);
+      // Đếm đủ số lần từ đang học còn quay lại: trả lời đúng thì số câu không tăng.
+      setTotal(
+        r.position +
+          remainingItems(
+            r.queue,
+            r.position,
+            (id) => cards.get(id)?.card,
+            scheduler.current!,
+            now,
+            extraIds.current,
+          ),
+      );
+      setAsk(buildAsk(r, cards, choices));
+    },
+    [buildAsk],
   );
 
   // Đo thời gian chuyển câu (mục tiêu < 100 ms): từ lúc trả lời tới khung hình có câu sau.
@@ -387,17 +399,17 @@ export function SessionScreen({ options }: { options: SessionOptions }) {
       // trống thì không cần.
       const choices = empty ? [] : await moreChoices(await loadLocalChoices(db));
       setData(fresh);
-      setPrepared(cards);
       setPool(choices);
-      setRun(next);
       if (empty) {
+        setPrepared(cards);
+        setRun(next);
         setPhase("empty");
         return;
       }
-      setupAsk(next, cards, choices);
+      showQuestion(next, cards, choices);
       setPhase("run");
     })();
-  }, [owner, options, setupAsk]);
+  }, [owner, options, showQuestion]);
 
   async function finish(r: Run) {
     const db = getLocalDb();
@@ -486,14 +498,18 @@ export function SessionScreen({ options }: { options: SessionOptions }) {
     }
   }
 
-  /** Sang câu ở vị trí `next.position` (hết hàng thì kết thúc), lưu phiên dở nếu cần. */
+  /**
+   * Sang câu ở vị trí `next.position` (hết hàng thì kết thúc). Phiên dở lưu chạy nền: câu sau hiện
+   * ngay, không chờ IndexedDB (máy bận có lúc chờ rất lâu); lưu lỗi thì chỉ mất chỗ tiếp tục.
+   */
   async function goTo(next: Run, cards: Map<string, PreparedCard>) {
-    setPrepared(cards);
-    setRun(next);
     if (next.position >= next.queue.length) {
+      setPrepared(cards);
+      setRun(next);
       await finish(next);
       return;
     }
+    showQuestion(next, cards, pool);
     if (next.kind === "full" || next.kind === "short") {
       const saved: SavedSession = {
         owner: owner!,
@@ -503,9 +519,8 @@ export function SessionScreen({ options }: { options: SessionOptions }) {
         answers: next.answers,
         startedAt: next.startedAt,
       };
-      await saveSession(getLocalDb(), saved);
+      void saveSession(getLocalDb(), saved).catch(() => undefined);
     }
-    setupAsk(next, cards, pool);
   }
 
   /** Bỏ qua câu hiện tại mà không ghi lượt ôn (tập phát âm không chấm được). */

@@ -1,5 +1,6 @@
 {
   "app": {
+    "otherWindow": "WordWise is open in another window. Come back here to keep using it.",
     "name": "WordWise",
     "description": "Learn vocabulary and remember it with smart review scheduling.",
     "shortName": "WordWise",

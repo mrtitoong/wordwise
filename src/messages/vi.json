@@ -1,5 +1,6 @@
 {
   "app": {
+    "otherWindow": "WordWise đang mở ở cửa sổ khác. Quay lại đây là dùng tiếp được ngay.",
     "name": "WordWise",
     "description": "Học từ vựng tiếng Anh, nhớ lâu với lịch ôn thông minh.",
     "shortName": "WordWise",

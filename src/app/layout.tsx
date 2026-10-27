@@ -4,6 +4,7 @@ import { NextIntlClientProvider } from "next-intl";
 import { getLocale, getTranslations } from "next-intl/server";
 import { cookies } from "next/headers";
 import { DeferredProviders } from "@/components/deferred-providers";
+import { InstanceGate } from "@/components/instance-gate";
 import { ToastViewport } from "@/components/ui/toast";
 import { cn } from "@/lib/utils";
 import { THEME_COOKIE, THEME_SCRIPT, parseTheme } from "@/lib/theme";
@@ -54,8 +55,10 @@ export default async function RootLayout({ children }: { children: React.ReactNo
       </head>
       <body className="min-h-dvh font-sans">
         <NextIntlClientProvider>
-          <DeferredProviders />
-          {children}
+          <InstanceGate>
+            <DeferredProviders />
+            {children}
+          </InstanceGate>
           <ToastViewport />
         </NextIntlClientProvider>
       </body>

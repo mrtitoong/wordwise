@@ -80,6 +80,12 @@ async function main() {
       }
       const scores = Object.fromEntries(CATEGORIES.map((c) => [c, median(runs.map((r) => r[c]!))]));
       rows.push({ page: page.name, scores, metrics });
+      // CI: bảng điểm thành ghi chú của GitHub Actions (xem được ở trang Actions).
+      if (process.env.CI) {
+        console.log(
+          `::notice title=Lighthouse ${page.name}::${CATEGORIES.map((c) => `${LABEL[c]} ${scores[c]}`).join(" · ")}`,
+        );
+      }
       console.log(
         `${page.name.padEnd(10)} ${CATEGORIES.map((c) => `${LABEL[c]} ${scores[c]}`).join(" · ")}` +
           `  (FCP ${metrics["first-contentful-paint"]}, LCP ${metrics["largest-contentful-paint"]}, ` +

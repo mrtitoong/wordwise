@@ -34,6 +34,36 @@ jobs:
       # Build không cần Supabase: thiếu biến môi trường thì app chạy chế độ khách.
       - run: npm run build
 
+  lighthouse:
+    name: Lighthouse (điện thoại, 4 trang, ≥ 90)
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: npm
+      - run: npm ci
+      # Không có biến Supabase: app chạy chế độ khách – đúng đường mở app của người mới.
+      - run: npm run build
+      - name: Chạy bản build
+        run: |
+          (npm run start -- --port 3100 > /tmp/next.log 2>&1 &)
+          for i in $(seq 1 60); do curl -sf http://localhost:3100/welcome > /dev/null && exit 0; sleep 1; done
+          cat /tmp/next.log; exit 1
+      - name: Đo Lighthouse (trung vị 5 lượt mỗi trang)
+        env:
+          CHROME_PATH: /usr/bin/google-chrome
+          LIGHTHOUSE_RUNS: "5"
+        run: npm run lighthouse -- --min 90
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: lighthouse-report
+          path: lighthouse-report/
+          retention-days: 7
+
   e2e:
     name: E2E (Playwright 360px, iPhone 13, máy tính + Supabase cục bộ)
     runs-on: ubuntu-latest

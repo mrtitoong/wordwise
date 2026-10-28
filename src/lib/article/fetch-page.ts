@@ -2,8 +2,13 @@
  * Tải trang web cho tab Link (chạy trong Edge Function): tự đi theo chuyển hướng (tối đa 5 lần, kiểm
  * tra lại địa chỉ mỗi lần), chỉ nhận HTML/văn bản, tối đa MAX_PAGE_BYTES, hết giờ sau
  * FETCH_TIMEOUT_MS. Đọc bảng mã theo header hoặc thẻ <meta charset>.
+ *
+ * Trước mỗi lần tải (kể cả sau chuyển hướng) tra DNS của tên miền, có IP nội bộ thì chặn. Còn một khe
+ * nhỏ: fetch() tự tra DNS lại, tên miền đổi IP ngay giữa hai lần tra (DNS rebinding) vẫn lọt – Deno
+ * không cho fetch() dùng IP đã kiểm tra mà vẫn giữ tên miền cho HTTPS.
  */
-import { checkArticleUrl } from "./url";
+import type { HostResolver } from "./dns";
+import { checkArticleUrl, isPrivateIp } from "./url";
 
 export const MAX_PAGE_BYTES = 5 * 1024 * 1024;
 export const FETCH_TIMEOUT_MS = 10_000;
@@ -55,9 +60,15 @@ async function readLimited(body: ReadableStream<Uint8Array>): Promise<Uint8Array
   return out;
 }
 
+export interface FetchPageDeps {
+  fetch: typeof fetch;
+  /** IP (A + AAAA) của tên miền; tên miền không tồn tại → []. */
+  resolveHost: HostResolver;
+}
+
 export async function fetchPage(
   rawUrl: string,
-  fetchImpl: typeof fetch = fetch,
+  { fetch: fetchImpl, resolveHost }: FetchPageDeps,
   timeoutMs = FETCH_TIMEOUT_MS,
 ): Promise<FetchedPage> {
   const signal = AbortSignal.timeout(timeoutMs);
@@ -66,6 +77,12 @@ export async function fetchPage(
     for (let hop = 0; hop <= MAX_REDIRECTS; hop++) {
       const check = checkArticleUrl(url);
       if (!check.ok) return { ok: false, reason: "blocked" };
+      const host = new URL(check.url).hostname;
+      if (!/^\d+(\.\d+){3}$/.test(host)) {
+        const addresses = await resolveHost(host);
+        if (addresses.length === 0) return { ok: false, reason: "fetch_failed" };
+        if (addresses.some(isPrivateIp)) return { ok: false, reason: "blocked" };
+      }
       const response = await fetchImpl(check.url, {
         redirect: "manual",
         signal,

@@ -650,3 +650,8 @@ Repo: https://github.com/mrtitoong/wordwise
   quyền Vercel API). **Quy ước trong CLAUDE.md được ưu tiên hơn skill** (vd migration viết tay trong
   `supabase/migrations/`, không dùng `supabase db pull`; không tự gửi issue góp ý lên GitHub của Supabase). Prettier bỏ
   qua `.claude/skills`.
+- 2026-10-28 (sửa SSRF tab Link, chủ sản phẩm duyệt): `fetch-article` tra DNS tên miền trước **mỗi lần tải** (kể cả sau
+  chuyển hướng) và chặn nếu có IP không công khai (`isPrivateIp` trong `src/lib/article/url.ts`: IPv4 nội bộ, IPv6 ngoài
+  2000::/3, IPv4 bọc trong IPv6, 6to4/Teredo/dải tài liệu). Tra bằng `Deno.resolveDns`, không dùng được thì DNS-over-HTTPS
+  của Cloudflare (`src/lib/article/dns.ts`); tra lỗi hoặc không có IP thì không tải. Còn khe DNS rebinding (fetch() tự tra
+  lại DNS) – chấp nhận vì Deno không cho ghim IP mà vẫn giữ tên miền cho HTTPS.

@@ -621,3 +621,9 @@ Repo: https://github.com/mrtitoong/wordwise
   liệu và xóa tài khoản, Sentry/PostHog; mục 1 (học ngay 5 từ sau onboarding) đã có từ GĐ3. Khi làm Sentry/PostHog: DSN của Sentry và
   Project API key `phc_` của PostHog là khóa công khai; auth token của Sentry (tải source map) là bí mật, chủ sản
   phẩm tự đặt vào Vercel/GitHub Secrets. Cần chốt vùng dữ liệu, tắt ghi lại màn hình, có theo dõi khách không.
+- 2026-10-28 (trình duyệt cũ, chủ sản phẩm duyệt): Tailwind 4 và JS của Next 16 cần **Safari 16.4 / Chrome 111 /
+  Firefox 113** trở lên; trình duyệt cũ hơn (vd iPhone iOS 12) bỏ qua CSS `@layer` nên trang vỡ. Script ES5 trong
+  `<head>` (`BROWSER_CHECK_SCRIPT`, `src/lib/browser-support.ts`: `@layer`, color-mix(), lookbehind của RegExp) chuyển
+  sang **`/unsupported`** (chỉ style viết trên thẻ, ai cũng vào được) – không làm bản CSS cho trình duyệt cũ. Next 16.3
+  đặt JS/CSS ở `/_next/static/immutable/chunks/`: `chunkUrlsInScript` nhận cả hai đường dẫn (trước đó code tải khi cần
+  không được lưu sẵn cho offline).

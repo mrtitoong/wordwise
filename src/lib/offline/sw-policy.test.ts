@@ -151,4 +151,13 @@ describe("chunkUrlsInScript", () => {
     ]);
     expect(chunkUrlsInScript("console.log(1)")).toEqual([]);
   });
+
+  it("nhận cả đường dẫn `static/immutable/chunks/` của Next 16.3", () => {
+    const source =
+      'e.l("static/immutable/chunks/05l3akke_pv22.js");y("static/immutable/chunks/1h-a.css")';
+    expect(chunkUrlsInScript(source)).toEqual([
+      "/_next/static/immutable/chunks/05l3akke_pv22.js",
+      "/_next/static/immutable/chunks/1h-a.css",
+    ]);
+  });
 });

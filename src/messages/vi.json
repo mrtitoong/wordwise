@@ -1556,5 +1556,11 @@
     "body": "Trang này chưa được lưu trên máy. Bạn vẫn ôn tiếp được những từ đã có trong máy.",
     "home": "Về Hôm nay",
     "retry": "Thử lại"
+  },
+  "unsupported": {
+    "title": "Trình duyệt quá cũ",
+    "body": "WordWise cần Safari 16.4 (iOS 16.4) trở lên, hoặc Chrome, Edge, Firefox bản mới. Trình duyệt này không hiển thị được giao diện của app.",
+    "iphone": "Trên iPhone/iPad, mọi trình duyệt (kể cả Chrome) đều dùng Safari bên trong, nên cần cập nhật iOS: Cài đặt → Cài đặt chung → Cập nhật phần mềm.",
+    "other": "Nếu máy không cập nhật được nữa (vd iPhone 6 trở về trước), hãy mở WordWise trên điện thoại khác hoặc máy tính. Dữ liệu đã đồng bộ sẽ có ở đó khi bạn đăng nhập."
   }
 }

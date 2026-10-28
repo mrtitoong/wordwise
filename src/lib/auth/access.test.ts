@@ -27,6 +27,7 @@ describe("decideAccess", () => {
     expect(decide("/auth/finish", user)).toEqual({ action: "allow" });
     // Trang báo mất mạng: Service Worker lưu sẵn kể cả khi chưa bắt đầu dùng app.
     expect(decide("/offline", visitor)).toEqual({ action: "allow" });
+    expect(decide("/unsupported", visitor)).toEqual({ action: "allow" });
   });
 
   it("đã đăng nhập thì không quay lại Chào mừng/Đăng nhập", () => {

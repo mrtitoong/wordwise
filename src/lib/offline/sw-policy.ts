@@ -80,7 +80,15 @@ export function classifyRequest(request: RequestInfo, origin: string): RouteKind
 }
 
 /** Trang trước khi bắt đầu dùng app: trang chính còn chuyển hướng về đây nên chưa lưu được. */
-const BEFORE_START = ["/welcome", "/onboarding", "/login", "/auth", "/offline", "/admin"];
+const BEFORE_START = [
+  "/welcome",
+  "/onboarding",
+  "/login",
+  "/auth",
+  "/offline",
+  "/unsupported",
+  "/admin",
+];
 /** Lưu lại trang chính tối đa mỗi giờ một lần; lần trước chưa lưu được trang Hôm nay thì thử lại sớm. */
 export const WARM_EVERY_MS = 60 * 60 * 1000;
 export const WARM_RETRY_MS = 30_000;
@@ -122,10 +130,11 @@ export function assetUrlsInHtml(html: string): string[] {
 /**
  * File JS/CSS mà một file JS có thể tải sau (import động: Next/Turbopack ghi tên file trong code).
  * Lưu sẵn theo chuỗi này thì phần code tải khi cần cũng chạy được offline – đúng file của từng nơi
- * gọi (cùng một module có thể nằm ở file khác nhau tùy trang gọi nó).
+ * gọi (cùng một module có thể nằm ở file khác nhau tùy trang gọi nó). Next 16.3 đặt file ở
+ * `static/immutable/chunks/`, bản trước ở `static/chunks/`.
  */
 export function chunkUrlsInScript(source: string): string[] {
-  const found = source.match(/static\/chunks\/[\w.-]+\.(?:js|css)/g) ?? [];
+  const found = source.match(/static\/(?:immutable\/)?chunks\/[\w.-]+\.(?:js|css)/g) ?? [];
   return [...new Set(found.map((path) => `/_next/${path}`))];
 }
 

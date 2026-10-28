@@ -78,6 +78,23 @@ export function ExamplesTab({ voice }: { voice: Voice }) {
                 className="flex flex-col gap-2 rounded-xl border-2 border-primary/30 bg-accent/40 p-3"
               >
                 {c.source && <p className="text-xs text-muted-foreground">{c.source}</p>}
+                {c.article && (
+                  <p className="text-xs text-muted-foreground">
+                    {t.rich("examples.fromArticle", {
+                      title: c.article.title,
+                      link: (chunks) => (
+                        <a
+                          href={c.article!.url}
+                          target="_blank"
+                          rel="noreferrer noopener"
+                          className="inline-flex min-h-11 items-center text-primary underline underline-offset-2"
+                        >
+                          {chunks}
+                        </a>
+                      ),
+                    })}
+                  </p>
+                )}
                 {c.imageUrl && <ContextImage src={c.imageUrl} />}
                 <p lang="en">
                   <Highlighted text={c.sentence} terms={view.highlightTerms} />

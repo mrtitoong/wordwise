@@ -5,7 +5,7 @@ import { z } from "zod";
 import { LanguageSchema, PosSchema, WordContentSchema } from "@/lib/schema/word";
 import { ReverseRequestSchema } from "./reverse";
 
-export const InputMethodSchema = z.enum(["typed", "voice", "photo", "csv", "list"]);
+export const InputMethodSchema = z.enum(["typed", "voice", "photo", "csv", "list", "url"]);
 export type InputMethod = z.infer<typeof InputMethodSchema>;
 
 export const WordRequestSchema = z.object({
@@ -22,6 +22,13 @@ export const WordRequestSchema = z.object({
     .max(300)
     .regex(/^storage:\/\/user-images\/[0-9a-f-]{36}\/[\w.-]+$/)
     .nullish(),
+  /** Bài viết nơi gặp từ (tab Link): link http(s) và tiêu đề. */
+  sourceUrl: z
+    .string()
+    .max(2000)
+    .regex(/^https?:\/\//)
+    .nullish(),
+  sourceTitle: z.string().trim().max(300).nullish(),
   inputMethod: InputMethodSchema.nullish(),
   /** Ghi chú riêng (cột nghĩa/ghi chú của file) → "Ghi chú của bạn" ở tab Nghĩa. */
   note: z.string().trim().max(500).nullish(),

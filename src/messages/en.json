@@ -764,6 +764,7 @@
     },
     "examples": {
       "context": "Where you met it",
+      "fromArticle": "Found in: <link>{title}</link>",
       "contextImage": "Original image",
       "showTranslation": "Show translation",
       "hideTranslation": "Hide translation"
@@ -1130,6 +1131,7 @@
       "typed": "Type",
       "voice": "Voice",
       "photo": "Photo",
+      "url": "Link",
       "file": "File"
     },
     "tabsLabel": "How to add",
@@ -1359,6 +1361,47 @@
       "retryFailed": "Couldn't retry. Check your connection and try again.",
       "offline": "Will update when you're online.",
       "notebookFallback": "notebook"
+    },
+    "article": {
+      "intro": "Paste a link to an English article or blog post. The app pulls the article and suggests words you may not know yet. The sentence with each word is kept as where you met it, with the link.",
+      "urlLabel": "Article link",
+      "read": "Read article",
+      "reading": "Reading article…",
+      "pasteInstead": "Or paste the article text",
+      "pasteLabel": "Article text (English)",
+      "usePasted": "Find words in this text",
+      "needAccount": "Sign in to add words from articles.",
+      "signIn": "Sign in",
+      "needOnline": "You need a connection to read an article from a link.",
+      "privacy": "Articles are only used to find words and aren't stored on our server. Up to 20 links a day.",
+      "errors": {
+        "invalid_url": "That link doesn't look right. Paste a link starting with https://",
+        "blocked": "This link can't be read. Use a link to a public article.",
+        "fetch_failed": "Couldn't load this page (it may need a login or subscription, or block readers). Paste the article text below instead.",
+        "not_html": "This link isn't a web page (maybe a PDF or image) or is too large. Paste the article text below instead.",
+        "no_article": "No article found on this page. Open the article itself or paste its text below.",
+        "not_english": "This article doesn't seem to be in English.",
+        "login_required": "Your session has expired. Please sign in again.",
+        "limit_reached": "You've read all {limit} links for today. You can still paste article text.",
+        "unavailable": "Couldn't read the article right now. Try again in a few minutes.",
+        "offline": "You're offline. Try again when you're back online.",
+        "short": "The text is too short. Paste the whole article or a longer passage."
+      },
+      "pastedTitle": "Your pasted text",
+      "wordCount": "{count} words",
+      "another": "Another article",
+      "truncated": "This article is very long, so only the first part (about 8,000 words) is used.",
+      "viewSuggested": "Suggested",
+      "viewArticle": "Full text",
+      "finding": "Finding new words in the article…",
+      "noSuggestions": "No new words for your level. Open “Full text” to pick your own.",
+      "suggestedHint": "Words you may not know yet, hardest first. The hardest ones are ticked; untick any you already know.",
+      "suggestedLabel": "Suggested words",
+      "rare": "rare",
+      "times": "{count} times in the article",
+      "articleHint": "Tap to select or deselect, drag across to select a phrase. Faded words are ones you already have.",
+      "articleLabel": "Article text, tap a word to select it",
+      "reviewHint": "Each word keeps its sentence from the article as where you met it, with the link."
     }
   },
   "review": {

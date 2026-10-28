@@ -33,10 +33,21 @@ export type ContextSentenceView = {
   entryId: string;
   sentence: string;
   imageUrl: string | null;
+  /** Tên nguồn đọc được (tên file đã nhập); null với mã nội bộ (paste, pending, list:…). */
   source: string | null;
+  /** Bài viết nơi gặp từ (tab Link). */
+  article: { url: string; title: string } | null;
   addedAt: string;
   senseId: string;
 };
+
+/** Giá trị `notebook_entries.source` là mã nội bộ, không hiện cho người dùng. */
+const INTERNAL_SOURCES = /^(paste|pending|starter|list:.*)$/;
+
+export function sourceLabel(source: string | null | undefined): string | null {
+  const value = source?.trim();
+  return value && !INTERNAL_SOURCES.test(value) ? value : null;
+}
 
 export type WordCardView = {
   wordId: string;
@@ -160,7 +171,10 @@ export function buildWordCard(word: StoredWord, personal: PersonalRows): WordCar
       entryId: entry.id,
       sentence,
       imageUrl: entry.context_image_url,
-      source: entry.source,
+      source: sourceLabel(entry.source),
+      article: entry.source_url
+        ? { url: entry.source_url, title: entry.source_title || new URL(entry.source_url).hostname }
+        : null,
       addedAt: entry.added_at,
       senseId: senseByUserWord.get(entry.user_word_id)!,
     });

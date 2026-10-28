@@ -157,3 +157,31 @@ export async function mockPhotoFunctions(page: Page) {
   });
   return requests;
 }
+
+export const ARTICLE_URL = "https://news.example/resilience";
+export const ARTICLE_TEXT =
+  "Resilient people do not see setbacks as proof of failure.\n\nThey are tenacious and persevere.";
+
+/**
+ * Đọc bài từ link (fetch-article) giả lập; tra/tạo từ dùng chung bản giả của tab Ảnh. Link có
+ * "paywall" trả lỗi tải trang (để thử dán nội dung).
+ */
+export async function mockArticleFunctions(page: Page) {
+  const requests = await mockPhotoFunctions(page);
+  await page.route("**/functions/v1/fetch-article", async (route) => {
+    const body = route.request().postDataJSON() as { url: string };
+    requests.push({ action: "fetch-article", ...body });
+    if (body.url.includes("paywall")) return route.fulfill({ json: { status: "fetch_failed" } });
+    return route.fulfill({
+      json: {
+        status: "ok",
+        url: ARTICLE_URL,
+        title: "How resilient people bounce back",
+        siteName: "News Example",
+        text: ARTICLE_TEXT,
+        truncated: false,
+      },
+    });
+  });
+  return requests;
+}

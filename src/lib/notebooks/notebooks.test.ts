@@ -88,6 +88,8 @@ const entry = (
   input_method: "typed",
   context_sentence: null,
   context_image_url: null,
+  source_url: null,
+  source_title: null,
   source: null,
   tags: [],
   added_at: ISO,

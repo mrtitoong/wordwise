@@ -59,6 +59,9 @@ export interface JobTarget {
   contextSentence: string | null;
   /** Ảnh ngữ cảnh; máy chủ chỉ nhận ảnh trong thư mục của chính người đó. */
   contextImageUrl?: string | null;
+  /** Bài viết nơi gặp từ (tab Link). */
+  sourceUrl?: string | null;
+  sourceTitle?: string | null;
   inputMethod: InputMethod;
   note?: string | null;
   tags?: string[];
@@ -159,6 +162,9 @@ export async function requestWord(
         notebookId: request.notebookId,
         contextSentence: request.contextSentence ?? null,
         ...(request.contextImageUrl ? { contextImageUrl: request.contextImageUrl } : {}),
+        ...(request.sourceUrl
+          ? { sourceUrl: request.sourceUrl, sourceTitle: request.sourceTitle ?? null }
+          : {}),
         inputMethod: request.inputMethod ?? "typed",
         ...(request.note ? { note: request.note } : {}),
         ...(request.tags?.length ? { tags: request.tags } : {}),

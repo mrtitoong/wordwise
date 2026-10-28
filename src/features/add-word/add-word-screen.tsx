@@ -11,6 +11,7 @@ import { getOrCreateDefaultNotebook, openSlotsToday } from "@/lib/db/repo";
 import { useOnlineStatus } from "@/lib/sync/hooks";
 import { useOwner } from "@/lib/sync/owner";
 import { cn } from "@/lib/utils";
+import { ArticleEntry } from "./article-entry";
 import { BulkEntry } from "./bulk-entry";
 import { FileEntry } from "./file-entry";
 import { PhotoEntry } from "./photo/photo-entry";
@@ -55,7 +56,7 @@ export type EntryContext = {
   onLimit: (plan: "free" | "premium", limit: number) => void;
 };
 
-const TABS = ["typed", "voice", "photo", "file"] as const;
+const TABS = ["typed", "voice", "photo", "url", "file"] as const;
 
 export function AddWordScreen({ initialNotebookId }: { initialNotebookId: string | null }) {
   const t = useTranslations();
@@ -166,7 +167,7 @@ export function AddWordScreen({ initialNotebookId }: { initialNotebookId: string
       <div
         role="tablist"
         aria-label={t("addWord.tabsLabel")}
-        className="grid grid-cols-4 gap-1 rounded-xl bg-muted p-1"
+        className="grid grid-cols-5 gap-1 rounded-xl bg-muted p-1"
       >
         {TABS.map((id) => {
           const active = id === tab;
@@ -190,6 +191,7 @@ export function AddWordScreen({ initialNotebookId }: { initialNotebookId: string
 
       {context && tab === "file" && <FileEntry context={context} />}
       {context && tab === "photo" && <PhotoEntry context={context} />}
+      {context && tab === "url" && <ArticleEntry context={context} />}
       {context && tab === "voice" && (
         <VoiceEntry context={context} onTypeInstead={() => setTab("typed")} />
       )}

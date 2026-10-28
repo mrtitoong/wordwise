@@ -1,30 +1,20 @@
 "use client";
 
-import { Fragment, useState, type KeyboardEvent, type PointerEvent } from "react";
+import { useState } from "react";
 import { AlertTriangle, Minus, Plus, Sparkles, X } from "lucide-react";
 import { useTranslations } from "next-intl";
 import { Button } from "@/components/ui/button";
 import { showToast } from "@/components/ui/toast";
 import type { OcrDocument } from "@/lib/ocr/document";
 import { MAX_SKEW_DEGREES } from "@/lib/ocr/image";
-import {
-  autoPick,
-  candidateText,
-  isPicked,
-  pickRange,
-  pickText,
-  togglePick,
-  type Pick,
-  type WordInfo,
-} from "@/lib/ocr/pick";
+import { autoPick, isPicked, pickText, togglePick, type Pick, type WordInfo } from "@/lib/ocr/pick";
 import { cn } from "@/lib/utils";
 import { radioGroupKeys } from "@/components/ui/radio-keys";
+import { PickableText, usePickGestures } from "../pick-text";
 
 /** Tối đa số mục chọn một lần (một lượt tra kho). */
 export const MAX_PICKS = 50;
 const ZOOMS: readonly number[] = [1, 1.5, 2, 3];
-/** Kéo xa hơn mức này (px) mới tính là kéo chọn cụm. */
-const DRAG_PX = 8;
 
 type View = "image" | "text";
 
@@ -56,19 +46,6 @@ export function WordPicker({
   const hasBoxes = doc.source === "vision" && doc.tokens.some((tk) => tk.boxes.length > 0);
   const [view, setView] = useState<View>(hasBoxes ? "image" : "text");
   const [zoom, setZoom] = useState(0);
-  const [range, setRange] = useState<{ from: number; to: number } | null>(null);
-  const [gesture, setGesture] = useState<{
-    index: number;
-    x: number;
-    y: number;
-    moved: boolean;
-  } | null>(null);
-
-  const owned = (index: number) => {
-    const text = candidateText(doc.tokens[index]!.text);
-    return !!text && !!info?.get(text)?.owned;
-  };
-
   function commit(next: Pick[]) {
     if (next.length > MAX_PICKS) {
       showToast({ text: t("tooMany", { max: MAX_PICKS }) });
@@ -77,40 +54,7 @@ export function WordPicker({
     onPicksChange(next);
   }
 
-  function tokenAt(x: number, y: number): number | null {
-    const element = document.elementFromPoint(x, y)?.closest<HTMLElement>("[data-token]");
-    return element ? Number(element.dataset.token) : null;
-  }
-
-  function onPointerDown(event: PointerEvent<HTMLElement>, index: number) {
-    if (event.pointerType === "mouse" && event.button !== 0) return;
-    setGesture({ index, x: event.clientX, y: event.clientY, moved: false });
-  }
-
-  function onPointerMove(event: PointerEvent) {
-    const g = gesture;
-    if (!g) return;
-    if (!g.moved && Math.hypot(event.clientX - g.x, event.clientY - g.y) < DRAG_PX) return;
-    if (!g.moved) setGesture({ ...g, moved: true });
-    const over = tokenAt(event.clientX, event.clientY);
-    if (over !== null) setRange({ from: Math.min(g.index, over), to: Math.max(g.index, over) });
-  }
-
-  function onPointerUp(event: PointerEvent) {
-    const g = gesture;
-    setGesture(null);
-    setRange(null);
-    if (!g) return;
-    const end = g.moved ? tokenAt(event.clientX, event.clientY) : null;
-    if (end !== null && end !== g.index) commit(pickRange(doc, picks, g.index, end));
-    else if (!g.moved) commit(togglePick(doc, picks, g.index));
-  }
-
-  function onKeyDown(event: KeyboardEvent, index: number) {
-    if (event.key !== "Enter" && event.key !== " ") return;
-    event.preventDefault();
-    commit(togglePick(doc, picks, index));
-  }
+  const { containerProps, wordProps, inRange } = usePickGestures(doc, picks, info, commit);
 
   function runAutoPick() {
     if (!info) return;
@@ -124,24 +68,6 @@ export function WordPicker({
     commit(next.slice(0, MAX_PICKS));
   }
 
-  const inRange = (index: number) => !!range && range.from <= index && index <= range.to;
-
-  const wordProps = (index: number) => {
-    const token = doc.tokens[index]!;
-    const selected = isPicked(picks, index);
-    return {
-      "data-token": index,
-      role: "button" as const,
-      tabIndex: 0,
-      "aria-pressed": selected,
-      "aria-label": token.text,
-      onPointerDown: (e: PointerEvent<HTMLElement>) => onPointerDown(e, index),
-      onKeyDown: (e: KeyboardEvent) => onKeyDown(e, index),
-      selected,
-      known: owned(index),
-    };
-  };
-
   const warnings: string[] = [];
   if (doc.skewDegrees !== null && Math.abs(doc.skewDegrees) > MAX_SKEW_DEGREES) {
     warnings.push(t("warnSkew"));
@@ -150,15 +76,7 @@ export function WordPicker({
   if (!hasBoxes) warnings.push(t("warnTextOnly"));
 
   return (
-    <section
-      className="flex flex-col gap-3 pb-64"
-      onPointerMove={onPointerMove}
-      onPointerUp={onPointerUp}
-      onPointerCancel={() => {
-        setGesture(null);
-        setRange(null);
-      }}
-    >
+    <section className="flex flex-col gap-3 pb-64" {...containerProps}>
       <div className="flex items-center gap-2">
         {hasBoxes && (
           <div
@@ -266,47 +184,7 @@ export function WordPicker({
           </div>
         </div>
       ) : (
-        <div
-          className="flex flex-col gap-3 rounded-xl border p-3 leading-relaxed"
-          lang="en"
-          aria-label={t("textLabel")}
-        >
-          {paragraphs(doc).map((indices) => (
-            <p key={indices[0]}>
-              {indices.map((index) => {
-                const token = doc.tokens[index]!;
-                const space = token.spaceBefore && index !== indices[0] ? " " : "";
-                if (token.kind !== "word") {
-                  return (
-                    <Fragment key={index}>
-                      {space}
-                      <span>{token.text}</span>
-                    </Fragment>
-                  );
-                }
-                const { selected, known, ...props } = wordProps(index);
-                return (
-                  <Fragment key={index}>
-                    {space}
-                    <span
-                      {...props}
-                      className={cn(
-                        "inline-flex min-h-11 cursor-pointer touch-pan-y items-center rounded-md px-0.5 focus-visible:outline-2 focus-visible:outline-ring",
-                        selected || inRange(index)
-                          ? "bg-primary/20 font-semibold text-primary underline decoration-2"
-                          : known
-                            ? "text-muted-foreground"
-                            : "hover:bg-muted",
-                      )}
-                    >
-                      {token.text}
-                    </span>
-                  </Fragment>
-                );
-              })}
-            </p>
-          ))}
-        </div>
+        <PickableText doc={doc} label={t("textLabel")} wordProps={wordProps} inRange={inRange} />
       )}
 
       <div className="fixed inset-x-0 bottom-0 z-30 rounded-t-3xl border-t bg-background pb-[env(safe-area-inset-bottom,0px)] shadow-[0_-8px_24px_rgba(0,0,0,0.08)]">
@@ -362,15 +240,4 @@ export function WordPicker({
       </div>
     </section>
   );
-}
-
-/** Chỉ số token theo từng đoạn. */
-function paragraphs(doc: OcrDocument): number[][] {
-  const out: number[][] = [];
-  doc.tokens.forEach((token, index) => {
-    const last = out[out.length - 1];
-    if (last && doc.tokens[last[0]!]!.paragraph === token.paragraph) last.push(index);
-    else out.push([index]);
-  });
-  return out;
 }

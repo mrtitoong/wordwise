@@ -12,3 +12,5 @@ supabase/functions/*/index.js
 # Sinh tự động bởi scripts/build-sw.ts
 public/sw.js
 lighthouse-report
+# Skill bên thứ ba (Supabase, Vercel) – giữ nguyên bản gốc
+.claude/skills

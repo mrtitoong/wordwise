@@ -621,6 +621,12 @@ Repo: https://github.com/mrtitoong/wordwise
   liệu và xóa tài khoản, Sentry/PostHog; mục 1 (học ngay 5 từ sau onboarding) đã có từ GĐ3. Khi làm Sentry/PostHog: DSN của Sentry và
   Project API key `phc_` của PostHog là khóa công khai; auth token của Sentry (tải source map) là bí mật, chủ sản
   phẩm tự đặt vào Vercel/GitHub Secrets. Cần chốt vùng dữ liệu, tắt ghi lại màn hình, có theo dõi khách không.
+- 2026-10-28 (trình duyệt cũ, chủ sản phẩm duyệt): Tailwind 4 và JS của Next 16 cần **Safari 16.4 / Chrome 111 /
+  Firefox 113** trở lên; trình duyệt cũ hơn (vd iPhone iOS 12) bỏ qua CSS `@layer` nên trang vỡ. Script ES5 trong
+  `<head>` (`BROWSER_CHECK_SCRIPT`, `src/lib/browser-support.ts`: `@layer`, color-mix(), lookbehind của RegExp) chuyển
+  sang **`/unsupported`** (chỉ style viết trên thẻ, ai cũng vào được) – không làm bản CSS cho trình duyệt cũ. Next 16.3
+  đặt JS/CSS ở `/_next/static/immutable/chunks/`: `chunkUrlsInScript` nhận cả hai đường dẫn (trước đó code tải khi cần
+  không được lưu sẵn cho offline).
 - 2026-10-28 (tab Link, chủ sản phẩm duyệt 5 đề xuất): Thêm từ bằng **link bài viết** (tab thứ 4: Gõ · Nói · Ảnh ·
   Link · File), cho **mọi tài khoản đã đăng nhập** (Free và Premium), khách mời đăng nhập. Edge Function
   **`fetch-article`** (không cần khóa): tải trang ở máy chủ (`src/lib/article/fetch-page.ts`: chỉ http/https cổng
@@ -635,4 +641,5 @@ Repo: https://github.com/mrtitoong/wordwise
   chính tả). Cách nhập **`url`** (Free không bị chặn như csv/photo), mỗi mục trong sổ lưu
   **`notebook_entries.source_url`/`source_title`** (từ mới đi qua `word_job_requests`), thẻ từ hiện "Gặp trong:
   *tiêu đề*" ở câu bạn gặp. Thẻ từ không còn hiện mã nguồn nội bộ (paste, pending, starter, list:…), chỉ hiện tên
-  file đã nhập. Tra kho chữ của bài theo lô 50, 4 lô song song (`lookup-words.ts`).
+  file đã nhập. Tra kho chữ của bài theo lô 50, 4 lô song song (`lookup-words.ts`). Đã áp lên cloud và deploy
+  `fetch-article`, `generate-word`.

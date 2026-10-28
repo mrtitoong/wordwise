@@ -47,7 +47,7 @@
     return [...new Set(found)];
   }
   function chunkUrlsInScript(source) {
-    const found = source.match(/static\/chunks\/[\w.-]+\.(?:js|css)/g) ?? [];
+    const found = source.match(/static\/(?:immutable\/)?chunks\/[\w.-]+\.(?:js|css)/g) ?? [];
     return [...new Set(found.map((path) => `/_next/${path}`))];
   }
   function keysToTrim(keys, max) {

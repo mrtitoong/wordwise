@@ -1599,5 +1599,11 @@
     "body": "This page isn't saved on this device yet. You can still review the words already on it.",
     "home": "Go to Today",
     "retry": "Try again"
+  },
+  "unsupported": {
+    "title": "Your browser is too old",
+    "body": "WordWise needs Safari 16.4 (iOS 16.4) or later, or a recent Chrome, Edge or Firefox. This browser can't display the app.",
+    "iphone": "On iPhone/iPad every browser (Chrome included) runs on Safari inside, so iOS needs updating: Settings → General → Software Update.",
+    "other": "If this device can't be updated any more (e.g. iPhone 6 or older), open WordWise on another phone or a computer. Your synced data will be there when you sign in."
   }
 }

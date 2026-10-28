@@ -7,6 +7,7 @@ import { DeferredProviders } from "@/components/deferred-providers";
 import { InstanceGate } from "@/components/instance-gate";
 import { ToastViewport } from "@/components/ui/toast";
 import { cn } from "@/lib/utils";
+import { BROWSER_CHECK_SCRIPT } from "@/lib/browser-support";
 import { THEME_COOKIE, THEME_SCRIPT, parseTheme } from "@/lib/theme";
 import "./globals.css";
 
@@ -51,6 +52,8 @@ export default async function RootLayout({ children }: { children: React.ReactNo
       suppressHydrationWarning
     >
       <head>
+        {/* Trình duyệt quá cũ (vd iOS 12) → trang /unsupported, trước khi vẽ trang vỡ. */}
+        <script dangerouslySetInnerHTML={{ __html: BROWSER_CHECK_SCRIPT }} />
         <script dangerouslySetInnerHTML={{ __html: THEME_SCRIPT }} />
       </head>
       <body className="min-h-dvh font-sans">

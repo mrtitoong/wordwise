@@ -643,3 +643,10 @@ Repo: https://github.com/mrtitoong/wordwise
   *tiêu đề*" ở câu bạn gặp. Thẻ từ không còn hiện mã nguồn nội bộ (paste, pending, starter, list:…), chỉ hiện tên
   file đã nhập. Tra kho chữ của bài theo lô 50, 4 lô song song (`lookup-words.ts`). Đã áp lên cloud và deploy
   `fetch-article`, `generate-word`.
+- 2026-10-28 (skill, chủ sản phẩm duyệt): Cài 5 skill chính thức vào `.claude/skills/` (chép tay từ kho gốc sau khi
+  đọc nội dung, không chạy `npx skills`): `supabase`, `supabase-postgres-best-practices` (supabase/agent-skills
+  c9be0e9), `vercel-react-best-practices`, `vercel-composition-patterns`, `web-design-guidelines` (vercel-labs/
+  agent-skills 1a2c79d). Bỏ các skill React Native, deploy/CLI Vercel bằng token, vercel-optimize (chạy script, cần
+  quyền Vercel API). **Quy ước trong CLAUDE.md được ưu tiên hơn skill** (vd migration viết tay trong
+  `supabase/migrations/`, không dùng `supabase db pull`; không tự gửi issue góp ý lên GitHub của Supabase). Prettier bỏ
+  qua `.claude/skills`.

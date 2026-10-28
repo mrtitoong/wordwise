@@ -846,7 +846,7 @@ var ReverseResponseSchema = z5.object({
 });
 
 // src/lib/words/api.ts
-var InputMethodSchema = z6.enum(["typed", "voice", "photo", "csv", "list"]);
+var InputMethodSchema = z6.enum(["typed", "voice", "photo", "csv", "list", "url"]);
 var WordRequestSchema = z6.object({
   action: z6.literal("request").default("request"),
   lemma: z6.string().trim().min(1).max(64),
@@ -857,6 +857,9 @@ var WordRequestSchema = z6.object({
   contextSentence: z6.string().trim().max(500).nullish(),
   /** Ảnh chụp người dùng giữ làm ngữ cảnh (storage://user-images/{user_id}/…). */
   contextImageUrl: z6.string().max(300).regex(/^storage:\/\/user-images\/[0-9a-f-]{36}\/[\w.-]+$/).nullish(),
+  /** Bài viết nơi gặp từ (tab Link): link http(s) và tiêu đề. */
+  sourceUrl: z6.string().max(2e3).regex(/^https?:\/\//).nullish(),
+  sourceTitle: z6.string().trim().max(300).nullish(),
   inputMethod: InputMethodSchema.nullish(),
   /** Ghi chú riêng (cột nghĩa/ghi chú của file) → "Ghi chú của bạn" ở tab Nghĩa. */
   note: z6.string().trim().max(500).nullish(),

@@ -212,6 +212,8 @@ export function ArticleEntry({ context }: { context: EntryContext }) {
       <p className="text-sm text-muted-foreground">{t("intro")}</p>
       <form
         className="flex flex-col gap-2"
+        // App tự kiểm tra link (thêm https:// khi thiếu, báo lỗi bằng tiếng Việt).
+        noValidate
         onSubmit={(e) => {
           e.preventDefault();
           void read();

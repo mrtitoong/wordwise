@@ -28,6 +28,8 @@ Claude là lập trình viên chính; chủ sản phẩm không viết code.
 4. Việc cần chủ sản phẩm thao tác (tài khoản, khóa API): hướng dẫn từng
    bước, không yêu cầu dán khóa bí mật vào chat.
 Mỗi prompt một nhánh git (vd gd0/ux-flows), gộp vào main khi đạt tiêu chí.
+Quy trình chi tiết nằm trong skill `.claude/skills/`: `wordwise-prompt-workflow` (làm một prompt),
+`wordwise-migration` (database), `wordwise-edge-function` (Edge Function), `wordwise-ci` (theo dõi CI).
 Repo: https://github.com/mrtitoong/wordwise
 
 ## Stack
@@ -655,3 +657,8 @@ Repo: https://github.com/mrtitoong/wordwise
   2000::/3, IPv4 bọc trong IPv6, 6to4/Teredo/dải tài liệu). Tra bằng `Deno.resolveDns`, không dùng được thì DNS-over-HTTPS
   của Cloudflare (`src/lib/article/dns.ts`); tra lỗi hoặc không có IP thì không tải. Còn khe DNS rebinding (fetch() tự tra
   lại DNS) – chấp nhận vì Deno không cho ghim IP mà vẫn giữ tên miền cho HTTPS.
+- 2026-10-28 (skill riêng, chủ sản phẩm duyệt): 4 skill của dự án trong `.claude/skills/wordwise-*` gom các bước đang
+  rải trong CLAUDE.md: làm một prompt (đề xuất → duyệt → nhánh → test → gộp → báo cáo), migration (viết tay, sửa tay
+  `database.types.ts`, áp cloud bằng MCP `apply_migration` sau khi CI Database xanh), Edge Function (build, deploy
+  `--use-api`, thử `login_required`), CI (đọc trang Actions công khai; API GitHub không đăng nhập hay hết 60 lượt/giờ).
+  Các quyết định trong CLAUDE.md giữ nguyên, chưa thu gọn.

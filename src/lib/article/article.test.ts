@@ -1,7 +1,8 @@
 import { describe, expect, it } from "vitest";
 import { extractArticle, looksEnglish, truncateParagraphs } from "./extract";
 import { detectCharset, fetchPage, MAX_PAGE_BYTES } from "./fetch-page";
-import { checkArticleUrl, normalizeUrlInput } from "./url";
+import { createResolver, DOH_URL } from "./dns";
+import { checkArticleUrl, isPrivateIp, normalizeUrlInput } from "./url";
 
 const BODY = Array.from(
   { length: 6 },
@@ -111,7 +112,89 @@ describe("looksEnglish", () => {
   });
 });
 
+describe("isPrivateIp", () => {
+  it("chặn IP nội bộ v4/v6 và IPv4 bọc trong IPv6", () => {
+    for (const ip of [
+      "127.0.0.1",
+      "10.1.2.3",
+      "172.17.0.1",
+      "169.254.169.254",
+      "100.100.1.1",
+      "::1",
+      "::",
+      "fd00::1",
+      "fe80::1%eth0",
+      "ff02::1",
+      "::ffff:127.0.0.1",
+      "::ffff:7f00:1",
+      "64:ff9b::a9fe:a9fe",
+      "2001:db8::1",
+      "2001:0:4136:e378::1",
+      "2002:0a00:0001::1",
+      "300.1.1.1",
+      "not-an-ip",
+    ]) {
+      expect(isPrivateIp(ip), ip).toBe(true);
+    }
+  });
+
+  it("nhận IP công khai", () => {
+    for (const ip of ["8.8.8.8", "104.16.1.1", "2606:4700::6810:1", "2002:0808:0808::1"]) {
+      expect(isPrivateIp(ip), ip).toBe(false);
+    }
+  });
+});
+
+describe("createResolver", () => {
+  it("gộp A + AAAA; tên miền thiếu một loại bản ghi không phải lỗi", async () => {
+    const notFound = Object.assign(new Error("no record"), { name: "NotFound" });
+    const resolve = createResolver({
+      resolveDns: async (_host, type) => {
+        if (type === "A") return ["1.2.3.4"];
+        throw notFound;
+      },
+      fetch: (async () => {
+        throw new Error("không được gọi DoH");
+      }) as never,
+    });
+    expect(await resolve("a.com")).toEqual(["1.2.3.4"]);
+  });
+
+  it("Deno.resolveDns không dùng được thì hỏi DNS-over-HTTPS", async () => {
+    const urls: string[] = [];
+    const resolve = createResolver({
+      resolveDns: async () => {
+        throw new Error("PermissionDenied");
+      },
+      fetch: (async (url: string) => {
+        urls.push(url);
+        const answer = url.endsWith("type=A")
+          ? [
+              { type: 5, data: "x.nip.io." },
+              { type: 1, data: "10.0.0.5" },
+            ]
+          : [];
+        return Response.json({ Answer: answer });
+      }) as never,
+    });
+    expect(await resolve("x.example")).toEqual(["10.0.0.5"]);
+    expect(urls).toEqual([
+      `${DOH_URL}?name=x.example&type=A`,
+      `${DOH_URL}?name=x.example&type=AAAA`,
+    ]);
+  });
+
+  it("DoH lỗi thì báo lỗi (không tải liều)", async () => {
+    const resolve = createResolver({
+      fetch: (async () => new Response("", { status: 503 })) as never,
+    });
+    await expect(resolve("a.com")).rejects.toThrow();
+  });
+});
+
 describe("fetchPage", () => {
+  const publicDns = async () => ["93.184.216.34"];
+  const deps = (fetchImpl: typeof fetch) => ({ fetch: fetchImpl, resolveHost: publicDns });
   const html = (body: string, headers: Record<string, string> = {}) =>
     new Response(body, { headers: { "content-type": "text/html; charset=utf-8", ...headers } });
 
@@ -124,7 +207,7 @@ describe("fetchPage", () => {
       }
       return html("<p>hi</p>");
     }) as unknown as typeof fetch;
-    const page = await fetchPage("https://a.com/old", fetchImpl);
+    const page = await fetchPage("https://a.com/old", deps(fetchImpl));
     expect(page).toMatchObject({ ok: true, url: "https://a.com/new", kind: "html" });
     expect(calls).toEqual(["https://a.com/old", "https://a.com/new"]);
   });
@@ -135,29 +218,73 @@ describe("fetchPage", () => {
         status: 302,
         headers: { location: "http://169.254.169.254/" },
       })) as unknown as typeof fetch;
-    expect(await fetchPage("https://a.com/x", fetchImpl)).toEqual({
+    expect(await fetchPage("https://a.com/x", deps(fetchImpl))).toEqual({
       ok: false,
       reason: "blocked",
+    });
+  });
+
+  it("tên miền trỏ vào IP nội bộ thì chặn, kể cả sau chuyển hướng", async () => {
+    const calls: string[] = [];
+    const fetchImpl = (async (url: string) => {
+      calls.push(url);
+      return new Response(null, {
+        status: 302,
+        headers: { location: "http://169.254.169.254.nip.io/latest/meta-data/" },
+      });
+    }) as unknown as typeof fetch;
+    const resolveHost = async (host: string) =>
+      host === "a.com" ? ["93.184.216.34"] : ["93.184.216.34", "169.254.169.254"];
+    expect(await fetchPage("https://a.com/x", { fetch: fetchImpl, resolveHost })).toEqual({
+      ok: false,
+      reason: "blocked",
+    });
+    expect(calls).toEqual(["https://a.com/x"]);
+
+    const v6 = async () => ["::ffff:10.0.0.1"];
+    expect(await fetchPage("https://b.com/", { fetch: fetchImpl, resolveHost: v6 })).toEqual({
+      ok: false,
+      reason: "blocked",
+    });
+  });
+
+  it("tên miền không có IP hoặc tra DNS lỗi thì không tải", async () => {
+    const fetchImpl = (async () => {
+      throw new Error("không được tải");
+    }) as never;
+    const none = async () => [];
+    expect(await fetchPage("https://a.com/", { fetch: fetchImpl, resolveHost: none })).toEqual({
+      ok: false,
+      reason: "fetch_failed",
+    });
+    const broken = async (): Promise<string[]> => {
+      throw new Error("dns");
+    };
+    expect(await fetchPage("https://a.com/", { fetch: fetchImpl, resolveHost: broken })).toEqual({
+      ok: false,
+      reason: "fetch_failed",
     });
   });
 
   it("không phải HTML, quá lớn, lỗi HTTP, lỗi mạng", async () => {
     const pdf = (async () =>
       new Response("%PDF", { headers: { "content-type": "application/pdf" } })) as never;
-    expect(await fetchPage("https://a.com/x.pdf", pdf)).toMatchObject({ reason: "not_html" });
+    expect(await fetchPage("https://a.com/x.pdf", deps(pdf))).toMatchObject({ reason: "not_html" });
 
     const big = (async () => html("x".repeat(MAX_PAGE_BYTES + 1))) as never;
-    expect(await fetchPage("https://a.com/big", big)).toMatchObject({ reason: "too_large" });
+    expect(await fetchPage("https://a.com/big", deps(big))).toMatchObject({ reason: "too_large" });
 
     const missing = (async () => new Response("no", { status: 404 })) as never;
-    expect(await fetchPage("https://a.com/404", missing)).toMatchObject({
+    expect(await fetchPage("https://a.com/404", deps(missing))).toMatchObject({
       reason: "fetch_failed",
     });
 
     const offline = (async () => {
       throw new TypeError("network");
     }) as never;
-    expect(await fetchPage("https://a.com/", offline)).toMatchObject({ reason: "fetch_failed" });
+    expect(await fetchPage("https://a.com/", deps(offline))).toMatchObject({
+      reason: "fetch_failed",
+    });
   });
 
   it("đọc bảng mã theo <meta charset>", async () => {
@@ -168,7 +295,7 @@ describe("fetchPage", () => {
     ]);
     const fetchImpl = (async () =>
       new Response(bytes, { headers: { "content-type": "text/html" } })) as never;
-    const page = await fetchPage("https://a.com/", fetchImpl);
+    const page = await fetchPage("https://a.com/", deps(fetchImpl));
     expect(page.ok && page.html).toContain("café");
     expect(detectCharset("text/html; charset=ISO-8859-1", new Uint8Array())).toBe("iso-8859-1");
     expect(detectCharset(null, new Uint8Array())).toBe("utf-8");

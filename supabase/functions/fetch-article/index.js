@@ -4,6 +4,40 @@
 // src/functions/fetch-article/main.ts
 import { createClient } from "npm:@supabase/supabase-js@2.117.2";
 
+// src/lib/article/dns.ts
+var DOH_URL = "https://cloudflare-dns.com/dns-query";
+var RECORD_TYPES = { A: 1, AAAA: 28 };
+function isNotFound(error) {
+  return error instanceof Error && error.name === "NotFound";
+}
+async function resolveDoh(host, fetchImpl) {
+  const out = [];
+  for (const [type, code] of Object.entries(RECORD_TYPES)) {
+    const url = `${DOH_URL}?name=${encodeURIComponent(host)}&type=${type}`;
+    const response = await fetchImpl(url, { headers: { accept: "application/dns-json" } });
+    if (!response.ok) throw new Error(`DoH ${response.status}`);
+    const body = await response.json();
+    for (const answer of body.Answer ?? []) {
+      if (answer.type === code) out.push(answer.data);
+    }
+  }
+  return out;
+}
+function createResolver(deps) {
+  return async (host) => {
+    if (deps.resolveDns) {
+      const results = await Promise.allSettled([
+        deps.resolveDns(host, "A"),
+        deps.resolveDns(host, "AAAA")
+      ]);
+      if (results.every((r) => r.status === "fulfilled" || isNotFound(r.reason))) {
+        return results.flatMap((r) => r.status === "fulfilled" ? r.value : []);
+      }
+    }
+    return resolveDoh(host, deps.fetch);
+  };
+}
+
 // src/lib/article/url.ts
 var MAX_URL_LENGTH = 2e3;
 var BLOCKED_SUFFIXES = [".localhost", ".local", ".internal", ".lan", ".home", ".arpa"];
@@ -12,6 +46,39 @@ function privateIpv4(host) {
   const [a, b] = parts;
   return a === 0 || a === 10 || a === 127 || a === 100 && b >= 64 && b <= 127 || // CGNAT
   a === 169 && b === 254 || a === 172 && b >= 16 && b <= 31 || a === 192 && b === 168 || a === 192 && b === 0 || a === 198 && (b === 18 || b === 19) || a >= 224;
+}
+function parseIpv6(raw) {
+  let text = raw.replace(/^\[|\]$/g, "").split("%")[0].toLowerCase();
+  let tail = [];
+  const v4 = /(\d+)\.(\d+)\.(\d+)\.(\d+)$/.exec(text);
+  if (v4) {
+    const [a, b, c, d] = v4.slice(1).map(Number);
+    if ([a, b, c, d].some((n) => n > 255)) return null;
+    tail = [a << 8 | b, c << 8 | d];
+    text = text.slice(0, -v4[0].length);
+    if (text.endsWith(":") && !text.endsWith("::")) text = text.slice(0, -1);
+  }
+  const halves = text.split("::");
+  if (halves.length > 2) return null;
+  const groups = (part) => part ? part.split(":").map((h) => /^[0-9a-f]{1,4}$/.test(h) ? parseInt(h, 16) : NaN) : [];
+  const head = groups(halves[0]);
+  const rest = halves.length === 2 ? groups(halves[1]) : [];
+  const known = head.length + rest.length + tail.length;
+  if (halves.length === 1 ? known !== 8 : known > 7) return null;
+  const out = [...head, ...new Array(8 - known).fill(0), ...rest, ...tail];
+  return out.some(Number.isNaN) ? null : out;
+}
+function isPrivateIp(ip) {
+  if (/^\d+(\.\d+){3}$/.test(ip)) {
+    return ip.split(".").some((n) => Number(n) > 255) || privateIpv4(ip);
+  }
+  const g = parseIpv6(ip);
+  if (!g) return true;
+  const [g0, g1, g2] = g;
+  if ((g0 & 57344) !== 8192) return true;
+  if (g0 === 8193 && (g1 === 3512 || g1 === 0)) return true;
+  if (g0 === 8194) return privateIpv4(`${g1 >> 8}.${g1 & 255}.${g2 >> 8}.${g2 & 255}`);
+  return false;
 }
 function normalizeUrlInput(raw) {
   const value = raw.trim();
@@ -34,7 +101,7 @@ function checkArticleUrl(raw) {
   const host = url.hostname.toLowerCase().replace(/\.$/, "");
   if (host.startsWith("[") || host.includes(":")) return { ok: false, reason: "blocked" };
   if (/^\d+(\.\d+){3}$/.test(host)) {
-    return privateIpv4(host) ? { ok: false, reason: "blocked" } : { ok: true, url: url.href };
+    return isPrivateIp(host) ? { ok: false, reason: "blocked" } : { ok: true, url: url.href };
   }
   if (!host.includes(".") || host === "localhost") return { ok: false, reason: "blocked" };
   if (BLOCKED_SUFFIXES.some((suffix) => host.endsWith(suffix))) {
@@ -84,13 +151,19 @@ async function readLimited(body) {
   }
   return out;
 }
-async function fetchPage(rawUrl, fetchImpl = fetch, timeoutMs = FETCH_TIMEOUT_MS) {
+async function fetchPage(rawUrl, { fetch: fetchImpl, resolveHost: resolveHost2 }, timeoutMs = FETCH_TIMEOUT_MS) {
   const signal = AbortSignal.timeout(timeoutMs);
   let url = rawUrl;
   try {
     for (let hop = 0; hop <= MAX_REDIRECTS; hop++) {
       const check = checkArticleUrl(url);
       if (!check.ok) return { ok: false, reason: "blocked" };
+      const host = new URL(check.url).hostname;
+      if (!/^\d+(\.\d+){3}$/.test(host)) {
+        const addresses = await resolveHost2(host);
+        if (addresses.length === 0) return { ok: false, reason: "fetch_failed" };
+        if (addresses.some(isPrivateIp)) return { ok: false, reason: "blocked" };
+      }
       const response = await fetchImpl(check.url, {
         redirect: "manual",
         signal,
@@ -304,9 +377,13 @@ var supabase = createClient(
   requireEnv("SUPABASE_SERVICE_ROLE_KEY"),
   { auth: { persistSession: false, autoRefreshToken: false } }
 );
+var resolveHost = createResolver({
+  resolveDns: Deno.resolveDns && ((host, type) => Deno.resolveDns(host, type)),
+  fetch
+});
 Deno.serve(
   createArticleHandler({
-    fetchPage: (url) => fetchPage(url),
+    fetchPage: (url) => fetchPage(url, { fetch, resolveHost }),
     async getUserId(authorization) {
       const token = /^Bearer\s+(.+)$/i.exec(authorization ?? "")?.[1];
       if (!token) return null;

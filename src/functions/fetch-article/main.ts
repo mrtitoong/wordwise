@@ -5,12 +5,14 @@
  * Biến môi trường: SUPABASE_URL, SUPABASE_SERVICE_ROLE_KEY (có sẵn). Không cần khóa riêng.
  */
 import { createClient } from "@supabase/supabase-js";
+import { createResolver, type ResolveDns } from "@/lib/article/dns";
 import { fetchPage } from "@/lib/article/fetch-page";
 import type { Database } from "@/lib/db/database.types";
 import { createArticleHandler } from "./handler";
 
 declare const Deno: {
   env: { get(name: string): string | undefined };
+  resolveDns?: ResolveDns;
   serve(handler: (request: Request) => Response | Promise<Response>): void;
 };
 
@@ -26,9 +28,14 @@ const supabase = createClient<Database>(
   { auth: { persistSession: false, autoRefreshToken: false } },
 );
 
+const resolveHost = createResolver({
+  resolveDns: Deno.resolveDns && ((host, type) => Deno.resolveDns!(host, type)),
+  fetch,
+});
+
 Deno.serve(
   createArticleHandler({
-    fetchPage: (url) => fetchPage(url),
+    fetchPage: (url) => fetchPage(url, { fetch, resolveHost }),
     async getUserId(authorization) {
       const token = /^Bearer\s+(.+)$/i.exec(authorization ?? "")?.[1];
       if (!token) return null;

@@ -624,7 +624,7 @@ function startsSentence(token) {
 function wordCount(doc) {
   return doc.tokens.filter((t) => t.kind === "word").length;
 }
-function documentFromText(text) {
+function documentFromText(text, maxTokens = MAX_TOKENS) {
   const paragraphs = text.replaceAll("\r\n", "\n").replace(/(\p{L})-\n[ \t]*(\p{Ll})/gu, "$1$2").split(/\n[ \t]*\n+/).map((p) => p.trim()).filter(Boolean);
   const raw = [];
   for (const [paragraph, body] of paragraphs.entries()) {
@@ -641,8 +641,9 @@ function documentFromText(text) {
         paragraph
       });
       last = match.index + match[0].length;
-      if (raw.length >= MAX_TOKENS) break;
+      if (raw.length >= maxTokens) break;
     }
+    if (raw.length >= maxTokens) break;
   }
   return {
     source: "llm",

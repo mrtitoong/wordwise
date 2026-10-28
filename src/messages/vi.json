@@ -764,6 +764,7 @@
     },
     "examples": {
       "context": "Câu bạn gặp",
+      "fromArticle": "Gặp trong: <link>{title}</link>",
       "contextImage": "Ảnh gốc",
       "showTranslation": "Hiện bản dịch",
       "hideTranslation": "Ẩn bản dịch"
@@ -1130,6 +1131,7 @@
       "typed": "Gõ",
       "voice": "Nói",
       "photo": "Ảnh",
+      "url": "Link",
       "file": "File"
     },
     "tabsLabel": "Cách thêm từ",
@@ -1359,6 +1361,47 @@
       "retryFailed": "Chưa thử lại được. Kiểm tra kết nối mạng rồi thử lại.",
       "offline": "Sẽ cập nhật khi có mạng.",
       "notebookFallback": "sổ"
+    },
+    "article": {
+      "intro": "Dán link bài báo, blog tiếng Anh. App lấy nội dung bài, gợi ý những từ bạn có thể chưa biết để bạn chọn. Câu chứa từ được giữ làm câu bạn đã gặp, kèm link bài.",
+      "urlLabel": "Link bài viết",
+      "read": "Đọc bài",
+      "reading": "Đang đọc bài…",
+      "pasteInstead": "Hoặc dán nội dung bài",
+      "pasteLabel": "Nội dung bài (tiếng Anh)",
+      "usePasted": "Tìm từ trong đoạn này",
+      "needAccount": "Đăng nhập để thêm từ bằng link bài viết.",
+      "signIn": "Đăng nhập",
+      "needOnline": "Cần có mạng để đọc bài từ link.",
+      "privacy": "Bài viết chỉ dùng để tìm từ, không lưu trên máy chủ. Tối đa 20 link mỗi ngày.",
+      "errors": {
+        "invalid_url": "Link chưa đúng. Hãy dán link bắt đầu bằng https://",
+        "blocked": "Không đọc được link này. Hãy dùng link bài viết công khai trên mạng.",
+        "fetch_failed": "Không tải được trang này (có thể cần đăng nhập, trả phí hoặc trang chặn). Hãy dán nội dung bài vào ô bên dưới.",
+        "not_html": "Link này không phải trang web (có thể là PDF hoặc ảnh) hoặc quá lớn. Hãy dán nội dung bài vào ô bên dưới.",
+        "no_article": "Không tìm thấy nội dung bài ở trang này. Hãy mở bài cụ thể hoặc dán nội dung bài vào ô bên dưới.",
+        "not_english": "Bài này có vẻ không phải tiếng Anh.",
+        "login_required": "Phiên đăng nhập đã hết. Hãy đăng nhập lại.",
+        "limit_reached": "Bạn đã đọc hết {limit} link hôm nay. Bạn vẫn có thể dán nội dung bài.",
+        "unavailable": "Chưa đọc được bài lúc này. Hãy thử lại sau ít phút.",
+        "offline": "Đang mất mạng. Hãy thử lại khi có mạng.",
+        "short": "Đoạn văn quá ngắn. Hãy dán cả bài hoặc một đoạn dài hơn."
+      },
+      "pastedTitle": "Đoạn văn bạn dán",
+      "wordCount": "{count} từ",
+      "another": "Bài khác",
+      "truncated": "Bài rất dài nên chỉ lấy phần đầu (khoảng 8.000 từ).",
+      "viewSuggested": "Từ gợi ý",
+      "viewArticle": "Cả bài",
+      "finding": "Đang tìm từ mới trong bài…",
+      "noSuggestions": "Không thấy từ nào mới so với trình độ của bạn. Hãy mở “Cả bài” để tự chọn.",
+      "suggestedHint": "Những từ có thể bạn chưa biết, khó trước. Đã tích sẵn các từ khó nhất, bỏ tích nếu đã biết.",
+      "suggestedLabel": "Từ gợi ý",
+      "rare": "ít gặp",
+      "times": "{count} lần trong bài",
+      "articleHint": "Chạm để chọn hoặc bỏ chọn, kéo ngang để chọn cả cụm. Chữ mờ là từ bạn đã có.",
+      "articleLabel": "Nội dung bài, chạm vào từ để chọn",
+      "reviewHint": "Mỗi từ giữ câu trong bài làm câu bạn đã gặp, kèm link bài."
     }
   },
   "review": {

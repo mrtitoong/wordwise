@@ -3,7 +3,7 @@ import type { NotebookEntryRow, NotebookRow, UserWordRow } from "@/lib/db/types"
 import { loadExampleWords } from "@/lib/schema/examples";
 import type { WordContent } from "@/lib/schema/word";
 import type { StoredWord } from "./api";
-import { buildWordCard, visibleTabs } from "./word-card";
+import { buildWordCard, sourceLabel, visibleTabs } from "./word-card";
 
 const OWNER = "11111111-1111-4111-8111-111111111111";
 const words = loadExampleWords();
@@ -48,6 +48,8 @@ function entry(userWordId: string, patch: Partial<NotebookEntryRow> = {}): Noteb
     input_method: "typed",
     context_sentence: null,
     context_image_url: null,
+    source_url: null,
+    source_title: null,
     source: null,
     tags: [],
     added_at: ISO,
@@ -241,5 +243,16 @@ describe("visibleTabs", () => {
     });
     expect(view.tabs).toEqual(["meaning", "examples", "usage", "memory"]);
     expect(visibleTabs(content, view.senses, 0)).toEqual(view.tabs);
+  });
+});
+
+describe("sourceLabel", () => {
+  it("ẩn mã nội bộ, giữ tên nguồn đọc được", () => {
+    expect(sourceLabel("paste")).toBeNull();
+    expect(sourceLabel("pending")).toBeNull();
+    expect(sourceLabel("starter")).toBeNull();
+    expect(sourceLabel("list:1c2d")).toBeNull();
+    expect(sourceLabel(null)).toBeNull();
+    expect(sourceLabel("ielts-words.xlsx")).toBe("ielts-words.xlsx");
   });
 });

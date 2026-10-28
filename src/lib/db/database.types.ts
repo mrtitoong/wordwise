@@ -655,6 +655,8 @@ export type Database = {
           input_method: string;
           notebook_id: string;
           source: string | null;
+          source_title: string | null;
+          source_url: string | null;
           tags: string[];
           updated_at: string;
           user_id: string;
@@ -670,6 +672,8 @@ export type Database = {
           input_method: string;
           notebook_id: string;
           source?: string | null;
+          source_title?: string | null;
+          source_url?: string | null;
           tags?: string[];
           updated_at?: string;
           user_id: string;
@@ -685,6 +689,8 @@ export type Database = {
           input_method?: string;
           notebook_id?: string;
           source?: string | null;
+          source_title?: string | null;
+          source_url?: string | null;
           tags?: string[];
           updated_at?: string;
           user_id?: string;
@@ -1084,6 +1090,8 @@ export type Database = {
           input_method: string | null;
           job_id: string;
           notebook_id: string | null;
+          source_title: string | null;
+          source_url: string | null;
           tags: string[];
           user_id: string;
           user_note: string | null;
@@ -1096,6 +1104,8 @@ export type Database = {
           input_method?: string | null;
           job_id: string;
           notebook_id?: string | null;
+          source_title?: string | null;
+          source_url?: string | null;
           tags?: string[];
           user_id: string;
           user_note?: string | null;
@@ -1108,6 +1118,8 @@ export type Database = {
           input_method?: string | null;
           job_id?: string;
           notebook_id?: string | null;
+          source_title?: string | null;
+          source_url?: string | null;
           tags?: string[];
           user_id?: string;
           user_note?: string | null;
@@ -1414,6 +1426,8 @@ export type Database = {
           p_note?: string;
           p_notebook_id?: string;
           p_pos?: string;
+          p_source_title?: string;
+          p_source_url?: string;
           p_tags?: string[];
           p_user_id: string;
         };

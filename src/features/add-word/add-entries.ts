@@ -24,13 +24,22 @@ export type AddEntriesResult = {
 export async function addEntries(
   entries: readonly NormalizedEntry[],
   context: EntryContext,
-  options: { inputMethod: InputMethod; source: string | null; contextImageUrl?: string | null },
+  options: {
+    inputMethod: InputMethod;
+    source: string | null;
+    contextImageUrl?: string | null;
+    /** Bài viết nơi gặp các từ (tab Link). */
+    article?: { url: string; title: string } | null;
+  },
 ): Promise<AddEntriesResult> {
   const db = getLocalDb();
   const image = options.contextImageUrl ?? null;
+  const article = options.article
+    ? { sourceUrl: options.article.url, sourceTitle: options.article.title }
+    : {};
   const ready = entries.flatMap((e) =>
     e.status === "ready" || e.status === "choose"
-      ? [{ senseId: e.senseId, contextSentence: e.context, contextImageUrl: image }]
+      ? [{ senseId: e.senseId, contextSentence: e.context, contextImageUrl: image, ...article }]
       : [],
   );
   let added = 0;
@@ -58,6 +67,7 @@ export async function addEntries(
         inputMethod: options.inputMethod,
         ...(entry.context ? { contextSentence: entry.context } : {}),
         ...(image ? { contextImageUrl: image } : {}),
+        ...article,
       });
       if (response.status === "limit_reached") {
         skipped = fresh.length - i;
@@ -77,7 +87,7 @@ export async function addEntries(
         const result = await addSensesToNotebook(
           db,
           context.owner,
-          [{ senseId, contextSentence: entry.context, contextImageUrl: image }],
+          [{ senseId, contextSentence: entry.context, contextImageUrl: image, ...article }],
           {
             notebookId: context.notebookId,
             inputMethod: options.inputMethod,

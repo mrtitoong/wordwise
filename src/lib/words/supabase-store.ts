@@ -144,6 +144,8 @@ export function createSupabaseWordStore(client: Client): WordStore {
                 p_input_method: target.inputMethod,
                 ...(target.contextSentence ? { p_context_sentence: target.contextSentence } : {}),
                 ...(target.contextImageUrl ? { p_context_image_url: target.contextImageUrl } : {}),
+                ...(target.sourceUrl ? { p_source_url: target.sourceUrl } : {}),
+                ...(target.sourceTitle ? { p_source_title: target.sourceTitle } : {}),
                 ...(target.note ? { p_note: target.note } : {}),
                 ...(target.tags?.length ? { p_tags: target.tags } : {}),
               }

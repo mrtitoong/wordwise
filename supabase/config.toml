@@ -90,6 +90,13 @@ enabled = true
 verify_jwt = false
 entrypoint = "./functions/ocr-image/index.js"
 
+# Đọc bài viết từ link (tab Link). Mã nguồn ở src/functions/fetch-article. Tự kiểm tra đăng nhập
+# (khách nhận "login_required") nên tắt kiểm tra JWT ở cổng.
+[functions.fetch-article]
+enabled = true
+verify_jwt = false
+entrypoint = "./functions/fetch-article/index.js"
+
 # Chấm phát âm bằng Azure Pronunciation Assessment (Prompt 5.2). Mã nguồn ở
 # src/functions/assess-pronunciation. Tự kiểm tra đăng nhập (khách nhận "login_required") nên tắt
 # kiểm tra JWT ở cổng.

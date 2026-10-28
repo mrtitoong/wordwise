@@ -627,3 +627,19 @@ Repo: https://github.com/mrtitoong/wordwise
   sang **`/unsupported`** (chỉ style viết trên thẻ, ai cũng vào được) – không làm bản CSS cho trình duyệt cũ. Next 16.3
   đặt JS/CSS ở `/_next/static/immutable/chunks/`: `chunkUrlsInScript` nhận cả hai đường dẫn (trước đó code tải khi cần
   không được lưu sẵn cho offline).
+- 2026-10-28 (tab Link, chủ sản phẩm duyệt 5 đề xuất): Thêm từ bằng **link bài viết** (tab thứ 4: Gõ · Nói · Ảnh ·
+  Link · File), cho **mọi tài khoản đã đăng nhập** (Free và Premium), khách mời đăng nhập. Edge Function
+  **`fetch-article`** (không cần khóa): tải trang ở máy chủ (`src/lib/article/fetch-page.ts`: chỉ http/https cổng
+  80/443, chặn localhost/IP riêng/IPv6 viết thẳng, kiểm tra lại mỗi lần chuyển hướng (≤ 5), ≤ 5 MB, 10 giây, bảng mã
+  theo header/meta), lấy nội dung bằng **Readability 0.6.0 + linkedom 0.18.13** (`extract.ts`, bỏ chú thích kiểu
+  Wikipedia, cắt ở ~50.000 ký tự), báo `not_english` theo tỉ lệ chữ Latin không dấu; **20 link/người/ngày**
+  (`usage_events` kind `article`, `private.settings.user_daily_article`, trừ trước khi tải). Bài không lưu trên máy chủ.
+  Không đọc được (trả phí, cần JS…) thì **dán nội dung bài** (chỉ xử lý trong máy, không trừ lượt). Gợi ý từ theo
+  quy tắc `autoPick` của tab Ảnh, không AI (`src/lib/article/suggest.ts`): tối đa 40 gợi ý, tích sẵn 15 từ khó nhất,
+  hai cách xem "Từ gợi ý" (kèm câu, số lần xuất hiện) và "Cả bài" (chạm/kéo chọn – `src/features/add-word/
+  pick-text.tsx` dùng chung với tab Ảnh); chọn tối đa 50; bước kiểm tra dùng chung `PhotoReview` (không hỏi sửa
+  chính tả). Cách nhập **`url`** (Free không bị chặn như csv/photo), mỗi mục trong sổ lưu
+  **`notebook_entries.source_url`/`source_title`** (từ mới đi qua `word_job_requests`), thẻ từ hiện "Gặp trong:
+  *tiêu đề*" ở câu bạn gặp. Thẻ từ không còn hiện mã nguồn nội bộ (paste, pending, starter, list:…), chỉ hiện tên
+  file đã nhập. Tra kho chữ của bài theo lô 50, 4 lô song song (`lookup-words.ts`). Đã áp lên cloud và deploy
+  `fetch-article`, `generate-word`.

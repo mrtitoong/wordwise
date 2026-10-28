@@ -18,6 +18,7 @@ import { createClient } from "@/lib/supabase/client";
 import { cn } from "@/lib/utils";
 import { resolveWords } from "@/lib/words/request-word";
 import { Highlighted } from "@/features/words/word-card/parts";
+import type { InputMethod } from "@/lib/db/repo";
 import { addEntries } from "../add-entries";
 import type { EntryContext } from "../add-word-screen";
 
@@ -36,20 +37,32 @@ function without<T>(record: Record<number, T>, id: number): Record<number, T> {
 }
 
 /**
- * Kiểm tra các từ đã chọn trên ảnh: sửa chính tả (gợi ý từ gần nhất trong kho), xem câu gốc, chọn
- * nghĩa, rồi thêm (cách nhập "photo", câu gốc làm câu đã gặp, kèm ảnh nếu người dùng giữ ảnh).
+ * Kiểm tra các từ đã chọn trên ảnh (hoặc trong bài viết ở tab Link): sửa chính tả (gợi ý từ gần
+ * nhất trong kho), xem câu gốc, chọn nghĩa, rồi thêm (câu gốc làm câu đã gặp, kèm ảnh nếu người dùng
+ * giữ ảnh, kèm link bài viết).
  */
 export function PhotoReview({
   items,
   context,
-  uploadImage,
+  uploadImage = null,
+  inputMethod = "photo",
+  article = null,
+  hint,
+  suggestSpelling = true,
   onBack,
   onDone,
 }: {
   items: ReviewItem[];
   context: EntryContext;
   /** Tải ảnh giữ làm ngữ cảnh khi bấm Thêm; null khi không giữ ảnh. */
-  uploadImage: (() => Promise<string | null>) | null;
+  uploadImage?: (() => Promise<string | null>) | null;
+  inputMethod?: InputMethod;
+  /** Bài viết nơi gặp các từ (tab Link). */
+  article?: { url: string; title: string } | null;
+  /** Dòng hướng dẫn thay cho bản của tab Ảnh. */
+  hint?: string;
+  /** Hỏi "Có phải …?" với chữ không có trong kho (máy đọc ảnh có thể nhầm). */
+  suggestSpelling?: boolean;
   onBack: () => void;
   onDone: () => void;
 }) {
@@ -109,12 +122,12 @@ export function PhotoReview({
   const asked = useRef(new Set<string>());
   useEffect(() => {
     const fresh = unknown.filter((k) => !asked.current.has(k));
-    if (fresh.length === 0 || !context.online) return;
+    if (!suggestSpelling || fresh.length === 0 || !context.online) return;
     fresh.forEach((k) => asked.current.add(k));
     void suggestSpellings(createClient(), fresh).then(
       (more) => more.size && setSuggestions((prev) => new Map([...prev, ...more])),
     );
-  }, [unknown, context.online]);
+  }, [unknown, context.online, suggestSpelling]);
 
   const entries = useMemo<(NormalizedEntry | null)[]>(() => {
     const seen = new Set<string>();
@@ -159,9 +172,10 @@ export function PhotoReview({
         if (!image) showToast({ text: t("imageFailed") });
       }
       const { added, preparing, skipped } = await addEntries(done, context, {
-        inputMethod: "photo",
+        inputMethod,
         source: null,
         contextImageUrl: image,
+        article,
       });
       showToast({
         text: skipped ? tb("resultLimit", { added, skipped }) : tb("result", { added, preparing }),
@@ -190,7 +204,7 @@ export function PhotoReview({
         </button>
         <h2 className="font-semibold">{t("reviewTitle", { count: rows.length })}</h2>
       </div>
-      <p className="text-sm text-muted-foreground">{t("reviewHint")}</p>
+      <p className="text-sm text-muted-foreground">{hint ?? t("reviewHint")}</p>
 
       {(!context.online || failed) && (
         <p className="text-sm text-destructive" role="alert">

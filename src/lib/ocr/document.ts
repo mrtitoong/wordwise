@@ -154,10 +154,10 @@ export function wordCount(doc: Pick<OcrDocument, "tokens">): number {
 }
 
 /**
- * Văn bản thuần (LLM có thị giác) → tài liệu OCR không có khung. Dòng trống ngăn cách đoạn; từ bị
- * ngắt cuối dòng bằng gạch nối được nối lại ("resil-\nient" → "resilient").
+ * Văn bản thuần (LLM có thị giác, bài viết ở tab Link) → tài liệu OCR không có khung. Dòng trống
+ * ngăn cách đoạn; từ bị ngắt cuối dòng bằng gạch nối được nối lại ("resil-\nient" → "resilient").
  */
-export function documentFromText(text: string): OcrDocument {
+export function documentFromText(text: string, maxTokens = MAX_TOKENS): OcrDocument {
   const paragraphs = text
     .replaceAll("\r\n", "\n")
     .replace(/(\p{L})-\n[ \t]*(\p{Ll})/gu, "$1$2")
@@ -179,8 +179,9 @@ export function documentFromText(text: string): OcrDocument {
         paragraph,
       });
       last = match.index + match[0].length;
-      if (raw.length >= MAX_TOKENS) break;
+      if (raw.length >= maxTokens) break;
     }
+    if (raw.length >= maxTokens) break;
   }
   return {
     source: "llm",

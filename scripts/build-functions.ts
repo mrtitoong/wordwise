@@ -16,6 +16,7 @@ const FUNCTIONS = [
   "admin-word",
   "analyze-list",
   "assess-pronunciation",
+  "fetch-article",
   "generate-word",
   "ocr-image",
   "send-reminders",

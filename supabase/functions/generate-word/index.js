@@ -965,7 +965,7 @@ async function reverseLookup(request, userId, deps) {
 }
 
 // src/lib/words/api.ts
-var InputMethodSchema = z6.enum(["typed", "voice", "photo", "csv", "list"]);
+var InputMethodSchema = z6.enum(["typed", "voice", "photo", "csv", "list", "url"]);
 var WordRequestSchema = z6.object({
   action: z6.literal("request").default("request"),
   lemma: z6.string().trim().min(1).max(64),
@@ -976,6 +976,9 @@ var WordRequestSchema = z6.object({
   contextSentence: z6.string().trim().max(500).nullish(),
   /** Ảnh chụp người dùng giữ làm ngữ cảnh (storage://user-images/{user_id}/…). */
   contextImageUrl: z6.string().max(300).regex(/^storage:\/\/user-images\/[0-9a-f-]{36}\/[\w.-]+$/).nullish(),
+  /** Bài viết nơi gặp từ (tab Link): link http(s) và tiêu đề. */
+  sourceUrl: z6.string().max(2e3).regex(/^https?:\/\//).nullish(),
+  sourceTitle: z6.string().trim().max(300).nullish(),
   inputMethod: InputMethodSchema.nullish(),
   /** Ghi chú riêng (cột nghĩa/ghi chú của file) → "Ghi chú của bạn" ở tab Nghĩa. */
   note: z6.string().trim().max(500).nullish(),
@@ -1140,6 +1143,8 @@ function createSupabaseWordStore(client) {
             p_input_method: target.inputMethod,
             ...target.contextSentence ? { p_context_sentence: target.contextSentence } : {},
             ...target.contextImageUrl ? { p_context_image_url: target.contextImageUrl } : {},
+            ...target.sourceUrl ? { p_source_url: target.sourceUrl } : {},
+            ...target.sourceTitle ? { p_source_title: target.sourceTitle } : {},
             ...target.note ? { p_note: target.note } : {},
             ...target.tags?.length ? { p_tags: target.tags } : {}
           } : {}
@@ -1447,6 +1452,7 @@ async function requestWord(request, userId, deps) {
     notebookId: request.notebookId,
     contextSentence: request.contextSentence ?? null,
     ...request.contextImageUrl ? { contextImageUrl: request.contextImageUrl } : {},
+    ...request.sourceUrl ? { sourceUrl: request.sourceUrl, sourceTitle: request.sourceTitle ?? null } : {},
     inputMethod: request.inputMethod ?? "typed",
     ...request.note ? { note: request.note } : {},
     ...request.tags?.length ? { tags: request.tags } : {}

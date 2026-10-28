@@ -8,12 +8,12 @@ import { Button } from "@/components/ui/button";
 import { uploadImageBlob } from "@/features/media/user-images";
 import type { OcrDocument } from "@/lib/ocr/document";
 import { qualityIssues, type CropRect, type QualityIssue, type Rotation } from "@/lib/ocr/image";
-import { lookupTerms, pickContext, pickText, type Pick, type WordInfo } from "@/lib/ocr/pick";
+import { pickContext, pickText, type Pick, type WordInfo } from "@/lib/ocr/pick";
 import { requestOcr } from "@/lib/ocr/request-ocr";
 import { createClient } from "@/lib/supabase/client";
 import { getSupabaseEnv } from "@/lib/supabase/env";
-import { resolveWords } from "@/lib/words/request-word";
 import type { EntryContext } from "../add-word-screen";
+import { lookupWords } from "../lookup-words";
 import { usePlan } from "../use-plan";
 import {
   encodeContextImage,
@@ -27,8 +27,6 @@ import { PhotoEditor } from "./photo-editor";
 import { PhotoReview, type ReviewItem } from "./photo-review";
 import { WordPicker } from "./word-picker";
 
-const CHUNK = 50;
-
 type Failure = "offline" | "unavailable" | "no_text" | "limit" | "premium" | "login" | "encode";
 
 type Step =
@@ -39,30 +37,6 @@ type Step =
   | { kind: "failed"; reason: Failure; dailyLimit?: number }
   | { kind: "pick" }
   | { kind: "review"; items: ReviewItem[] };
-
-/** Tra kho mọi chữ trên ảnh: từ gốc, CEFR, đã có trong kho của người dùng chưa. */
-async function lookup(doc: OcrDocument, owned: ReadonlySet<string>) {
-  const terms = lookupTerms(doc);
-  const info = new Map<string, WordInfo>();
-  const chunks: string[][] = [];
-  for (let i = 0; i < terms.length; i += CHUNK) chunks.push(terms.slice(i, i + CHUNK));
-  await Promise.all(
-    chunks.map(async (chunk) => {
-      const { items } = await resolveWords(createClient(), chunk);
-      chunk.forEach((term, i) => {
-        const item = items[i];
-        if (!item) return;
-        info.set(term, {
-          lemma: item.lemma,
-          inLibrary: item.words.length > 0,
-          cefr: item.words[0]?.cefr ?? null,
-          owned: item.words.some((w) => w.senses.some((s) => owned.has(s.id))),
-        });
-      });
-    }),
-  );
-  return info;
-}
 
 /**
  * Tab Ảnh (chỉ Premium): chụp/chọn ảnh → xoay, cắt → kiểm tra chất lượng → đọc chữ (máy chủ) →
@@ -159,7 +133,7 @@ export function PhotoEntry({ context }: { context: EntryContext }) {
     setPicks([]);
     setInfo(null);
     setStep({ kind: "pick" });
-    lookup(response.document, context.ownedSenseIds)
+    lookupWords(response.document, context.ownedSenseIds)
       .then(setInfo)
       // Không tra được kho: vẫn chọn tay được, chỉ thiếu khung xám và Tự chọn.
       .catch(() => setInfo(new Map()));

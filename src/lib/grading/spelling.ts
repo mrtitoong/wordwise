@@ -245,3 +245,29 @@ export function answersForWord(
   const rejected = (word.confusables ?? []).map((c) => c.word);
   return { target, options: { accepted, otherForms, rejected } };
 }
+
+/** Một đoạn chữ người học đã gõ; `wrong` = khác đáp án (tô đỏ). */
+export type TypedSegment = { text: string; wrong: boolean };
+
+/**
+ * Chữ người học đã gõ, chia đoạn đúng/sai theo diff để hiện "Bạn viết" cạnh đáp án. Chữ thiếu không
+ * có trong chữ đã gõ nên không hiện (bên đáp án đã có). Sai quá nửa số chữ thì không tô (một đoạn
+ * `wrong: false`) vì tô gần hết chỉ làm rối. Không gõ gì thì trả mảng rỗng.
+ */
+export function typedSegments(diff: readonly DiffPart[]): TypedSegment[] {
+  const parts = diff.filter((p) => p.input);
+  const total = parts.reduce((n, p) => n + Array.from(p.input).length, 0);
+  if (!total) return [];
+  const wrongCount = parts
+    .filter((p) => p.op !== "equal")
+    .reduce((n, p) => n + Array.from(p.input).length, 0);
+  if (wrongCount * 2 > total) return [{ text: parts.map((p) => p.input).join(""), wrong: false }];
+  const segments: TypedSegment[] = [];
+  for (const part of parts) {
+    const wrong = part.op !== "equal";
+    const last = segments.at(-1);
+    if (last && last.wrong === wrong) last.text += part.input;
+    else segments.push({ text: part.input, wrong });
+  }
+  return segments;
+}

@@ -189,6 +189,41 @@ test.describe("Phiên ôn", () => {
     await expect(page.getByText("Không có gì cần ôn lúc này")).toBeVisible();
   });
 
+  test("viết sai: hiện chữ đã viết cạnh đáp án đúng", async ({ page }) => {
+    await learnStarterWords(page);
+    await page.getByRole("button", { name: "Xong", exact: true }).click();
+    await expect(page).toHaveURL("/");
+
+    // Thẻ Chính tả mức 3 (ô trống, gõ cả từ), ép dạng nghe → gõ lại.
+    await waitForTestHooks(page);
+    await page.evaluate(() => {
+      localStorage.setItem("ww_e2e_overrides", JSON.stringify({ spellingKind: "listen-type" }));
+      return (
+        window as unknown as {
+          __wordwiseE2E: { patchCards: (skill: string, patch: object) => Promise<number> };
+        }
+      ).__wordwiseE2E.patchCards("spelling", {
+        state: 2,
+        stability: 10,
+        difficulty: 5,
+        reps: 3,
+        scheduled_days: 10,
+        learning_steps: 0,
+        last_review: new Date(Date.now() - 10 * 86_400_000).toISOString(),
+      });
+    });
+    await page.goto("/review/session");
+    await expect(page.getByText("Nghe rồi gõ lại từ")).toBeVisible();
+    const answer = (await currentAnswer(page)).toLowerCase();
+    // Thừa 2 chữ: sai hẳn (không phải lỗi gõ 1 chữ).
+    await typeAnswer(page, `${answer}qq`);
+    await expect(page.getByText("Chưa đúng")).toBeVisible();
+    const typed = page.getByRole("region", { name: "Bạn viết" });
+    await expect(typed).toContainText(`${answer}qq`);
+    await expect(typed.locator(".underline")).toHaveText("qq");
+    await expect(page.getByRole("region", { name: "Đáp án đúng" })).toContainText(answer);
+  });
+
   test("tập nghe: nghe → gõ lại, nghe câu → điền từ, nghe → chọn nghĩa; nghe lại nhiều lần thì Khó", async ({
     page,
   }) => {

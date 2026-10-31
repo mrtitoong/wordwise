@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useRef, useState } from "react";
+import { useEffect, useRef, useState, type ReactNode } from "react";
 import { Check, Lightbulb, Undo2 } from "lucide-react";
 import { useTranslations } from "next-intl";
 import { AudioButton } from "@/components/audio-button";
@@ -8,8 +8,10 @@ import { Button } from "@/components/ui/button";
 import {
   answersForWord,
   checkAnswer,
+  typedSegments,
   type CheckOptions,
   type CheckResult,
+  type TypedSegment,
 } from "@/lib/grading/spelling";
 import type { MasteryLevel } from "@/lib/srs/mastery";
 import {
@@ -405,20 +407,25 @@ export function Writing({ item, voice, muted, onAnswer, task }: ModeProps & { ta
                     : "wrong",
             )}
           </p>
-          {!result.revealed && result.typoCount > 0 && <Diff diff={result.diff} />}
-          <div className="flex flex-col items-center gap-1">
-            <p className="text-3xl font-bold break-words" lang="en">
-              {result.matched}
-            </p>
-            <AudioButton
-              text={sentence ?? lemma}
-              voice={voice}
-              url={sentence ? null : item.word.media.audio[voice]}
-              resolveUrl={sentenceUrl}
-              autoPlay={!muted}
-              showRate
-            />
-          </div>
+          {result.correct && result.typoCount > 0 && <Diff diff={result.diff} />}
+          <Compare
+            typed={result.correct || result.revealed ? [] : typedSegments(result.diff)}
+            tiles={level === 1}
+          >
+            <div className="flex flex-col items-center gap-1">
+              <p className="text-3xl font-bold break-words" lang="en">
+                {result.matched}
+              </p>
+              <AudioButton
+                text={sentence ?? lemma}
+                voice={voice}
+                url={sentence ? null : item.word.media.audio[voice]}
+                resolveUrl={sentenceUrl}
+                autoPlay={!muted}
+                showRate
+              />
+            </div>
+          </Compare>
           {!result.correct && letterKeyboard && (
             <div className="flex flex-1 flex-col gap-2 text-sm">
               <span className="text-muted-foreground">{t("retype")}</span>
@@ -579,6 +586,52 @@ function Pattern({ pattern }: { pattern: readonly (string | null)[] }) {
         ),
       )}
     </p>
+  );
+}
+
+/**
+ * Viết sai: chữ người học đã viết (chữ sai tô đỏ) cạnh đáp án để tự đối chiếu; hai ô không vừa một
+ * hàng (từ dài) thì xếp trên–dưới. Không có chữ đã viết (đúng, xem đáp án, bỏ trống) chỉ hiện đáp án.
+ */
+function Compare({
+  typed,
+  tiles,
+  children,
+}: {
+  typed: readonly TypedSegment[];
+  tiles: boolean;
+  children: ReactNode;
+}) {
+  const t = useTranslations("review");
+  if (!typed.length) return children;
+  const label = t(tiles ? "yourTiles" : "yourWriting");
+  return (
+    <div className="flex flex-wrap gap-2">
+      <section
+        aria-label={label}
+        className="flex min-w-36 grow flex-col items-center gap-1 rounded-xl border-2 border-red-200 bg-red-50 p-3 dark:border-red-900 dark:bg-red-950/40"
+      >
+        <span className="text-sm text-muted-foreground">{label}</span>
+        <p className="text-2xl font-semibold break-words" lang="en">
+          {typed.map((segment, i) =>
+            segment.wrong ? (
+              <span key={i} className="text-red-700 underline dark:text-red-300">
+                {segment.text}
+              </span>
+            ) : (
+              <span key={i}>{segment.text}</span>
+            ),
+          )}
+        </p>
+      </section>
+      <section
+        aria-label={t("correctAnswer")}
+        className="flex min-w-36 grow flex-col items-center gap-1 rounded-xl border-2 border-green-200 bg-green-50 p-3 dark:border-green-900 dark:bg-green-950/40"
+      >
+        <span className="text-sm text-muted-foreground">{t("correctAnswer")}</span>
+        {children}
+      </section>
+    </div>
   );
 }
 

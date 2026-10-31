@@ -7,6 +7,7 @@ import {
   applyVariant,
   checkAnswer,
   normalizeAnswer,
+  typedSegments,
   type DiffPart,
 } from "./spelling";
 
@@ -187,6 +188,36 @@ describe("checkAnswer", () => {
     expect(
       checkAnswer("run", "run", { otherForms: ["run", "ran"], rejected: ["run"] }),
     ).toMatchObject({ correct: true, reason: "exact" });
+  });
+});
+
+describe("typedSegments – chữ người học đã gõ để hiện cạnh đáp án", () => {
+  const segs = (typed: string, target: string) =>
+    typedSegments(checkAnswer(typed, target).diff)
+      .map((s) => (s.wrong ? `[${s.text}]` : s.text))
+      .join("");
+
+  it("tô đỏ chữ sai, giữ nguyên chữ đúng", () => {
+    expect(segs("recieve", "receive")).toBe("rec[ie]ve");
+    expect(segs("acomodate", "accommodate")).toBe("acomodate");
+    expect(segs("hapy", "happy")).toBe("hapy");
+    expect(segs("bwautiful", "beautiful")).toBe("b[w]autiful");
+    expect(segs("goodd", "good")).toBe("goo[d]d");
+  });
+
+  it("ghép lại đúng chữ đã gõ (đã chuẩn hóa)", () => {
+    const typed = typedSegments(checkAnswer("  Recieve. ", "receive").diff);
+    expect(typed.map((s) => s.text).join("")).toBe("recieve");
+  });
+
+  it("sai quá nửa số chữ thì không tô", () => {
+    expect(typedSegments(checkAnswer("xyzq", "good").diff)).toEqual([
+      { text: "xyzq", wrong: false },
+    ]);
+  });
+
+  it("không gõ gì thì rỗng", () => {
+    expect(typedSegments(checkAnswer("", "good").diff)).toEqual([]);
   });
 });
 

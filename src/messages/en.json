@@ -1487,6 +1487,8 @@
     "revealed": "The answer is",
     "rightTypo": "Correct, just one letter off",
     "wrongForm": "Right word, wrong form",
+    "yourWriting": "You wrote",
+    "yourTiles": "You arranged",
     "retype": "Type it once more to remember",
     "removeLetter": "Remove letter {letter}",
     "letters": "Letters",

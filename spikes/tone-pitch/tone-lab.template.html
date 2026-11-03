@@ -1,0 +1,530 @@
+<title>Thử thanh điệu</title>
+<meta name="claude:viewport-fit-sides" content="cover" />
+<style>
+  /* Layout: một cột cho điện thoại: chọn từ → thu/tải file → biểu đồ cao độ → kết quả từng âm tiết → lịch sử. */
+  :root {
+    --bg: #f6f5fa;
+    --surface: #ffffff;
+    --fg: #1c1a28;
+    --muted: #686379;
+    --line: #dcd8e8;
+    --accent: #6c4cf5;
+    --ok: #1d8049;
+    --bad: #c0352e;
+    --t1: #2f6fdd;
+    --t2: #1d8a6b;
+    --t3: #b7791f;
+    --t4: #c0352e;
+    --font-ui: "Be Vietnam Pro", system-ui, sans-serif;
+    --font-han: "Noto Serif SC", "Songti SC", serif;
+    --font-num: ui-monospace, "SFMono-Regular", Menlo, monospace;
+  }
+  @media (prefers-color-scheme: dark) {
+    :root:not([data-theme="light"]) {
+      --bg: #14121c;
+      --surface: #1e1b29;
+      --fg: #ebe8f6;
+      --muted: #a39db8;
+      --line: #343048;
+      --accent: #a897ff;
+      --ok: #5fd08e;
+      --bad: #ff7d75;
+      --t1: #7aa7ff;
+      --t2: #5fd0b0;
+      --t3: #f0b45a;
+      --t4: #ff7d75;
+      color-scheme: dark;
+    }
+  }
+  :root[data-theme="dark"] {
+    --bg: #14121c;
+    --surface: #1e1b29;
+    --fg: #ebe8f6;
+    --muted: #a39db8;
+    --line: #343048;
+    --accent: #a897ff;
+    --ok: #5fd08e;
+    --bad: #ff7d75;
+    --t1: #7aa7ff;
+    --t2: #5fd0b0;
+    --t3: #f0b45a;
+    --t4: #ff7d75;
+    color-scheme: dark;
+  }
+  body {
+    background: var(--bg);
+    color: var(--fg);
+    font-family: var(--font-ui);
+    font-size: 15px;
+    line-height: 1.5;
+  }
+  main {
+    max-width: 560px;
+    margin: 0 auto;
+    padding-block: 16px 48px;
+    padding-left: max(16px, env(safe-area-inset-left, 0px));
+    padding-right: max(16px, env(safe-area-inset-right, 0px));
+    display: grid;
+    gap: 16px;
+  }
+  h1 {
+    font-size: 20px;
+    margin: 0;
+    text-wrap: balance;
+  }
+  p {
+    margin: 0;
+    color: var(--muted);
+  }
+  .row {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+    align-items: center;
+  }
+  button,
+  select,
+  input[type="text"] {
+    font: inherit;
+    min-height: 44px;
+    padding: 0 14px;
+    border-radius: 10px;
+    border: 1px solid var(--line);
+    background: var(--surface);
+    color: var(--fg);
+  }
+  input[type="text"] {
+    flex: 1 1 160px;
+    min-width: 0;
+  }
+  button.primary {
+    background: var(--accent);
+    border-color: var(--accent);
+    color: #fff;
+  }
+  button:focus-visible,
+  select:focus-visible,
+  input:focus-visible,
+  label.file:focus-within {
+    outline: 3px solid var(--accent);
+    outline-offset: 2px;
+  }
+  label.file {
+    display: inline-flex;
+    align-items: center;
+    min-height: 44px;
+    padding: 0 14px;
+    border-radius: 10px;
+    border: 1px solid var(--accent);
+    color: var(--accent);
+    cursor: pointer;
+  }
+  label.file input {
+    position: absolute;
+    opacity: 0;
+    width: 1px;
+    height: 1px;
+  }
+  .target {
+    display: flex;
+    gap: 12px;
+    align-items: baseline;
+  }
+  .target b {
+    font-family: var(--font-han);
+    font-size: 34px;
+    font-weight: 600;
+  }
+  .target span {
+    color: var(--muted);
+  }
+  .card {
+    background: var(--surface);
+    border: 1px solid var(--line);
+    border-radius: 12px;
+    padding: 12px;
+    min-width: 0;
+  }
+  canvas {
+    width: 100%;
+    height: 200px;
+    display: block;
+  }
+  .legend {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 12px;
+    font-size: 12px;
+    color: var(--muted);
+  }
+  .syl {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+    gap: 8px;
+  }
+  .syl div {
+    border: 1px solid var(--line);
+    border-radius: 10px;
+    padding: 8px 10px;
+  }
+  .syl strong {
+    font-family: var(--font-num);
+  }
+  .ok {
+    color: var(--ok);
+  }
+  .bad {
+    color: var(--bad);
+  }
+  .status {
+    font-size: 13px;
+    color: var(--muted);
+  }
+  .history {
+    font-family: var(--font-num);
+    font-size: 12px;
+    white-space: pre-wrap;
+    max-height: 200px;
+    overflow: auto;
+  }
+</style>
+
+<main>
+  <h1>Thử nhận dạng thanh điệu</h1>
+  <p>
+    Chọn từ, đọc to, xem đường cao độ và thanh mà máy nghe ra. Trên điện thoại: ghi âm bằng app Ghi
+    âm của máy (mỗi file một từ, gần micro, chỗ yên tĩnh) rồi bấm <b>Chọn file ghi âm</b>. Âm thanh
+    chỉ xử lý trong trình duyệt, không gửi đi.
+  </p>
+
+  <div class="row">
+    <label for="preset" class="status">Từ</label>
+    <select id="preset"></select>
+    <input
+      id="custom"
+      type="text"
+      placeholder="hoặc gõ pinyin số, vd: ni3 hao3"
+      autocomplete="off"
+    />
+  </div>
+  <div class="target"><b id="t-han">妈</b><span id="t-pinyin">mā · thanh 1</span></div>
+
+  <div class="row">
+    <button id="rec" class="primary" hidden>Thu âm 2 giây</button>
+    <label class="file">Chọn file ghi âm<input id="file" type="file" accept="audio/*" /></label>
+    <label class="status"><input id="intentional" type="checkbox" /> Tôi cố ý đọc sai thanh</label>
+  </div>
+  <p class="status" id="status">Chưa có bản thu.</p>
+
+  <div class="card">
+    <canvas id="plot" width="1040" height="400" aria-label="Đường cao độ theo thời gian"></canvas>
+    <div class="legend">
+      <span>Trục dọc: nửa cung so với giọng của bạn</span><span>Vạch mờ: ranh giới âm tiết</span>
+    </div>
+  </div>
+  <div class="syl" id="syl"></div>
+
+  <div class="card">
+    <div class="row" style="justify-content: space-between">
+      <strong>Các lần thử</strong>
+      <span class="row"
+        ><button id="save">Lưu kết quả</button><button id="copy">Sao chép</button></span
+      >
+    </div>
+    <p class="status" id="save-status">
+      Lưu để Claude đọc lại (chỉ lưu kết quả và đường cao độ, không lưu âm thanh).
+    </p>
+    <div class="history" id="history"></div>
+  </div>
+</main>
+
+<script>
+  /*__LIB__*/
+</script>
+<script>
+  const TEMPLATES = /*__TEMPLATES__*/ {};
+  const P = window.TonePitch;
+  const MARKS = { a: "āáǎàa", e: "ēéěèe", i: "īíǐìi", o: "ōóǒòo", u: "ūúǔùu", ü: "ǖǘǚǜü" };
+  const PRESETS = [
+    ["妈", "ma1"],
+    ["买", "mai3"],
+    ["卖", "mai4"],
+    ["汤", "tang1"],
+    ["糖", "tang2"],
+    ["书", "shu1"],
+    ["树", "shu4"],
+    ["水", "shui3"],
+    ["睡", "shui4"],
+    ["你好", "ni3 hao3"],
+    ["老师", "lao3 shi1"],
+    ["中国", "zhong1 guo2"],
+    ["我爱你", "wo3 ai4 ni3"],
+    ["谢谢", "xie4 xie5"],
+  ];
+  const $ = (id) => document.getElementById(id);
+  const toneOf = (syl) => Number(syl.match(/[1-5]$/)?.[0] ?? 5);
+  function mark(syl) {
+    const t = toneOf(syl);
+    const base = syl.replace(/[1-5]$/, "").replace("v", "ü");
+    if (t === 5) return base;
+    const order = ["a", "e", "ou", "o"];
+    let idx = -1;
+    for (const k of order) {
+      const i = base.indexOf(k);
+      if (i >= 0) {
+        idx = i;
+        break;
+      }
+    }
+    if (idx < 0) {
+      for (let i = base.length - 1; i >= 0; i--)
+        if ("iuü".includes(base[i])) {
+          idx = i;
+          break;
+        }
+    }
+    if (idx < 0) return base + t;
+    return base.slice(0, idx) + MARKS[base[idx]][t - 1] + base.slice(idx + 1);
+  }
+
+  let target = { han: "妈", pinyin: "ma1" };
+  for (const [han, py] of PRESETS) {
+    const o = document.createElement("option");
+    o.value = py;
+    o.textContent = `${han} · ${py.split(" ").map(mark).join(" ")}`;
+    $("preset").append(o);
+  }
+  function setTarget(han, pinyin) {
+    target = { han, pinyin };
+    const tones = pinyin.trim().split(/\s+/).map(toneOf);
+    const surface = P.surfaceTones(tones, han);
+    $("t-han").textContent = han || "—";
+    $("t-pinyin").textContent =
+      `${pinyin.trim().split(/\s+/).map(mark).join(" ")} · thanh đọc thật: ${surface.join("-")}`;
+  }
+  $("preset").onchange = () => {
+    const p = PRESETS.find((x) => x[1] === $("preset").value);
+    $("custom").value = "";
+    setTarget(p[0], p[1]);
+  };
+  $("custom").oninput = () => {
+    const v = $("custom").value.trim();
+    if (/^([a-zü]+[1-5]\s*)+$/i.test(v)) setTarget("", v.toLowerCase());
+  };
+  setTarget(...PRESETS[0]);
+
+  // Hiệu chỉnh giọng: trung vị cao độ của các lần thu trước (cần ≥ 3 lần để dùng).
+  const speakerSamples = [];
+  const history = [];
+
+  async function decodeToMono16k(arrayBuffer) {
+    const Ctx = window.AudioContext || window.webkitAudioContext;
+    const ctx = new Ctx();
+    const buffer = await new Promise((resolve, reject) =>
+      ctx.decodeAudioData(arrayBuffer, resolve, reject),
+    );
+    ctx.close?.();
+    const off = new (window.OfflineAudioContext || window.webkitOfflineAudioContext)(
+      1,
+      Math.ceil(buffer.duration * 16000),
+      16000,
+    );
+    const src = off.createBufferSource();
+    src.buffer = buffer;
+    src.connect(off.destination);
+    src.start();
+    const rendered = await off.startRendering();
+    return rendered.getChannelData(0);
+  }
+
+  function analyzeSamples(samples, source) {
+    const syllables = target.pinyin.trim().split(/\s+/);
+    const tones = syllables.map(toneOf);
+    const surface = P.surfaceTones(tones, target.han);
+    const shapeOnly = P.analyze(samples, 16000, tones.length, undefined, TEMPLATES.shape);
+    const voiced = shapeOnly.frames.map((f) => f.f0).filter((v) => v != null);
+    const calibrated = speakerSamples.length >= 3 ? P.median(speakerSamples) : null;
+    const withLevel = calibrated
+      ? P.analyze(samples, 16000, tones.length, calibrated, TEMPLATES.level)
+      : null;
+    if (voiced.length) speakerSamples.push(P.median(voiced));
+    const main = withLevel ?? shapeOnly;
+    draw(main, surface);
+    const cells = surface.map((want, k) => {
+      const g = main.syllables[k]?.tone ?? null;
+      const g2 = shapeOnly.syllables[k]?.tone ?? null;
+      const ok = want === 5 || g === want;
+      return { syllable: syllables[k], want, got: g, shapeOnly: g2, ok };
+    });
+    $("syl").innerHTML = cells
+      .map(
+        (c) => `<div><span class="status">${mark(c.syllable)}</span><br>
+    cần <strong>${c.want === 5 ? "nhẹ" : c.want}</strong> · nghe ra <strong class="${c.ok ? "ok" : "bad"}">${c.got ?? "?"}</strong>
+    ${withLevel ? `<br><span class="status">chỉ theo hình dáng: ${c.shapeOnly ?? "?"}</span>` : ""}</div>`,
+      )
+      .join("");
+    const verdict = cells.every((c) => c.ok) ? "Đúng thanh" : "Sai thanh";
+    $("status").innerHTML =
+      `<span class="${verdict === "Đúng thanh" ? "ok" : "bad"}">${verdict}</span> · ${source} · ${(samples.length / 16000).toFixed(1)} giây · phân tích ${main.ms.toFixed(1)} ms · ${calibrated ? `đã hiệu chỉnh giọng (${Math.round(calibrated)} Hz)` : `chưa hiệu chỉnh (cần ${3 - speakerSamples.length + 1} lần thu nữa), chỉ so hình dáng`}`;
+    const entry = {
+      at: new Date().toISOString(),
+      han: target.han,
+      pinyin: target.pinyin,
+      intentional: $("intentional").checked,
+      want: surface,
+      got: cells.map((c) => c.got),
+      shapeOnly: cells.map((c) => c.shapeOnly),
+      calibratedHz: calibrated && Math.round(calibrated),
+      ms: Math.round(main.ms * 10) / 10,
+      seconds: Math.round(samples.length / 1600) / 10,
+      source,
+      contour: main.frames
+        .filter((f) => f.f0 != null)
+        .map((f) => [Math.round(f.t * 100) / 100, Math.round(f.f0)]),
+    };
+    history.push(entry);
+    $("history").textContent = history
+      .map(
+        (h) =>
+          `${h.han || h.pinyin} ${h.intentional ? "(cố ý sai) " : ""}cần ${h.want.join("-")} → ${h.got.map((g) => g ?? "?").join("-")} · ${h.ms} ms`,
+      )
+      .join("\n");
+  }
+
+  function draw(a, surface) {
+    const c = $("plot");
+    const g = c.getContext("2d");
+    const css = getComputedStyle(document.documentElement);
+    const color = (n) => css.getPropertyValue(n).trim();
+    g.clearRect(0, 0, c.width, c.height);
+    const voiced = a.frames.filter((f) => f.f0 != null);
+    if (!voiced.length) {
+      g.fillStyle = color("--muted");
+      g.font = "28px sans-serif";
+      g.fillText("Không đo được cao độ", 24, 60);
+      return;
+    }
+    const t0 = voiced[0].t - 0.05,
+      t1 = voiced.at(-1).t + 0.05;
+    const st = (hz) => P.semitones(hz, a.refHz);
+    const lo = -8,
+      hi = 8;
+    const x = (t) => 40 + ((t - t0) / (t1 - t0)) * (c.width - 60);
+    const y = (v) => 20 + ((hi - Math.max(lo, Math.min(hi, v))) / (hi - lo)) * (c.height - 40);
+    g.strokeStyle = color("--line");
+    g.lineWidth = 1;
+    g.fillStyle = color("--muted");
+    g.font = "22px sans-serif";
+    for (const v of [-6, -3, 0, 3, 6]) {
+      g.beginPath();
+      g.moveTo(40, y(v));
+      g.lineTo(c.width - 20, y(v));
+      g.stroke();
+      g.fillText(String(v), 4, y(v) + 7);
+    }
+    a.segments.forEach((seg, k) => {
+      const want = surface[k];
+      g.fillStyle = color(`--t${want === 5 ? 1 : want}`);
+      g.globalAlpha = 0.08;
+      g.fillRect(x(seg[0].t), 20, x(seg.at(-1).t) - x(seg[0].t), c.height - 40);
+      g.globalAlpha = 1;
+      g.strokeStyle = color(`--t${a.syllables[k]?.tone ?? 1}`);
+      g.lineWidth = 5;
+      g.beginPath();
+      let started = false;
+      for (const f of seg) {
+        if (f.f0 == null) {
+          started = false;
+          continue;
+        }
+        const px = x(f.t),
+          py = y(st(f.f0));
+        started ? g.lineTo(px, py) : g.moveTo(px, py);
+        started = true;
+      }
+      g.stroke();
+    });
+  }
+
+  $("file").onchange = async () => {
+    const file = $("file").files[0];
+    if (!file) return;
+    $("status").textContent = "Đang đọc file…";
+    try {
+      analyzeSamples(await decodeToMono16k(await file.arrayBuffer()), file.name);
+    } catch (e) {
+      $("status").innerHTML =
+        `<span class="bad">Không đọc được file này (${e?.message ?? e}). Thử file .m4a, .mp3 hoặc .wav.</span>`;
+    }
+    $("file").value = "";
+  };
+
+  // Micro: chỉ khi trình duyệt cho dùng (máy tính chạy localhost). Trang Artifact không có micro.
+  if (navigator.mediaDevices?.getUserMedia) {
+    $("rec").hidden = false;
+    $("rec").onclick = async () => {
+      let stream;
+      try {
+        stream = await navigator.mediaDevices.getUserMedia({
+          audio: { echoCancellation: false, noiseSuppression: false, autoGainControl: true },
+        });
+      } catch {
+        $("rec").hidden = true;
+        $("status").textContent =
+          "Trang này không dùng được micro. Hãy ghi âm bằng app của máy rồi chọn file.";
+        return;
+      }
+      const rec = new MediaRecorder(stream);
+      const chunks = [];
+      rec.ondataavailable = (e) => chunks.push(e.data);
+      rec.onstop = async () => {
+        stream.getTracks().forEach((t) => t.stop());
+        const blob = new Blob(chunks);
+        analyzeSamples(await decodeToMono16k(await blob.arrayBuffer()), "micro");
+        $("rec").disabled = false;
+      };
+      $("rec").disabled = true;
+      $("status").textContent = "Đang thu… đọc ngay";
+      rec.start();
+      setTimeout(() => rec.stop(), 2000);
+    };
+  }
+
+  let dbPromise = null;
+  try {
+    dbPromise = window.claude?.use ? window.claude.use("db") : null;
+  } catch {
+    dbPromise = null;
+  }
+  $("save").onclick = async () => {
+    if (!history.length) {
+      $("save-status").textContent = "Chưa có lần thử nào.";
+      return;
+    }
+    const db = dbPromise ? await dbPromise.catch(() => null) : null;
+    if (!db) {
+      $("save-status").textContent = "Không lưu được ở đây. Bấm Sao chép rồi gửi cho Claude.";
+      return;
+    }
+    const id = `${Date.now().toString(36)}-${Math.random().toString(36).slice(2, 6)}`;
+    try {
+      await db
+        .collection("attempts")
+        .doc(id)
+        .set({ ua: navigator.userAgent, attempts: history.slice() });
+      $("save-status").innerHTML = `<span class="ok">Đã lưu ${history.length} lần thử.</span>`;
+    } catch (e) {
+      $("save-status").innerHTML =
+        `<span class="bad">Lưu lỗi: ${e?.code ?? e?.message ?? e}. Bấm Sao chép.</span>`;
+    }
+  };
+  $("copy").onclick = async () => {
+    const text = JSON.stringify(history);
+    try {
+      await navigator.clipboard.writeText(text);
+      $("save-status").textContent = "Đã sao chép.";
+    } catch {
+      $("history").textContent = text;
+    }
+  };
+</script>

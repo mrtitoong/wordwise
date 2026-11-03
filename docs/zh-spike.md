@@ -9,6 +9,7 @@ code chính. Dữ liệu tải về để ở `spikes/.cache/` và kết quả s
 | # | Thí nghiệm | Trạng thái | Kết luận ngắn |
 |---|---|---|---|
 | 1 | Azure chấm phát âm zh-CN, có bắt sai thanh không | **Xong với giọng máy** (48 mẫu); bản thu người thật chưa có | **Hầu như không bắt sai thanh.** Sai thanh: điểm chính xác chỉ giảm trung vị **1 điểm** (trung bình 3,4), 1/20 mẫu bị đánh "Mispronunciation". Sai phụ âm: giảm trung vị **49 điểm**, 3/4 bị đánh dấu. Không có mức âm tiết; "âm vị" zh-CN là cả âm tiết kèm thanh *của câu mẫu*, không cho biết người đọc thanh nào. |
+| 1b | Tự đo cao độ (F0) trong trình duyệt để nhận thanh | **Xong với giọng máy**; trang thử giọng thật chờ anh/chị | Nhanh (5–10 ms/bản thu) và **bắt được sai thanh tốt hơn Azure nhiều** (19/20 so với 1/20). Nhưng nhận đúng thanh trên giọng chưa gặp chỉ **~54% âm tiết** (giọng nữ ~65%, giọng nam ~43%) và **báo nhầm 8/28** bản đọc đúng. **Chưa đủ để chấm điểm**, chỉ đủ làm biểu đồ cao độ để người học tự so. |
 | 2 | Hanzi Writer quiz trên điện thoại | **Một phần** – đo tự động xong, máy thật chờ anh/chị thử | Dữ liệu nét nhỏ (900 chữ HSK 1–3: ~818 KB gzip, trung vị 1 KB/chữ). Chấm một nét < 5 ms kể cả CPU chậm 4×. Lệch ≤ 9 px: được nhận ~100%; lệch 17 px: 89% (leniency 1) / 95% (1.5). Nét ngược chiều/sai thứ tự gần như luôn bị bắt. |
 | 3 | Âm Hán Việt từ Unihan cho HSK 1–3 | **Xong** | Có âm cho 86% số chữ (cần tra qua chữ phồn thể), thiếu 123 chữ, trong đó có chữ rất thường gặp (爱 这 很 就 她). **Nhiều âm là âm Nôm, không phải âm Hán Việt** (們 → "món", 嗎 → "mửa"). Không dùng thẳng được. |
 | 4 | Giấy phép | **Xong** (tóm tắt, không phải ý kiến pháp lý) | Rủi ro lớn nhất là **ShareAlike của CC-CEDICT** và **điều kiện công bố bản sửa của Arphic PL**. Unihan dễ. Danh sách HSK chưa rõ quyền tác giả. |
@@ -111,6 +112,89 @@ Nguồn: [Use pronunciation assessment](https://learn.microsoft.com/en-us/azure/
   từ < 60) / ngắt nghỉ / Monotone.
 
 Kết quả đo ở trên khớp với tài liệu: zh-CN không có mức âm tiết và không có trường thanh điệu.
+
+---
+
+## 1b. Tự đo cao độ trong trình duyệt
+
+Thử cách thay Azure để chấm thanh: đo đường cao độ (F0) của bản thu ngay trong trình duyệt rồi so hình dáng với 4
+thanh. Code trong `spikes/tone-pitch/`, hàm thuần TypeScript (không thư viện, 4,5 KB sau nén), chạy được cả ở
+Node lẫn trình duyệt.
+
+### Cách làm
+
+- **Đo cao độ** (`pitch.ts`): hàm CMND của YIN cho tối đa 4 ứng viên cao độ mỗi khung 10 ms, rồi Viterbi chọn
+  đường liền mạch nhất (giống pYIN). Bản đầu lấy đáy đầu tiên như YIN gốc thì **mất gần hết giọng nam**: giọng
+  máy nam (và người thật, nhất là thanh 3) hay **rè** (creaky) ở cuối âm tiết, ít tuần hoàn, nên bị bỏ khung
+  hoặc nhảy quãng tám.
+- **Tách âm tiết**: đoạn có tiếng, khoảng lặng; dính liền (vd 我爱你 toàn âm hữu thanh) thì cắt ở chỗ năng lượng
+  thấp nhất. Số âm tiết lấy từ pinyin của từ.
+- **Thanh cần đọc** có xét biến điệu: 3+3 → 2+3, 不 và 一 trước thanh 4. Thanh nhẹ không chấm.
+- **Nhận thanh**: so đường cao độ (10 điểm, đơn vị nửa cung) với mẫu từng thanh. Có hai kiểu mốc: chỉ hình dáng
+  (không biết giọng người nói), và **có hiệu chỉnh giọng** (biết cao độ trung bình của người nói, trong app lấy
+  từ vài lần thu đầu). Thử ba bộ mẫu: theo sách (thang Chao 55/35/214/51), trung bình học từ dữ liệu, và láng
+  giềng gần nhất.
+- **Dữ liệu** (`make-samples.ts`): giọng máy Azure ép thanh bằng SSML. 6 giọng (3 nữ, 3 nam) × (12 âm tiết × 4
+  thanh + 2 cặp × 16 tổ hợp thanh) = 480 bản, 672 âm tiết. **Chỉnh trên 2 giọng (Xiaoxiao, Yunxi), báo kết quả
+  trên 4 giọng còn lại**, để không tự lừa mình bằng chính dữ liệu đã dùng để chỉnh. Thêm nhiễu trắng 20 dB và
+  10 dB. Bảng đầy đủ ở `spikes/tone-pitch/out/results.md`.
+
+### Kết quả trên 4 giọng chưa gặp (448 âm tiết; đoán bừa là 25%)
+
+| Mẫu thanh | Cách | Sạch | Nhiễu 20 dB | Nhiễu 10 dB |
+|---|---|---|---|---|
+| Theo sách (Chao) | chỉ hình dáng | 46,4% | 44,4% | 41,1% |
+| Theo sách (Chao) | có hiệu chỉnh giọng | 43,5% | 40,6% | 34,8% |
+| Trung bình học từ 2 giọng | chỉ hình dáng | 46,9% | 45,1% | 42,0% |
+| **Trung bình học từ 2 giọng** | **có hiệu chỉnh giọng** | **54,2%** | 51,8% | 47,5% |
+| Láng giềng gần nhất | có hiệu chỉnh giọng | 50,7% (trên 2 giọng chỉnh: 96%, tức học thuộc) | 48,9% | 45,3% |
+
+Với cách tốt nhất: từ một âm tiết đúng cả từ 60,9%, từ hai âm tiết chỉ 23,4%. Theo từng giọng: Xiaoxiao 83%
+(giọng chỉnh), Xiaoyi 66%, Xiaochen 65%, Yunxi 58% (giọng chỉnh), Yunyang 45%, Yunjian 41%. **Giọng nữ khá hơn
+hẳn giọng nam**, vì giọng nam rè nhiều.
+
+Nhầm nhiều nhất: thanh 2 ↔ thanh 3 (cùng xuống thấp rồi lên; thanh 3 đọc riêng cũng có đuôi đi lên), thanh 1 ↔
+thanh 4 (thanh 4 của giọng máy lên một chút trước khi xuống, thanh 1 cuối âm tiết hơi rơi), thanh 3 ↔ thanh 4.
+
+### So trực tiếp với Azure (48 mẫu đúng/sai thanh của thí nghiệm 1)
+
+| | Azure Pronunciation Assessment | Đo cao độ |
+|---|---|---|
+| Bắt được bản đọc sai thanh | 1/20 (điểm từ < 60) | **19/20** |
+| Báo nhầm bản đọc đúng thanh | – | **8/28** (chủ yếu từ 2–3 âm tiết: 中国, 我爱你, 谢谢, 你好) |
+
+Lưu ý: 48 mẫu này là của Xiaoxiao và Yunxi, đúng hai giọng dùng để chỉnh, nên con số thực tế với giọng lạ sẽ
+**kém hơn**. Từ một âm tiết: bắt 9/10 sai thanh, báo nhầm 1/10.
+
+### Tốc độ và kích thước
+
+- Phân tích một bản thu ~2 giây: **5–10 ms** trong Chromium giả lập điện thoại (lần đầu ~95 ms do trình duyệt khởi
+  động), 7,5 ms trung vị trên Node. Không cần máy chủ, không tốn tiền, âm thanh không rời máy.
+- Thư viện 4,5 KB (đã nén gọn), mẫu thanh vài trăm byte.
+
+### Kết luận
+
+- **Khả thi về kỹ thuật** (nhanh, nhẹ, offline), và với sai thanh thì **có tín hiệu tốt hơn hẳn Azure**.
+- **Chưa đủ để chấm điểm tự động**: ~54% nhận đúng trên giọng lạ, báo nhầm gần 3/10 bản đọc đúng. Nếu ghi lịch ôn
+  (Quên/Nhớ) theo kết quả này, người học sẽ bị chấm sai rất nhiều.
+- **Dùng được ngay** cho phần trực quan: vẽ đường cao độ của người học cạnh đường mẫu (từ audio mẫu của từ), để
+  người học tự so, kèm gợi ý mềm ("âm tiết 2 có vẻ đi lên, thanh 4 cần đi xuống"), không chấm điểm.
+- **Muốn chấm được** cần dữ liệu giọng người thật có gắn nhãn để học mẫu, thay cho giọng máy. Ví dụ bộ "Tone
+  Perfect" (Đại học Michigan State, ~9.800 âm tiết đơn của 6 người bản ngữ; **giấy phép chưa kiểm tra**), hoặc bản
+  thu do chủ sản phẩm/người thử tự thu và gắn nhãn. Kèm một bộ phân loại tốt hơn (đặc trưng độ dốc, điểm đổi
+  hướng; hoặc mô hình nhỏ). Đây là việc của một prompt riêng, có tiêu chí rõ (vd ≥ 90% với từ một âm tiết trên
+  giọng chưa gặp).
+
+### Thử bằng giọng thật: chờ anh/chị
+
+Trang thử (Artifact riêng tư): **https://claude.ai/artifact/N44z2s4uRNzxJjHAeptQdv** (nguồn
+`spikes/tone-pitch/tone-lab.template.html`, sinh bằng `build-page.mjs`).
+- Trang Artifact **không dùng được micro**. Trên điện thoại: ghi âm bằng app Ghi âm của máy (mỗi file một từ), rồi
+  bấm **Chọn file ghi âm** (m4a, mp3, wav đều được). Âm thanh chỉ xử lý trong trình duyệt, không gửi đi.
+- Chọn từ trong danh sách (có cặp tối thiểu 买/卖, 书/树, 水/睡, 汤/糖) hoặc gõ pinyin số. Trang vẽ đường cao độ,
+  ghi thanh cần đọc và thanh máy nghe ra. Từ lần thứ 4 trở đi trang tự hiệu chỉnh theo giọng người đọc.
+- Đề xuất: mỗi từ đọc một lần đúng, một lần cố ý sai (tích ô "Tôi cố ý đọc sai thanh"), rồi bấm **Lưu kết quả**.
+  Tôi đọc lại được kết quả và đường cao độ (không có âm thanh) để tính độ chính xác trên giọng thật.
 
 ---
 
@@ -325,6 +409,10 @@ Rủi ro và việc cần làm:
 # 3. Unihan
 curl -L -o spikes/.cache/unihan/Unihan.zip https://www.unicode.org/Public/UCD/latest/ucd/Unihan.zip  # rồi giải nén
 node spikes/unihan-coverage/coverage.mjs spikes/.cache/unihan spikes/.cache/hsk
+# 1b. Đo cao độ (cần khóa Azure để sinh mẫu)
+npx tsx --env-file-if-exists=.env.local spikes/tone-pitch/make-samples.ts
+npx tsx spikes/tone-pitch/evaluate.ts
+node spikes/tone-pitch/build-page.mjs   # trang thử giọng thật
 # 2. Hanzi Writer (npm pack hanzi-writer-data@2.0.1 hanzi-writer@3.7.3 vào spikes/.cache/hanzi-data)
 node spikes/hanzi-writer/data-size.mjs spikes/.cache/hanzi-data/data-pkg spikes/.cache/hsk/hsk30-charlist.txt
 node spikes/hanzi-writer/synthetic.mjs spikes/.cache/hanzi-data/data-pkg spikes/.cache/hanzi-data/hw-pkg/dist/hanzi-writer.min.js

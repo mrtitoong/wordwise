@@ -8,7 +8,7 @@ code chính. Dữ liệu tải về để ở `spikes/.cache/` và kết quả s
 
 | # | Thí nghiệm | Trạng thái | Kết luận ngắn |
 |---|---|---|---|
-| 1 | Azure chấm phát âm zh-CN, có bắt sai thanh không | **Chưa chạy được** – thiếu khóa Azure ở máy | Đã có script (24 mẫu đúng/sai thanh + bản thu thật). Theo tài liệu: zh-CN có điểm tổng, điểm từng từ, tên âm vị SAPI; **không có điểm âm tiết, không có prosody, không có mục "thanh điệu" riêng**. |
+| 1 | Azure chấm phát âm zh-CN, có bắt sai thanh không | **Xong với giọng máy** (48 mẫu); bản thu người thật chưa có | **Hầu như không bắt sai thanh.** Sai thanh: điểm chính xác chỉ giảm trung vị **1 điểm** (trung bình 3,4), 1/20 mẫu bị đánh "Mispronunciation". Sai phụ âm: giảm trung vị **49 điểm**, 3/4 bị đánh dấu. Không có mức âm tiết; "âm vị" zh-CN là cả âm tiết kèm thanh *của câu mẫu*, không cho biết người đọc thanh nào. |
 | 2 | Hanzi Writer quiz trên điện thoại | **Một phần** – đo tự động xong, máy thật chờ anh/chị thử | Dữ liệu nét nhỏ (900 chữ HSK 1–3: ~818 KB gzip, trung vị 1 KB/chữ). Chấm một nét < 5 ms kể cả CPU chậm 4×. Lệch ≤ 9 px: được nhận ~100%; lệch 17 px: 89% (leniency 1) / 95% (1.5). Nét ngược chiều/sai thứ tự gần như luôn bị bắt. |
 | 3 | Âm Hán Việt từ Unihan cho HSK 1–3 | **Xong** | Có âm cho 86% số chữ (cần tra qua chữ phồn thể), thiếu 123 chữ, trong đó có chữ rất thường gặp (爱 这 很 就 她). **Nhiều âm là âm Nôm, không phải âm Hán Việt** (們 → "món", 嗎 → "mửa"). Không dùng thẳng được. |
 | 4 | Giấy phép | **Xong** (tóm tắt, không phải ý kiến pháp lý) | Rủi ro lớn nhất là **ShareAlike của CC-CEDICT** và **điều kiện công bố bản sửa của Arphic PL**. Unihan dễ. Danh sách HSK chưa rõ quyền tác giả. |
@@ -21,28 +21,69 @@ code chính. Dữ liệu tải về để ở `spikes/.cache/` và kết quả s
 
 - `spikes/azure-zh/assess.ts`: Azure TTS đọc 10 từ/cụm hai lần, **đúng thanh** và **cố ý sai thanh**. Sai thanh tạo
   bằng SSML `<phoneme alphabet="sapi" ph="mai 4">买</phoneme>` (ép đọc "mài" cho chữ 买). Thêm 2 mẫu đối chứng
-  sai phụ âm, đúng thanh (四 sì → shì, 是 shì → sì), để so mức nhạy với sai thanh. Mỗi mẫu đọc bằng hai giọng
-  (Xiaoxiao nữ, Yunxi nam) → 24 lượt chấm, khoảng $0,01 tổng.
+  sai phụ âm, đúng thanh (四 sì → shì, 是 shì → sì). Mỗi mẫu đọc bằng hai giọng (Xiaoxiao nữ, Yunxi nam):
+  **48 lượt chấm**, mỗi lượt 0,4–0,75 giây, tổng chi phí dưới $0,02.
 - Chấm với `ReferenceText` là chữ đúng, `Granularity: Phoneme`, `PhonemeAlphabet: SAPI`, `NBestPhonemeCount: 5`,
-  `EnableMiscue`. Script ghi JSON thô của từng lượt và bảng so sánh: chữ Azure nhận ra, điểm tổng, điểm từng
-  từ, điểm từng âm vị, 2 âm vị Azure cho là giống nhất.
-- Bản thu thật của người: đặt `spikes/azure-zh/recordings/<chữ>__<nhãn>.wav` (vd `买__dung.wav`,
-  `买__sai-thanh-4.wav`), script chấm luôn. Giọng máy đọc sai thanh là mẫu "sạch": chỉ sai thanh, còn lại
-  chuẩn. Người học thật sai lẫn lộn hơn, nên vẫn cần bản thu người.
+  `EnableMiscue`. JSON thô ở `spikes/azure-zh/out/raw/`, bảng đầy đủ ở `out/results.md`.
+- **Kiểm tra mẫu** (`spikes/azure-zh/verify.ts`): đưa từng file qua nhận dạng giọng nói zh-CN thường (không câu
+  mẫu, không chấm), để chắc giọng máy đọc sai thanh thật. Kết quả: 买 sai → nghe ra **卖**, 书 → **树**, 水 → **睡**,
+  汤 → **糖/唐**, 老师 → **老实/老石**, 谢谢 → **歇歇**, 中国 → **种果**. Vậy mẫu sai thanh là thật (14/20 mẫu
+  đổi chữ rõ ràng; 你好, 我爱你 và một mẫu 中国, 谢谢 vẫn nghe ra chữ đúng nên có thể TTS đọc lệch ít).
 
-### Vì sao chưa chạy
+### Kết quả
 
-Khóa `AZURE_SPEECH_KEY`/`AZURE_SPEECH_REGION` chỉ có trong Supabase Secrets. Supabase không cho đọc lại giá trị,
-và `.env.local` ở máy không có khóa này. (`npm run pronunciation:smoke` của GĐ5 cũng cần khóa trong `.env.local`.)
+| Từ | Giọng | Nhận dạng thường: đúng → sai | Điểm chính xác: đúng → sai | Điểm tổng: đúng → sai | Giảm |
+|---|---|---|---|---|---|
+| 妈 | Xiaoxiao | 妈 → MA | 92 → 83 | 95 → 90 | 9 |
+| 买 | Xiaoxiao | 买 → 卖 | 64 → 74 | 78 → 84 | −10 |
+| 汤 | Xiaoxiao | 汤 → 糖 | 57⚠ → 83 | 11 → 90 | −26 |
+| 书 | Xiaoxiao | 书 → 树 | 90 → 84 | 94 → 90 | 6 |
+| 水 | Xiaoxiao | 谁 → 睡 | 59⚠ → 58⚠ | 12 → 12 | 1 |
+| 你好 | Xiaoxiao | 你好 → 你好 | 96 → 93 | 98 → 96 | 3 |
+| 谢谢 | Xiaoxiao | 谢谢 → 歇歇 | 99 → 98 | 99 → 99 | 1 |
+| 老师 | Xiaoxiao | 老师 → 老实 | 100 → 92 | 100 → 95 | 8 |
+| 中国 | Xiaoxiao | 中国 → 中国 | 100 → 100 | 100 → 100 | 0 |
+| 我爱你 | Xiaoxiao | 我爱你 → 我爱你 | 100 → 100 | 100 → 100 | 0 |
+| 妈 | Yunxi | 妈 → MA | 96 → 96 | 98 → 98 | 0 |
+| 买 | Yunxi | 买 → 卖 | 100 → 74 | 100 → 84 | 26 |
+| 汤 | Yunxi | Tongue → 唐 | 97 → 75 | 98 → 85 | 22 |
+| 书 | Yunxi | 鼠 → 树 | 85 → 86 | 91 → 92 | −1 |
+| 水 | Yunxi | 水 → 睡 | 97 → 86 | 98 → 92 | 11 |
+| 你好 | Yunxi | 你好 → 你好 | 92 → 93 | 95 → 96 | −1 |
+| 谢谢 | Yunxi | 谢谢 → 谢谢 | 98 → 98 | 99 → 99 | 0 |
+| 老师 | Yunxi | 老师 → 老石 | 99 → 98 | 99 → 99 | 1 |
+| 中国 | Yunxi | 中国 → 种果 | 100 → 84 | 100 → 90 | 16 |
+| 我爱你 | Yunxi | 我爱你 → 我爱你 | 100 → 99 | 100 → 99 | 1 |
+| *四 (sai phụ âm)* | Xiaoxiao | 四 → 是 | 97 → 48⚠ | 98 → 10 | **49** |
+| *是 (sai phụ âm)* | Xiaoxiao | 是 → 四 | 88 → 46⚠ | 93 → 9 | **42** |
+| *四 (sai phụ âm)* | Yunxi | 四 → 是 | 99 → 20⚠ | 99 → 4 | **79** |
+| *是 (sai phụ âm)* | Yunxi | 是 → 四 | 86 → 63 | 92 → 78 | **23** |
 
-**Việc anh/chị cần làm** (không dán khóa vào chat):
-1. Mở Azure Portal → tài nguyên Speech đang dùng cho WordWise → **Keys and Endpoint**.
-2. Mở file `D:\vibe\WordWise\.env.local` bằng Notepad, thêm hai dòng:
-   `AZURE_SPEECH_KEY=<Key 1>` và `AZURE_SPEECH_REGION=<Location/Region, vd southeastasia>`. Lưu file.
-3. Báo tôi, tôi sẽ chạy `npx tsx --env-file-if-exists=.env.local spikes/azure-zh/assess.ts` và điền kết quả.
-4. (Tùy chọn) Thu 10 bản của người thật: mỗi từ trong bảng dưới đọc một lần đúng, một lần sai thanh, lưu WAV
-   16 kHz mono vào `spikes/azure-zh/recordings/`. Trang `/settings/microphone` của app chưa xuất WAV, nên nếu
-   cần tôi làm thêm một trang thu nhỏ.
+⚠ = Azure đánh `Mispronunciation` (điểm từ < 60).
+
+**Trả lời câu hỏi:**
+- **Điểm tổng / điểm từ:** sai thanh chỉ làm điểm chính xác giảm trung vị **1 điểm** (trung bình 3,4; khoảng −26
+  tới +26). 19/20 mẫu sai thanh vẫn ≥ 74 điểm; mẫu duy nhất bị đánh dấu (水) thì bản đúng cũng bị đánh dấu.
+  Có 3 lần bản sai thanh được điểm **cao hơn** bản đúng. Sai phụ âm thì giảm 23–79 điểm (trung vị 49), 3/4 bị
+  đánh dấu. Azure rõ ràng chấm chủ yếu phụ âm/vần, gần như bỏ qua thanh.
+- **Âm tiết:** không có (zh-CN không trả `Syllables`). Với zh-CN, mỗi "âm vị" SAPI là **cả âm tiết kèm số thanh
+  lấy từ câu mẫu** (vd `mai 3`), không phải thanh người đọc: đọc "mai 4" vẫn ra nhãn `mai 3`, điểm 66.
+  `NBestPhonemes` (âm Azure nghe được) **trả rỗng** với zh-CN, nên không biết người học đã đọc thanh nào.
+- **Âm vị:** điểm âm tiết khi sai thanh vẫn 50–100, không dùng làm ngưỡng được.
+
+**Hệ quả:** không dùng được điểm của Azure Pronunciation Assessment để chấm thanh điệu. Có hai dấu hiệu khác
+đáng thử (chưa làm):
+1. **Nhận dạng thường** (không chấm) phân biệt được thanh khá tốt với từ một âm tiết có cặp tối thiểu
+   (买/卖, 书/树, 水/睡). Nhưng nó cũng nhận nhầm 3/20 bản *đúng* (水 → 谁, 书 → 鼠, 汤 → "Tongue"), độ tin cậy
+   thấp (0,1–0,4), và trong cụm từ thì bị ngữ cảnh kéo về chữ đúng (你好, 我爱你). Chỉ hợp làm gợi ý phụ.
+2. **Tự đo cao độ (F0)** của bản thu trong trình duyệt, so đường cao độ với thanh mong đợi. Không tốn tiền, làm
+  được cho từng âm tiết, nhưng phải tự làm và kiểm thử nhiều với giọng thật.
+
+**Giới hạn:** mẫu là giọng máy, người học thật sai lẫn lộn hơn. Bản thu người thật vẫn nên có trước khi chốt:
+đặt WAV 16 kHz mono vào `spikes/azure-zh/recordings/<chữ>__<nhãn>.wav` (vd `买__sai-thanh-4.wav`) rồi chạy lại
+script. Nếu cần, tôi làm một trang thu âm nhỏ xuất đúng định dạng này.
+
+Danh sách mẫu:
 
 | Chữ | Đúng | Sai cố ý | Ghi chú |
 |---|---|---|---|
@@ -69,11 +110,7 @@ Nguồn: [Use pronunciation assessment](https://learn.microsoft.com/en-us/azure/
 - Không có trường nào riêng cho thanh điệu. `ErrorType` chỉ có Omission / Insertion / Mispronunciation (điểm
   từ < 60) / ngắt nghỉ / Monotone.
 
-Vậy với tiếng Trung, mức nhỏ nhất có thể là **từ** (trong tiếng Trung thường 1–2 âm tiết) và **âm vị SAPI**.
-Thí nghiệm cần trả lời ba câu: (a) sai thanh có kéo điểm từ/điểm tổng xuống dưới 60 không; (b) âm vị SAPI của
-vần có mang số thanh không (vd `ai 3`), nếu có thì NBest có chỉ ra thanh người học đã đọc không; (c) sai thanh
-bị trừ điểm ít hay nhiều so với sai phụ âm. Nếu cả (a) lẫn (b) đều "không" thì Azure không đủ để chấm thanh,
-phải tự phân tích cao độ (F0) trong trình duyệt hoặc tìm nhà cung cấp khác.
+Kết quả đo ở trên khớp với tài liệu: zh-CN không có mức âm tiết và không có trường thanh điệu.
 
 ---
 
@@ -294,4 +331,5 @@ node spikes/hanzi-writer/synthetic.mjs spikes/.cache/hanzi-data/data-pkg spikes/
 node spikes/hanzi-writer/build-page.mjs spikes/.cache/hanzi-data/data-pkg   # trang thử máy thật
 # 1. Azure (cần khóa trong .env.local)
 npx tsx --env-file-if-exists=.env.local spikes/azure-zh/assess.ts
+npx tsx --env-file-if-exists=.env.local spikes/azure-zh/verify.ts   # kiểm tra mẫu bằng nhận dạng thường
 ```

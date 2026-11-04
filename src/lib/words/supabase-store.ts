@@ -5,12 +5,7 @@
 import type { SupabaseClient } from "@supabase/supabase-js";
 import type { Database, Json } from "@/lib/db/database.types";
 import { toReading } from "@/lib/lang/zh/lexicon";
-import {
-  LanguageSchema,
-  StoredPosSchema,
-  type Language,
-  type Pos,
-} from "@/lib/schema/word";
+import { LanguageSchema, StoredPosSchema, type Language, type Pos } from "@/lib/schema/word";
 import { fromWordRows } from "@/lib/schema/word-rows";
 import { ImageCreditSchema, type StoredWord } from "./api";
 import type { RequestJobResult, WordJob, WordStore } from "./pipeline";

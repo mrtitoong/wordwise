@@ -28,6 +28,8 @@
  */
 import { z } from "zod";
 
+import { languagePack } from "@/lib/lang";
+
 export const SCHEMA_VERSION = 1;
 
 /* ---------- Kiểu cơ bản ---------- */
@@ -255,7 +257,7 @@ export const WordContentSchema = z
         message: `language_extra.kind (${w.language_extra.kind}) phải trùng language (${w.language})`,
       });
     }
-    if (w.language === "en" && w.ipa.us === null && w.ipa.uk === null) {
+    if (languagePack(w.language).requiresIpa && w.ipa.us === null && w.ipa.uk === null) {
       ctx.addIssue({
         code: "custom",
         path: ["ipa"],

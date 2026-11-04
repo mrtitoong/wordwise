@@ -3,12 +3,11 @@
  * Chạy được ở Node và Deno; khóa và khu vực truyền vào (Edge Function đọc từ Secrets).
  */
 
+import { EN_TTS_VOICES } from "@/lib/lang/en";
+
 export type Voice = "us" | "uk";
 
-export const VOICES: Record<Voice, { locale: string; name: string }> = {
-  us: { locale: "en-US", name: "en-US-AvaNeural" },
-  uk: { locale: "en-GB", name: "en-GB-SoniaNeural" },
-};
+export const VOICES: Record<Voice, { locale: string; name: string }> = EN_TTS_VOICES;
 
 /** MP3 mono 24 kHz / 48 kbps: ~6 KB mỗi giây, đủ rõ cho một từ hoặc một câu. */
 export const OUTPUT_FORMAT = "audio-24khz-48kbitrate-mono-mp3";

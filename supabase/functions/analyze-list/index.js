@@ -172,6 +172,48 @@ function resolveLlmConfig(env = {}) {
 
 // src/lib/schema/word.ts
 import { z } from "npm:zod@4.6.5";
+
+// src/lib/lang/en/index.ts
+var EN_TTS_VOICES = {
+  us: { locale: "en-US", name: "en-US-AvaNeural" },
+  uk: { locale: "en-GB", name: "en-GB-SoniaNeural" }
+};
+var en = {
+  code: "en",
+  wordAudioVoices: ["us", "uk"],
+  speechLocale: (voice) => EN_TTS_VOICES[voice].locale,
+  lemmatizes: true,
+  usesDictionaryApi: true,
+  requiresIpa: true
+};
+
+// src/lib/lang/zh/index.ts
+var zh = {
+  code: "zh",
+  wordAudioVoices: [],
+  speechLocale: () => "zh-CN",
+  lemmatizes: false,
+  usesDictionaryApi: false,
+  requiresIpa: false
+};
+
+// src/lib/lang/index.ts
+var PACKS = { en, zh };
+function plainPack(code) {
+  return {
+    code,
+    wordAudioVoices: [],
+    speechLocale: () => code,
+    lemmatizes: false,
+    usesDictionaryApi: false,
+    requiresIpa: false
+  };
+}
+function languagePack(code) {
+  return PACKS[code] ?? plainPack(code);
+}
+
+// src/lib/schema/word.ts
 var SCHEMA_VERSION = 1;
 var text = z.string().trim().min(1);
 var LanguageSchema = z.enum(["en", "ja", "zh", "ko", "fr"]);
@@ -344,7 +386,7 @@ var WordContentSchema = z.object({
       message: `language_extra.kind (${w.language_extra.kind}) phải trùng language (${w.language})`
     });
   }
-  if (w.language === "en" && w.ipa.us === null && w.ipa.uk === null) {
+  if (languagePack(w.language).requiresIpa && w.ipa.us === null && w.ipa.uk === null) {
     ctx.addIssue({
       code: "custom",
       path: ["ipa"],
@@ -1358,7 +1400,7 @@ function lemmatizeWord(word, lemmatizer, pos) {
 function toLemma(input, options) {
   const surface = cleanSurface(input);
   const pos = options.pos ?? null;
-  if (options.language !== "en" || surface === "") {
+  if (!languagePack(options.language).lemmatizes || surface === "") {
     return { lemma: surface, surface, alternatives: [] };
   }
   const words2 = surface.split(" ");

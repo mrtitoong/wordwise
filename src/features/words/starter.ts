@@ -1,5 +1,6 @@
 import "server-only";
 import type { SupabaseClient } from "@supabase/supabase-js";
+import { DEFAULT_LANGUAGE } from "@/lib/lang";
 import type { Database } from "@/lib/db/database.types";
 import { CEFR_LEVELS } from "@/lib/onboarding/settings";
 import type { StarterWord } from "@/lib/onboarding/starter-words";
@@ -14,7 +15,7 @@ export async function loadStarterCandidates(supabase: Client): Promise<StarterWo
   const { data, error } = await supabase
     .from("words")
     .select("lemma, cefr, ipa_us, word_senses(id, sense_order, meaning_vi)")
-    .eq("language", "en")
+    .eq("language", DEFAULT_LANGUAGE)
     .eq("is_hidden", false)
     .in("cefr", [...CEFR_LEVELS, "C2"])
     .limit(200);

@@ -1,4 +1,5 @@
 import type { Grade } from "ts-fsrs";
+import { DEFAULT_LANGUAGE } from "@/lib/lang";
 import { missingSkillCards, placedCardFields, type Skill } from "@/lib/srs/cards";
 import { applyReview, createScheduler, newCardFields } from "@/lib/srs/scheduler";
 import { introducedToday } from "@/lib/notebooks/introductions";
@@ -81,7 +82,7 @@ export function defaultSettingsRow(owner: string, now = new Date()): UserSetting
   const iso = now.toISOString();
   return {
     user_id: owner,
-    target_language: "en",
+    target_language: DEFAULT_LANGUAGE,
     ui_locale: "vi",
     cefr_level: null,
     goals: [],
@@ -179,7 +180,7 @@ async function ensureDefaultNotebook(db: LocalDb, owner: string, name: string, i
       id: notebookId,
       user_id: owner,
       name,
-      language: "en",
+      language: DEFAULT_LANGUAGE,
       description: null,
       cover_url: null,
       tags: [],

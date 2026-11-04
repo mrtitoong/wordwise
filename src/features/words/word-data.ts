@@ -5,6 +5,7 @@
  * Supabase rồi lưu lại. Tìm từ theo chữ (chip từ liên quan) và xin tạo nội dung khi kho
  * chưa có.
  */
+import { DEFAULT_LANGUAGE } from "@/lib/lang";
 import type { LocalDb } from "@/lib/db/local";
 import { cacheWordContent } from "@/lib/db/repo";
 import type { WordDetailsRow, WordRow, WordSenseRow } from "@/lib/db/types";
@@ -100,7 +101,10 @@ const normalize = (lemma: string) => lemma.trim().toLowerCase();
 export async function findLocal(db: LocalDb, lemma: string, pos: Pos | null) {
   const key = normalize(lemma);
   const words = await db.words
-    .filter((w) => w.language === "en" && w.lemma.toLowerCase() === key && (!pos || w.pos === pos))
+    .filter(
+      (w) =>
+        w.language === DEFAULT_LANGUAGE && w.lemma.toLowerCase() === key && (!pos || w.pos === pos),
+    )
     .toArray();
   for (const word of words.sort((a, b) => (a.frequency_rank ?? 1e9) - (b.frequency_rank ?? 1e9))) {
     const senses = await db.word_senses.where("word_id").equals(word.id).sortBy("sense_order");

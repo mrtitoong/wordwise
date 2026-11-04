@@ -5,6 +5,7 @@ import { useRouter } from "next/navigation";
 import { useTranslations } from "next-intl";
 import { Button } from "@/components/ui/button";
 import { shrinkImage } from "@/features/media/user-images";
+import { DEFAULT_LANGUAGE } from "@/lib/lang";
 import {
   LIST_CEFR,
   LIST_LANGUAGES,
@@ -35,7 +36,9 @@ async function uploadCover(file: File): Promise<string | null> {
 export function ListForm({ id, initial }: { id?: string; initial?: Partial<ListValues> }) {
   const t = useTranslations("admin.form");
   const router = useRouter();
-  const [values, setValues] = useState<Partial<ListValues>>(initial ?? { language: "en" });
+  const [values, setValues] = useState<Partial<ListValues>>(
+    initial ?? { language: DEFAULT_LANGUAGE },
+  );
   const [busy, setBusy] = useState(false);
   const [message, setMessage] = useState<"saved" | "invalid" | "failed" | "coverFailed" | null>(
     null,
@@ -81,7 +84,7 @@ export function ListForm({ id, initial }: { id?: string; initial?: Partial<ListV
       <label className={field}>
         {t("language")}
         <select
-          value={values.language ?? "en"}
+          value={values.language ?? DEFAULT_LANGUAGE}
           onChange={(e) => set({ language: e.target.value as ListValues["language"] })}
           className={input}
         >

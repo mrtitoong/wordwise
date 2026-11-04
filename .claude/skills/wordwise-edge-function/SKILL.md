@@ -50,7 +50,7 @@ Function" chạy thử trên Supabase cục bộ.
 
 ## Deploy (máy dev đã `supabase login`, không cần Docker)
 ```bash
-npx supabase functions deploy <tên> --project-ref jhvyyahowopzrpyenwdh --use-api
+npx -y supabase@2.119.0 functions deploy <tên> --project-ref jhvyyahowopzrpyenwdh --use-api   # đúng bản CI; bản 3 không đọc được config.toml
 ```
 - Deploy khi migration mà hàm cần **đã áp lên cloud** (thứ tự: migration trước, hàm sau).
 - Hàm dùng chung code đã sửa (vd `src/lib/words/pipeline.ts`) → build lại và deploy mọi hàm có `index.js` thay đổi

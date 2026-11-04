@@ -92,18 +92,10 @@ export function toTodayInput(data: ReviewData, relatedOf?: TodayInput["relatedOf
   );
   const cardIds = new Set(scoped.cards.map((c) => c.id));
   return {
-<<<<<<< HEAD
     ...scoped,
     // Số từ mới và giới hạn ôn riêng từng ngôn ngữ; chuỗi ngày chung đọc thẳng data.logs.
     logs: data.logs.filter((l) => cardIds.has(l.card_id)),
-=======
-    userWords: data.userWords,
-    cards: data.cards,
-    entries: data.entries,
-    logs: data.logs,
     freeLogIds: data.freeLogs,
-    notebooks: data.notebooks,
->>>>>>> origin/main
     settings: {
       dailyNewLimit: data.settings.daily_new_limit,
       dailyReviewLimit: data.settings.daily_review_limit,

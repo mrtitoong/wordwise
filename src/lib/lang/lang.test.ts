@@ -3,6 +3,7 @@ import { describe, expect, it } from "vitest";
 import { LanguageSchema } from "@/lib/schema/word";
 
 import { DEFAULT_LANGUAGE, languagePack } from ".";
+import { forLanguage, learningLanguage } from "./filter";
 
 describe("languagePack", () => {
   it("giữ nguyên hành vi tiếng Anh", () => {
@@ -35,5 +36,42 @@ describe("languagePack", () => {
 
   it("mặc định là tiếng Anh", () => {
     expect(DEFAULT_LANGUAGE).toBe("en");
+  });
+});
+
+describe("lọc theo ngôn ngữ đang học", () => {
+  const data = {
+    userWords: [
+      { id: "u-en", sense_id: "s-en" },
+      { id: "u-zh", sense_id: "s-zh" },
+      { id: "u-unknown", sense_id: "s-unknown" },
+    ],
+    cards: [{ user_word_id: "u-en" }, { user_word_id: "u-zh" }, { user_word_id: "u-unknown" }],
+    entries: [{ user_word_id: "u-zh" }],
+    notebooks: [{ language: "en" }, { language: "zh" }],
+  };
+  const languageOf = (id: string) =>
+    ({ "s-en": "en", "s-zh": "zh" })[id] as "en" | "zh" | undefined;
+
+  it("tiếng Anh: giữ cả từ máy chưa có nội dung, như trước khi có lọc", () => {
+    const out = forLanguage(data, "en", languageOf);
+    expect(out.userWords.map((u) => u.id)).toEqual(["u-en", "u-unknown"]);
+    expect(out.cards).toHaveLength(2);
+    expect(out.entries).toEqual([]);
+    expect(out.notebooks).toEqual([{ language: "en" }]);
+  });
+
+  it("tiếng Trung: chỉ dữ liệu tiếng Trung, không trộn thẻ", () => {
+    const out = forLanguage(data, "zh", languageOf);
+    expect(out.userWords.map((u) => u.id)).toEqual(["u-zh"]);
+    expect(out.cards).toEqual([{ user_word_id: "u-zh" }]);
+    expect(out.entries).toEqual([{ user_word_id: "u-zh" }]);
+    expect(out.notebooks).toEqual([{ language: "zh" }]);
+  });
+
+  it("ngôn ngữ đang học: thiếu hoặc lạ thì dùng mặc định", () => {
+    expect(learningLanguage("zh")).toBe("zh");
+    expect(learningLanguage(undefined)).toBe(DEFAULT_LANGUAGE);
+    expect(learningLanguage("xx")).toBe(DEFAULT_LANGUAGE);
   });
 });

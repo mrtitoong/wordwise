@@ -987,7 +987,8 @@
     "language": "Language",
     "all": "All",
     "languages": {
-      "en": "English"
+      "en": "English",
+      "zh": "Chinese"
     },
     "purposes": {
       "ielts": "IELTS",

@@ -18,6 +18,8 @@ import type {
   WordRow,
   WordSenseRow,
 } from "@/lib/db/types";
+import { forLanguage, learningLanguage } from "@/lib/lang/filter";
+import { LanguageSchema } from "@/lib/schema/word";
 import type { SavedSession } from "@/lib/review/session";
 import type { TodayInput } from "@/lib/review/today";
 
@@ -80,12 +82,15 @@ export async function loadReviewData(owner: string): Promise<ReviewData> {
 }
 
 export function toTodayInput(data: ReviewData, relatedOf?: TodayInput["relatedOf"]): TodayInput {
+  const scoped = forLanguage(data, learningLanguage(data.settings.target_language), (senseId) => {
+    const language = data.senses.get(senseId)?.word.language;
+    return language ? LanguageSchema.parse(language) : undefined;
+  });
+  const cardIds = new Set(scoped.cards.map((c) => c.id));
   return {
-    userWords: data.userWords,
-    cards: data.cards,
-    entries: data.entries,
-    logs: data.logs,
-    notebooks: data.notebooks,
+    ...scoped,
+    // Số từ mới và giới hạn ôn riêng từng ngôn ngữ; chuỗi ngày chung đọc thẳng data.logs.
+    logs: data.logs.filter((l) => cardIds.has(l.card_id)),
     settings: {
       dailyNewLimit: data.settings.daily_new_limit,
       dailyReviewLimit: data.settings.daily_review_limit,

@@ -348,9 +348,9 @@ export function SessionScreen({ options }: { options: SessionOptions }) {
       } else if (options.practice) {
         const plan = buildPractice(
           {
-            userWords: fresh.userWords,
-            cards: fresh.cards,
-            entries: fresh.entries,
+            userWords: input.userWords,
+            cards: input.cards,
+            entries: input.entries,
             practiceSpelling: fresh.settings.practice_spelling ?? true,
             dayEnd: studyDayEnd(now, fresh.settings.timezone),
           },

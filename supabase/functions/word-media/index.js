@@ -15,7 +15,15 @@ var ImageSearchError = class extends Error {
   provider;
   rateLimited;
 };
-var NO_IMAGE_POS = /* @__PURE__ */ new Set(["determiner", "preposition", "conjunction", "pronoun"]);
+var NO_IMAGE_POS = /* @__PURE__ */ new Set([
+  "determiner",
+  "preposition",
+  "conjunction",
+  "pronoun",
+  "classifier",
+  "particle",
+  "numeral"
+]);
 function wantsImage(pos, imageQuery) {
   return !NO_IMAGE_POS.has(pos) && Boolean(imageQuery?.trim());
 }
@@ -91,7 +99,10 @@ var EN_TTS_VOICES = {
 };
 var en = {
   code: "en",
+  requiresFlag: false,
+  contentTask: "word-content",
   wordAudioVoices: ["us", "uk"],
+  ttsVoice: (voice) => EN_TTS_VOICES[voice],
   speechLocale: (voice) => EN_TTS_VOICES[voice].locale,
   lemmatizes: true,
   usesDictionaryApi: true,
@@ -99,21 +110,31 @@ var en = {
 };
 
 // src/lib/lang/zh/index.ts
+var ZH_TTS_VOICE = { locale: "zh-CN", name: "zh-CN-XiaoxiaoNeural" };
 var zh = {
   code: "zh",
-  wordAudioVoices: [],
-  speechLocale: () => "zh-CN",
+  requiresFlag: true,
+  contentTask: "word-content-zh",
+  wordAudioVoices: ["us"],
+  ttsVoice: () => ZH_TTS_VOICE,
+  speechLocale: () => ZH_TTS_VOICE.locale,
   lemmatizes: false,
   usesDictionaryApi: false,
   requiresIpa: false
 };
 
 // src/lib/lang/index.ts
+var DEFAULT_LANGUAGE = "en";
 var PACKS = { en, zh };
 function plainPack(code) {
   return {
     code,
+    requiresFlag: true,
+    contentTask: "word-content",
     wordAudioVoices: [],
+    ttsVoice: () => {
+      throw new Error(`Chưa có giọng đọc cho ${code}`);
+    },
     speechLocale: () => code,
     lemmatizes: false,
     usesDictionaryApi: false,
@@ -142,6 +163,7 @@ var PosSchema = z.enum([
   "phrasal_verb",
   "phrase"
 ]);
+var StoredPosSchema = z.enum([...PosSchema.options, "classifier", "particle", "numeral"]);
 var RegisterSchema = z.enum(["formal", "neutral", "informal", "slang", "offensive"]);
 var ipaText = text.refine((s) => !s.includes("/"), {
   message: "IPA không kèm dấu '/'"
@@ -246,7 +268,11 @@ var ChineseExtraSchema = z.object({
   pinyin: text,
   /** Thanh điệu từng âm tiết: 1–4, 5 = thanh nhẹ. */
   tones: z.array(z.number().int().min(1).max(5)).min(1),
-  hsk: z.number().int().min(1).max(9).nullable()
+  hsk: z.number().int().min(1).max(9).nullable(),
+  /** Âm của từng nghĩa, cùng thứ tự với senses; `pinyin` là âm của nghĩa đầu. */
+  sense_pinyin: z.array(text).min(1).max(5).optional(),
+  /** "ai": từ điển không có từ này hoặc âm AI chọn ngoài danh sách, cần người duyệt. */
+  reading_source: z.enum(["dictionary", "ai"]).optional()
 });
 var LanguageExtraSchema = z.discriminatedUnion("kind", [
   JapaneseExtraSchema,
@@ -310,7 +336,7 @@ var WordContentSchema = WordContentBaseSchema.superRefine((w, ctx) => {
 // src/lib/media/paths.ts
 var AUDIO_BUCKET = "audio";
 function slugifyLemma(lemma) {
-  const slug = lemma.normalize("NFKD").replace(/[̀-ͯ]/g, "").toLowerCase().trim().replace(/[^a-z0-9-]+/g, "_").replace(/^_+|_+$/g, "");
+  const slug = lemma.replace(/\p{Script=Han}/gu, (char) => `u${char.codePointAt(0).toString(16)}`).normalize("NFKD").replace(/[̀-ͯ]/g, "").toLowerCase().trim().replace(/[^a-z0-9-]+/g, "_").replace(/^_+|_+$/g, "");
   return slug || "_";
 }
 function wordAudioPath(language, lemma, pos, voice) {
@@ -338,7 +364,7 @@ function toMediaWord(raw) {
     id: String(raw.id),
     language: LanguageSchema.parse(raw.language),
     lemma: String(raw.lemma),
-    pos: PosSchema.parse(raw.pos),
+    pos: StoredPosSchema.parse(raw.pos),
     audioUrl: {
       us: typeof raw.audio_us_url === "string" ? raw.audio_us_url : null,
       uk: typeof raw.audio_uk_url === "string" ? raw.audio_uk_url : null
@@ -435,7 +461,6 @@ function createSupabaseMediaStore(client, supabaseUrl2) {
 }
 
 // src/lib/media/tts-azure.ts
-var VOICES = EN_TTS_VOICES;
 var OUTPUT_FORMAT = "audio-24khz-48kbitrate-mono-mp3";
 var TtsError = class extends Error {
   constructor(message, status, retryable) {
@@ -453,8 +478,8 @@ function escapeXml(text2) {
     (c) => c === "<" ? "&lt;" : c === ">" ? "&gt;" : c === "&" ? "&amp;" : c === "'" ? "&apos;" : "&quot;"
   );
 }
-function buildSsml(text2, voice) {
-  const { locale, name } = VOICES[voice];
+function buildSsml(text2, voice, language = DEFAULT_LANGUAGE) {
+  const { locale, name } = languagePack(language).ttsVoice(voice);
   return `<speak version="1.0" xmlns="http://www.w3.org/2001/10/synthesis" xml:lang="${locale}"><voice name="${name}">${escapeXml(text2.trim())}</voice></speak>`;
 }
 function createAzureTts(options) {
@@ -465,7 +490,7 @@ function createAzureTts(options) {
   }
   const url = `https://${region}.tts.speech.microsoft.com/cognitiveservices/v1`;
   return {
-    async synthesize(text2, voice) {
+    async synthesize(text2, voice, language) {
       let response;
       try {
         response = await doFetch(url, {
@@ -476,7 +501,7 @@ function createAzureTts(options) {
             "X-Microsoft-OutputFormat": OUTPUT_FORMAT,
             "User-Agent": "wordwise"
           },
-          body: buildSsml(text2, voice),
+          body: buildSsml(text2, voice, language),
           signal: AbortSignal.timeout(options.timeoutMs ?? 15e3)
         });
       } catch (error) {
@@ -564,7 +589,7 @@ async function processMediaWord(word, deps, state) {
         const path = wordAudioPath(word.language, word.lemma, word.pos, voice);
         let audio;
         try {
-          audio = await deps.tts.synthesize(word.lemma, voice);
+          audio = await deps.tts.synthesize(word.lemma, voice, word.language);
         } catch (error) {
           if (error instanceof TtsError && error.retryable) throw new StopRun(error.message);
           throw error;
@@ -635,7 +660,7 @@ async function requestSentenceAudio(request, userId, deps) {
   if (quota.remaining <= 0) return { status: "limit_reached", dailyLimit: quota.dailyLimit };
   let audio;
   try {
-    audio = await deps.tts.synthesize(example.sentence, request.voice);
+    audio = await deps.tts.synthesize(example.sentence, request.voice, example.language);
   } catch (error) {
     console.error("TTS câu ví dụ lỗi:", error);
     return { status: "unavailable" };

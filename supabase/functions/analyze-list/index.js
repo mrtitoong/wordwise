@@ -188,7 +188,10 @@ var EN_TTS_VOICES = {
 };
 var en = {
   code: "en",
+  requiresFlag: false,
+  contentTask: "word-content",
   wordAudioVoices: ["us", "uk"],
+  ttsVoice: (voice) => EN_TTS_VOICES[voice],
   speechLocale: (voice) => EN_TTS_VOICES[voice].locale,
   lemmatizes: true,
   usesDictionaryApi: true,
@@ -196,10 +199,14 @@ var en = {
 };
 
 // src/lib/lang/zh/index.ts
+var ZH_TTS_VOICE = { locale: "zh-CN", name: "zh-CN-XiaoxiaoNeural" };
 var zh = {
   code: "zh",
-  wordAudioVoices: [],
-  speechLocale: () => "zh-CN",
+  requiresFlag: true,
+  contentTask: "word-content-zh",
+  wordAudioVoices: ["us"],
+  ttsVoice: () => ZH_TTS_VOICE,
+  speechLocale: () => ZH_TTS_VOICE.locale,
   lemmatizes: false,
   usesDictionaryApi: false,
   requiresIpa: false
@@ -210,7 +217,12 @@ var PACKS = { en, zh };
 function plainPack(code) {
   return {
     code,
+    requiresFlag: true,
+    contentTask: "word-content",
     wordAudioVoices: [],
+    ttsVoice: () => {
+      throw new Error(`Chưa có giọng đọc cho ${code}`);
+    },
     speechLocale: () => code,
     lemmatizes: false,
     usesDictionaryApi: false,
@@ -239,6 +251,7 @@ var PosSchema = z.enum([
   "phrasal_verb",
   "phrase"
 ]);
+var StoredPosSchema = z.enum([...PosSchema.options, "classifier", "particle", "numeral"]);
 var RegisterSchema = z.enum(["formal", "neutral", "informal", "slang", "offensive"]);
 var ipaText = text.refine((s) => !s.includes("/"), {
   message: "IPA không kèm dấu '/'"
@@ -343,7 +356,11 @@ var ChineseExtraSchema = z.object({
   pinyin: text,
   /** Thanh điệu từng âm tiết: 1–4, 5 = thanh nhẹ. */
   tones: z.array(z.number().int().min(1).max(5)).min(1),
-  hsk: z.number().int().min(1).max(9).nullable()
+  hsk: z.number().int().min(1).max(9).nullable(),
+  /** Âm của từng nghĩa, cùng thứ tự với senses; `pinyin` là âm của nghĩa đầu. */
+  sense_pinyin: z.array(text).min(1).max(5).optional(),
+  /** "ai": từ điển không có từ này hoặc âm AI chọn ngoài danh sách, cần người duyệt. */
+  reading_source: z.enum(["dictionary", "ai"]).optional()
 });
 var LanguageExtraSchema = z.discriminatedUnion("kind", [
   JapaneseExtraSchema,

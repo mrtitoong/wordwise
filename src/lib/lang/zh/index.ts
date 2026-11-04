@@ -1,10 +1,14 @@
 import type { LanguagePack } from "../types";
 
-/** Chưa tạo audio và nội dung; các phần này thêm ở Z1 (docs/plan-zh.md). */
+const ZH_TTS_VOICE = { locale: "zh-CN", name: "zh-CN-XiaoxiaoNeural" };
+
 export const zh: LanguagePack = {
   code: "zh",
-  wordAudioVoices: [],
-  speechLocale: () => "zh-CN",
+  requiresFlag: true,
+  contentTask: "word-content-zh",
+  wordAudioVoices: ["us"],
+  ttsVoice: () => ZH_TTS_VOICE,
+  speechLocale: () => ZH_TTS_VOICE.locale,
   lemmatizes: false,
   usesDictionaryApi: false,
   requiresIpa: false,

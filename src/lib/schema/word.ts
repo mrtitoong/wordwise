@@ -55,6 +55,12 @@ export const PosSchema = z.enum([
   "phrase",
 ]);
 
+/**
+ * Loại từ có thể có trong kho, mọi ngôn ngữ. Đọc từ database thì dùng schema này: worker chạy chung
+ * cho mọi ngôn ngữ, gặp lượng từ mà dùng PosSchema là dừng cả việc tiếng Anh.
+ */
+export const StoredPosSchema = z.enum([...PosSchema.options, "classifier", "particle", "numeral"]);
+
 /** Mức trang trọng – 5 nhãn hiển thị trên thẻ từ. */
 export const RegisterSchema = z.enum(["formal", "neutral", "informal", "slang", "offensive"]);
 
@@ -194,6 +200,10 @@ export const ChineseExtraSchema = z.object({
   /** Thanh điệu từng âm tiết: 1–4, 5 = thanh nhẹ. */
   tones: z.array(z.number().int().min(1).max(5)).min(1),
   hsk: z.number().int().min(1).max(9).nullable(),
+  /** Âm của từng nghĩa, cùng thứ tự với senses; `pinyin` là âm của nghĩa đầu. */
+  sense_pinyin: z.array(text).min(1).max(5).optional(),
+  /** "ai": từ điển không có từ này hoặc âm AI chọn ngoài danh sách, cần người duyệt. */
+  reading_source: z.enum(["dictionary", "ai"]).optional(),
 });
 
 export const LanguageExtraSchema = z.discriminatedUnion("kind", [
@@ -270,6 +280,7 @@ export const WordContentSchema = WordContentBaseSchema.superRefine((w, ctx) => {
 export type Language = z.infer<typeof LanguageSchema>;
 export type Cefr = z.infer<typeof CefrSchema>;
 export type Pos = z.infer<typeof PosSchema>;
+export type StoredPos = z.infer<typeof StoredPosSchema>;
 export type Register = z.infer<typeof RegisterSchema>;
 export type Example = z.infer<typeof ExampleSchema>;
 export type Sense = z.infer<typeof SenseSchema>;

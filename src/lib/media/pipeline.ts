@@ -7,7 +7,7 @@
  */
 import { MEDIA_IMAGE_SEARCHES_PER_RUN, MEDIA_WORDS_PER_RUN } from "@/config/media";
 import { languagePack } from "@/lib/lang";
-import type { Language, Pos } from "@/lib/schema/word";
+import type { Language, StoredPos } from "@/lib/schema/word";
 import type { SentenceAudioRequest, SentenceAudioResponse } from "./api";
 import { ImageSearchError, wantsImage, type FoundImage, type ImageProvider } from "./images";
 import { sentenceAudioPath, wordAudioPath } from "./paths";
@@ -17,7 +17,7 @@ export interface MediaWord {
   id: string;
   language: Language;
   lemma: string;
-  pos: Pos;
+  pos: StoredPos;
   audioUrl: Record<Voice, string | null>;
   /** Các nghĩa chưa tìm ảnh. */
   senses: { id: string; imageQuery: string | null }[];
@@ -99,7 +99,7 @@ export async function processMediaWord(word: MediaWord, deps: MediaDeps, state: 
         const path = wordAudioPath(word.language, word.lemma, word.pos, voice);
         let audio: Uint8Array;
         try {
-          audio = await deps.tts.synthesize(word.lemma, voice);
+          audio = await deps.tts.synthesize(word.lemma, voice, word.language);
         } catch (error) {
           if (error instanceof TtsError && error.retryable) throw new StopRun(error.message);
           throw error;
@@ -186,7 +186,7 @@ export async function requestSentenceAudio(
 
   let audio: Uint8Array;
   try {
-    audio = await deps.tts.synthesize(example.sentence, request.voice);
+    audio = await deps.tts.synthesize(example.sentence, request.voice, example.language);
   } catch (error) {
     console.error("TTS câu ví dụ lỗi:", error);
     return { status: "unavailable" };

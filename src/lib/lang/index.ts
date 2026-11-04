@@ -18,7 +18,12 @@ const PACKS: Partial<Record<Language, LanguagePack>> = { en, zh };
 function plainPack(code: Language): LanguagePack {
   return {
     code,
+    requiresFlag: true,
+    contentTask: "word-content",
     wordAudioVoices: [],
+    ttsVoice: () => {
+      throw new Error(`Chưa có giọng đọc cho ${code}`);
+    },
     speechLocale: () => code,
     lemmatizes: false,
     usesDictionaryApi: false,

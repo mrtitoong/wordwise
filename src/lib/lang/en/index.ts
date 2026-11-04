@@ -8,7 +8,10 @@ export const EN_TTS_VOICES = {
 
 export const en: LanguagePack = {
   code: "en",
+  requiresFlag: false,
+  contentTask: "word-content",
   wordAudioVoices: ["us", "uk"],
+  ttsVoice: (voice) => EN_TTS_VOICES[voice],
   speechLocale: (voice) => EN_TTS_VOICES[voice].locale,
   lemmatizes: true,
   usesDictionaryApi: true,

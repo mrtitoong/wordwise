@@ -21,11 +21,21 @@ import { languagePack } from "@/lib/lang";
 import { dictionaryForPrompt, type DictionaryData } from "@/lib/dictionary/free-dictionary";
 import { toLemma, type Lemmatizer } from "@/lib/entry/lemma";
 import type { LlmRouter } from "@/lib/llm/router";
+import type { TokenUsage } from "@/lib/llm/types";
 import type { PromptTemplate } from "@/lib/llm/prompt-template";
 import { estimateCostUsd } from "@/lib/llm/cost";
 import { buildWordContentPrompt } from "@/lib/llm/tasks/word-content";
-import { WordContentSchema, type Language, type Pos, type WordContent } from "@/lib/schema/word";
-import { toWordRows, type WordRows } from "@/lib/schema/word-rows";
+import { buildZhWordContentPrompt } from "@/lib/llm/tasks/word-content-zh";
+import { ZhWordContentSchema } from "@/lib/lang/zh/content-schema";
+import { allowedReadings, applyLexicon, type Reading } from "@/lib/lang/zh/lexicon";
+import {
+  WordContentSchema,
+  type Language,
+  type Pos,
+  type StoredPos,
+  type WordContent,
+} from "@/lib/schema/word";
+import { toWordRows, type StorableContent, type WordRows } from "@/lib/schema/word-rows";
 import {
   toWordSummary,
   type InputMethod,
@@ -40,7 +50,7 @@ export interface WordJob {
   id: string;
   language: Language;
   lemma: string;
-  pos: Pos | null;
+  pos: StoredPos | null;
   source: "user" | "bulk" | "admin";
   /** Số lần đã nhận việc, kể cả lần này. */
   attempts: number;
@@ -72,7 +82,11 @@ export interface JobTarget {
 export interface WordStore {
   /** Các từ đã có; pos = null → mọi loại từ, phổ biến trước. */
   findWords(language: Language, lemma: string, pos: Pos | null): Promise<StoredWord[]>;
-  findWordId(language: Language, lemma: string, pos: Pos): Promise<string | null>;
+  findWordId(language: Language, lemma: string, pos: StoredPos): Promise<string | null>;
+  /** Tài khoản có được dùng ngôn ngữ đang làm dở không (profiles.feature_zh). */
+  canUseFlaggedLanguage(userId: string): Promise<boolean>;
+  /** Các âm của một từ tiếng Trung trong từ điển. */
+  zhReadings(lemma: string): Promise<Reading[]>;
   requestJob(
     userId: string,
     language: Language,
@@ -92,7 +106,7 @@ export interface WordStore {
   ): Promise<void>;
 }
 
-export type WordLlm = Pick<LlmRouter<"word-content">, "generateJSON">;
+export type WordLlm = Pick<LlmRouter<"word-content" | "word-content-zh">, "generateJSON">;
 
 export interface PipelineDeps {
   store: WordStore;
@@ -103,6 +117,8 @@ export interface WorkerDeps {
   store: WordStore;
   llm: WordLlm;
   template: PromptTemplate;
+  /** Prompt word-content-zh; thiếu thì việc tiếng Trung báo lỗi và thử lại sau. */
+  zhTemplate?: PromptTemplate;
   fetchDictionary: (lemma: string) => Promise<DictionaryData | null>;
   newId: () => string;
   now?: () => number;
@@ -140,11 +156,20 @@ async function findInStore(
   return { lemma, surface, alternatives, words: [] };
 }
 
+/** Ngôn ngữ đang làm dở mà tài khoản chưa được bật cờ. */
+export class LanguageNotEnabledError extends Error {}
+
 export async function requestWord(
   request: WordRequest,
   userId: string | null,
   deps: PipelineDeps,
 ): Promise<WordResponse> {
+  if (
+    languagePack(request.language).requiresFlag &&
+    !(userId && (await deps.store.canUseFlaggedLanguage(userId)))
+  ) {
+    throw new LanguageNotEnabledError(request.language);
+  }
   const pos = request.pos ?? null;
   const { lemma, alternatives, words } = await findInStore(
     request.lemma,
@@ -222,7 +247,7 @@ export function stripIpaSlashes(raw: unknown): unknown {
 }
 
 /** Schema cho đầu ra LLM: thêm kiểm tra đúng từ, đúng loại từ đã yêu cầu. */
-function contentSchemaFor(job: WordJob, pos: Pos | null) {
+function contentSchemaFor(job: WordJob, pos: StoredPos | null) {
   return WordContentSchema.refine(
     (content) =>
       content.language === job.language &&
@@ -244,14 +269,65 @@ export type JobOutcome =
   | { status: "retry"; error: string; retryAt: Date }
   | { status: "failed"; error: string };
 
+type Generated = {
+  content: StorableContent;
+  usage: TokenUsage;
+  model: Parameters<typeof estimateCostUsd>[0] & { provider: string; model: string };
+  promptVersion: number;
+};
+
+async function generateEnglish(job: WordJob, deps: WorkerDeps): Promise<Generated> {
+  const dictionary = languagePack(job.language).usesDictionaryApi
+    ? await deps.fetchDictionary(job.lemma)
+    : null;
+  const pos = job.pos as Pos | null;
+  const { system, prompt, promptVersion } = buildWordContentPrompt(deps.template, {
+    language: job.language,
+    lemma: job.lemma,
+    pos,
+    cefrLevel: SHARED_CONTENT_CEFR,
+    dictionary: dictionaryForPrompt(dictionary, pos),
+  });
+  const result = await deps.llm.generateJSON("word-content", {
+    system,
+    prompt,
+    schema: contentSchemaFor(job, pos),
+    preprocess: stripIpaSlashes,
+  });
+  const content: WordContent = { ...result.data, lemma: job.lemma };
+  return { content, usage: result.usage, model: result.model, promptVersion };
+}
+
+/** Âm đọc lấy từ từ điển; AI chỉ chọn âm cho từng nghĩa (xem applyLexicon). */
+async function generateChinese(job: WordJob, deps: WorkerDeps): Promise<Generated> {
+  if (!deps.zhTemplate) throw new Error("Thiếu prompt word-content-zh");
+  const readings = await deps.store.zhReadings(job.lemma);
+  const { system, prompt, promptVersion } = buildZhWordContentPrompt(deps.zhTemplate, {
+    lemma: job.lemma,
+    pos: job.pos,
+    hsk: null,
+    readings: allowedReadings(readings).map((r) => r.pinyin),
+  });
+  const result = await deps.llm.generateJSON("word-content-zh", {
+    system,
+    prompt,
+    schema: ZhWordContentSchema.refine(
+      (content) => content.lemma === job.lemma && (job.pos === null || content.pos === job.pos),
+      { message: `Phải đúng từ "${job.lemma}"${job.pos ? ` (${job.pos})` : ""}` },
+    ),
+  });
+  const { content } = applyLexicon(result.data, readings);
+  return { content, usage: result.usage, model: result.model, promptVersion };
+}
+
+const GENERATORS = { "word-content": generateEnglish, "word-content-zh": generateChinese };
+
 export async function processJob(job: WordJob, deps: WorkerDeps): Promise<JobOutcome> {
   const now = deps.now ?? Date.now;
   try {
-    const dictionary = languagePack(job.language).usesDictionaryApi
-      ? await deps.fetchDictionary(job.lemma)
-      : null;
     // Không ghi loại từ → model chọn loại phổ biến nhất (thứ tự từ điển không theo tần suất).
     const pos = job.pos;
+    const task = languagePack(job.language).contentTask;
 
     if (pos) {
       const existing = await deps.store.findWordId(job.language, job.lemma, pos);
@@ -261,19 +337,8 @@ export async function processJob(job: WordJob, deps: WorkerDeps): Promise<JobOut
       }
     }
 
-    const { system, prompt, promptVersion } = buildWordContentPrompt(deps.template, {
-      language: job.language,
-      lemma: job.lemma,
-      pos,
-      cefrLevel: SHARED_CONTENT_CEFR,
-      dictionary: dictionaryForPrompt(dictionary, pos),
-    });
-    const result = await deps.llm.generateJSON("word-content", {
-      system,
-      prompt,
-      schema: contentSchemaFor(job, pos),
-      preprocess: stripIpaSlashes,
-    });
+    const result = await GENERATORS[task](job, deps);
+    const { content, promptVersion } = result;
 
     if (deps.store.addUsage) {
       // Ghi chi phí không được làm hỏng việc đã tạo xong.
@@ -285,8 +350,6 @@ export async function processJob(job: WordJob, deps: WorkerDeps): Promise<JobOut
         })
         .catch((error: unknown) => console.error("Ghi chi phí việc lỗi:", error));
     }
-
-    const content: WordContent = { ...result.data, lemma: job.lemma };
 
     // Không biết trước loại từ → model chọn; loại đó có thể đã có trong kho.
     if (!pos) {
@@ -301,7 +364,7 @@ export async function processJob(job: WordJob, deps: WorkerDeps): Promise<JobOut
     const rows = toWordRows(content, {
       wordId,
       senseId: () => deps.newId(),
-      generatedBy: `${result.model.provider}/${result.model.model} word-content@v${promptVersion}`,
+      generatedBy: `${result.model.provider}/${result.model.model} ${task}@v${promptVersion}`,
       reviewed: false,
     });
     if (job.frequencyRank !== null) rows.word.frequency_rank = job.frequencyRank;

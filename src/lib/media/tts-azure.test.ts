@@ -58,3 +58,11 @@ describe("createAzureTts", () => {
     expect(() => createAzureTts({ key: "k", region: "evil.com/x" })).toThrow();
   });
 });
+
+describe("giọng theo ngôn ngữ", () => {
+  it("tiếng Anh giữ giọng cũ, tiếng Trung đọc bằng Xiaoxiao", () => {
+    expect(buildSsml("run", "uk")).toContain("en-GB-SoniaNeural");
+    expect(buildSsml("看", "us", "zh")).toContain('xml:lang="zh-CN"');
+    expect(buildSsml("看", "uk", "zh")).toContain("zh-CN-XiaoxiaoNeural");
+  });
+});

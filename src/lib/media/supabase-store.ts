@@ -3,7 +3,7 @@
  */
 import type { SupabaseClient } from "@supabase/supabase-js";
 import type { Database, Json } from "@/lib/db/database.types";
-import { LanguageSchema, PosSchema } from "@/lib/schema/word";
+import { LanguageSchema, StoredPosSchema } from "@/lib/schema/word";
 import { AUDIO_BUCKET, publicAudioUrl } from "./paths";
 import type { MediaStore, MediaWord } from "./pipeline";
 
@@ -20,7 +20,7 @@ function toMediaWord(raw: Record<string, unknown>): MediaWord {
     id: String(raw.id),
     language: LanguageSchema.parse(raw.language),
     lemma: String(raw.lemma),
-    pos: PosSchema.parse(raw.pos),
+    pos: StoredPosSchema.parse(raw.pos),
     audioUrl: {
       us: typeof raw.audio_us_url === "string" ? raw.audio_us_url : null,
       uk: typeof raw.audio_uk_url === "string" ? raw.audio_uk_url : null,

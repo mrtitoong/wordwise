@@ -11,6 +11,7 @@ import { z } from "zod";
 import { FunctionRequestSchema, type WordResponse } from "@/lib/words/api";
 import { reverseLookup, type ReverseDeps } from "@/lib/words/reverse";
 import {
+  LanguageNotEnabledError,
   requestWord,
   resolveWords,
   runWorker,
@@ -92,6 +93,9 @@ export function createHandler(deps: HandlerDeps) {
       }
       return json(response);
     } catch (error) {
+      if (error instanceof LanguageNotEnabledError) {
+        return json({ error: "language_not_enabled" }, 403);
+      }
       console.error("generate-word lỗi:", error);
       return json({ error: "internal_error" }, 500);
     }

@@ -14,9 +14,11 @@ describe("languagePack", () => {
     expect(pack).toMatchObject({ lemmatizes: true, usesDictionaryApi: true, requiresIpa: true });
   });
 
-  it("tiếng Trung chưa bật audio, từ gốc, từ điển", () => {
+  it("tiếng Trung một giọng, cần cờ, không có từ gốc và từ điển", () => {
     const pack = languagePack("zh");
-    expect(pack.wordAudioVoices).toEqual([]);
+    expect(pack.wordAudioVoices).toEqual(["us"]);
+    expect(pack.requiresFlag).toBe(true);
+    expect(pack.ttsVoice("uk").name).toBe("zh-CN-XiaoxiaoNeural");
     expect(pack.speechLocale("uk")).toBe("zh-CN");
     expect(pack).toMatchObject({ lemmatizes: false, usesDictionaryApi: false, requiresIpa: false });
   });

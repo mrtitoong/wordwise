@@ -4,7 +4,8 @@
  */
 import type { SupabaseClient } from "@supabase/supabase-js";
 import type { Database, Json } from "@/lib/db/database.types";
-import { LanguageSchema, PosSchema, type Language, type Pos } from "@/lib/schema/word";
+import { toReading } from "@/lib/lang/zh/lexicon";
+import { LanguageSchema, StoredPosSchema, type Language, type Pos } from "@/lib/schema/word";
 import { fromWordRows } from "@/lib/schema/word-rows";
 import { ImageCreditSchema, type StoredWord } from "./api";
 import type { RequestJobResult, WordJob, WordStore } from "./pipeline";
@@ -85,7 +86,7 @@ function toJob(raw: Record<string, unknown>): WordJob {
     id: String(raw.id),
     language: LanguageSchema.parse(raw.language),
     lemma: String(raw.lemma),
-    pos: raw.pos === null ? null : PosSchema.parse(raw.pos),
+    pos: raw.pos === null ? null : StoredPosSchema.parse(raw.pos),
     source: raw.source === "bulk" || raw.source === "admin" ? raw.source : "user",
     attempts: Number(raw.attempts),
     frequencyRank: typeof raw.frequency_rank === "number" ? raw.frequency_rank : null,
@@ -94,6 +95,23 @@ function toJob(raw: Record<string, unknown>): WordJob {
 
 export function createSupabaseWordStore(client: Client): WordStore {
   return {
+    async canUseFlaggedLanguage(userId) {
+      const { data, error } = await client
+        .from("profiles")
+        .select("feature_zh")
+        .eq("user_id", userId)
+        .maybeSingle();
+      if (error) throw new Error(`profiles: ${error.message}`);
+      return data?.feature_zh === true;
+    },
+    async zhReadings(lemma) {
+      const { data, error } = await client
+        .from("zh_lexicon")
+        .select("traditional, pinyin, common")
+        .eq("simplified", lemma);
+      if (error) throw new Error(`zh_lexicon: ${error.message}`);
+      return (data ?? []).map(toReading);
+    },
     async findWords(language, lemma, pos) {
       let query = client
         .from("words")

@@ -15,19 +15,24 @@ export type Reading = {
 
 export type Lexicon = ReadonlyMap<string, readonly Reading[]>;
 
+/** Một dòng của bảng zh_lexicon (pinyin dạng số) thành âm đọc. */
+export function toReading(row: { traditional: string; pinyin: string; common: boolean }): Reading {
+  return {
+    traditional: row.traditional,
+    pinyin: numberedToMarked(row.pinyin),
+    tones: tonesOf(row.pinyin),
+    common: row.common,
+  };
+}
+
 export function parseLexicon(tsv: string): Lexicon {
   const lexicon = new Map<string, Reading[]>();
   for (const line of tsv.split("\n")) {
     if (!line || line.startsWith("#")) continue;
-    const [simplified, traditional, numbered, common] = line.split("\t");
-    if (!simplified || !traditional || !numbered) continue;
+    const [simplified, traditional, pinyin, common] = line.split("\t");
+    if (!simplified || !traditional || !pinyin) continue;
     const list = lexicon.get(simplified) ?? [];
-    list.push({
-      traditional,
-      pinyin: numberedToMarked(numbered),
-      tones: tonesOf(numbered),
-      common: common === "1",
-    });
+    list.push(toReading({ traditional, pinyin, common: common === "1" }));
     lexicon.set(simplified, list);
   }
   return lexicon;
@@ -55,7 +60,8 @@ type Draft = {
     traditional: string | null;
     pinyin: string;
     tones: number[];
-    sense_pinyin: string[];
+    sense_pinyin?: string[] | undefined;
+    reading_source?: "dictionary" | "ai" | undefined;
   };
 };
 
@@ -68,11 +74,17 @@ export function applyLexicon<T extends Draft>(
   readings: readonly Reading[] | undefined,
 ): { content: T; flags: LexiconFlag[] } {
   const allowed = allowedReadings(readings);
-  if (allowed.length === 0) return { content: draft, flags: [{ kind: "not_in_dictionary" }] };
+  const extra = draft.language_extra;
+  if (allowed.length === 0) {
+    return {
+      content: { ...draft, language_extra: { ...extra, reading_source: "ai" } },
+      flags: [{ kind: "not_in_dictionary" }],
+    };
+  }
 
   const flags: LexiconFlag[] = [];
-  const extra = draft.language_extra;
-  const chosen = extra.sense_pinyin.map((pinyin, sense) => {
+  const senses = extra.sense_pinyin ?? [];
+  const chosen = senses.map((pinyin, sense) => {
     if (allowed.length === 1) return allowed[0]!;
     const match = allowed.find((r) => pinyinKey(r.pinyin) === pinyinKey(pinyin));
     if (!match) flags.push({ kind: "reading_not_allowed", sense, pinyin });
@@ -87,7 +99,8 @@ export function applyLexicon<T extends Draft>(
         traditional: (first ?? allowed[0]!).traditional,
         pinyin: first?.pinyin ?? extra.pinyin,
         tones: first?.tones ?? extra.tones,
-        sense_pinyin: chosen.map((r, i) => r?.pinyin ?? extra.sense_pinyin[i]!),
+        sense_pinyin: chosen.map((r, i) => r?.pinyin ?? senses[i]!),
+        reading_source: flags.length > 0 ? "ai" : "dictionary",
       },
     },
     flags,

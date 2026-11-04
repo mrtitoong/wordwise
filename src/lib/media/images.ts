@@ -3,7 +3,7 @@
  * cung cấp (hotlink, đúng hướng dẫn của Pexels/Unsplash) và lưu thông tin ghi nguồn.
  * Pexels trước (không cần xét duyệt), Unsplash dự phòng; thiếu khóa thì bỏ qua nhà đó.
  */
-import type { Pos } from "@/lib/schema/word";
+import type { StoredPos } from "@/lib/schema/word";
 
 export type ImageProviderId = "pexels" | "unsplash";
 
@@ -37,9 +37,17 @@ export interface ImageProvider {
 }
 
 /** Ảnh không giúp nhớ các từ chức năng (the, of, and, she…). */
-const NO_IMAGE_POS = new Set<Pos>(["determiner", "preposition", "conjunction", "pronoun"]);
+const NO_IMAGE_POS = new Set<StoredPos>([
+  "determiner",
+  "preposition",
+  "conjunction",
+  "pronoun",
+  "classifier",
+  "particle",
+  "numeral",
+]);
 
-export function wantsImage(pos: Pos, imageQuery: string | null): boolean {
+export function wantsImage(pos: StoredPos, imageQuery: string | null): boolean {
   return !NO_IMAGE_POS.has(pos) && Boolean(imageQuery?.trim());
 }
 

@@ -61,6 +61,7 @@ export const LLM_TASKS = [
   "list-subtopics",
   "reverse-lookup",
   "photo-ocr",
+  "word-content-zh",
 ] as const;
 
 export type LlmTask = (typeof LLM_TASKS)[number];
@@ -74,6 +75,13 @@ const DEFAULT_TASKS: Record<
   // Schema thẻ từ 5 tab quá lớn để Claude/Gemini biên dịch thành structured output
   // (Claude 400 "compiled grammar is too large", Gemini 400) → gửi trong prompt.
   "word-content": {
+    containsUserData: false,
+    models: ["claude-haiku", "claude-sonnet"],
+    schemaMode: "prompt",
+  },
+  // Thẻ từ tiếng Trung (chốt 2026-11-04 sau so sánh 50 từ): Haiku ~$3.5/1.000 từ, Sonnet ~$31/1.000 từ,
+  // người biết tiếng Trung đánh giá cả hai dùng được.
+  "word-content-zh": {
     containsUserData: false,
     models: ["claude-haiku", "claude-sonnet"],
     schemaMode: "prompt",

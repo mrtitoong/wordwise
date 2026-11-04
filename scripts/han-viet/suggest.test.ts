@@ -40,9 +40,9 @@ describe("chọn chữ cần duyệt", () => {
     expect(reasonsOf(item({ readings: [], unihan: ["quơ"] }), false)).toEqual(["none"]);
   });
 
-  it("khác Unihan thì dùng âm máy, kể cả khi máy không chắc; Unihan không có thì vẫn duyệt", () => {
+  it("khác Unihan hoặc Unihan không có thì dùng âm máy, kể cả khi máy không chắc", () => {
     expect(reasonsOf(item({ unihan: ["món"], confidence: 0.5 }), true)).toEqual([]);
-    expect(reasonsOf(item({ unihan: [] }), false)).toEqual(["thieu"]);
+    expect(reasonsOf(item({ unihan: [], confidence: 0.5 }), true)).toEqual([]);
   });
 });
 

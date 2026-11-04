@@ -3,9 +3,9 @@
  *
  *   npx tsx scripts/han-viet/review.ts   → scripts/out/han-viet.html
  *
- * Âm lặp được gộp. Chữ khác Unihan dùng âm máy gợi ý, không duyệt (chốt 2026-11-04: Unihan lẫn âm
- * Nôm nên lệch chủ yếu là Unihan sai). Chữ cần duyệt là chữ Unihan không có, chữ khớp nhưng máy không
- * chắc hoặc lặp âm, và chữ chưa có âm.
+ * Âm lặp được gộp. Chữ khác Unihan hoặc Unihan không có thì dùng âm máy gợi ý, không duyệt (chốt
+ * 2026-11-04: Unihan lẫn âm Nôm). Chữ cần duyệt là chữ khớp nhưng máy không chắc hoặc lặp âm, và chữ
+ * chưa có âm.
  */
 import { readFileSync, writeFileSync } from "node:fs";
 import { compare, type Suggestion } from "./suggest";
@@ -15,12 +15,8 @@ const LOW_CONFIDENCE = 0.8;
 export function reasonsOf(s: Suggestion, duplicated: boolean): string[] {
   if (s.readings.length === 0) return ["none"];
   const check = compare(s.readings, s.unihan);
-  if (check === "lech") return [];
-  return [
-    ...(check === "thieu" ? [check] : []),
-    ...(s.confidence < LOW_CONFIDENCE ? ["conf"] : []),
-    ...(duplicated ? ["dup"] : []),
-  ];
+  if (check !== "khop") return [];
+  return [...(s.confidence < LOW_CONFIDENCE ? ["conf"] : []), ...(duplicated ? ["dup"] : [])];
 }
 
 if (process.argv[1]?.endsWith("review.ts")) {

@@ -1,9 +1,14 @@
 name: CI
 
 # Mỗi prompt là một nhánh riêng nên chạy CI cho mọi nhánh được đẩy lên.
+# Commit chỉ sửa tài liệu thì bỏ qua. Không ghi "**/*.md": src/prompts/*.md là code.
 on:
   push:
     branches: ["**"]
+    paths-ignore:
+      - "docs/**"
+      - "CLAUDE.md"
+      - ".claude/**"
 
 concurrency:
   group: ci-${{ github.ref }}
@@ -16,11 +21,7 @@ jobs:
     timeout-minutes: 20
     steps:
       - uses: actions/checkout@v4
-      - uses: actions/setup-node@v4
-        with:
-          node-version: 22
-          cache: npm
-      - run: npm ci
+      - uses: ./.github/actions/setup-deps
       - run: npm run lint
       - run: npm run format:check
       - run: npm run typecheck
@@ -40,11 +41,7 @@ jobs:
     timeout-minutes: 20
     steps:
       - uses: actions/checkout@v4
-      - uses: actions/setup-node@v4
-        with:
-          node-version: 22
-          cache: npm
-      - run: npm ci
+      - uses: ./.github/actions/setup-deps
       # Không có biến Supabase: app chạy chế độ khách – đúng đường mở app của người mới.
       - run: npm run build
       - name: Chạy bản build
@@ -66,10 +63,15 @@ jobs:
           retention-days: 7
 
   e2e:
-    name: E2E (Playwright 360px, iPhone 13, máy tính + Supabase cục bộ)
+    name: E2E ${{ matrix.shard }}/2 (Playwright 360px, iPhone 13, máy tính + Supabase cục bộ)
     runs-on: ubuntu-latest
     # 7 luồng đầy đủ (e2e/journeys) chạy thêm ở iPhone 13 và máy tính.
     timeout-minutes: 35
+    strategy:
+      # Một nửa đỏ vẫn chạy hết nửa kia để thấy mọi lỗi trong một lần.
+      fail-fast: false
+      matrix:
+        shard: [1, 2]
     steps:
       - uses: actions/checkout@v4
       - uses: supabase/setup-cli@v1
@@ -77,11 +79,7 @@ jobs:
           version: 2.119.0
       - name: Khởi động Supabase cục bộ (Auth, REST, Mailpit) – chạy nền, song song với npm ci
         run: bash scripts/ci-supabase.sh start -x studio,imgproxy,edge-runtime,logflare,vector,realtime,storage-api,supavisor
-      - uses: actions/setup-node@v4
-        with:
-          node-version: 22
-          cache: npm
-      - run: npm ci
+      - uses: ./.github/actions/setup-deps
       - name: Chờ Supabase cục bộ sẵn sàng
         run: bash scripts/ci-supabase.sh wait
       - name: Biến môi trường từ Supabase cục bộ
@@ -100,13 +98,13 @@ jobs:
       # lần (bước đó có lúc mất hơn 9 phút).
       - name: Chrome có sẵn trên máy CI
         run: google-chrome --version
-      - run: npm run test:e2e
+      - run: npm run test:e2e -- --shard=${{ matrix.shard }}/2
         env:
           PLAYWRIGHT_CHANNEL: chrome
       - uses: actions/upload-artifact@v4
         if: failure()
         with:
-          name: playwright-report
+          name: playwright-report-${{ matrix.shard }}
           path: playwright-report
           retention-days: 7
 
@@ -121,11 +119,7 @@ jobs:
           version: 2.119.0
       - name: Khởi động Supabase cục bộ (chỉ các dịch vụ cần) – chạy nền, song song với npm ci
         run: bash scripts/ci-supabase.sh start -x studio,imgproxy,mailpit,edge-runtime,logflare,vector,realtime,storage-api,supavisor
-      - uses: actions/setup-node@v4
-        with:
-          node-version: 22
-          cache: npm
-      - run: npm ci
+      - uses: ./.github/actions/setup-deps
       - name: Seed SQL khớp với từ mẫu JSON
         run: |
           npm run seed:build
@@ -172,11 +166,7 @@ jobs:
           version: 2.119.0
       - name: Khởi động Supabase cục bộ (DB, Auth, REST, Edge Runtime) – chạy nền, song song với npm ci
         run: bash scripts/ci-supabase.sh start -x studio,imgproxy,mailpit,logflare,vector,realtime,storage-api,supavisor
-      - uses: actions/setup-node@v4
-        with:
-          node-version: 22
-          cache: npm
-      - run: npm ci
+      - uses: ./.github/actions/setup-deps
       - name: Chờ Supabase cục bộ sẵn sàng
         run: bash scripts/ci-supabase.sh wait
       - name: Biến môi trường từ Supabase cục bộ

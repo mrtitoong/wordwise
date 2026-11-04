@@ -12,6 +12,8 @@ export default defineConfig({
   fullyParallel: true,
   forbidOnly: !!process.env.CI,
   retries: process.env.CI ? 1 : 0,
+  // Máy CI có 4 nhân, mặc định Playwright chỉ dùng một nửa.
+  workers: process.env.CI ? 4 : undefined,
   // CI: "list" in cả stdout của test (ghi chú ::notice:: như số đo chuyển câu).
   reporter: process.env.CI ? [["github"], ["list"], ["html", { open: "never" }]] : "list",
   use: {

@@ -9,8 +9,8 @@ code chính. Dữ liệu tải về để ở `spikes/.cache/` và kết quả s
 | # | Thí nghiệm | Trạng thái | Kết luận ngắn |
 |---|---|---|---|
 | 1 | Azure chấm phát âm zh-CN, có bắt sai thanh không | **Xong với giọng máy** (48 mẫu); bản thu người thật chưa có | **Hầu như không bắt sai thanh.** Sai thanh: điểm chính xác chỉ giảm trung vị **1 điểm** (trung bình 3,4), 1/20 mẫu bị đánh "Mispronunciation". Sai phụ âm: giảm trung vị **49 điểm**, 3/4 bị đánh dấu. Không có mức âm tiết; "âm vị" zh-CN là cả âm tiết kèm thanh *của câu mẫu*, không cho biết người đọc thanh nào. |
-| 1b | Tự đo cao độ (F0) trong trình duyệt để nhận thanh | **Xong với giọng máy**; trang thử giọng thật chờ anh/chị | Nhanh (5–10 ms/bản thu) và **bắt được sai thanh tốt hơn Azure nhiều** (19/20 so với 1/20). Nhưng nhận đúng thanh trên giọng chưa gặp chỉ **~54% âm tiết** (giọng nữ ~65%, giọng nam ~43%) và **báo nhầm 8/28** bản đọc đúng. **Chưa đủ để chấm điểm**, chỉ đủ làm biểu đồ cao độ để người học tự so. |
-| 2 | Hanzi Writer quiz trên điện thoại | **Một phần** – đo tự động xong, máy thật chờ anh/chị thử | Dữ liệu nét nhỏ (900 chữ HSK 1–3: ~818 KB gzip, trung vị 1 KB/chữ). Chấm một nét < 5 ms kể cả CPU chậm 4×. Lệch ≤ 9 px: được nhận ~100%; lệch 17 px: 89% (leniency 1) / 95% (1.5). Nét ngược chiều/sai thứ tự gần như luôn bị bắt. |
+| 1b | Tự đo cao độ (F0) trong trình duyệt để nhận thanh | **Xong với giọng máy**; giọng thật mới có 10 bản thu của 1 người | Nhanh (5–10 ms/bản thu) và **bắt được sai thanh tốt hơn Azure nhiều** (19/20 so với 1/20). Nhưng nhận đúng thanh trên giọng chưa gặp chỉ **~54% âm tiết** (giọng nữ ~65%, giọng nam ~43%) và **báo nhầm 8/28** bản đọc đúng. **Chưa đủ để chấm điểm**, chỉ đủ làm biểu đồ cao độ để người học tự so. Giọng thật: báo nhầm 2/6 từ đọc đúng, cùng hướng với kết luận này. |
+| 2 | Hanzi Writer quiz trên điện thoại | **Xong trên Android**; iPhone chưa thử | Dữ liệu nét nhỏ (900 chữ HSK 1–3: ~818 KB gzip, trung vị 1 KB/chữ). Chấm một nét < 5 ms kể cả CPU chậm 4×. Lệch ≤ 9 px: được nhận ~100%; lệch 17 px: 89% (leniency 1) / 95% (1.5). Nét ngược chiều/sai thứ tự gần như luôn bị bắt. Máy thật (Chrome Android, leniency 1): **63/63 nét viết đúng được nhận**, chấm trung vị 6 ms, không giật khung hình. |
 | 3 | Âm Hán Việt từ Unihan cho HSK 1–3 | **Xong** | Có âm cho 86% số chữ (cần tra qua chữ phồn thể), thiếu 123 chữ, trong đó có chữ rất thường gặp (爱 这 很 就 她). **Nhiều âm là âm Nôm, không phải âm Hán Việt** (們 → "món", 嗎 → "mửa"). Không dùng thẳng được. |
 | 4 | Giấy phép | **Xong** (tóm tắt, không phải ý kiến pháp lý) | Rủi ro lớn nhất là **ShareAlike của CC-CEDICT** và **điều kiện công bố bản sửa của Arphic PL**. Unihan dễ. Danh sách HSK chưa rõ quyền tác giả. |
 
@@ -185,7 +185,7 @@ Lưu ý: 48 mẫu này là của Xiaoxiao và Yunxi, đúng hai giọng dùng đ
   hướng; hoặc mô hình nhỏ). Đây là việc của một prompt riêng, có tiêu chí rõ (vd ≥ 90% với từ một âm tiết trên
   giọng chưa gặp).
 
-### Thử bằng giọng thật: chờ anh/chị
+### Thử bằng giọng thật
 
 Trang thử (Artifact riêng tư): **https://claude.ai/artifact/N44z2s4uRNzxJjHAeptQdv** (nguồn
 `spikes/tone-pitch/tone-lab.template.html`, sinh bằng `build-page.mjs`).
@@ -195,6 +195,21 @@ Trang thử (Artifact riêng tư): **https://claude.ai/artifact/N44z2s4uRNzxJjHA
   ghi thanh cần đọc và thanh máy nghe ra. Từ lần thứ 4 trở đi trang tự hiệu chỉnh theo giọng người đọc.
 - Đề xuất: mỗi từ đọc một lần đúng, một lần cố ý sai (tích ô "Tôi cố ý đọc sai thanh"), rồi bấm **Lưu kết quả**.
   Tôi đọc lại được kết quả và đường cao độ (không có âm thanh) để tính độ chính xác trên giọng thật.
+
+Kết quả 2026-11-04 (chủ sản phẩm, Chrome Android, 10 bản thu; mỗi lần lưu chứa lại các lần trước nên 15 bản ghi
+chỉ có 10 bản thu khác nhau):
+
+| Loại bản thu | Kết quả |
+|---|---|
+| Đọc đúng (người đọc tự đánh dấu) | Khớp 4/6 từ, 6/8 âm tiết; báo nhầm 2/6 |
+| Cố ý sai | Báo sai 4/4 |
+
+- Hai từ bị báo nhầm: 你好 (cần 2-3, máy ra 3-3) và 谢谢 (cần 4-nhẹ, máy ra 4-3). Hai từ chưa đủ để kết luận biến
+  điệu và thanh nhẹ là điểm yếu.
+- 4/4 chỉ cho biết máy có báo sai. Không ghi lại thanh thực sự đã đọc nên **không tính được độ chính xác** của
+  các bản này. Ví dụ 汤 có đường cao độ khá phẳng (143–160 Hz) mà máy ra thanh 3.
+- 水 nhận đúng nhờ hiệu chỉnh theo giọng; chỉ so hình dáng thì ra thanh 2.
+- Một người, một máy, 10 bản thu: chỉ là tín hiệu ban đầu. Kết luận giữ nguyên: vẽ đường cao độ, chưa chấm điểm.
 
 ---
 
@@ -250,7 +265,7 @@ nhận nhầm 2/106 nét sai thứ tự. **Hạn chế:** nhiễu giả không g
 méo, nhấc tay sớm), nên các con số này chỉ cho thấy cách chấm phản ứng thế nào. Kết luận cuối cùng cần số
 đo trên máy thật.
 
-### Máy thật: chờ anh/chị thử
+### Máy thật
 
 Trang thử (Artifact riêng tư): **https://claude.ai/artifact/NdwCzHRQGZZPmiY9UntDvx** (nguồn
 `spikes/hanzi-writer/quiz.template.html`, sinh bằng `build-page.mjs`).
@@ -261,6 +276,22 @@ Trang thử (Artifact riêng tư): **https://claude.ai/artifact/NdwCzHRQGZZPmiY9
   được chấp nhận/bị từ chối. Kèm thông tin máy (trình duyệt, kích thước màn hình, loại con trỏ).
 - Kết quả lưu vào cơ sở dữ liệu của trang, tôi đọc lại được. Không lưu được thì bấm Sao chép rồi dán cho tôi.
 - Có ô "Độ dễ" (leniency 0,7 / 1 / 1,5) để thử nếu thấy bị chấm sai oan nhiều.
+
+Kết quả 2026-11-04 (chủ sản phẩm, Chrome Android, màn hình 393×873, ô viết 341 px, viết bằng tay, leniency 1):
+
+| Lượt | Nét nhận / từ chối | Chấm: trung vị / lâu nhất | Vẽ chữ (trung vị) | Khung hình > 33 ms |
+|---|---|---|---|---|
+| Viết đúng (10/10 chữ xong) | 63 / 0 | 6 ms / 41 ms | 10 ms | 0/2.168 |
+| Cố ý sai thứ tự | 27 / 36 | 5 ms / 19 ms | 11 ms | 0/1.318 |
+
+- **Không có từ chối oan** ở lượt viết đúng, nên giữ leniency 1 (mặc định), chưa cần 1,5.
+- **27/63 của lượt cố ý sai không phải tỉ lệ nhận nhầm.** Nét bị từ chối thì Hanzi Writer vẫn chờ đúng nét đó, nên
+  nét viết tiếp theo có thể chính là nét đang chờ và được nhận đúng (vd 人: viết nét 2 bị từ chối, viết nét 1 được
+  nhận). Trang không lưu đường nét nên không kiểm tra được từng nét; không so được con số này với bảng nhận nhầm ở
+  trên. Trang cũng dừng chữ sau khi đủ số lần viết, nên lượt này không chữ nào hoàn thành.
+- Vẽ chữ chưa tính thời gian tải qua mạng, vì dữ liệu nét nằm sẵn trong trang.
+- **Hạn chế:** một người viết cẩn thận, một máy, có hiện nét mờ của chữ. Người mới học hoặc viết không có nét mờ có
+  thể bị từ chối nhiều hơn. **Safari iPhone chưa thử.**
 
 ---
 

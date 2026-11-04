@@ -1,0 +1,225 @@
+<title>Duyệt âm Hán Việt</title>
+<meta name="claude:viewport-fit-sides" content="cover">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Be+Vietnam+Pro:wght@400;600;700&family=Noto+Sans+SC:wght@400;600&display=swap">
+<style>
+/* Công cụ duyệt: danh sách chữ, mỗi dòng xác nhận hoặc sửa được ngay, tiến độ luôn thấy ở thanh trên. */
+:root {
+  --bg: #fbfaff; --surface: #ffffff; --fg: #1d1a2b; --muted: #625e78; --line: #e3e0f0;
+  --accent: #6c4cf5; --accent-soft: #ece8fe; --on-accent: #ffffff;
+  --good: #1a7a4c; --good-soft: #e0f4ea; --warn: #a14b00; --warn-soft: #fdeedd;
+  --sans: "Be Vietnam Pro", system-ui, sans-serif; --han: "Noto Sans SC", "PingFang SC", sans-serif;
+}
+@media (prefers-color-scheme: dark) { :root:not([data-theme="light"]) {
+  --bg: #14121f; --surface: #1d1a2b; --fg: #eeecf7; --muted: #a9a5bf; --line: #332f47;
+  --accent: #a897ff; --accent-soft: #2c2650; --on-accent: #1b1145;
+  --good: #7fdcae; --good-soft: #17352a; --warn: #ffb870; --warn-soft: #3d2a14; color-scheme: dark } }
+:root[data-theme="dark"] {
+  --bg: #14121f; --surface: #1d1a2b; --fg: #eeecf7; --muted: #a9a5bf; --line: #332f47;
+  --accent: #a897ff; --accent-soft: #2c2650; --on-accent: #1b1145;
+  --good: #7fdcae; --good-soft: #17352a; --warn: #ffb870; --warn-soft: #3d2a14; color-scheme: dark }
+body { background: var(--bg); color: var(--fg); font: 15px/1.55 var(--sans);
+  padding-left: max(16px, env(safe-area-inset-left, 0px)); padding-right: max(16px, env(safe-area-inset-right, 0px)); padding-block: 24px 48px; }
+body::before { content: ""; position: fixed; inset: 0 0 auto; height: env(safe-area-inset-top, 0px); z-index: 10; background: var(--bg); }
+main { max-width: 860px; margin-inline: auto; display: grid; gap: 16px; }
+[lang="zh-CN"] { font-family: var(--han); }
+h1 { font-size: 24px; line-height: 1.25; margin: 0; text-wrap: balance; }
+.intro { display: grid; gap: 6px; max-width: 68ch; }
+.intro p, .intro ul { margin: 0; }
+.intro ul { padding-left: 20px; }
+.bar { position: sticky; top: env(safe-area-inset-top, 0px); z-index: 5; background: var(--bg); padding-block: 8px; display: grid; gap: 8px; border-bottom: 1px solid var(--line); }
+.progress { display: flex; flex-wrap: wrap; align-items: center; gap: 4px 12px; font-variant-numeric: tabular-nums; }
+.progress b { font-size: 17px; }
+.status { color: var(--muted); font-size: 13px; }
+.status.warn { color: var(--warn); }
+.tabs { display: flex; flex-wrap: wrap; gap: 8px; }
+button, input { font: inherit; color: var(--fg); }
+button { min-height: 44px; padding-inline: 14px; border-radius: 8px; border: 1px solid var(--line); background: var(--surface); cursor: pointer; font-weight: 600; }
+button:focus-visible, input:focus-visible { outline: 2px solid var(--accent); outline-offset: 1px; }
+.tabs button[aria-pressed="true"] { background: var(--accent); border-color: var(--accent); color: var(--on-accent); }
+.rows { display: grid; gap: 10px; }
+.row { background: var(--surface); border: 1px solid var(--line); border-radius: 10px; padding: 12px; display: grid; grid-template-columns: 64px minmax(0, 1fr); gap: 4px 12px; }
+.char { font-size: 40px; line-height: 1.1; font-weight: 600; text-align: center; }
+.meta { color: var(--muted); font-size: 13px; }
+.reasons { display: flex; flex-wrap: wrap; gap: 4px; }
+.chip { font-size: 12px; padding: 1px 8px; border-radius: 999px; background: var(--warn-soft); color: var(--warn); }
+.chip.done { background: var(--good-soft); color: var(--good); }
+.body { min-width: 0; display: grid; gap: 6px; }
+.readings { margin: 0; padding: 0; list-style: none; }
+.readings b { color: var(--accent); }
+.edit { display: flex; flex-wrap: wrap; gap: 8px; }
+.edit input { flex: 1 1 180px; min-width: 0; min-height: 44px; padding-inline: 10px; border-radius: 8px; border: 1px solid var(--line); background: var(--bg); }
+.edit .ok { background: var(--accent); border-color: var(--accent); color: var(--on-accent); }
+.empty { color: var(--muted); margin: 0; }
+textarea { width: 100%; min-height: 120px; font: 13px/1.4 ui-monospace, monospace; }
+</style>
+<main>
+  <div class="intro">
+    <h1>Duyệt âm Hán Việt</h1>
+    <p>900 chữ HSK 1–3. Âm do máy gợi ý rồi đối chiếu Unihan, nhưng Unihan lẫn cả âm Nôm nên không dùng thẳng được. Những chữ dưới đây cần người biết Hán Việt xác nhận.</p>
+    <ul>
+      <li>Ô nhập là âm sẽ dùng, âm thông dụng nhất viết đầu, cách nhau bằng dấu phẩy.</li>
+      <li>Đúng thì bấm <b>Đúng</b>. Sai hoặc thiếu thì sửa trong ô rồi bấm <b>Lưu sửa</b>.</li>
+      <li>Chữ không có âm Hán Việt thông dụng thì xóa trống ô rồi bấm Lưu sửa.</li>
+    </ul>
+    <p>Tab “Đã khớp” là các chữ máy và Unihan cho cùng âm đầu. Không bắt buộc, nhưng nhờ xem lướt nếu có thời gian.</p>
+  </div>
+  <div class="bar">
+    <div class="progress"><b id="count">0/0</b><span>chữ cần duyệt đã xong</span><span id="status" class="status" role="status">Đang kết nối…</span></div>
+    <div class="tabs" role="group" aria-label="Lọc danh sách">
+      <button type="button" data-tab="todo">Cần duyệt</button>
+      <button type="button" data-tab="matched">Đã khớp</button>
+      <button type="button" data-tab="done">Đã duyệt</button>
+      <button type="button" id="export">Chép kết quả</button>
+    </div>
+  </div>
+  <textarea id="out" aria-label="Kết quả dạng văn bản" hidden></textarea>
+  <div class="rows" id="rows"></div>
+</main>
+<script>
+const CHARS = /*DATA*/[];
+const REASON = { lech: "Khác Unihan", thieu: "Unihan không có", conf: "Máy không chắc", none: "Chưa có âm", dup: "Âm bị lặp" };
+const KEY = "han_viet_decisions";
+const decisions = new Map();
+let store = null;
+let tab = "todo";
+
+const idOf = (c) => "u" + c.codePointAt(0).toString(16);
+const rowsEl = document.getElementById("rows");
+const statusEl = document.getElementById("status");
+const say = (text, warn) => { statusEl.textContent = text; statusEl.classList.toggle("warn", !!warn); };
+
+function loadLocal() {
+  try {
+    const saved = JSON.parse(localStorage.getItem(KEY) || "{}");
+    for (const [id, value] of Object.entries(saved)) decisions.set(id, value);
+  } catch { /* trình duyệt không cho lưu: vẫn duyệt được, chỉ không nhớ */ }
+}
+function saveLocal() {
+  try { localStorage.setItem(KEY, JSON.stringify(Object.fromEntries(decisions))); } catch { /* như trên */ }
+}
+
+const parse = (text) => text.split(/[,，]/).map((s) => s.trim().toLowerCase()).filter(Boolean);
+const shown = (c) => {
+  const done = decisions.get(idOf(c.char));
+  if (tab === "done") return !!done;
+  if (done) return false;
+  return tab === "todo" ? c.reasons.length > 0 : c.reasons.length === 0;
+};
+
+function rowOf(c) {
+  const id = idOf(c.char);
+  const done = decisions.get(id);
+  const row = document.createElement("article");
+  row.className = "row";
+  const char = document.createElement("div");
+  char.className = "char"; char.lang = "zh-CN"; char.textContent = c.char;
+  const body = document.createElement("div");
+  body.className = "body";
+
+  const meta = document.createElement("div");
+  meta.className = "meta";
+  meta.textContent = "HSK " + c.level + (c.traditional.length ? " · phồn thể " + c.traditional.join(" ") : "") + " · Unihan: " + (c.unihan.join(", ") || "không có");
+  body.append(meta);
+
+  const reasons = document.createElement("div");
+  reasons.className = "reasons";
+  for (const r of c.reasons) {
+    const chip = document.createElement("span");
+    chip.className = "chip"; chip.textContent = REASON[r]; reasons.append(chip);
+  }
+  if (done) {
+    const chip = document.createElement("span");
+    chip.className = "chip done"; chip.textContent = done.status === "edited" ? "Đã sửa" : "Đã xác nhận"; reasons.append(chip);
+  }
+  if (reasons.childElementCount) body.append(reasons);
+
+  const list = document.createElement("ul");
+  list.className = "readings";
+  for (const r of c.readings) {
+    const li = document.createElement("li");
+    const b = document.createElement("b");
+    b.textContent = r.am; li.append(b, " " + r.meaning_vi); list.append(li);
+  }
+  if (c.readings.length) body.append(list);
+
+  const edit = document.createElement("div");
+  edit.className = "edit";
+  const input = document.createElement("input");
+  input.id = "in-" + id;
+  input.setAttribute("aria-label", "Âm Hán Việt của " + c.char);
+  const initial = (done ? done.readings : c.readings.map((r) => r.am)).join(", ");
+  input.value = initial;
+  const ok = document.createElement("button");
+  ok.type = "button"; ok.className = "ok"; ok.textContent = "Đúng";
+  input.addEventListener("input", () => { ok.textContent = input.value === initial ? "Đúng" : "Lưu sửa"; });
+  ok.addEventListener("click", () => decide(c, parse(input.value), input.value === initial && !done ? "ok" : "edited"));
+  edit.append(input, ok);
+  body.append(edit);
+
+  row.append(char, body);
+  return row;
+}
+
+function render() {
+  const list = CHARS.filter(shown);
+  rowsEl.replaceChildren(...list.map(rowOf));
+  if (!list.length) {
+    const p = document.createElement("p");
+    p.className = "empty";
+    p.textContent = tab === "done" ? "Chưa duyệt chữ nào." : "Không còn chữ nào ở mục này.";
+    rowsEl.append(p);
+  }
+  const need = CHARS.filter((c) => c.reasons.length);
+  document.getElementById("count").textContent = need.filter((c) => decisions.has(idOf(c.char))).length + "/" + need.length;
+  for (const b of document.querySelectorAll("[data-tab]")) b.setAttribute("aria-pressed", String(b.dataset.tab === tab));
+}
+
+async function decide(c, readings, status) {
+  const id = idOf(c.char);
+  const value = { char: c.char, readings, status };
+  decisions.set(id, value);
+  saveLocal();
+  render();
+  if (!store) return;
+  try {
+    await store.doc(id).set(value);
+  } catch (error) {
+    store = null;
+    say("Tài khoản này chưa lưu chung được. Lựa chọn vẫn giữ trong trình duyệt, khi xong bấm Chép kết quả.", true);
+  }
+}
+
+document.querySelectorAll("[data-tab]").forEach((b) => b.addEventListener("click", () => { tab = b.dataset.tab; render(); }));
+
+document.getElementById("export").addEventListener("click", async () => {
+  const text = [...decisions.values()].map((d) => d.char + "\t" + d.status + "\t" + d.readings.join(", ")).join("\n");
+  const out = document.getElementById("out");
+  out.value = text; out.hidden = false;
+  try { await navigator.clipboard.writeText(text); say("Đã chép " + decisions.size + " chữ. Dán gửi lại cho chủ sản phẩm.", false); }
+  catch { out.select(); say("Chọn sẵn đoạn bên dưới, nhấn Ctrl+C để chép.", false); }
+});
+
+loadLocal();
+render();
+
+(async () => {
+  const timer = setTimeout(() => say("Chưa kết nối được nơi lưu chung. Vẫn duyệt được, lựa chọn giữ trong trình duyệt.", true), 10000);
+  const db = await claude.use("db");
+  if (!db) {
+    clearTimeout(timer);
+    say("Đang lưu trong trình duyệt này. Khi xong bấm Chép kết quả.", true);
+    return;
+  }
+  store = db.collection("decisions");
+  store.onSnapshot((snap) => {
+    if (!snap.metadata.fromCache) { clearTimeout(timer); say("Đã kết nối, lựa chọn được lưu tự động."); }
+    for (const doc of snap.docs) decisions.set(doc.id, doc.data());
+    saveLocal();
+    if (!document.activeElement || document.activeElement.tagName !== "INPUT") render();
+  }, () => {
+    clearTimeout(timer);
+    store = null;
+    say("Mất kết nối nơi lưu chung. Lựa chọn giữ trong trình duyệt, khi xong bấm Chép kết quả.", true);
+  });
+})();
+</script>

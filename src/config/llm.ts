@@ -62,6 +62,7 @@ export const LLM_TASKS = [
   "reverse-lookup",
   "photo-ocr",
   "word-content-zh",
+  "han-viet",
 ] as const;
 
 export type LlmTask = (typeof LLM_TASKS)[number];
@@ -86,6 +87,8 @@ const DEFAULT_TASKS: Record<
     models: ["claude-haiku", "claude-sonnet"],
     schemaMode: "prompt",
   },
+  // Gợi ý âm Hán Việt (chạy một lần, người duyệt sau): cần độ chính xác, số lượng ít.
+  "han-viet": { containsUserData: false, models: ["claude-sonnet", "claude-haiku"] },
   "example-generator": { containsUserData: false, models: ["claude-haiku", "claude-sonnet"] },
   mnemonic: { containsUserData: false, models: ["claude-haiku", "claude-sonnet"] },
   // Ảnh/văn bản OCR của người dùng, bài đọc Admin → chỉ trả phí.

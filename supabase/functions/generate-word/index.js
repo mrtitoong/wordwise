@@ -112,7 +112,8 @@ var LLM_TASKS = [
   "list-subtopics",
   "reverse-lookup",
   "photo-ocr",
-  "word-content-zh"
+  "word-content-zh",
+  "han-viet"
 ];
 var DEFAULT_TASKS = {
   // Kiến thức chung → Claude Haiku, dự phòng Sonnet (chốt 2026-10-20 sau so sánh 50 từ:
@@ -131,6 +132,8 @@ var DEFAULT_TASKS = {
     models: ["claude-haiku", "claude-sonnet"],
     schemaMode: "prompt"
   },
+  // Gợi ý âm Hán Việt (chạy một lần, người duyệt sau): cần độ chính xác, số lượng ít.
+  "han-viet": { containsUserData: false, models: ["claude-sonnet", "claude-haiku"] },
   "example-generator": { containsUserData: false, models: ["claude-haiku", "claude-sonnet"] },
   mnemonic: { containsUserData: false, models: ["claude-haiku", "claude-sonnet"] },
   // Ảnh/văn bản OCR của người dùng, bài đọc Admin → chỉ trả phí.

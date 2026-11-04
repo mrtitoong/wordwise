@@ -16,3 +16,6 @@ lighthouse-report
 .claude/skills
 # Thí nghiệm một lần, không thuộc code chính
 spikes
+# Sinh bởi scripts/han-viet (mẫu trang có dấu chèn dữ liệu)
+data/zh/han-viet-suggestions.json
+scripts/han-viet/review.template.html

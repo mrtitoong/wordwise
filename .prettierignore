@@ -14,3 +14,5 @@ public/sw.js
 lighthouse-report
 # Skill bên thứ ba (Supabase, Vercel) – giữ nguyên bản gốc
 .claude/skills
+# Thí nghiệm một lần, không thuộc code chính
+spikes

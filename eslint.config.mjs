@@ -15,6 +15,8 @@ export default defineConfig([
     "playwright-report/**",
     "test-results/**",
     "design/**",
+    // Thí nghiệm một lần, không thuộc code chính
+    "spikes/**",
     // Sinh tự động bởi scripts/build-functions.ts
     "supabase/functions/*/index.js",
     // Sinh tự động bởi scripts/build-sw.ts

@@ -111,7 +111,8 @@ var LLM_TASKS = [
   "sense-picker",
   "list-subtopics",
   "reverse-lookup",
-  "photo-ocr"
+  "photo-ocr",
+  "word-content-zh"
 ];
 var DEFAULT_TASKS = {
   // Kiến thức chung → Claude Haiku, dự phòng Sonnet (chốt 2026-10-20 sau so sánh 50 từ:
@@ -119,6 +120,12 @@ var DEFAULT_TASKS = {
   // Schema thẻ từ 5 tab quá lớn để Claude/Gemini biên dịch thành structured output
   // (Claude 400 "compiled grammar is too large", Gemini 400) → gửi trong prompt.
   "word-content": {
+    containsUserData: false,
+    models: ["claude-haiku", "claude-sonnet"],
+    schemaMode: "prompt"
+  },
+  // Thẻ từ tiếng Trung: tạm như tiếng Anh, chốt sau so sánh 50 từ (Z1, docs/plan-zh.md).
+  "word-content-zh": {
     containsUserData: false,
     models: ["claude-haiku", "claude-sonnet"],
     schemaMode: "prompt"

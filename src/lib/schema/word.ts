@@ -228,43 +228,44 @@ export const ConfidenceSchema = z.object({
 
 /* ---------- Toàn bộ nội dung một từ ---------- */
 
-export const WordContentSchema = z
-  .object({
-    schema_version: z.literal(SCHEMA_VERSION),
-    language: LanguageSchema,
-    lemma: text,
-    pos: PosSchema,
-    ipa: IpaSchema,
-    cefr: CefrSchema,
-    register: RegisterSchema,
-    etymology_vi: text.nullable(),
-    forms: FormsSchema,
-    /** Sắp theo tần suất sử dụng, phổ biến nhất trước. */
-    senses: z.array(SenseSchema).min(1).max(5),
-    homonyms: z.array(HomonymSchema).max(4),
-    word_family: z.array(WordFamilyMemberSchema).max(10),
-    mnemonics: z.array(MnemonicSchema).max(3),
-    confusables: z.array(ConfusableSchema).max(4),
-    confidence: ConfidenceSchema,
-    /** null với tiếng Anh; với ja/zh, `kind` phải trùng `language`. */
-    language_extra: LanguageExtraSchema.nullable(),
-  })
-  .superRefine((w, ctx) => {
-    if (w.language_extra && w.language_extra.kind !== w.language) {
-      ctx.addIssue({
-        code: "custom",
-        path: ["language_extra", "kind"],
-        message: `language_extra.kind (${w.language_extra.kind}) phải trùng language (${w.language})`,
-      });
-    }
-    if (languagePack(w.language).requiresIpa && w.ipa.us === null && w.ipa.uk === null) {
-      ctx.addIssue({
-        code: "custom",
-        path: ["ipa"],
-        message: "Tiếng Anh cần ít nhất một IPA (us hoặc uk)",
-      });
-    }
-  });
+/** Các trường chung; tiếng Trung mở rộng từ đây (src/lib/lang/zh/content-schema.ts). */
+export const WordContentBaseSchema = z.object({
+  schema_version: z.literal(SCHEMA_VERSION),
+  language: LanguageSchema,
+  lemma: text,
+  pos: PosSchema,
+  ipa: IpaSchema,
+  cefr: CefrSchema,
+  register: RegisterSchema,
+  etymology_vi: text.nullable(),
+  forms: FormsSchema,
+  /** Sắp theo tần suất sử dụng, phổ biến nhất trước. */
+  senses: z.array(SenseSchema).min(1).max(5),
+  homonyms: z.array(HomonymSchema).max(4),
+  word_family: z.array(WordFamilyMemberSchema).max(10),
+  mnemonics: z.array(MnemonicSchema).max(3),
+  confusables: z.array(ConfusableSchema).max(4),
+  confidence: ConfidenceSchema,
+  /** null với tiếng Anh; với ja/zh, `kind` phải trùng `language`. */
+  language_extra: LanguageExtraSchema.nullable(),
+});
+
+export const WordContentSchema = WordContentBaseSchema.superRefine((w, ctx) => {
+  if (w.language_extra && w.language_extra.kind !== w.language) {
+    ctx.addIssue({
+      code: "custom",
+      path: ["language_extra", "kind"],
+      message: `language_extra.kind (${w.language_extra.kind}) phải trùng language (${w.language})`,
+    });
+  }
+  if (languagePack(w.language).requiresIpa && w.ipa.us === null && w.ipa.uk === null) {
+    ctx.addIssue({
+      code: "custom",
+      path: ["ipa"],
+      message: "Tiếng Anh cần ít nhất một IPA (us hoặc uk)",
+    });
+  }
+});
 
 export type Language = z.infer<typeof LanguageSchema>;
 export type Cefr = z.infer<typeof CefrSchema>;

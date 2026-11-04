@@ -270,7 +270,7 @@ var ConfidenceSchema = z.object({
   idioms: score,
   mnemonics: score
 });
-var WordContentSchema = z.object({
+var WordContentBaseSchema = z.object({
   schema_version: z.literal(SCHEMA_VERSION),
   language: LanguageSchema,
   lemma: text,
@@ -289,7 +289,8 @@ var WordContentSchema = z.object({
   confidence: ConfidenceSchema,
   /** null với tiếng Anh; với ja/zh, `kind` phải trùng `language`. */
   language_extra: LanguageExtraSchema.nullable()
-}).superRefine((w, ctx) => {
+});
+var WordContentSchema = WordContentBaseSchema.superRefine((w, ctx) => {
   if (w.language_extra && w.language_extra.kind !== w.language) {
     ctx.addIssue({
       code: "custom",

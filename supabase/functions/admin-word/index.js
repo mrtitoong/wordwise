@@ -111,7 +111,8 @@ var LLM_TASKS = [
   "sense-picker",
   "list-subtopics",
   "reverse-lookup",
-  "photo-ocr"
+  "photo-ocr",
+  "word-content-zh"
 ];
 var DEFAULT_TASKS = {
   // Kiến thức chung → Claude Haiku, dự phòng Sonnet (chốt 2026-10-20 sau so sánh 50 từ:
@@ -119,6 +120,12 @@ var DEFAULT_TASKS = {
   // Schema thẻ từ 5 tab quá lớn để Claude/Gemini biên dịch thành structured output
   // (Claude 400 "compiled grammar is too large", Gemini 400) → gửi trong prompt.
   "word-content": {
+    containsUserData: false,
+    models: ["claude-haiku", "claude-sonnet"],
+    schemaMode: "prompt"
+  },
+  // Thẻ từ tiếng Trung: tạm như tiếng Anh, chốt sau so sánh 50 từ (Z1, docs/plan-zh.md).
+  "word-content-zh": {
     containsUserData: false,
     models: ["claude-haiku", "claude-sonnet"],
     schemaMode: "prompt"
@@ -765,7 +772,7 @@ var ConfidenceSchema = z2.object({
   idioms: score,
   mnemonics: score
 });
-var WordContentSchema = z2.object({
+var WordContentBaseSchema = z2.object({
   schema_version: z2.literal(SCHEMA_VERSION),
   language: LanguageSchema,
   lemma: text,
@@ -784,7 +791,8 @@ var WordContentSchema = z2.object({
   confidence: ConfidenceSchema,
   /** null với tiếng Anh; với ja/zh, `kind` phải trùng `language`. */
   language_extra: LanguageExtraSchema.nullable()
-}).superRefine((w, ctx) => {
+});
+var WordContentSchema = WordContentBaseSchema.superRefine((w, ctx) => {
   if (w.language_extra && w.language_extra.kind !== w.language) {
     ctx.addIssue({
       code: "custom",

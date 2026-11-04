@@ -61,6 +61,7 @@ export const LLM_TASKS = [
   "list-subtopics",
   "reverse-lookup",
   "photo-ocr",
+  "word-content-zh",
 ] as const;
 
 export type LlmTask = (typeof LLM_TASKS)[number];
@@ -74,6 +75,12 @@ const DEFAULT_TASKS: Record<
   // Schema thẻ từ 5 tab quá lớn để Claude/Gemini biên dịch thành structured output
   // (Claude 400 "compiled grammar is too large", Gemini 400) → gửi trong prompt.
   "word-content": {
+    containsUserData: false,
+    models: ["claude-haiku", "claude-sonnet"],
+    schemaMode: "prompt",
+  },
+  // Thẻ từ tiếng Trung: tạm như tiếng Anh, chốt sau so sánh 50 từ (Z1, docs/plan-zh.md).
+  "word-content-zh": {
     containsUserData: false,
     models: ["claude-haiku", "claude-sonnet"],
     schemaMode: "prompt",

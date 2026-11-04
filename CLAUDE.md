@@ -57,6 +57,14 @@ Repo: https://github.com/mrtitoong/wordwise
 - Mobile-first: mọi màn hình dùng được ở 360px, nút ≥ 44px.
 - Commit nhỏ, theo Conventional Commits.
 
+## Tiếng Trung (đang làm, nhánh feature/zh)
+- Kế hoạch: docs/plan-zh.md. Mọi thứ sau cờ feature_zh; không được làm
+  thay đổi hành vi tiếng Anh đang beta. Migration chỉ thêm, không sửa cột cũ.
+- Chữ chính giản thể; pinyin lấy theo từ (CC-CEDICT) trước, thư viện sau.
+- Logic theo ngôn ngữ nằm trong src/lib/lang/{en,zh}; không if/else ngôn
+  ngữ rải rác trong component.
+- Ghi nguồn dữ liệu (CC-CEDICT, Unihan, Make Me A Hanzi) ở trang Giới thiệu.
+
 ## Quyết định đã chốt
 - 2026-10-20: Đối tượng chính là **người tự học** (người đi làm, tự học,
   ôn thi tự túc). Lớp học cho giáo viên/trung tâm để sau MVP.
@@ -662,3 +670,12 @@ Repo: https://github.com/mrtitoong/wordwise
   `database.types.ts`, áp cloud bằng MCP `apply_migration` sau khi CI Database xanh), Edge Function (build, deploy
   `--use-api`, thử `login_required`), CI (đọc trang Actions công khai; API GitHub không đăng nhập hay hết 60 lượt/giờ).
   Các quyết định trong CLAUDE.md giữ nguyên, chưa thu gọn.
+- 2026-11-04 (tiếng Trung, chủ sản phẩm duyệt 8 đề xuất ở docs/plan-zh.md §3): Bản đầu từ vựng HSK 3.0 cấp 1–3, giản
+  thể. **Không chấm thanh điệu** (Azure gần như không bắt sai thanh, tự đo cao độ báo nhầm ~30%): vẽ đường cao độ để tự
+  so, tập phát âm tiếng Trung chưa tính vào lịch ôn. Âm Hán Việt: LLM gợi ý, đối chiếu Unihan, chỗ lệch Admin duyệt.
+  CC-CEDICT chỉ lấy pinyin và dạng giản/phồn thể, **không đưa định nghĩa vào prompt**. Tên danh sách kiểu "Từ vựng theo
+  cấp HSK 3.0", hỏi luật sư trước khi mở công khai. Người học chọn ngôn ngữ đang học (đổi ở Hôm nay), không trộn thẻ;
+  chuỗi ngày chung, số từ mới và giới hạn ôn riêng từng ngôn ngữ. Thẻ Chính tả đổi tên thành "Viết chữ" (Hanzi Writer,
+  leniency 1: 63/63 nét đúng trên Android; mức 0–2 có nét mờ, mức 3–4 ẩn sau khi thử người thật, có công tắc tắt). Thêm
+  từ bằng Gõ, Thư viện, File; Ảnh/Nói/Link làm sau. Cờ theo tài khoản bật bằng SQL. Safari iPhone chưa thử, phải thử ở
+  Z3. Kết quả thí nghiệm ở docs/zh-spike.md.

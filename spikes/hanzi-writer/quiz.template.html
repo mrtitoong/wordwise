@@ -1,0 +1,490 @@
+<title>Thử viết chữ Hán</title>
+<meta name="claude:viewport-fit-sides" content="cover" />
+<style>
+  /* Layout: một cột, ô viết vuông ở giữa, số đo bên dưới; dùng một tay trên điện thoại. */
+  :root {
+    --bg: #f7f6fb;
+    --surface: #ffffff;
+    --fg: #1d1a2b;
+    --muted: #6b6680;
+    --line: #dedbe9;
+    --accent: #6c4cf5;
+    --ok: #1f8a4c;
+    --bad: #c2362f;
+    --grid: #c9c3e6;
+    --font-ui: "Be Vietnam Pro", system-ui, sans-serif;
+    --font-han: "Noto Serif SC", "Songti SC", serif;
+    --font-num: "JetBrains Mono", ui-monospace, monospace;
+  }
+  @media (prefers-color-scheme: dark) {
+    :root:not([data-theme="light"]) {
+      --bg: #15131d;
+      --surface: #1f1c2a;
+      --fg: #ece9f7;
+      --muted: #a29cb8;
+      --line: #34304a;
+      --accent: #a897ff;
+      --ok: #5fd08e;
+      --bad: #ff7d75;
+      --grid: #4a4466;
+      color-scheme: dark;
+    }
+  }
+  :root[data-theme="dark"] {
+    --bg: #15131d;
+    --surface: #1f1c2a;
+    --fg: #ece9f7;
+    --muted: #a29cb8;
+    --line: #34304a;
+    --accent: #a897ff;
+    --ok: #5fd08e;
+    --bad: #ff7d75;
+    --grid: #4a4466;
+    color-scheme: dark;
+  }
+  body {
+    background: var(--bg);
+    color: var(--fg);
+    font-family: var(--font-ui);
+    font-size: 15px;
+    line-height: 1.5;
+  }
+  main {
+    max-width: 520px;
+    margin: 0 auto;
+    padding-block: 16px 40px;
+    padding-left: max(16px, env(safe-area-inset-left, 0px));
+    padding-right: max(16px, env(safe-area-inset-right, 0px));
+    display: grid;
+    gap: 16px;
+  }
+  h1 {
+    font-size: 20px;
+    margin: 0;
+    text-wrap: balance;
+  }
+  p {
+    margin: 0;
+    color: var(--muted);
+  }
+  .row {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+    align-items: center;
+  }
+  button,
+  select {
+    font: inherit;
+    min-height: 44px;
+    padding: 0 14px;
+    border-radius: 10px;
+    border: 1px solid var(--line);
+    background: var(--surface);
+    color: var(--fg);
+  }
+  button.primary {
+    background: var(--accent);
+    border-color: var(--accent);
+    color: #fff;
+  }
+  button:focus-visible,
+  select:focus-visible {
+    outline: 3px solid var(--accent);
+    outline-offset: 2px;
+  }
+  .seg {
+    display: inline-flex;
+    border: 1px solid var(--line);
+    border-radius: 10px;
+    overflow: hidden;
+  }
+  .seg button {
+    border: 0;
+    border-radius: 0;
+  }
+  .seg button[aria-pressed="true"] {
+    background: var(--accent);
+    color: #fff;
+  }
+  #board {
+    width: min(100%, 340px);
+    aspect-ratio: 1;
+    max-width: 100%;
+    margin: 0 auto;
+    background: var(--surface);
+    border: 1px solid var(--line);
+    border-radius: 12px;
+    touch-action: none;
+    position: relative;
+  }
+  #board svg {
+    display: block;
+  }
+  .prompt {
+    text-align: center;
+    display: grid;
+    gap: 2px;
+  }
+  .prompt b {
+    font-family: var(--font-han);
+    font-size: 28px;
+    font-weight: 600;
+  }
+  .stats {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
+    gap: 8px;
+  }
+  .stat {
+    background: var(--surface);
+    border: 1px solid var(--line);
+    border-radius: 10px;
+    padding: 10px 12px;
+    min-width: 0;
+  }
+  .stat span {
+    display: block;
+    font-size: 12px;
+    color: var(--muted);
+    letter-spacing: 0.02em;
+  }
+  .stat strong {
+    font-family: var(--font-num);
+    font-variant-numeric: tabular-nums;
+    font-size: 18px;
+  }
+  .log {
+    font-family: var(--font-num);
+    font-size: 12px;
+    background: var(--surface);
+    border: 1px solid var(--line);
+    border-radius: 10px;
+    padding: 10px;
+    max-height: 180px;
+    overflow: auto;
+    white-space: pre-wrap;
+    word-break: break-all;
+  }
+  .status {
+    font-size: 13px;
+  }
+  .ok {
+    color: var(--ok);
+  }
+  .bad {
+    color: var(--bad);
+  }
+</style>
+
+<main>
+  <h1>Thử viết chữ Hán bằng ngón tay</h1>
+  <p id="intro">
+    10 chữ HSK 1. Chế độ <b>Viết đúng</b>: viết theo đúng thứ tự nét, đo số nét bị chấm sai oan. Chế
+    độ <b>Cố ý sai</b>: mỗi nét viết ngược chiều hoặc sai vị trí, đo số nét bị chấp nhận nhầm. Làm
+    mỗi chế độ một lượt trên từng máy rồi bấm Lưu kết quả.
+  </p>
+
+  <div class="row">
+    <div class="seg" role="group" aria-label="Chế độ">
+      <button id="mode-correct" aria-pressed="true">Viết đúng</button>
+      <button id="mode-wrong" aria-pressed="false">Cố ý sai</button>
+    </div>
+    <label for="leniency" class="status">Độ dễ</label>
+    <select id="leniency">
+      <option value="1">1 (mặc định)</option>
+      <option value="1.5">1.5</option>
+      <option value="0.7">0.7</option>
+    </select>
+  </div>
+
+  <div class="prompt">
+    <span class="status" id="progress">Chữ 1/10</span><b id="target">人</b
+    ><span class="status" id="feedback">Viết nét đầu tiên</span>
+  </div>
+  <div id="board"></div>
+  <div class="row">
+    <button id="skip">Bỏ qua chữ này</button>
+    <button id="restart">Làm lại lượt</button>
+    <button id="save" class="primary">Lưu kết quả</button>
+  </div>
+  <p class="status" id="save-status">
+    Kết quả lưu cho Claude đọc lại (cần đăng nhập claude.ai). Không lưu được thì bấm Sao chép.
+  </p>
+
+  <div class="stats">
+    <div class="stat"><span>Tải + vẽ chữ (trung vị)</span><strong id="s-init">—</strong></div>
+    <div class="stat">
+      <span>Nhấc tay → chấm nét (trung vị / lớn nhất)</span><strong id="s-grade">—</strong>
+    </div>
+    <div class="stat">
+      <span>Khung hình &gt; 33 ms khi đang viết</span><strong id="s-jank">—</strong>
+    </div>
+    <div class="stat"><span>Nét chấp nhận / nét bị từ chối</span><strong id="s-acc">—</strong></div>
+  </div>
+  <div class="row"><button id="copy">Sao chép kết quả</button></div>
+  <div class="log" id="log" aria-live="polite"></div>
+</main>
+
+<script src="https://cdn.jsdelivr.net/npm/hanzi-writer@3.7.3/dist/hanzi-writer.min.js"></script>
+<script>
+  const DATA = /*__DATA__*/ {};
+  const CHARS = Object.keys(DATA);
+  const $ = (id) => document.getElementById(id);
+  const median = (a) => {
+    if (!a.length) return null;
+    const s = [...a].sort((x, y) => x - y);
+    return s[Math.floor(s.length / 2)];
+  };
+  const ms = (v) => (v == null ? "—" : `${Math.round(v)} ms`);
+
+  let mode = "correct";
+  let run, writer, charState;
+
+  function newRun() {
+    run = {
+      id: `${Date.now().toString(36)}-${Math.random().toString(36).slice(2, 7)}`,
+      mode,
+      leniency: Number($("leniency").value),
+      startedAt: new Date().toISOString(),
+      device: {
+        ua: navigator.userAgent,
+        screen: `${screen.width}x${screen.height}`,
+        dpr: devicePixelRatio,
+        board: Math.round($("board").getBoundingClientRect().width),
+      },
+      chars: [],
+    };
+    $("log").textContent = "";
+    startChar(0);
+  }
+
+  function startChar(index) {
+    if (writer) {
+      writer.cancelQuiz();
+      $("board").innerHTML = "";
+    }
+    if (index >= CHARS.length) {
+      $("feedback").textContent = "Xong lượt. Bấm Lưu kết quả.";
+      $("progress").textContent = "Hoàn tất";
+      render();
+      return;
+    }
+    const ch = CHARS[index];
+    $("target").textContent = ch;
+    $("progress").textContent = `Chữ ${index + 1}/${CHARS.length} · ${DATA[ch].strokes.length} nét`;
+    $("feedback").textContent =
+      mode === "correct" ? "Viết nét đầu tiên" : "Viết sai nét (ngược chiều hoặc chỗ khác)";
+    charState = {
+      ch,
+      index,
+      strokes: DATA[ch].strokes.length,
+      accepted: 0,
+      rejected: 0,
+      grade: [],
+      pointerType: null,
+      moves: 0,
+      frames: 0,
+      jank: 0,
+      completed: false,
+      init: null,
+    };
+    const size = Math.round($("board").getBoundingClientRect().width);
+    const t0 = performance.now();
+    writer = HanziWriter.create("board", ch, {
+      width: size,
+      height: size,
+      padding: 12,
+      showCharacter: false,
+      showOutline: true,
+      showHintAfterMisses: mode === "correct" ? 3 : false,
+      highlightOnComplete: false,
+      leniency: run.leniency,
+      charDataLoader: (c, onLoad) => onLoad(DATA[c]),
+      onLoadCharDataSuccess: () =>
+        requestAnimationFrame(() => {
+          charState.init = performance.now() - t0;
+        }),
+    });
+    writer.quiz({
+      onCorrectStroke: (d) => graded(true, d),
+      onMistake: (d) => graded(false, d),
+      onComplete: () => {
+        charState.completed = true;
+        finishChar();
+      },
+    });
+  }
+
+  let lastUp = null;
+  function graded(ok, d) {
+    if (lastUp != null) charState.grade.push(performance.now() - lastUp);
+    lastUp = null;
+    ok ? charState.accepted++ : charState.rejected++;
+    $("feedback").innerHTML = ok
+      ? `<span class="ok">Nét ${d.strokeNum + 1} được chấp nhận</span>`
+      : `<span class="bad">Nét ${d.strokeNum + 1} bị từ chối (${d.mistakesOnStroke} lần)</span>`;
+    // Chế độ cố ý sai: mỗi nét chỉ thử sai một lần rồi chuyển chữ khi đã thử đủ số nét.
+    if (mode === "wrong" && charState.accepted + charState.rejected >= charState.strokes)
+      finishChar();
+    render();
+  }
+
+  function finishChar() {
+    if (run.chars.some((c) => c.index === charState.index)) return;
+    const {
+      ch,
+      index,
+      strokes,
+      accepted,
+      rejected,
+      grade,
+      pointerType,
+      moves,
+      frames,
+      jank,
+      completed,
+      init,
+    } = charState;
+    run.chars.push({
+      ch,
+      index,
+      strokes,
+      accepted,
+      rejected,
+      completed,
+      pointerType,
+      moves,
+      frames,
+      jank,
+      init: init && Math.round(init),
+      grade: grade.map((g) => Math.round(g)),
+    });
+    $("log").textContent +=
+      `${ch}: chấp nhận ${accepted}, từ chối ${rejected}, chấm ${grade.map((g) => Math.round(g)).join("/")} ms\n`;
+    setTimeout(() => startChar(index + 1), 500);
+  }
+
+  // Đo độ trễ chấm (nhấc tay → callback) và khung hình bị trễ trong lúc viết.
+  const board = $("board");
+  let drawing = false,
+    lastFrame = 0;
+  function frameLoop(t) {
+    if (!drawing) return;
+    if (lastFrame) {
+      charState.frames++;
+      if (t - lastFrame > 33) charState.jank++;
+    }
+    lastFrame = t;
+    requestAnimationFrame(frameLoop);
+  }
+  board.addEventListener(
+    "pointerdown",
+    (e) => {
+      charState.pointerType = e.pointerType;
+      drawing = true;
+      lastFrame = 0;
+      requestAnimationFrame(frameLoop);
+    },
+    true,
+  );
+  board.addEventListener(
+    "pointermove",
+    () => {
+      if (drawing) charState.moves++;
+    },
+    true,
+  );
+  const up = () => {
+    drawing = false;
+    lastUp = performance.now();
+  };
+  board.addEventListener("pointerup", up, true);
+  board.addEventListener("touchend", up, true);
+  board.addEventListener("mouseup", up, true);
+
+  function summary() {
+    const chars = run.chars;
+    const grade = chars.flatMap((c) => c.grade);
+    const sum = (k) => chars.reduce((s, c) => s + c[k], 0);
+    return {
+      initMedian: median(chars.map((c) => c.init).filter((v) => v != null)),
+      gradeMedian: median(grade),
+      gradeMax: grade.length ? Math.max(...grade) : null,
+      accepted: sum("accepted"),
+      rejected: sum("rejected"),
+      strokes: sum("strokes"),
+      jank: sum("jank"),
+      frames: sum("frames"),
+      charsDone: chars.length,
+    };
+  }
+  function render() {
+    const s = summary();
+    $("s-init").textContent = ms(s.initMedian);
+    $("s-grade").textContent =
+      s.gradeMedian == null ? "—" : `${ms(s.gradeMedian)} / ${ms(s.gradeMax)}`;
+    $("s-jank").textContent = s.frames ? `${s.jank}/${s.frames}` : "—";
+    $("s-acc").textContent = `${s.accepted} / ${s.rejected}`;
+  }
+
+  function setMode(m) {
+    mode = m;
+    $("mode-correct").setAttribute("aria-pressed", String(m === "correct"));
+    $("mode-wrong").setAttribute("aria-pressed", String(m === "wrong"));
+    newRun();
+    render();
+  }
+  $("mode-correct").onclick = () => setMode("correct");
+  $("mode-wrong").onclick = () => setMode("wrong");
+  $("leniency").onchange = () => {
+    newRun();
+    render();
+  };
+  $("restart").onclick = () => {
+    newRun();
+    render();
+  };
+  $("skip").onclick = () => finishChar();
+
+  const payload = () => ({ ...run, finishedAt: new Date().toISOString(), summary: summary() });
+  let dbPromise = null;
+  try {
+    dbPromise = window.claude?.use ? window.claude.use("db") : null;
+  } catch {
+    dbPromise = null;
+  }
+  $("save").onclick = async () => {
+    const db = dbPromise ? await dbPromise.catch(() => null) : null;
+    if (!db) {
+      $("save-status").textContent =
+        "Không lưu được ở đây. Bấm Sao chép kết quả rồi gửi cho Claude.";
+      return;
+    }
+    $("save-status").textContent = "Đang lưu…";
+    try {
+      await db.collection("runs").doc(run.id).set(payload());
+      $("save-status").innerHTML =
+        `<span class="ok">Đã lưu lượt ${run.id} (${run.chars.length} chữ).</span>`;
+    } catch (e) {
+      $("save-status").innerHTML =
+        `<span class="bad">Lưu lỗi: ${e?.code ?? e?.message ?? e}. Bấm Sao chép kết quả.</span>`;
+    }
+  };
+  $("copy").onclick = async () => {
+    const text = JSON.stringify(payload());
+    try {
+      await navigator.clipboard.writeText(text);
+      $("save-status").textContent = "Đã sao chép.";
+    } catch {
+      $("log").textContent = text;
+      const r = document.createRange();
+      r.selectNodeContents($("log"));
+      getSelection().removeAllRanges();
+      getSelection().addRange(r);
+    }
+  };
+
+  if (window.HanziWriter) newRun();
+  else $("feedback").textContent = "Không tải được thư viện Hanzi Writer.";
+</script>

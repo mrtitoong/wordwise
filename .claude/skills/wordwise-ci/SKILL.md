@@ -29,7 +29,7 @@ curl -s "https://github.com/mrtitoong/wordwise/actions/workflows/ci.yml?query=br
   | grep -oE '/mrtitoong/wordwise/actions/runs/[0-9]+' | head -1
 ```
 - Lượt "cancelled" thường do lượt mới hơn của cùng nhánh thay thế (vd push main ngay sau khi gộp), không phải lỗi.
-- CI mất khoảng 10–15 phút. Chờ bằng một lần kiểm tra sau ~10 phút, không hỏi liên tục.
+- CI mất khoảng 3–6 phút (E2E chia 2 job song song). Kiểm tra lần đầu sau ~3 phút rồi mỗi phút một lần, không đặt chờ cố định 10 phút. Commit chỉ sửa `docs/`, `CLAUDE.md`, `.claude/` không chạy CI.
 
 ## Đọc lỗi
 - **Annotation** (lỗi pgTAP, diff types, lỗi test) hiện trên trang lượt chạy:

@@ -1,10 +1,11 @@
+import { DEFAULT_LANGUAGE } from "@/lib/lang";
 import { z } from "zod";
 
 /**
  * Cài đặt thu thập ở onboarding 3 bước. Dùng chung cho khách (lưu ở máy) và
  * người có tài khoản (lưu vào user_settings).
  */
-export const TARGET_LANGUAGES = ["en"] as const;
+export const TARGET_LANGUAGES = [DEFAULT_LANGUAGE] as const;
 export const CEFR_LEVELS = ["A1", "A2", "B1", "B2", "C1"] as const;
 export const GOALS = ["ielts", "toeic", "communication", "work", "travel", "school"] as const;
 export const DAILY_NEW_OPTIONS = [5, 10, 15, 20] as const;
@@ -34,7 +35,7 @@ export type OnboardingSettings = z.infer<typeof onboardingSettingsSchema>;
 /** Giá trị khi người dùng bấm "Bỏ qua" ở mọi bước. */
 export function defaultOnboardingSettings(timezone = "Asia/Ho_Chi_Minh"): OnboardingSettings {
   return {
-    targetLanguage: "en",
+    targetLanguage: DEFAULT_LANGUAGE,
     cefrLevel: null,
     goals: [],
     dailyNewLimit: DEFAULT_DAILY_NEW,

@@ -98,7 +98,7 @@ export function LibraryScreen({ lists }: { lists: LibraryList[] | null }) {
           values={facets.languages}
           value={filter.language}
           allLabel={t("all")}
-          labelOf={(v) => (v === "en" ? t("languages.en") : v)}
+          labelOf={(v) => (v === "en" || v === "zh" ? t(`languages.${v}`) : v)}
           onChange={(language) => setFilter({ ...filter, language })}
         />
         <ChipRow

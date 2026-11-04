@@ -2,6 +2,7 @@
  * Thêm danh sách Thư viện vào sổ tay, nhận bản cập nhật, đổi ngày mục tiêu (offline-first: Dexie +
  * outbox trong một transaction như repo.ts).
  */
+import { DEFAULT_LANGUAGE } from "@/lib/lang";
 import { NotebookInputSchema } from "@/lib/notebooks/notebooks";
 import { subtopicTag } from "@/lib/library/library";
 import { randomId } from "./ids";
@@ -77,7 +78,7 @@ export async function addListToNotebook(
       notebook = {
         id: randomId(),
         user_id: owner,
-        language: "en",
+        language: DEFAULT_LANGUAGE,
         source_list_id: null,
         source_list_version: null,
         target_date: null,

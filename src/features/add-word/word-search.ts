@@ -5,6 +5,7 @@
  * khi offline. Sau khi thêm, lưu nội dung từ vào máy để mở thẻ được ngay cả khi offline.
  */
 import { useEffect, useState } from "react";
+import { DEFAULT_LANGUAGE } from "@/lib/lang";
 import type { LocalDb } from "@/lib/db/local";
 import { cacheWordContent } from "@/lib/db/repo";
 import { PosSchema } from "@/lib/schema/word";
@@ -18,7 +19,9 @@ const LIMIT = 8;
 async function searchLocal(db: LocalDb, prefix: string): Promise<WordSummary[]> {
   const q = prefix.trim().toLowerCase();
   const words = await db.words
-    .filter((w) => w.language === "en" && !w.is_hidden && w.lemma.toLowerCase().startsWith(q))
+    .filter(
+      (w) => w.language === DEFAULT_LANGUAGE && !w.is_hidden && w.lemma.toLowerCase().startsWith(q),
+    )
     .limit(50)
     .toArray();
   words.sort(

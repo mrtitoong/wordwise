@@ -5,6 +5,7 @@
  * Hàm thuần: bộ lemmatizer được truyền vào (bản tiếng Anh ở lemmatizer-en.ts, dữ liệu
  * WordNet ~3 MB nên chỉ nạp ở máy chủ).
  */
+import { languagePack } from "@/lib/lang";
 import type { Language, Pos } from "@/lib/schema/word";
 
 export interface Lemmatizer {
@@ -160,8 +161,8 @@ export function toLemma(
 ): LemmaResult {
   const surface = cleanSurface(input);
   const pos = options.pos ?? null;
-  // Chỉ có lemmatizer tiếng Anh; ngôn ngữ khác giữ nguyên (đã làm sạch).
-  if (options.language !== "en" || surface === "") {
+  // Ngôn ngữ không có từ gốc giữ nguyên (đã làm sạch).
+  if (!languagePack(options.language).lemmatizes || surface === "") {
     return { lemma: surface, surface, alternatives: [] };
   }
 

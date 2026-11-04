@@ -2,6 +2,7 @@
  * Hợp đồng của Edge Function generate-word, dùng chung cho máy chủ và app.
  */
 import { z } from "zod";
+import { DEFAULT_LANGUAGE } from "@/lib/lang";
 import { LanguageSchema, PosSchema, WordContentSchema } from "@/lib/schema/word";
 import { ReverseRequestSchema } from "./reverse";
 
@@ -11,7 +12,7 @@ export type InputMethod = z.infer<typeof InputMethodSchema>;
 export const WordRequestSchema = z.object({
   action: z.literal("request").default("request"),
   lemma: z.string().trim().min(1).max(64),
-  language: LanguageSchema.default("en"),
+  language: LanguageSchema.default(DEFAULT_LANGUAGE),
   pos: PosSchema.nullish(),
   /** Từ chưa có trong kho: máy chủ tự thêm nghĩa phổ biến nhất vào sổ này khi tạo xong. */
   notebookId: z.uuid().nullish(),
@@ -42,7 +43,7 @@ export const WorkerRequestSchema = z.object({ action: z.literal("work") });
 export const ResolveRequestSchema = z.object({
   action: z.literal("resolve"),
   lemmas: z.array(z.string().trim().min(1).max(64)).min(1).max(50),
-  language: LanguageSchema.default("en"),
+  language: LanguageSchema.default(DEFAULT_LANGUAGE),
 });
 
 export const FunctionRequestSchema = z.union([

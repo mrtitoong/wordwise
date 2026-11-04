@@ -618,6 +618,49 @@ function toLlmCallLogRow(entry) {
 
 // src/lib/schema/word.ts
 import { z as z3 } from "npm:zod@4.6.5";
+
+// src/lib/lang/en/index.ts
+var EN_TTS_VOICES = {
+  us: { locale: "en-US", name: "en-US-AvaNeural" },
+  uk: { locale: "en-GB", name: "en-GB-SoniaNeural" }
+};
+var en = {
+  code: "en",
+  wordAudioVoices: ["us", "uk"],
+  speechLocale: (voice) => EN_TTS_VOICES[voice].locale,
+  lemmatizes: true,
+  usesDictionaryApi: true,
+  requiresIpa: true
+};
+
+// src/lib/lang/zh/index.ts
+var zh = {
+  code: "zh",
+  wordAudioVoices: [],
+  speechLocale: () => "zh-CN",
+  lemmatizes: false,
+  usesDictionaryApi: false,
+  requiresIpa: false
+};
+
+// src/lib/lang/index.ts
+var DEFAULT_LANGUAGE = "en";
+var PACKS = { en, zh };
+function plainPack(code) {
+  return {
+    code,
+    wordAudioVoices: [],
+    speechLocale: () => code,
+    lemmatizes: false,
+    usesDictionaryApi: false,
+    requiresIpa: false
+  };
+}
+function languagePack(code) {
+  return PACKS[code] ?? plainPack(code);
+}
+
+// src/lib/schema/word.ts
 var SCHEMA_VERSION = 1;
 var text = z3.string().trim().min(1);
 var LanguageSchema = z3.enum(["en", "ja", "zh", "ko", "fr"]);
@@ -790,7 +833,7 @@ var WordContentSchema = z3.object({
       message: `language_extra.kind (${w.language_extra.kind}) phải trùng language (${w.language})`
     });
   }
-  if (w.language === "en" && w.ipa.us === null && w.ipa.uk === null) {
+  if (languagePack(w.language).requiresIpa && w.ipa.us === null && w.ipa.uk === null) {
     ctx.addIssue({
       code: "custom",
       path: ["ipa"],
@@ -969,7 +1012,7 @@ var InputMethodSchema = z6.enum(["typed", "voice", "photo", "csv", "list", "url"
 var WordRequestSchema = z6.object({
   action: z6.literal("request").default("request"),
   lemma: z6.string().trim().min(1).max(64),
-  language: LanguageSchema.default("en"),
+  language: LanguageSchema.default(DEFAULT_LANGUAGE),
   pos: PosSchema.nullish(),
   /** Từ chưa có trong kho: máy chủ tự thêm nghĩa phổ biến nhất vào sổ này khi tạo xong. */
   notebookId: z6.uuid().nullish(),
@@ -989,7 +1032,7 @@ var WorkerRequestSchema = z6.object({ action: z6.literal("work") });
 var ResolveRequestSchema = z6.object({
   action: z6.literal("resolve"),
   lemmas: z6.array(z6.string().trim().min(1).max(64)).min(1).max(50),
-  language: LanguageSchema.default("en")
+  language: LanguageSchema.default(DEFAULT_LANGUAGE)
 });
 var FunctionRequestSchema = z6.union([
   WorkerRequestSchema,
@@ -1363,7 +1406,7 @@ function lemmatizeWord(word, lemmatizer, pos) {
 function toLemma(input, options) {
   const surface = cleanSurface(input);
   const pos = options.pos ?? null;
-  if (options.language !== "en" || surface === "") {
+  if (!languagePack(options.language).lemmatizes || surface === "") {
     return { lemma: surface, surface, alternatives: [] };
   }
   const words = surface.split(" ");
@@ -1508,7 +1551,7 @@ function retryDelayMs(attempts) {
 async function processJob(job, deps) {
   const now = deps.now ?? Date.now;
   try {
-    const dictionary = job.language === "en" ? await deps.fetchDictionary(job.lemma) : null;
+    const dictionary = languagePack(job.language).usesDictionaryApi ? await deps.fetchDictionary(job.lemma) : null;
     const pos = job.pos;
     if (pos) {
       const existing = await deps.store.findWordId(job.language, job.lemma, pos);

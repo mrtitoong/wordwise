@@ -4,6 +4,7 @@ import { useLiveQuery } from "dexie-react-hooks";
 import { getLocalDb } from "@/lib/db/local";
 import { defaultSettingsRow } from "@/lib/db/repo";
 import type { WordRow, WordSenseRow } from "@/lib/db/types";
+import { forLanguage, learningLanguage } from "@/lib/lang/filter";
 import type { PersonalData } from "@/lib/notebooks/notebooks";
 import type { Pos } from "@/lib/schema/word";
 
@@ -52,12 +53,18 @@ export function usePersonalData(owner: string | null): PersonalView | undefined 
         });
       }
     }
+    const sense = new Map(senseRows.map((s) => [s.id, s]));
+    const scoped = forLanguage(
+      { notebooks, entries, userWords, cards },
+      learningLanguage(settings?.target_language),
+      (senseId) => wordById.get(sense.get(senseId)?.word_id ?? "")?.language,
+    );
     return {
       // Dòng cũ trong máy (trước khi có cột tags) coi như không có tag.
-      notebooks,
-      entries: entries.map((e) => ({ ...e, tags: e.tags ?? [] })),
-      userWords,
-      cards,
+      notebooks: scoped.notebooks,
+      entries: scoped.entries.map((e) => ({ ...e, tags: e.tags ?? [] })),
+      userWords: scoped.userWords,
+      cards: scoped.cards,
       senses,
       timeZone: (settings ?? defaultSettingsRow(owner)).timezone,
     };

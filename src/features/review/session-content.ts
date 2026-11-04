@@ -4,6 +4,7 @@
  * Nội dung cho từng thẻ trong phiên ôn (nghĩa, ví dụ, âm thanh, câu gặp) và nguồn đáp án nhiễu cho
  * trắc nghiệm. Đọc IndexedDB trước, thiếu thì tải từ Supabase (có mạng).
  */
+import { DEFAULT_LANGUAGE } from "@/lib/lang";
 import type { LocalDb } from "@/lib/db/local";
 import type { CardRow, UserWordRow, WordRow, WordSenseRow } from "@/lib/db/types";
 import type { ChoiceSense } from "@/lib/review/mcq";
@@ -140,7 +141,7 @@ export async function moreChoices(local: ChoiceSense[]): Promise<ChoiceSense[]> 
     )
       .from("words")
       .select("id, lemma, pos, word_senses (id, meaning_vi, sense_order)")
-      .eq("language", "en")
+      .eq("language", DEFAULT_LANGUAGE)
       .eq("is_hidden", false)
       .order("frequency_rank", { ascending: true, nullsFirst: false })
       .limit(120);

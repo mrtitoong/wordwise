@@ -987,7 +987,8 @@
     "language": "Ngôn ngữ",
     "all": "Tất cả",
     "languages": {
-      "en": "Tiếng Anh"
+      "en": "Tiếng Anh",
+      "zh": "Tiếng Trung"
     },
     "purposes": {
       "ielts": "IELTS",

@@ -1,3 +1,4 @@
+import { DEFAULT_LANGUAGE, languagePack } from "@/lib/lang";
 /**
  * Xử lý kết quả nhận dạng giọng nói (Web Speech API hoặc Azure qua Edge Function transcribe):
  * làm sạch, bỏ trùng, giữ tối đa 3 phương án để người dùng chọn. Hàm thuần.
@@ -53,5 +54,5 @@ export function splitUtterance(text: string): string[] {
 /** Ngôn ngữ nhận dạng theo ngôn ngữ sổ và giọng trong Cài đặt; tra ngược dùng tiếng Việt. */
 export function recognitionLang(mode: "learn" | "reverse", accent: "us" | "uk"): string {
   if (mode === "reverse") return "vi-VN";
-  return accent === "uk" ? "en-GB" : "en-US";
+  return languagePack(DEFAULT_LANGUAGE).speechLocale(accent);
 }

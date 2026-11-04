@@ -1,0 +1,16 @@
+import type { LanguagePack } from "../types";
+
+/** Giọng Azure của tiếng Anh, theo giọng Mỹ/Anh trong Cài đặt. */
+export const EN_TTS_VOICES = {
+  us: { locale: "en-US", name: "en-US-AvaNeural" },
+  uk: { locale: "en-GB", name: "en-GB-SoniaNeural" },
+} as const;
+
+export const en: LanguagePack = {
+  code: "en",
+  wordAudioVoices: ["us", "uk"],
+  speechLocale: (voice) => EN_TTS_VOICES[voice].locale,
+  lemmatizes: true,
+  usesDictionaryApi: true,
+  requiresIpa: true,
+};

@@ -15,6 +15,7 @@ import { ArticleEntry } from "./article-entry";
 import { BulkEntry } from "./bulk-entry";
 import { FileEntry } from "./file-entry";
 import { PhotoEntry } from "./photo/photo-entry";
+import { learningLanguage } from "@/lib/lang/filter";
 import { VoiceEntry } from "./voice-entry";
 import { PremiumSheet } from "./premium-sheet";
 import { PreparingList } from "./preparing-list";
@@ -84,8 +85,9 @@ export function AddWordScreen({ initialNotebookId }: { initialNotebookId: string
       db.user_settings.get(owner),
       openSlotsToday(db, owner),
     ]);
+    const language = learningLanguage(settings?.target_language);
     return {
-      notebooks,
+      notebooks: notebooks.filter((n) => n.language === language),
       userWords,
       entries,
       dailyLimit: settings?.daily_new_limit ?? 10,

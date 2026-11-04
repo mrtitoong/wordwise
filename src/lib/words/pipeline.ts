@@ -17,6 +17,7 @@ import {
   WORKER_MIN_REMAINING_MS,
   WORKER_TIME_BUDGET_MS,
 } from "@/config/words";
+import { languagePack } from "@/lib/lang";
 import { dictionaryForPrompt, type DictionaryData } from "@/lib/dictionary/free-dictionary";
 import { toLemma, type Lemmatizer } from "@/lib/entry/lemma";
 import type { LlmRouter } from "@/lib/llm/router";
@@ -246,7 +247,9 @@ export type JobOutcome =
 export async function processJob(job: WordJob, deps: WorkerDeps): Promise<JobOutcome> {
   const now = deps.now ?? Date.now;
   try {
-    const dictionary = job.language === "en" ? await deps.fetchDictionary(job.lemma) : null;
+    const dictionary = languagePack(job.language).usesDictionaryApi
+      ? await deps.fetchDictionary(job.lemma)
+      : null;
     // Không ghi loại từ → model chọn loại phổ biến nhất (thứ tự từ điển không theo tần suất).
     const pos = job.pos;
 

@@ -3,6 +3,7 @@
  * tạm ngưng. Mỗi thao tác ghi Dexie + outbox trong một transaction như repo.ts. Thao tác xóa
  * trả về bản chụp để Hoàn tác trong vài giây.
  */
+import { DEFAULT_LANGUAGE } from "@/lib/lang";
 import { planRemoval, NotebookInputSchema, type NotebookInput } from "@/lib/notebooks/notebooks";
 import { defaultNotebookId, notebookEntryId, randomId } from "./ids";
 import type { LocalDb } from "./local";
@@ -37,7 +38,7 @@ export async function createNotebook(
   const row: NotebookRow = {
     id: randomId(),
     user_id: owner,
-    language: "en",
+    language: DEFAULT_LANGUAGE,
     source_list_id: null,
     source_list_version: null,
     target_date: null,

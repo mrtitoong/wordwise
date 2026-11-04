@@ -6,6 +6,7 @@
  *   requestSentenceAudio()  – audio câu ví dụ, chỉ tạo khi có người bấm nghe lần đầu.
  */
 import { MEDIA_IMAGE_SEARCHES_PER_RUN, MEDIA_WORDS_PER_RUN } from "@/config/media";
+import { languagePack } from "@/lib/lang";
 import type { Language, Pos } from "@/lib/schema/word";
 import type { SentenceAudioRequest, SentenceAudioResponse } from "./api";
 import { ImageSearchError, wantsImage, type FoundImage, type ImageProvider } from "./images";
@@ -92,8 +93,8 @@ async function findImage(query: string, deps: MediaDeps, state: MediaRunState) {
 export async function processMediaWord(word: MediaWord, deps: MediaDeps, state: MediaRunState) {
   const done = { audio: 0, images: 0 };
   try {
-    if (deps.tts && word.language === "en") {
-      for (const voice of ["us", "uk"] as const) {
+    if (deps.tts) {
+      for (const voice of languagePack(word.language).wordAudioVoices) {
         if (word.audioUrl[voice]) continue;
         const path = wordAudioPath(word.language, word.lemma, word.pos, voice);
         let audio: Uint8Array;

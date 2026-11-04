@@ -3,6 +3,7 @@
  * "preparing" → hiện "Đang chuẩn bị nội dung" rồi gọi lại sau vài giây; gọi lại cùng từ
  * không tính thêm vào giới hạn ngày.
  */
+import { DEFAULT_LANGUAGE } from "@/lib/lang";
 import type { SupabaseClient } from "@supabase/supabase-js";
 import {
   ResolveResponseSchema,
@@ -21,7 +22,7 @@ export async function requestWord(
   input: Omit<WordRequest, "action" | "language"> & { language?: WordRequest["language"] },
 ): Promise<WordResponse> {
   const { data, error } = await supabase.functions.invoke("generate-word", {
-    body: { action: "request", language: "en", ...input },
+    body: { action: "request", language: DEFAULT_LANGUAGE, ...input },
   });
   if (error) throw error;
   return WordResponseSchema.parse(data);
@@ -33,7 +34,7 @@ export async function resolveWords(
   lemmas: string[],
 ): Promise<ResolveResponse> {
   const { data, error } = await supabase.functions.invoke("generate-word", {
-    body: { action: "resolve", language: "en", lemmas },
+    body: { action: "resolve", language: DEFAULT_LANGUAGE, lemmas },
   });
   if (error) throw error;
   return ResolveResponseSchema.parse(data);

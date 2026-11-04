@@ -3,11 +3,10 @@
  * giọng của trình duyệt (Web Speech API). Hàm thuần với môi trường truyền vào để test được
  * không cần trình duyệt.
  */
+import { DEFAULT_LANGUAGE, languagePack } from "@/lib/lang";
 import type { Voice } from "@/lib/media/tts-azure";
 
 export type PlaybackRate = 1 | 0.75;
-
-export const SPEECH_LANG: Record<Voice, string> = { us: "en-US", uk: "en-GB" };
 
 /** Phần nhỏ của HTMLAudioElement mà player cần. */
 export interface AudioLike {
@@ -59,7 +58,7 @@ export function createPlayer(env: PlayerEnv) {
   function speak(request: PlayRequest): PlayResult {
     if (!env.speech || !env.createUtterance) return "none";
     const utterance = env.createUtterance(request.text);
-    utterance.lang = SPEECH_LANG[request.voice];
+    utterance.lang = languagePack(DEFAULT_LANGUAGE).speechLocale(request.voice);
     utterance.rate = request.rate;
     utterance.addEventListener("end", () => request.onEnd?.());
     env.speech.speak(utterance);

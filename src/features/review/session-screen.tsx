@@ -9,6 +9,7 @@ import { useTranslations } from "next-intl";
 import { Button } from "@/components/ui/button";
 import { Sheet } from "@/components/ui/sheet";
 import { showToast } from "@/components/ui/toast";
+import { DEFAULT_LANGUAGE, languagePack } from "@/lib/lang";
 import { getLocalDb } from "@/lib/db/local";
 import { randomId } from "@/lib/db/ids";
 import {
@@ -205,7 +206,7 @@ export function SessionScreen({ options }: { options: SessionOptions }) {
         return {
           step: "speaking",
           voice: preferred,
-          locale: preferred === "uk" ? "en-GB" : "en-US",
+          locale: languagePack(DEFAULT_LANGUAGE).speechLocale(preferred) as PronunciationLocale,
         };
       }
       if (prep.card.skill === "spelling") {
@@ -352,9 +353,9 @@ export function SessionScreen({ options }: { options: SessionOptions }) {
       } else if (options.practice) {
         const plan = buildPractice(
           {
-            userWords: fresh.userWords,
-            cards: fresh.cards,
-            entries: fresh.entries,
+            userWords: input.userWords,
+            cards: input.cards,
+            entries: input.entries,
             practiceSpelling: fresh.settings.practice_spelling ?? true,
             dayEnd: studyDayEnd(now, fresh.settings.timezone),
           },

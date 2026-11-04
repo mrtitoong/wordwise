@@ -246,6 +246,36 @@ describe("today", () => {
     expect(s.lastReviewAt?.toISOString()).toBe("2026-10-22T01:00:00.000Z");
   });
 
+  it("trần lượt hỏi: đếm theo từ trong ngày học, gộp các thẻ; bỏ ôn ngoài lịch, lượt tự chọn", () => {
+    const free = log({ card_id: reviewed.id });
+    const s = sessionSettings(
+      {
+        ...input([
+          log({ card_id: reviewed.id }),
+          log({ card_id: spelling.id }),
+          log({ card_id: reviewed.id, is_extra: true }),
+          log({ card_id: reviewed.id, reviewed_at: "2026-10-20T01:00:00Z" }),
+          free,
+        ]),
+        freeLogIds: new Set([free.id]),
+      },
+      NOW,
+    );
+    expect(s.wordAsks).toEqual(new Map([["beta", 2]]));
+  });
+
+  it('từ hết lượt: Hôm nay và phiên không tính; "Ôn lại từ sai" vẫn ôn được', () => {
+    const logs = [1, 2, 3].map(() => log({ card_id: reviewed.id }));
+    const plan = planToday(input(logs), scheduler, NOW);
+    expect(plan.items.map((i) => i.cardId)).toEqual([cards[0]!.id]);
+    const retry = planToday(input(logs), scheduler, NOW, {
+      onlyCardIds: new Set([reviewed.id]),
+    });
+    expect(retry.items.map((i) => i.cardId)).toEqual([reviewed.id]);
+    const tomorrow = planToday(input(logs), scheduler, new Date(NOW.getTime() + DAY));
+    expect(tomorrow.items.map((i) => i.cardId)).toContain(reviewed.id);
+  });
+
   it("planToday: đếm thẻ ôn, từ mới, thời gian; phiên ngắn cắt theo 5 phút; chỉ một thẻ", () => {
     const plan = planToday(input(), scheduler, NOW);
     expect(plan).toMatchObject({ reviews: 2, news: 1, gentle: false });

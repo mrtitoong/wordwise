@@ -6,6 +6,7 @@ import {
   buildSession,
   conflicts,
   requeue,
+  separateWords,
   spreadApart,
   type QueueCard,
   type SessionSettings,
@@ -173,6 +174,69 @@ describe("buildSession", () => {
     const plan = buildSession([newCard("first")], settings({ lastReviewAt: null }), scheduler, NOW);
     expect(plan.gentle).toBe(false);
     expect(plan.items).toEqual([{ cardId: expect.stringMatching(/^n-first/), isNew: true }]);
+  });
+});
+
+describe("trần số lần hỏi mỗi ngày (wordAsks)", () => {
+  const learning = (lemma: string): QueueCard => {
+    const card = reviewCard(lemma);
+    return { ...card, card: { ...card.card, state: State.Learning, learning_steps: 1 } };
+  };
+
+  it("từ đã hỏi đủ 3 lần hôm nay không vào phiên, không tính vào thẻ hoãn", () => {
+    const cards = [reviewCard("alpha"), learning("beta"), newCard("gamma")];
+    const plan = buildSession(
+      cards,
+      settings({
+        wordAsks: new Map([
+          ["beta", 3],
+          ["gamma", 3],
+        ]),
+      }),
+      scheduler,
+      NOW,
+    );
+    expect(lemmasOf(cards, plan.items)).toEqual(["alpha"]);
+    expect(plan.deferred).toBe(0);
+  });
+
+  it("gộp mọi thẻ của từ, không phân biệt hoa thường: còn 1 lượt thì chỉ lấy 1 thẻ", () => {
+    const first = reviewCard("Delta");
+    const second = { ...reviewCard("delta"), skill: "spelling" };
+    const plan = buildSession(
+      [first, second, reviewCard("omega"), reviewCard("sigma")],
+      settings({ wordAsks: new Map([["delta", 2]]) }),
+      scheduler,
+      NOW,
+    );
+    expect(plan.items).toHaveLength(3);
+  });
+
+  it("không có wordAsks (phiên tự chọn) thì không áp trần", () => {
+    const cards = [reviewCard("alpha")];
+    expect(buildSession(cards, settings(), scheduler, NOW).items).toHaveLength(1);
+  });
+
+  it("thẻ dở bước học từ hôm trước xếp đầu phiên", () => {
+    const cards = [reviewCard("alpha", { overdueDays: 30 }), learning("beta")];
+    const plan = buildSession(cards, settings({ wordAsks: new Map() }), scheduler, NOW);
+    expect(lemmasOf(cards, plan.items)).toEqual(["beta", "alpha"]);
+  });
+
+  it("cả danh sách cùng chủ đề: thẻ cùng từ được dời đi, không thẻ nào bị bỏ", () => {
+    const item = (lemma: string) => ({ entry: reviewCard(lemma, { topics: ["env"] }) });
+    const lemmas = (list: { entry: QueueCard }[]) => list.map((i) => i.entry.lemma);
+    const list = ["a", "a", "a", "b", "b", "c"].map(item);
+    const out = lemmas(separateWords(list));
+    expect([...out].sort()).toEqual(["a", "a", "a", "b", "b", "c"]);
+    for (let i = 1; i < out.length; i++) expect(out[i]).not.toBe(out[i - 1]);
+    expect(lemmas(separateWords(["b", "c", "a", "a"].map(item)))).toEqual(["a", "b", "c", "a"]);
+  });
+
+  it("chỉ còn hai thẻ cùng một từ: thẻ sau để phiên khác, không hỏi liền nhau", () => {
+    const first = reviewCard("delta");
+    const second = { ...reviewCard("delta"), skill: "spelling" };
+    expect(buildSession([first, second], settings(), scheduler, NOW).items).toHaveLength(1);
   });
 });
 

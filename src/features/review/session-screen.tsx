@@ -20,7 +20,7 @@ import {
   type ReviewInput,
 } from "@/lib/db/repo";
 import { recordSlow, timed, watchMainThread } from "@/lib/diagnostics/slow-log";
-import { clearSession, markSessionFinished, saveSession } from "@/lib/db/review-store";
+import { addFreeLog, clearSession, markSessionFinished, saveSession } from "@/lib/db/review-store";
 import type { Voice } from "@/lib/media/tts-azure";
 import { studyDay, studyDayEnd } from "@/lib/review/day";
 import { buildMcq, type ChoiceSense, type Mcq } from "@/lib/review/mcq";
@@ -32,7 +32,7 @@ import {
   type SavedSession,
   type SessionSummary,
 } from "@/lib/review/session";
-import { planToday } from "@/lib/review/today";
+import { planToday, sessionSettings } from "@/lib/review/today";
 import { nextDueByRating } from "@/lib/srs/cards";
 import {
   INTRO_RATING,
@@ -47,7 +47,7 @@ import { buildPractice, type PracticeRequest } from "@/lib/review/practice";
 import type { PronunciationLocale } from "@/lib/pronunciation/api";
 import { masteryLevel, type MasteryLevel } from "@/lib/srs/mastery";
 import { getSupabaseEnv } from "@/lib/supabase/env";
-import { remainingItems, requeue, type SessionItem } from "@/lib/srs/queue";
+import { remainingItems, requeue, wordKeyOf, type SessionItem } from "@/lib/srs/queue";
 import { createScheduler } from "@/lib/srs/scheduler";
 import { useOwner } from "@/lib/sync/owner";
 import { Flashcard } from "./modes/flashcard";
@@ -104,6 +104,8 @@ function preloadModes(queue: readonly SessionItem[], cards: Map<string, Prepared
 }
 
 type Kind = "full" | "short" | "single" | "retry" | "practice";
+/** Phiên theo lịch; các phiên còn lại do người học tự chọn, không áp trần lượt hỏi mỗi ngày. */
+const isScheduled = (kind: Kind) => kind === "full" || kind === "short";
 
 type Run = {
   kind: Kind;
@@ -171,6 +173,8 @@ export function SessionScreen({ options }: { options: SessionOptions }) {
   const writes = useRef<Promise<void>>(Promise.resolve());
   /** Thẻ ôn ngoài lịch ("Ôn từ này", "Ôn lại từ sai" khi chưa đến hạn). */
   const extraIds = useRef(new Set<string>());
+  /** Số lần mỗi từ đã hỏi: phiên theo lịch tính cả ngày học, phiên tự chọn chỉ tính trong phiên. */
+  const wordAsks = useRef(new Map<string, number>());
 
   const scheduler = useRef<FSRS | null>(null);
   /** Giọng trong Cài đặt và "Luyện nhiều giọng" (tập nghe đổi ngẫu nhiên Mỹ/Anh). */
@@ -277,6 +281,10 @@ export function SessionScreen({ options }: { options: SessionOptions }) {
             scheduler.current!,
             now,
             extraIds.current,
+            {
+              keyOf: (i) => wordKeyOf(cards.get(i.cardId)?.word.content.lemma ?? i.cardId),
+              asked: (key) => wordAsks.current.get(key) ?? 0,
+            },
           ),
       );
       setAsk(buildAsk(r, cards, choices));
@@ -395,6 +403,10 @@ export function SessionScreen({ options }: { options: SessionOptions }) {
         };
       }
 
+      if (isScheduled(next.kind)) {
+        wordAsks.current = new Map(sessionSettings(input, now).wordAsks);
+      }
+
       const cards = await prepareCards(
         db,
         fresh,
@@ -441,12 +453,13 @@ export function SessionScreen({ options }: { options: SessionOptions }) {
    * Ghi lượt ôn chạy nền, lần lượt theo thứ tự trả lời (IndexedDB trước, đồng bộ sau). Lỗi thì báo
    * (thẻ trong máy giữ lịch cũ, lần ôn sau vẫn gặp lại).
    */
-  function saveReview(cardId: string, input: ReviewInput) {
+  function saveReview(cardId: string, input: ReviewInput, r: Run) {
     const db = getLocalDb();
     const delay = e2eOverride("saveDelayMs") ?? 0;
     writes.current = writes.current
       .then(() => new Promise((resolve) => setTimeout(resolve, delay)))
       .then(() => timed("write", input.mode, () => recordReview(db, owner!, cardId, input)))
+      .then(() => (isScheduled(r.kind) ? undefined : addFreeLog(db, owner!, r.day, input.logId!)))
       .then(
         () => undefined,
         (error: unknown) => {
@@ -502,7 +515,7 @@ export function SessionScreen({ options }: { options: SessionOptions }) {
         { owner, settings: data.settings, notebooks: data.notebooks, entries: data.entries },
         input,
       );
-      saveReview(item.cardId, input);
+      saveReview(item.cardId, input, run);
       // Quên khi ôn ngoài lịch: lượt đó đã tính vào lịch, các lượt sau là ôn thật.
       if (extra && rating === Rating.Again) extraIds.current.delete(item.cardId);
       const cards = new Map(prepared).set(item.cardId, { ...prep, card: result.card });
@@ -520,20 +533,17 @@ export function SessionScreen({ options }: { options: SessionOptions }) {
         },
       ];
       const again = rating === Rating.Again;
-      const wordOf = (i: SessionItem) => cards.get(i.cardId)?.word.id ?? i.cardId;
+      const wordOf = (i: SessionItem) =>
+        wordKeyOf(cards.get(i.cardId)?.word.content.lemma ?? i.cardId);
+      const asks = (wordAsks.current.get(wordOf(item)) ?? 0) + 1;
+      wordAsks.current.set(wordOf(item), asks);
       const queue = result.log.is_extra
         ? run.queue
         : requeue(
             run.queue,
             run.position,
             item,
-            {
-              again,
-              nextDue: new Date(result.card.due),
-              againCount: answers.filter(
-                (a) => a.cardId === item.cardId && a.rating === Rating.Again,
-              ).length,
-            },
+            { again, nextDue: new Date(result.card.due), asks },
             now,
             Math.random,
             (a, b) => wordOf(a) === wordOf(b),

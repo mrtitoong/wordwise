@@ -16,6 +16,7 @@ import { medianResponseMs } from "@/lib/srs/grade";
 import { DEFAULT_ANSWER_MS, estimateMinutes, NEW_WORD_MS } from "./estimate";
 import {
   buildSession,
+  wordKeyOf,
   type QueueCard,
   type SessionPlan,
   type SessionSettings,
@@ -26,6 +27,8 @@ export type TodayInput = {
   cards: readonly CardRow[];
   entries: readonly NotebookEntryRow[];
   logs: readonly ReviewLogRow[];
+  /** Lượt ôn của Luyện tập, "Ôn lại từ sai", "Ôn từ này": không tính vào trần lượt hỏi mỗi ngày. */
+  freeLogIds?: ReadonlySet<string>;
   /** Sổ tay: sổ có ngày mục tiêu cộng thêm chỉ tiêu từ mới hôm nay. */
   notebooks?: readonly NotebookRow[];
   settings: {
@@ -83,6 +86,19 @@ export function queueCards(input: TodayInput): QueueCard[] {
     });
 }
 
+/** Số lần mỗi từ đã được hỏi trong phiên ôn của ngày học (ôn ngoài lịch và lượt tự chọn không tính). */
+function wordAsksOf(input: TodayInput, todays: readonly ReviewLogRow[]): Map<string, number> {
+  const senseOf = new Map(input.userWords.map((uw) => [uw.id, uw.sense_id]));
+  const senseOfCard = new Map(input.cards.map((c) => [c.id, senseOf.get(c.user_word_id)]));
+  const asks = new Map<string, number>();
+  for (const log of todays) {
+    const sense = senseOfCard.get(log.card_id);
+    const key = sense ? wordKeyOf(input.lemmaOf(sense)) : "";
+    if (key && !input.freeLogIds?.has(log.id)) asks.set(key, (asks.get(key) ?? 0) + 1);
+  }
+  return asks;
+}
+
 export function sessionSettings(input: TodayInput, now: Date): SessionSettings {
   const today = studyDay(now, input.settings.timeZone);
   const scheduling = input.logs.filter((l) => !l.is_extra);
@@ -123,6 +139,7 @@ export function sessionSettings(input: TodayInput, now: Date): SessionSettings {
     reviewsDoneToday: todays.filter((l) => !firstOfMeaning(l)).length,
     lastReviewAt: last ? new Date(last) : null,
     dayEnd: studyDayEnd(now, input.settings.timeZone),
+    wordAsks: wordAsksOf(input, todays),
   };
 }
 
@@ -150,7 +167,11 @@ export function planToday(
   const settings = sessionSettings(input, now);
   if (options.extraNew) settings.newLimit += options.extraNew;
   let cards = queueCards(input);
-  if (options.onlyCardIds) cards = cards.filter((c) => options.onlyCardIds!.has(c.card.id));
+  if (options.onlyCardIds) {
+    // Người học tự chọn ôn những thẻ này: không áp trần mỗi ngày.
+    cards = cards.filter((c) => options.onlyCardIds!.has(c.card.id));
+    delete settings.wordAsks;
+  }
   const plan = buildSession(cards, settings, scheduler, now);
   const perAnswer = answerMs(input.logs);
   let items = plan.items;

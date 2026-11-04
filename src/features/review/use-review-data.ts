@@ -7,7 +7,7 @@ import { useLiveQuery } from "dexie-react-hooks";
 import { defaultSettingsRow } from "@/lib/db/repo";
 import { GUEST_OWNER } from "@/lib/db/ids";
 import { getLocalDb } from "@/lib/db/local";
-import { completedDays, getSavedSession } from "@/lib/db/review-store";
+import { completedDays, freeLogIds, getSavedSession } from "@/lib/db/review-store";
 import type {
   CardRow,
   NotebookEntryRow,
@@ -29,6 +29,7 @@ export type ReviewData = {
   entries: NotebookEntryRow[];
   notebooks: NotebookRow[];
   logs: ReviewLogRow[];
+  freeLogs: Set<string>;
   /** sense_id → từ và nghĩa (nội dung đã có trong máy). */
   senses: Map<string, { word: WordRow; sense: WordSenseRow }>;
   completedDays: Set<string>;
@@ -42,16 +43,18 @@ export function useReviewData(owner: string | null): ReviewData | undefined {
 /** Đọc một lần (phiên ôn cần bản mới nhất ngay sau khi ghi). */
 export async function loadReviewData(owner: string): Promise<ReviewData> {
   const db = getLocalDb();
-  const [settings, userWords, cards, entries, notebooks, logs, done, saved] = await Promise.all([
-    db.user_settings.get(owner),
-    db.user_words.where("user_id").equals(owner).toArray(),
-    db.cards.where("user_id").equals(owner).toArray(),
-    db.notebook_entries.where("user_id").equals(owner).toArray(),
-    db.notebooks.where("user_id").equals(owner).toArray(),
-    db.review_logs.where("user_id").equals(owner).toArray(),
-    completedDays(db, owner),
-    getSavedSession(db, owner),
-  ]);
+  const [settings, userWords, cards, entries, notebooks, logs, freeLogs, done, saved] =
+    await Promise.all([
+      db.user_settings.get(owner),
+      db.user_words.where("user_id").equals(owner).toArray(),
+      db.cards.where("user_id").equals(owner).toArray(),
+      db.notebook_entries.where("user_id").equals(owner).toArray(),
+      db.notebooks.where("user_id").equals(owner).toArray(),
+      db.review_logs.where("user_id").equals(owner).toArray(),
+      freeLogIds(db, owner),
+      completedDays(db, owner),
+      getSavedSession(db, owner),
+    ]);
   const senseRows = (await db.word_senses.bulkGet(userWords.map((uw) => uw.sense_id))).filter(
     (s): s is WordSenseRow => !!s,
   );
@@ -73,6 +76,7 @@ export async function loadReviewData(owner: string): Promise<ReviewData> {
     entries,
     notebooks,
     logs,
+    freeLogs,
     senses,
     completedDays: done,
     saved,
@@ -85,6 +89,7 @@ export function toTodayInput(data: ReviewData, relatedOf?: TodayInput["relatedOf
     cards: data.cards,
     entries: data.entries,
     logs: data.logs,
+    freeLogIds: data.freeLogs,
     notebooks: data.notebooks,
     settings: {
       dailyNewLimit: data.settings.daily_new_limit,

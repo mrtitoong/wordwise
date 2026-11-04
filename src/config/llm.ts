@@ -79,7 +79,8 @@ const DEFAULT_TASKS: Record<
     models: ["claude-haiku", "claude-sonnet"],
     schemaMode: "prompt",
   },
-  // Thẻ từ tiếng Trung: tạm như tiếng Anh, chốt sau so sánh 50 từ (Z1, docs/plan-zh.md).
+  // Thẻ từ tiếng Trung (chốt 2026-11-04 sau so sánh 50 từ): Haiku ~$3.5/1.000 từ, Sonnet ~$31/1.000 từ,
+  // người biết tiếng Trung đánh giá cả hai dùng được.
   "word-content-zh": {
     containsUserData: false,
     models: ["claude-haiku", "claude-sonnet"],

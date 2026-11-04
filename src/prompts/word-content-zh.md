@@ -1,6 +1,6 @@
 ---
 task: word-content-zh
-version: 1
+version: 2
 schema: src/lib/lang/zh/content-schema.ts (ZhWordContentSchema, SCHEMA_VERSION 1)
 ---
 
@@ -35,7 +35,11 @@ Tạo nội dung học cho từ "{{lemma}}". Người học ở trình độ {{l
 Tab Nghĩa (senses):
 
 - Chỉ nghĩa phổ biến ở trình độ người học, tối đa 3, sắp theo tần suất (phổ biến nhất trước).
-- Chỉ gồm nghĩa của ĐÚNG loại từ trên thẻ. Từ có âm khác nhưng cùng loại từ thì mỗi âm là một nghĩa.
+- Chỉ gồm nghĩa của ĐÚNG loại từ trên thẻ. Bỏ hẳn nghĩa thuộc loại từ khác, kể cả khi rất phổ biến
+  (vd thẻ tính từ 长 chỉ có cháng "dài", không có zhǎng "lớn lên" vì đó là động từ; thẻ tính từ 好 không
+  có hào "thích"). Thà ít nghĩa còn hơn lẫn loại từ.
+- Từ có âm khác nhưng CÙNG loại từ thì mỗi âm là một nghĩa riêng (vd động từ 看: kàn "nhìn", kān
+  "trông coi"), miễn là nghĩa đó phổ biến ở trình độ người học.
 - definition_en ngắn, dễ hiểu, tự viết; meaning_vi ngắn gọn, tự nhiên, không dịch từ-đối-từ.
 - Trợ từ, lượng từ: meaning_vi nói rõ chức năng và cách dùng, không dịch gượng thành một từ tiếng Việt.
 - image_query: 2–4 từ tiếng Anh mô tả một hình ảnh cụ thể, dễ nhớ cho nghĩa này.

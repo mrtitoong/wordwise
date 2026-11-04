@@ -3,6 +3,8 @@
 import { useEffect } from "react";
 import { GUEST_OWNER } from "@/lib/db/ids";
 import { getLocalDb } from "@/lib/db/local";
+import { addFreeLog } from "@/lib/db/review-store";
+import { DEFAULT_TIME_ZONE, studyDay } from "@/lib/review/day";
 import { ensureSkillCards, openNewWords, recordReview } from "@/lib/db/repo";
 import type { CardRow, ReviewLogRow } from "@/lib/db/types";
 import { timed } from "@/lib/diagnostics/slow-log";
@@ -112,8 +114,15 @@ export function SyncProvider() {
                 ...(limit !== undefined && i >= limit ? { due: later } : {}),
               })),
             );
-            // Mức thuộc đổi thì có thể mở thêm thẻ kỹ năng (Chính tả, Phát âm).
-            if (owner) await ensureSkillCards(db, owner);
+            if (owner) {
+              // Đẩy thẻ tới hạn là giả lập sang ngày khác: lượt đã ôn không tính vào trần mỗi từ.
+              const settings = await db.user_settings.get(owner);
+              const day = studyDay(new Date(), settings?.timezone ?? DEFAULT_TIME_ZONE);
+              const logs = await db.review_logs.where("user_id").equals(owner).toArray();
+              for (const log of logs) await addFreeLog(db, owner, day, log.id);
+              // Mức thuộc đổi thì có thể mở thêm thẻ kỹ năng (Chính tả, Phát âm).
+              await ensureSkillCards(db, owner);
+            }
             return cards.length;
           },
           /**

@@ -154,13 +154,35 @@ export function spreadApart<T extends { entry: QueueCard; isNew: boolean }>(
 }
 
 /**
+ * Hai thẻ cùng một từ không bao giờ liền nhau: lấy thẻ gần nhất phía sau khác từ lên trước; hết thẻ
+ * khác thì chèn vào chỗ trống phía trước, không còn chỗ nào thì thẻ đó để phiên khác.
+ */
+export function separateWords<T extends { entry: QueueCard }>(list: readonly T[]): T[] {
+  const keyOf = (item: T | undefined) => (item ? wordKeyOf(item.entry.lemma) : "");
+  const same = (a: T | undefined, b: T | undefined) => !!keyOf(a) && keyOf(a) === keyOf(b);
+  const out: T[] = [];
+  const pending = [...list];
+  while (pending.length) {
+    const next = pending.findIndex((item) => !same(item, out.at(-1)));
+    if (next >= 0) {
+      out.push(...pending.splice(next, 1));
+      continue;
+    }
+    const item = pending.shift()!;
+    const at = out.findIndex((after, i) => !same(item, after) && !same(item, out[i - 1]));
+    if (at >= 0) out.splice(at, 0, item);
+  }
+  return out;
+}
+
+/**
  * Phiên hôm nay: thẻ đến hạn sắp theo khả năng nhớ R tăng dần (sắp quên trước), tối đa phần còn
  * lại của giới hạn ôn/ngày; từ mới tới giới hạn, xen 1 từ mới sau 4 thẻ ôn; không để hai từ cùng
  * gốc/chủ đề liền nhau (hai thẻ kỹ năng của cùng một từ cũng vậy). Thẻ kỹ năng mới xếp sau thẻ
  * đến hạn. Bỏ học > 3 ngày (hoặc còn dồn nhiều): tối đa 50 thẻ, chưa học từ mới;
  * thẻ còn lại giữ nguyên ngày đến hạn và được chọn tiếp vào các ngày sau.
  * Từ đã hết lượt hỏi hôm nay (`wordAsks`) không vào phiên; thẻ dở bước học xếp đầu nên hôm sau gặp
- * lại trước. Hai thẻ cùng một từ không xếp xa nhau được thì thẻ sau để phiên khác.
+ * lại trước. Hai thẻ cùng một từ không đứng liền nhau (`separateWords`).
  */
 export function buildSession(
   cards: readonly QueueCard[],
@@ -240,16 +262,11 @@ export function buildSession(
     if (n < news.length) merged.push(news[n++]!);
   }
 
-  let previous = "";
-  const items = spreadApart(merged).flatMap(({ entry, isNew }) => {
-    const key = wordKeyOf(entry.lemma);
-    if (key && key === previous) return [];
-    previous = key;
-    return [{ cardId: entry.card.id, isNew }];
-  });
-
   return {
-    items,
+    items: separateWords(spreadApart(merged)).map(({ entry, isNew }) => ({
+      cardId: entry.card.id,
+      isNew,
+    })),
     gentle,
     deferred: due.length - reviews.length,
   };

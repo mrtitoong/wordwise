@@ -6,6 +6,7 @@ import {
   buildSession,
   conflicts,
   requeue,
+  separateWords,
   spreadApart,
   type QueueCard,
   type SessionSettings,
@@ -220,6 +221,16 @@ describe("trần số lần hỏi mỗi ngày (wordAsks)", () => {
     const cards = [reviewCard("alpha", { overdueDays: 30 }), learning("beta")];
     const plan = buildSession(cards, settings({ wordAsks: new Map() }), scheduler, NOW);
     expect(lemmasOf(cards, plan.items)).toEqual(["beta", "alpha"]);
+  });
+
+  it("cả danh sách cùng chủ đề: thẻ cùng từ được dời đi, không thẻ nào bị bỏ", () => {
+    const item = (lemma: string) => ({ entry: reviewCard(lemma, { topics: ["env"] }) });
+    const lemmas = (list: { entry: QueueCard }[]) => list.map((i) => i.entry.lemma);
+    const list = ["a", "a", "a", "b", "b", "c"].map(item);
+    const out = lemmas(separateWords(list));
+    expect([...out].sort()).toEqual(["a", "a", "a", "b", "b", "c"]);
+    for (let i = 1; i < out.length; i++) expect(out[i]).not.toBe(out[i - 1]);
+    expect(lemmas(separateWords(["b", "c", "a", "a"].map(item)))).toEqual(["a", "b", "c", "a"]);
   });
 
   it("chỉ còn hai thẻ cùng một từ: thẻ sau để phiên khác, không hỏi liền nhau", () => {

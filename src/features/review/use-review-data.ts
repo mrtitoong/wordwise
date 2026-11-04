@@ -19,7 +19,6 @@ import type {
   WordSenseRow,
 } from "@/lib/db/types";
 import { forLanguage, learningLanguage } from "@/lib/lang/filter";
-import { LanguageSchema } from "@/lib/schema/word";
 import type { SavedSession } from "@/lib/review/session";
 import type { TodayInput } from "@/lib/review/today";
 
@@ -82,10 +81,11 @@ export async function loadReviewData(owner: string): Promise<ReviewData> {
 }
 
 export function toTodayInput(data: ReviewData, relatedOf?: TodayInput["relatedOf"]): TodayInput {
-  const scoped = forLanguage(data, learningLanguage(data.settings.target_language), (senseId) => {
-    const language = data.senses.get(senseId)?.word.language;
-    return language ? LanguageSchema.parse(language) : undefined;
-  });
+  const scoped = forLanguage(
+    data,
+    learningLanguage(data.settings.target_language),
+    (senseId) => data.senses.get(senseId)?.word.language,
+  );
   const cardIds = new Set(scoped.cards.map((c) => c.id));
   return {
     ...scoped,

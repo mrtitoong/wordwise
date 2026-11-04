@@ -10,7 +10,6 @@ import { Button } from "@/components/ui/button";
 import { Sheet } from "@/components/ui/sheet";
 import { showToast } from "@/components/ui/toast";
 import { DEFAULT_LANGUAGE, languagePack } from "@/lib/lang";
-import { PronunciationLocaleSchema } from "@/lib/pronunciation/api";
 import { getLocalDb } from "@/lib/db/local";
 import { randomId } from "@/lib/db/ids";
 import {
@@ -203,9 +202,7 @@ export function SessionScreen({ options }: { options: SessionOptions }) {
         return {
           step: "speaking",
           voice: preferred,
-          locale: PronunciationLocaleSchema.parse(
-            languagePack(DEFAULT_LANGUAGE).speechLocale(preferred),
-          ),
+          locale: languagePack(DEFAULT_LANGUAGE).speechLocale(preferred) as PronunciationLocale,
         };
       }
       if (prep.card.skill === "spelling") {

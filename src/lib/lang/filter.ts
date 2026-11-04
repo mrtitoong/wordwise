@@ -1,11 +1,10 @@
-import { LanguageSchema, type Language } from "@/lib/schema/word";
+import type { Language } from "@/lib/schema/word";
 
-import { DEFAULT_LANGUAGE } from ".";
+import { DEFAULT_LANGUAGE, LANGUAGES } from ".";
 
 /** Ngôn ngữ đang học trong Cài đặt; giá trị lạ thì dùng ngôn ngữ mặc định. */
 export function learningLanguage(target: string | null | undefined): Language {
-  const parsed = LanguageSchema.safeParse(target);
-  return parsed.success ? parsed.data : DEFAULT_LANGUAGE;
+  return LANGUAGES.find((code) => code === target) ?? DEFAULT_LANGUAGE;
 }
 
 type Scoped<UserWord, Card, Entry, Notebook> = {
@@ -27,7 +26,7 @@ export function forLanguage<
 >(
   data: Scoped<UserWord, Card, Entry, Notebook>,
   language: Language,
-  languageOf: (senseId: string) => Language | undefined,
+  languageOf: (senseId: string) => string | undefined,
 ): { userWords: UserWord[]; cards: Card[]; entries: Entry[]; notebooks: Notebook[] } {
   const userWords = data.userWords.filter(
     (uw) => (languageOf(uw.sense_id) ?? DEFAULT_LANGUAGE) === language,

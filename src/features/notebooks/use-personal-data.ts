@@ -6,7 +6,7 @@ import { defaultSettingsRow } from "@/lib/db/repo";
 import type { WordRow, WordSenseRow } from "@/lib/db/types";
 import { forLanguage, learningLanguage } from "@/lib/lang/filter";
 import type { PersonalData } from "@/lib/notebooks/notebooks";
-import { LanguageSchema, type Pos } from "@/lib/schema/word";
+import type { Pos } from "@/lib/schema/word";
 
 export type SenseInfo = {
   wordId: string;
@@ -57,10 +57,7 @@ export function usePersonalData(owner: string | null): PersonalView | undefined 
     const scoped = forLanguage(
       { notebooks, entries, userWords, cards },
       learningLanguage(settings?.target_language),
-      (senseId) => {
-        const language = wordById.get(sense.get(senseId)?.word_id ?? "")?.language;
-        return language ? LanguageSchema.parse(language) : undefined;
-      },
+      (senseId) => wordById.get(sense.get(senseId)?.word_id ?? "")?.language,
     );
     return {
       // Dòng cũ trong máy (trước khi có cột tags) coi như không có tag.

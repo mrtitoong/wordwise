@@ -2,7 +2,7 @@ import { describe, expect, it } from "vitest";
 
 import { LanguageSchema } from "@/lib/schema/word";
 
-import { DEFAULT_LANGUAGE, languagePack } from ".";
+import { DEFAULT_LANGUAGE, LANGUAGES, languagePack } from ".";
 import { forLanguage, learningLanguage } from "./filter";
 
 describe("languagePack", () => {
@@ -19,6 +19,10 @@ describe("languagePack", () => {
     expect(pack.wordAudioVoices).toEqual([]);
     expect(pack.speechLocale("uk")).toBe("zh-CN");
     expect(pack).toMatchObject({ lemmatizes: false, usesDictionaryApi: false, requiresIpa: false });
+  });
+
+  it("danh sách ngôn ngữ khớp schema", () => {
+    expect(LANGUAGES).toEqual(LanguageSchema.options);
   });
 
   it("mọi ngôn ngữ trong schema đều có gói đúng mã", () => {

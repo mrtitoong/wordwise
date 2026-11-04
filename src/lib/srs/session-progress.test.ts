@@ -7,7 +7,7 @@ import { Rating, State, type Grade } from "ts-fsrs";
 import { describe, expect, it } from "vitest";
 import { INTRO_RATING } from "./grade";
 import {
-  MAX_AGAIN_PER_SESSION,
+  MAX_WORD_ASKS_PER_DAY,
   buildSession,
   isDueToday,
   remainingItems,
@@ -59,7 +59,14 @@ function runSession(
   let now = NOW;
   const totals: number[] = [];
   while (position < queue.length && position < 500) {
-    totals.push(position + remainingItems(queue, position, (id) => cards.get(id), scheduler, now));
+    const asked = (id: string) => ratings.filter((r) => r.cardId === id).length;
+    totals.push(
+      position +
+        remainingItems(queue, position, (id) => cards.get(id), scheduler, now, new Set(), {
+          keyOf: (i) => i.cardId,
+          asked,
+        }),
+    );
     const item = queue[position]!;
     const card = cards.get(item.cardId)!;
     const intro = item.isNew && card.state === State.New;
@@ -74,7 +81,7 @@ function runSession(
       {
         again: rating === Rating.Again,
         nextDue: new Date(next.due),
-        againCount: ratings.filter((r) => r.cardId === card.id && r.rating === Rating.Again).length,
+        asks: ratings.filter((r) => r.cardId === card.id).length,
       },
       now,
       () => 0,
@@ -129,27 +136,72 @@ describe("remainingItems", () => {
   });
 });
 
-describe("giới hạn số lần sai mỗi thẻ trong phiên", () => {
-  it("sai mãi thì phiên vẫn kết thúc: mỗi thẻ quên tối đa MAX_AGAIN_PER_SESSION lần", () => {
-    const { answered, ratings } = runSession(session(3, 5), () => Rating.Again);
-    expect(answered).toBeLessThan(100);
-    const agains = new Map<string, number>();
-    for (const r of ratings) {
-      if (r.rating === Rating.Again) agains.set(r.cardId, (agains.get(r.cardId) ?? 0) + 1);
-    }
-    for (const count of agains.values()) expect(count).toBe(MAX_AGAIN_PER_SESSION);
+describe("trần số lần hỏi mỗi từ", () => {
+  const counts = (ratings: { cardId: string }[]) => {
+    const asks = new Map<string, number>();
+    for (const r of ratings) asks.set(r.cardId, (asks.get(r.cardId) ?? 0) + 1);
+    return [...asks.values()];
+  };
+
+  it("sai mãi: mỗi từ hỏi tối đa 3 lần, phiên vẫn kết thúc", () => {
+    const { ratings } = runSession(session(3, 5), () => Rating.Again);
+    for (const count of counts(ratings)) expect(count).toBeLessThanOrEqual(MAX_WORD_ASKS_PER_DAY);
   });
 
-  it("lần quên thứ 3 không chèn lại; lần thứ 2 vẫn chèn", () => {
+  it("đúng nhưng chấm Khó mãi (gợi ý, trả lời chậm) cũng dừng ở 3 lần", () => {
+    const { ratings } = runSession(session(3, 5), () => Rating.Hard);
+    for (const count of counts(ratings)) expect(count).toBeLessThanOrEqual(MAX_WORD_ASKS_PER_DAY);
+  });
+
+  it("lần hỏi thứ 3 không chèn lại, lần thứ 2 vẫn chèn; tính cả câu cùng từ đang chờ", () => {
     const queue = [
       { cardId: "a", isNew: false },
       { cardId: "b", isNew: false },
+      { cardId: "c", isNew: false },
     ];
     const due = new Date(NOW.getTime() + 600_000);
-    const second = requeue(queue, 0, queue[0]!, { again: true, nextDue: due, againCount: 2 }, NOW);
-    expect(second).toHaveLength(3);
-    const third = requeue(queue, 0, queue[0]!, { again: true, nextDue: due, againCount: 3 }, NOW);
-    expect(third).toEqual(queue);
+    const outcome = { again: true, nextDue: due };
+    expect(requeue(queue, 0, queue[0]!, { ...outcome, asks: 2 }, NOW)).toHaveLength(4);
+    expect(requeue(queue, 0, queue[0]!, { ...outcome, asks: 3 }, NOW)).toEqual(queue);
+    const sameWord = (x: SessionItem, y: SessionItem) =>
+      [x.cardId, y.cardId].every((id) => id === "a" || id === "c");
+    expect(requeue(queue, 0, queue[0]!, { ...outcome, asks: 2 }, NOW, () => 0, sameWord)).toEqual(
+      queue,
+    );
+  });
+
+  it("chỉ còn đúng từ đó thì kết thúc phiên, không hỏi liền nhau", () => {
+    const queue = [{ cardId: "a", isNew: false }];
+    const due = new Date(NOW.getTime() + 60_000);
+    expect(requeue(queue, 0, queue[0]!, { again: true, nextDue: due }, NOW)).toEqual(queue);
+    expect(requeue(queue, 0, queue[0]!, { again: false, nextDue: due }, NOW)).toEqual(queue);
+  });
+
+  it("không bao giờ có hai câu liền nhau cùng một từ, kể cả khi sai liên tục", () => {
+    const { ratings } = runSession(session(2, 1), () => Rating.Again);
+    for (let i = 1; i < ratings.length; i++) {
+      expect(ratings[i]!.cardId).not.toBe(ratings[i - 1]!.cardId);
+    }
+  });
+
+  it("mẫu số không tính vượt lượt còn lại của từ", () => {
+    const card = fresh("x");
+    const other = review("y", -1);
+    const byId = new Map([
+      [card.id, card],
+      [other.id, other],
+    ]);
+    const items = [
+      { cardId: "x", isNew: true },
+      { cardId: "y", isNew: false },
+    ];
+    const count = (asked: number) =>
+      remainingItems(items, 0, (id) => byId.get(id), scheduler, NOW, new Set(), {
+        keyOf: (i) => i.cardId,
+        asked: (id) => (id === "x" ? asked : 0),
+      });
+    expect(count(0)).toBe(3 + 1);
+    expect(count(2)).toBe(1 + 1);
   });
 });
 
@@ -178,20 +230,6 @@ describe("requeue không đặt cạnh câu cùng từ", () => {
       "c",
       "apple:spelling",
     ]);
-  });
-
-  it("chỉ còn đúng từ đó thì vẫn hỏi ngay sau", () => {
-    const queue = q("x");
-    const out = requeue(
-      queue,
-      0,
-      queue[0]!,
-      { again: false, nextDue: due },
-      NOW,
-      () => 0,
-      sameWord,
-    );
-    expect(out.map((i) => i.cardId)).toEqual(["x", "x"]);
   });
 });
 

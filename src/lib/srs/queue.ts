@@ -52,6 +52,8 @@ export type SessionSettings = {
    * vào phiên hôm nay. Bỏ trống = chỉ thẻ đã đến hạn tới lúc `now`.
    */
   dayEnd?: Date;
+  /** Số lần mỗi từ (`wordKeyOf`) đã được hỏi hôm nay; bỏ trống = không áp trần mỗi ngày. */
+  wordAsks?: ReadonlyMap<string, number>;
 };
 
 /**
@@ -91,6 +93,17 @@ export const GENTLE_LIMIT = 50;
 export const GENTLE_BACKLOG = 2 * GENTLE_LIMIT;
 /** Xen 1 từ mới sau chừng này thẻ ôn. */
 export const REVIEWS_PER_NEW = 4;
+
+/**
+ * Một từ được hỏi tối đa chừng này lần mỗi ngày học trong phiên ôn, gộp mọi thẻ kỹ năng của từ
+ * (chốt 2026-11-04: lặp nhiều gây chán). Từ mới vừa đủ: xem thẻ + 2 câu. Quá trần thì để ngày mai.
+ */
+export const MAX_WORD_ASKS_PER_DAY = 3;
+
+/** Khóa đếm số lần hỏi của một từ; rỗng khi máy chưa có nội dung từ (không đếm được). */
+export function wordKeyOf(lemma: string): string {
+  return lemma.toLowerCase();
+}
 
 const DAY_MS = 86_400_000;
 
@@ -146,6 +159,8 @@ export function spreadApart<T extends { entry: QueueCard; isNew: boolean }>(
  * gốc/chủ đề liền nhau (hai thẻ kỹ năng của cùng một từ cũng vậy). Thẻ kỹ năng mới xếp sau thẻ
  * đến hạn. Bỏ học > 3 ngày (hoặc còn dồn nhiều): tối đa 50 thẻ, chưa học từ mới;
  * thẻ còn lại giữ nguyên ngày đến hạn và được chọn tiếp vào các ngày sau.
+ * Từ đã hết lượt hỏi hôm nay (`wordAsks`) không vào phiên; thẻ dở bước học xếp đầu nên hôm sau gặp
+ * lại trước. Hai thẻ cùng một từ không xếp xa nhau được thì thẻ sau để phiên khác.
  */
 export function buildSession(
   cards: readonly QueueCard[],
@@ -155,6 +170,17 @@ export function buildSession(
 ): SessionPlan {
   const isMeaning = (c: QueueCard) => (c.skill ?? "meaning") === "meaning";
   const isDue = (c: QueueCard) => isDueToday(c.card, now, settings.dayEnd);
+  const asked = new Map(settings.wordAsks);
+  const withinCap = (c: QueueCard) => {
+    const key = wordKeyOf(c.lemma);
+    if (!settings.wordAsks || !key) return true;
+    const count = asked.get(key) ?? 0;
+    if (count >= MAX_WORD_ASKS_PER_DAY) return false;
+    asked.set(key, count + 1);
+    return true;
+  };
+  const inSteps = (c: QueueCard) =>
+    c.card.state === State.Learning || c.card.state === State.Relearning;
   // Thẻ kỹ năng mới (Chính tả, Phát âm của từ đã học) không phải "từ mới": xếp sau thẻ đến hạn,
   // tính vào giới hạn ôn/ngày; mỗi kỹ năng có giới hạn mở mới riêng.
   const opened = new Map<string, number>();
@@ -174,15 +200,22 @@ export function buildSession(
   const due = cards
     .filter((c) => c.card.state !== 0 && isDue(c))
     .map((entry) => ({ entry, r: retrievability(scheduler, entry.card, now) }))
-    .sort((a, b) => a.r - b.r || Date.parse(a.entry.card.due) - Date.parse(b.entry.card.due))
-    .concat(newSkill);
+    .sort(
+      (a, b) =>
+        Number(inSteps(b.entry)) - Number(inSteps(a.entry)) ||
+        a.r - b.r ||
+        Date.parse(a.entry.card.due) - Date.parse(b.entry.card.due),
+    )
+    .concat(newSkill)
+    .filter(({ entry }) => withinCap(entry));
   const fresh = cards
     .filter((c) => c.card.state === 0 && isMeaning(c))
     .sort(
       (a, b) =>
         (a.introducedAt ?? "").localeCompare(b.introducedAt ?? "") ||
         a.lemma.localeCompare(b.lemma),
-    );
+    )
+    .filter(withinCap);
 
   const away =
     settings.lastReviewAt !== null &&
@@ -207,8 +240,16 @@ export function buildSession(
     if (n < news.length) merged.push(news[n++]!);
   }
 
+  let previous = "";
+  const items = spreadApart(merged).flatMap(({ entry, isNew }) => {
+    const key = wordKeyOf(entry.lemma);
+    if (key && key === previous) return [];
+    previous = key;
+    return [{ cardId: entry.card.id, isNew }];
+  });
+
   return {
-    items: spreadApart(merged).map(({ entry, isNew }) => ({ cardId: entry.card.id, isNew })),
+    items,
     gentle,
     deferred: due.length - reviews.length,
   };
@@ -222,35 +263,31 @@ export const ITEMS_PER_MINUTE = 6;
 export const IN_SESSION_MINUTES = 20;
 
 /**
- * Một thẻ chấm "Quên" chừng này lần trong phiên thì không quay lại phiên này nữa (phiên luôn kết
- * thúc). Thẻ vẫn đến hạn sau 10 phút nên gặp lại ở phiên sau hoặc "Ôn lại từ sai".
- */
-export const MAX_AGAIN_PER_SESSION = 3;
-
-/**
  * Sau khi trả lời: thẻ còn đến hạn trong phiên (bước học 1 phút/10 phút, học lại) thì chèn lại vào
  * hàng. Quên → sau 3–5 câu; bước học khác → theo số phút còn lại (≥ 3 câu); hàng ngắn hơn thì xuống
- * cuối. `againCount`: số lần Quên thẻ này trong phiên, kể cả lần này – tới MAX_AGAIN_PER_SESSION thì
- * không chèn lại. Không đặt cạnh câu cùng từ (`sameWord`) nếu còn chỗ khác. Trả về hàng mới.
+ * cuối. `asks`: số lần từ này đã được hỏi, kể cả lần này – cộng câu cùng từ còn chờ trong hàng mà
+ * tới MAX_WORD_ASKS_PER_DAY thì không chèn lại (thẻ vẫn đến hạn, gặp ở phiên sau). Không bao giờ đặt
+ * cạnh câu cùng từ (`sameWord`): không còn chỗ nào khác thì cũng không chèn lại. Trả về hàng mới.
  */
 export function requeue(
   queue: readonly SessionItem[],
   answeredIndex: number,
   item: SessionItem,
-  outcome: { again: boolean; nextDue: Date; againCount?: number },
+  outcome: { again: boolean; nextDue: Date; asks?: number },
   now: Date,
   random: () => number = Math.random,
   sameWord: (a: SessionItem, b: SessionItem) => boolean = (a, b) => a.cardId === b.cardId,
 ): SessionItem[] {
   const minutes = (outcome.nextDue.getTime() - now.getTime()) / 60_000;
   if (!outcome.again && minutes > IN_SESSION_MINUTES) return [...queue];
-  if (outcome.again && (outcome.againCount ?? 1) >= MAX_AGAIN_PER_SESSION) return [...queue];
+  const back = { ...item, isNew: false };
+  const waiting = queue.slice(answeredIndex + 1).filter((q) => sameWord(q, back)).length;
+  if ((outcome.asks ?? 1) + waiting >= MAX_WORD_ASKS_PER_DAY) return [...queue];
   const [min, max] = AGAIN_GAP;
   const gap = outcome.again
     ? min + Math.floor(random() * (max - min + 1))
     : Math.max(min, Math.round(minutes * ITEMS_PER_MINUTE));
   const ideal = Math.min(queue.length, answeredIndex + 1 + gap);
-  const back = { ...item, isNew: false };
   // Câu trả lời vừa xong ở answeredIndex, nên chỗ sớm nhất là ngay sau nó.
   const clear = (at: number) =>
     !sameWord(queue[at - 1]!, back) && (at >= queue.length || !sameWord(queue[at]!, back));
@@ -258,8 +295,8 @@ export function requeue(
     ...Array.from({ length: queue.length - ideal + 1 }, (_, k) => ideal + k),
     ...Array.from({ length: ideal - answeredIndex - 1 }, (_, k) => ideal - 1 - k),
   ];
-  const at = candidates.find(clear) ?? ideal;
-  return [...queue.slice(0, at), back, ...queue.slice(at)];
+  const at = candidates.find(clear);
+  return at === undefined ? [...queue] : [...queue.slice(0, at), back, ...queue.slice(at)];
 }
 
 /** Thẻ đủ để mô phỏng lịch (cùng các cột như QueueCard.card) và kỹ năng. */
@@ -273,6 +310,8 @@ const MAX_SIMULATED = 10;
  * tính đủ số lần nó sẽ quay lại (từ mới: xem thẻ → 2 câu theo bước 1 phút/10 phút). Nhờ vậy số câu
  * hiện ra không tăng khi trả lời đúng, chỉ tăng khi trả lời sai (hoặc đúng nhưng chậm/dùng gợi ý –
  * chấm "Khó" ở bước học thì lặp lại bước đó). `extra`: thẻ ôn ngoài lịch, không quay lại.
+ * `words`: từ của mỗi câu và số lần từ đó đã hỏi, để không tính vượt trần MAX_WORD_ASKS_PER_DAY.
+ * Chỉ còn một từ thì nó không quay lại nữa (`requeue` không hỏi liền nhau).
  */
 export function remainingItems(
   queue: readonly SessionItem[],
@@ -281,21 +320,34 @@ export function remainingItems(
   scheduler: FSRS,
   now: Date,
   extra: ReadonlySet<string> = new Set(),
+  words: { keyOf: (item: SessionItem) => string; asked: (key: string) => number } = {
+    keyOf: (item) => item.cardId,
+    asked: () => 0,
+  },
 ): number {
   const rest = queue.slice(position);
+  if (new Set(rest.map(words.keyOf)).size <= 1) return rest.length;
   const seen = new Map<string, { count: number; first: SessionItem }>();
   for (const item of rest) {
     const entry = seen.get(item.cardId);
     if (entry) entry.count++;
     else seen.set(item.cardId, { count: 1, first: item });
   }
-  let total = 0;
+  const perWord = new Map<string, { waiting: number; returns: number }>();
   for (const [cardId, { count, first }] of seen) {
     const card = cardOf(cardId);
-    total +=
+    const key = words.keyOf(first);
+    const word = perWord.get(key) ?? { waiting: 0, returns: 0 };
+    word.waiting += count;
+    word.returns +=
       card && !extra.has(cardId)
         ? Math.max(count, appearances(card, first, scheduler, now))
         : count;
+    perWord.set(key, word);
+  }
+  let total = 0;
+  for (const [key, { waiting, returns }] of perWord) {
+    total += Math.max(waiting, Math.min(returns, MAX_WORD_ASKS_PER_DAY - words.asked(key)));
   }
   return total;
 }

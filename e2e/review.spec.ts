@@ -3,6 +3,7 @@ import { completeOnboarding, hasSupabase, readLocalStore, waitForTestHooks } fro
 import {
   currentAnswer,
   answerCorrectly,
+  answerQuestion,
   forceModes,
   learnStarterWords,
   typeAnswer,
@@ -68,6 +69,37 @@ test.describe("Phiên ôn", () => {
     await expect(page).toHaveURL("/");
     await expect(page.getByRole("heading", { name: "Xong hôm nay!" })).toBeVisible();
     await expect(page.getByText("Chuỗi 1 ngày")).toBeVisible();
+  });
+
+  test("sai liên tục: mỗi từ hỏi tối đa 3 lần, không hỏi liền nhau, hết lượt thì để ngày mai", async ({
+    page,
+  }) => {
+    await page.addInitScript(() =>
+      localStorage.setItem("ww_e2e_overrides", JSON.stringify({ meaningMode: "mcq" })),
+    );
+    await page.goto("/welcome");
+    await page.getByRole("button", { name: "Dùng thử ngay" }).click();
+    await completeOnboarding(page, { level: "B1", stayInSession: true });
+    await expect(page.getByRole("progressbar", { name: "Tiến độ phiên" })).toBeVisible();
+    for (let i = 0; i < 40; i++) {
+      if ((await answerQuestion(page, { wrong: true })) === "done") break;
+    }
+    await expect(page.getByRole("button", { name: "Xong", exact: true })).toBeVisible();
+
+    const logs = (await readLocalStore<Log>(page, "review_logs")).sort((a, b) =>
+      a.reviewed_at.localeCompare(b.reviewed_at),
+    );
+    const asks = new Map<string, number>();
+    for (const log of logs) asks.set(log.card_id, (asks.get(log.card_id) ?? 0) + 1);
+    expect(asks.size).toBe(5);
+    for (const count of asks.values()) expect(count).toBeLessThanOrEqual(3);
+    for (let i = 1; i < logs.length; i++) {
+      expect(logs[i]!.card_id).not.toBe(logs[i - 1]!.card_id);
+    }
+
+    // Thẻ vẫn dở bước học nhưng hôm nay đã hết lượt: màn Hôm nay không báo còn việc.
+    await page.getByRole("button", { name: "Xong", exact: true }).click();
+    await expect(page.getByRole("heading", { name: "Xong hôm nay!" })).toBeVisible();
   });
 
   test("ghi vào máy chậm (máy bận): câu sau vẫn hiện ngay, đáp án khớp từ đang hỏi", async ({

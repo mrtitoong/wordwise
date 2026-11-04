@@ -176,6 +176,59 @@ describe("buildSession", () => {
   });
 });
 
+describe("trần số lần hỏi mỗi ngày (wordAsks)", () => {
+  const learning = (lemma: string): QueueCard => {
+    const card = reviewCard(lemma);
+    return { ...card, card: { ...card.card, state: State.Learning, learning_steps: 1 } };
+  };
+
+  it("từ đã hỏi đủ 3 lần hôm nay không vào phiên, không tính vào thẻ hoãn", () => {
+    const cards = [reviewCard("alpha"), learning("beta"), newCard("gamma")];
+    const plan = buildSession(
+      cards,
+      settings({
+        wordAsks: new Map([
+          ["beta", 3],
+          ["gamma", 3],
+        ]),
+      }),
+      scheduler,
+      NOW,
+    );
+    expect(lemmasOf(cards, plan.items)).toEqual(["alpha"]);
+    expect(plan.deferred).toBe(0);
+  });
+
+  it("gộp mọi thẻ của từ, không phân biệt hoa thường: còn 1 lượt thì chỉ lấy 1 thẻ", () => {
+    const first = reviewCard("Delta");
+    const second = { ...reviewCard("delta"), skill: "spelling" };
+    const plan = buildSession(
+      [first, second, reviewCard("omega"), reviewCard("sigma")],
+      settings({ wordAsks: new Map([["delta", 2]]) }),
+      scheduler,
+      NOW,
+    );
+    expect(plan.items).toHaveLength(3);
+  });
+
+  it("không có wordAsks (phiên tự chọn) thì không áp trần", () => {
+    const cards = [reviewCard("alpha")];
+    expect(buildSession(cards, settings(), scheduler, NOW).items).toHaveLength(1);
+  });
+
+  it("thẻ dở bước học từ hôm trước xếp đầu phiên", () => {
+    const cards = [reviewCard("alpha", { overdueDays: 30 }), learning("beta")];
+    const plan = buildSession(cards, settings({ wordAsks: new Map() }), scheduler, NOW);
+    expect(lemmasOf(cards, plan.items)).toEqual(["beta", "alpha"]);
+  });
+
+  it("chỉ còn hai thẻ cùng một từ: thẻ sau để phiên khác, không hỏi liền nhau", () => {
+    const first = reviewCard("delta");
+    const second = { ...reviewCard("delta"), skill: "spelling" };
+    expect(buildSession([first, second], settings(), scheduler, NOW).items).toHaveLength(1);
+  });
+});
+
 describe("areRelated, spreadApart", () => {
   it("cùng gốc theo tiền tố, họ từ, từ dễ nhầm; từ khác nhau thì không", () => {
     expect(areRelated(reviewCard("resilient"), reviewCard("resilience"))).toBe(true);

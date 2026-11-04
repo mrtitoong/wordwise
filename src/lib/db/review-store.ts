@@ -1,6 +1,7 @@
 /**
  * Trạng thái phiên ôn chỉ giữ trong máy (bảng meta, không đồng bộ): phiên đang làm dở, các ngày
- * đã ôn hết hàng (tính chuỗi ngày học), số phiên của khách (gợi ý tạo tài khoản).
+ * đã ôn hết hàng (tính chuỗi ngày học), số phiên của khách (gợi ý tạo tài khoản), lượt ôn tự chọn
+ * trong ngày (không tính vào trần lượt hỏi mỗi từ).
  */
 import type { SavedSession } from "@/lib/review/session";
 import type { LocalDb } from "./local";
@@ -8,6 +9,7 @@ import type { LocalDb } from "./local";
 const sessionKey = (owner: string) => `review:session:${owner}`;
 const doneKey = (owner: string) => `review:done:${owner}`;
 const countKey = (owner: string) => `review:sessions:${owner}`;
+const freeKey = (owner: string) => `review:free:${owner}`;
 
 /** Giữ chừng này ngày gần nhất trong danh sách "đã ôn hết hàng". */
 const DONE_DAYS_KEPT = 400;
@@ -54,6 +56,30 @@ export async function markSessionFinished(
     const count = ((await readJson<number>(db, countKey(owner))) ?? 0) + 1;
     await db.meta.put({ key: countKey(owner), value: JSON.stringify(count) });
     return count;
+  });
+}
+
+type FreeLogs = { day: string; ids: string[] };
+
+/** Lượt ôn tự chọn đã ghi nhận (chỉ giữ của ngày học gần nhất). */
+export async function freeLogIds(db: LocalDb, owner: string): Promise<Set<string>> {
+  return new Set((await readJson<FreeLogs>(db, freeKey(owner)))?.ids ?? []);
+}
+
+/** Ghi nhận một lượt ôn của Luyện tập, "Ôn lại từ sai", "Ôn từ này". */
+export async function addFreeLog(
+  db: LocalDb,
+  owner: string,
+  day: string,
+  logId: string,
+): Promise<void> {
+  await db.transaction("rw", db.meta, async () => {
+    const saved = await readJson<FreeLogs>(db, freeKey(owner));
+    const ids = saved?.day === day ? saved.ids : [];
+    await db.meta.put({
+      key: freeKey(owner),
+      value: JSON.stringify({ day, ids: [...ids, logId] }),
+    });
   });
 }
 

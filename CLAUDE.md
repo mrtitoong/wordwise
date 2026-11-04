@@ -670,6 +670,7 @@ Repo: https://github.com/mrtitoong/wordwise
   `database.types.ts`, áp cloud bằng MCP `apply_migration` sau khi CI Database xanh), Edge Function (build, deploy
   `--use-api`, thử `login_required`), CI (đọc trang Actions công khai; API GitHub không đăng nhập hay hết 60 lượt/giờ).
   Các quyết định trong CLAUDE.md giữ nguyên, chưa thu gọn.
+- 2026-11-04 (sửa lặp từ trong phiên, chủ sản phẩm duyệt; khách phản ánh, số liệu 30 ngày: 17% lượt từ/ngày bị hỏi > 3 lần, tối đa 14): **Mỗi từ tối đa 3 lần/ngày học** trong phiên ôn theo lịch (`MAX_WORD_ASKS_PER_DAY`, gộp Nghĩa/Chính tả/Phát âm theo chữ của từ, mở phiên mới không đếm lại; thay cho giới hạn 3 lần Quên mỗi phiên). Hết lượt thì thẻ giữ nguyên lịch, để ngày mai (thẻ dở bước học xếp đầu phiên), Hôm nay không báo còn nợ; số đến hạn ở trang sổ tay vẫn tính từ đó. **Không bao giờ hỏi một từ hai câu liền nhau** (thay quyết định 27/10): chỉ còn đúng từ đó thì kết thúc phiên. Luyện tập, "Ôn lại từ sai", "Ôn từ này" không áp trần ngày, không tính vào 3 lần (id lượt ôn lưu ở meta `review:free:`, chỉ trong máy), nhưng mỗi từ vẫn tối đa 3 lần trong một phiên. Giữ chấm "Khó" khi đúng nhưng chậm.
 - 2026-11-04 (tiếng Trung, chủ sản phẩm duyệt 8 đề xuất ở docs/plan-zh.md §3): Bản đầu từ vựng HSK 3.0 cấp 1–3, giản
   thể. **Không chấm thanh điệu** (Azure gần như không bắt sai thanh, tự đo cao độ báo nhầm ~30%): vẽ đường cao độ để tự
   so, tập phát âm tiếng Trung chưa tính vào lịch ôn. Âm Hán Việt: LLM gợi ý, đối chiếu Unihan, chỗ lệch Admin duyệt.

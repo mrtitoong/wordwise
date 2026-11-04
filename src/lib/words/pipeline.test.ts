@@ -88,7 +88,13 @@ function fakeStore(initial: WordContent[] = [], dailyLimit = 50) {
         .map(toStored);
     },
     async findWordId(language, lemma, pos) {
-      return words.get(key(language, lemma, pos))?.id ?? null;
+      return words.get(key(language, lemma, pos as Pos))?.id ?? null;
+    },
+    async canUseFlaggedLanguage() {
+      return false;
+    },
+    async zhReadings() {
+      return [];
     },
     async requestJob(userId, language, lemma, pos): Promise<RequestJobResult> {
       let job = jobs.find(

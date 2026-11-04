@@ -1336,6 +1336,27 @@ export type Database = {
         };
         Relationships: [];
       };
+      zh_lexicon: {
+        Row: {
+          common: boolean;
+          pinyin: string;
+          simplified: string;
+          traditional: string;
+        };
+        Insert: {
+          common: boolean;
+          pinyin: string;
+          simplified: string;
+          traditional: string;
+        };
+        Update: {
+          common?: boolean;
+          pinyin?: string;
+          simplified?: string;
+          traditional?: string;
+        };
+        Relationships: [];
+      };
     };
     Views: {
       [_ in never]: never;

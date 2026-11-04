@@ -22,7 +22,6 @@ export const ZhPosSchema = z.enum([
 ]);
 
 export const ZhExtraSchema = ChineseExtraSchema.extend({
-  /** Âm của từng nghĩa, cùng thứ tự với `senses`; `pinyin` là âm của nghĩa đầu. */
   sense_pinyin: z.array(z.string().min(1)).min(1).max(5),
 });
 

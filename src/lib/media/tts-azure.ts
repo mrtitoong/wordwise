@@ -3,7 +3,9 @@
  * Chạy được ở Node và Deno; khóa và khu vực truyền vào (Edge Function đọc từ Secrets).
  */
 
+import { DEFAULT_LANGUAGE, languagePack } from "@/lib/lang";
 import { EN_TTS_VOICES } from "@/lib/lang/en";
+import type { Language } from "@/lib/schema/word";
 
 export type Voice = "us" | "uk";
 
@@ -25,7 +27,7 @@ export class TtsError extends Error {
 }
 
 export interface TtsProvider {
-  synthesize(text: string, voice: Voice): Promise<Uint8Array>;
+  synthesize(text: string, voice: Voice, language?: Language): Promise<Uint8Array>;
 }
 
 function escapeXml(text: string): string {
@@ -34,8 +36,12 @@ function escapeXml(text: string): string {
   );
 }
 
-export function buildSsml(text: string, voice: Voice): string {
-  const { locale, name } = VOICES[voice];
+export function buildSsml(
+  text: string,
+  voice: Voice,
+  language: Language = DEFAULT_LANGUAGE,
+): string {
+  const { locale, name } = languagePack(language).ttsVoice(voice);
   return (
     `<speak version="1.0" xmlns="http://www.w3.org/2001/10/synthesis" xml:lang="${locale}">` +
     `<voice name="${name}">${escapeXml(text.trim())}</voice></speak>`
@@ -56,7 +62,7 @@ export function createAzureTts(options: {
   const url = `https://${region}.tts.speech.microsoft.com/cognitiveservices/v1`;
 
   return {
-    async synthesize(text, voice) {
+    async synthesize(text, voice, language) {
       let response: Response;
       try {
         response = await doFetch(url, {
@@ -67,7 +73,7 @@ export function createAzureTts(options: {
             "X-Microsoft-OutputFormat": OUTPUT_FORMAT,
             "User-Agent": "wordwise",
           },
-          body: buildSsml(text, voice),
+          body: buildSsml(text, voice, language),
           signal: AbortSignal.timeout(options.timeoutMs ?? 15_000),
         });
       } catch (error) {

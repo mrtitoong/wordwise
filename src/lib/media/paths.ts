@@ -4,14 +4,18 @@
  *   Câu: en/sentences/{sha-256 của giọng + câu, 32 ký tự}.mp3
  * Câu theo mã băm nên sửa câu ví dụ thì tự ra file mới, không phát nhầm audio cũ.
  */
-import type { Language, Pos } from "@/lib/schema/word";
+import type { Language, StoredPos } from "@/lib/schema/word";
 import type { Voice } from "./tts-azure";
 
 export const AUDIO_BUCKET = "audio";
 
-/** Chữ thường, chỉ a-z 0-9 và "-"; ký tự khác (dấu cách, nháy) thành "_". */
+/**
+ * Chữ thường, chỉ a-z 0-9 và "-"; ký tự khác (dấu cách, nháy) thành "_". Chữ Hán đổi thành mã số:
+ * Storage không nhận tên file chữ Hán, và bỏ đi thì mọi từ trùng một đường dẫn.
+ */
 export function slugifyLemma(lemma: string): string {
   const slug = lemma
+    .replace(/\p{Script=Han}/gu, (char) => `u${char.codePointAt(0)!.toString(16)}`)
     .normalize("NFKD")
     .replace(/[̀-ͯ]/g, "")
     .toLowerCase()
@@ -21,7 +25,12 @@ export function slugifyLemma(lemma: string): string {
   return slug || "_";
 }
 
-export function wordAudioPath(language: Language, lemma: string, pos: Pos, voice: Voice): string {
+export function wordAudioPath(
+  language: Language,
+  lemma: string,
+  pos: StoredPos,
+  voice: Voice,
+): string {
   return `${language}/${slugifyLemma(lemma)}/${pos}/${voice}.mp3`;
 }
 

@@ -21,6 +21,7 @@ import { ReverseSuggestionsSchema, buildReverseLookupPrompt } from "@/lib/llm/ta
 import type { LibraryMatch } from "@/lib/words/reverse";
 import reverseLookupPrompt from "@/prompts/reverse-lookup.md?raw";
 import wordContentPrompt from "@/prompts/word-content.md?raw";
+import wordContentZhPrompt from "@/prompts/word-content-zh.md?raw";
 import { createHandler } from "./handler";
 
 declare const Deno: {
@@ -55,6 +56,7 @@ const worker = anthropicKey
         },
       }),
       template: parsePromptTemplate(wordContentPrompt),
+      zhTemplate: parsePromptTemplate(wordContentZhPrompt),
       fetchDictionary: (lemma: string) => fetchFreeDictionary(lemma),
       newId: () => crypto.randomUUID(),
     }

@@ -624,6 +624,105 @@ function toLlmCallLogRow(entry) {
   };
 }
 
+// src/lib/lang/zh/pinyin.ts
+var MARKS = {
+  a: "āáǎà",
+  e: "ēéěè",
+  i: "īíǐì",
+  o: "ōóǒò",
+  u: "ūúǔù",
+  ü: "ǖǘǚǜ"
+};
+var SYLLABLE = /^([a-zü]+)([1-5])$/;
+function markIndex(letters) {
+  for (const vowel of ["a", "e"]) {
+    const at = letters.indexOf(vowel);
+    if (at >= 0) return at;
+  }
+  const ou = letters.indexOf("ou");
+  if (ou >= 0) return ou;
+  for (let i = letters.length - 1; i >= 0; i--) if (MARKS[letters[i]]) return i;
+  return -1;
+}
+function markSyllable(letters, tone) {
+  const at = tone === 5 ? -1 : markIndex(letters);
+  if (at < 0) return letters;
+  return letters.slice(0, at) + MARKS[letters[at]][tone - 1] + letters.slice(at + 1);
+}
+function syllables(numbered) {
+  const out = [];
+  for (const raw of numbered.toLowerCase().replaceAll("u:", "ü").split(/\s+/)) {
+    const match = SYLLABLE.exec(raw);
+    if (!match) continue;
+    const [, letters, tone] = match;
+    if (letters === "r" && out.length > 0) out.at(-1).text += "r";
+    else out.push({ text: markSyllable(letters, Number(tone)), tone: Number(tone) });
+  }
+  return out;
+}
+function numberedToMarked(numbered) {
+  return syllables(numbered).map((s) => s.text).join(" ");
+}
+function tonesOf(numbered) {
+  return syllables(numbered).map((s) => s.tone);
+}
+function pinyinKey(pinyin) {
+  return pinyin.toLowerCase().replace(/[\s'’-]/g, "");
+}
+
+// src/lib/lang/zh/lexicon.ts
+function toReading(row) {
+  return {
+    traditional: row.traditional,
+    pinyin: numberedToMarked(row.pinyin),
+    tones: tonesOf(row.pinyin),
+    common: row.common
+  };
+}
+function allowedReadings(readings = []) {
+  const common = readings.filter((r) => r.common);
+  const seen = /* @__PURE__ */ new Set();
+  return (common.length > 0 ? common : readings).filter((r) => {
+    const key = pinyinKey(r.pinyin);
+    if (seen.has(key)) return false;
+    seen.add(key);
+    return true;
+  });
+}
+function applyLexicon(draft, readings) {
+  const allowed = allowedReadings(readings);
+  const extra = draft.language_extra;
+  if (allowed.length === 0) {
+    return {
+      content: { ...draft, language_extra: { ...extra, reading_source: "ai" } },
+      flags: [{ kind: "not_in_dictionary" }]
+    };
+  }
+  const flags = [];
+  const senses = extra.sense_pinyin ?? [];
+  const chosen = senses.map((pinyin, sense) => {
+    if (allowed.length === 1) return allowed[0];
+    const match = allowed.find((r) => pinyinKey(r.pinyin) === pinyinKey(pinyin));
+    if (!match) flags.push({ kind: "reading_not_allowed", sense, pinyin });
+    return match ?? null;
+  });
+  const first = chosen[0];
+  return {
+    content: {
+      ...draft,
+      language_extra: {
+        ...extra,
+        traditional: (first ?? allowed[0]).traditional,
+        pinyin: first?.pinyin ?? extra.pinyin,
+        tones: first?.tones ?? extra.tones,
+        sense_pinyin: chosen.map((r, i) => r?.pinyin ?? senses[i]),
+        reading_source: flags.length > 0 ? "ai" : "dictionary"
+      }
+    },
+    flags
+  };
+}
+
 // src/lib/schema/word.ts
 import { z as z3 } from "npm:zod@4.6.5";
 
@@ -634,7 +733,10 @@ var EN_TTS_VOICES = {
 };
 var en = {
   code: "en",
+  requiresFlag: false,
+  contentTask: "word-content",
   wordAudioVoices: ["us", "uk"],
+  ttsVoice: (voice) => EN_TTS_VOICES[voice],
   speechLocale: (voice) => EN_TTS_VOICES[voice].locale,
   lemmatizes: true,
   usesDictionaryApi: true,
@@ -642,10 +744,14 @@ var en = {
 };
 
 // src/lib/lang/zh/index.ts
+var ZH_TTS_VOICE = { locale: "zh-CN", name: "zh-CN-XiaoxiaoNeural" };
 var zh = {
   code: "zh",
-  wordAudioVoices: [],
-  speechLocale: () => "zh-CN",
+  requiresFlag: true,
+  contentTask: "word-content-zh",
+  wordAudioVoices: ["us"],
+  ttsVoice: () => ZH_TTS_VOICE,
+  speechLocale: () => ZH_TTS_VOICE.locale,
   lemmatizes: false,
   usesDictionaryApi: false,
   requiresIpa: false
@@ -657,7 +763,12 @@ var PACKS = { en, zh };
 function plainPack(code) {
   return {
     code,
+    requiresFlag: true,
+    contentTask: "word-content",
     wordAudioVoices: [],
+    ttsVoice: () => {
+      throw new Error(`Chưa có giọng đọc cho ${code}`);
+    },
     speechLocale: () => code,
     lemmatizes: false,
     usesDictionaryApi: false,
@@ -686,6 +797,7 @@ var PosSchema = z3.enum([
   "phrasal_verb",
   "phrase"
 ]);
+var StoredPosSchema = z3.enum([...PosSchema.options, "classifier", "particle", "numeral"]);
 var RegisterSchema = z3.enum(["formal", "neutral", "informal", "slang", "offensive"]);
 var ipaText = text.refine((s) => !s.includes("/"), {
   message: "IPA không kèm dấu '/'"
@@ -790,7 +902,11 @@ var ChineseExtraSchema = z3.object({
   pinyin: text,
   /** Thanh điệu từng âm tiết: 1–4, 5 = thanh nhẹ. */
   tones: z3.array(z3.number().int().min(1).max(5)).min(1),
-  hsk: z3.number().int().min(1).max(9).nullable()
+  hsk: z3.number().int().min(1).max(9).nullable(),
+  /** Âm của từng nghĩa, cùng thứ tự với senses; `pinyin` là âm của nghĩa đầu. */
+  sense_pinyin: z3.array(text).min(1).max(5).optional(),
+  /** "ai": từ điển không có từ này hoặc âm AI chọn ngoài danh sách, cần người duyệt. */
+  reading_source: z3.enum(["dictionary", "ai"]).optional()
 });
 var LanguageExtraSchema = z3.discriminatedUnion("kind", [
   JapaneseExtraSchema,
@@ -1154,7 +1270,7 @@ function toJob(raw) {
     id: String(raw.id),
     language: LanguageSchema.parse(raw.language),
     lemma: String(raw.lemma),
-    pos: raw.pos === null ? null : PosSchema.parse(raw.pos),
+    pos: raw.pos === null ? null : StoredPosSchema.parse(raw.pos),
     source: raw.source === "bulk" || raw.source === "admin" ? raw.source : "user",
     attempts: Number(raw.attempts),
     frequencyRank: typeof raw.frequency_rank === "number" ? raw.frequency_rank : null
@@ -1162,6 +1278,16 @@ function toJob(raw) {
 }
 function createSupabaseWordStore(client) {
   return {
+    async canUseFlaggedLanguage(userId) {
+      const { data, error } = await client.from("profiles").select("feature_zh").eq("user_id", userId).maybeSingle();
+      if (error) throw new Error(`profiles: ${error.message}`);
+      return data?.feature_zh === true;
+    },
+    async zhReadings(lemma) {
+      const { data, error } = await client.from("zh_lexicon").select("traditional, pinyin, common").eq("simplified", lemma);
+      if (error) throw new Error(`zh_lexicon: ${error.message}`);
+      return (data ?? []).map(toReading);
+    },
     async findWords(language, lemma, pos) {
       let query = client.from("words").select(WORD_SELECT).eq("language", language).eq("lemma", lemma).eq("is_hidden", false).order("frequency_rank", { ascending: true, nullsFirst: false }).order("created_at", { ascending: true });
       if (pos) query = query.eq("pos", pos);
@@ -1291,6 +1417,9 @@ var reverse_lookup_default = '---\ntask: reverse-lookup\nversion: 1\nschema: src
 
 // raw:src/prompts/word-content.md
 var word_content_default = '---\ntask: word-content\nversion: 3\nschema: src/lib/schema/word.ts (WordContentSchema, SCHEMA_VERSION 1)\n---\n\n<!--\nPrompt tạo nội dung thẻ từ 5 tab. Phần sau dòng "=== SYSTEM ===" là system prompt,\nsau "=== USER ===" là nội dung gửi kèm từng từ. Biến dạng {{tên}} do\nbuildWordContentPrompt() điền. Nội dung từ dùng chung cho mọi người nên KHÔNG có\ncâu ngữ cảnh của người dùng (quy tắc gói miễn phí). Sửa prompt → tăng version.\n-->\n\n=== SYSTEM ===\nBạn là nhà từ điển học và giáo viên {{language_name}} giàu kinh nghiệm dạy người Việt.\nBạn tạo nội dung thẻ từ chính xác, tự nhiên, đúng cách người bản ngữ dùng. Không bịa:\nmục nào không thực sự tồn tại thì trả mảng rỗng (hoặc null với trường cho phép null).\nMọi phần giải thích viết bằng tiếng Việt tự nhiên, ngắn gọn.\nChỉ trả về một đối tượng JSON đúng schema được cung cấp, không thêm chữ nào khác.\n\n=== USER ===\nTạo nội dung học cho từ "{{lemma}}" (ngôn ngữ: {{language}}, loại từ: {{pos_label}}).\nNgười học ở trình độ {{cefr_level}}.\nNghĩa tham khảo từ Wiktionary (có thể rỗng; chỉ để tham khảo, thứ tự KHÔNG theo tần suất): {{dictionary_json}}\n\nĐầu thẻ (cấp từ):\n\n- schema_version = 1, language = "{{language}}", lemma = "{{lemma}}".\n- {{pos_rule}}\n- ipa: us và uk, KHÔNG kèm dấu "/"; tách âm tiết bằng dấu chấm nếu được (vd "rɪˈzɪl.jənt").\n  Dùng ký hiệu quen thuộc trong từ điển học tập (Cambridge, Oxford): r chứ không ɹ, dʒ/tʃ\n  không có dấu nối, không ngoặc đơn, không ký hiệu phiên âm hẹp (ɫ, ʔ, ɾ).\n- cefr: trình độ CEFR phổ biến của từ (không phải trình độ người học).\n- register: mức trang trọng chung của từ.\n- forms.inflections: dạng chia/số nhiều/so sánh của ĐÚNG loại từ trên thẻ (danh từ chỉ có\n  plural, không ghi dạng động từ); irregular = true nếu bất quy tắc. Chỉ ghi dạng dùng được với\n  các nghĩa trong senses: danh từ không đếm được hoặc đã ở số nhiều (people, news) thì không\n  ghi plural.\n  forms.variants: biến thể chính tả Anh–Mỹ của chính từ này (colour/color), không có thì [].\n- language_extra = null với tiếng Anh.\n\nTab Nghĩa (senses):\n\n- Chỉ nghĩa phổ biến, tối đa 3, sắp theo tần suất (phổ biến nhất trước).\n- definition_en ngắn, dễ hiểu; meaning_vi ngắn gọn, tự nhiên, không dịch từ-đối-từ.\n- image_query: 2–4 từ tiếng Anh mô tả một hình ảnh cụ thể, dễ nhớ cho nghĩa này.\n\nTab Ví dụ (senses[].examples):\n\n- 3 câu mỗi nghĩa, ngữ cảnh đời thường, 8–18 từ; từ vựng xung quanh dễ hơn hoặc\n  bằng {{cefr_level}}; có translation_vi.\n- highlight: đúng dạng từ xuất hiện trong câu (vd "ran"), phải có nguyên văn trong sentence.\n\nTab Cách dùng (theo từng nghĩa):\n\n- collocations: chỉ cụm người bản ngữ thực sự hay dùng, ghi pattern (vd "verb + noun",\n  "adverb + adjective"), tối đa 8.\n- idioms: chỉ khi thực sự tồn tại, gắn register; không có thì [].\n- common_mistakes: tối đa 3 lỗi người Việt hay mắc với nghĩa này (wrong, correct,\n  explanation_vi), vd "resilient with stress" → "resilient to stress". Không có lỗi\n  điển hình thì [].\n\nTab Từ liên quan:\n\n- senses[].synonyms kèm nuance_vi nói rõ khác biệt sắc thái/ngữ cảnh; senses[].antonyms.\n- homonyms (cấp từ): từ viết giống (homograph) hoặc đọc giống (homophone) nhưng khác nghĩa.\n- word_family (cấp từ): các từ cùng họ (danh/động/tính/trạng từ), note_vi nếu cần.\n\nTab Ghi nhớ (cấp từ):\n\n- mnemonics: tối đa 2 mẹo ngắn cho người Việt (type: sound, etymology, image, story).\n- confusables: từ hay bị nhầm với từ này + difference_vi chỉ ra cách phân biệt.\n- etymology_vi: 1 câu về gốc từ/tiền tố/hậu tố nếu giúp dễ nhớ, không thì null.\n\nconfidence: 0–1 cho collocations, idioms, mnemonics (bạn chắc chắn đến đâu).\nKhông tạo mục slang riêng, không tạo mục ngữ pháp riêng.\n';
+
+// raw:src/prompts/word-content-zh.md
+var word_content_zh_default = '---\ntask: word-content-zh\nversion: 2\nschema: src/lib/lang/zh/content-schema.ts (ZhWordContentSchema, SCHEMA_VERSION 1)\n---\n\n<!--\nPrompt tạo nội dung thẻ từ tiếng Trung giản thể, 5 tab như tiếng Anh. Nội dung dùng chung nên KHÔNG\ncó dữ liệu người dùng. Không đưa định nghĩa CC-CEDICT vào đây (rủi ro ShareAlike); chỉ đưa âm đọc.\nKhông viết âm Hán Việt: phần đó lấy từ bảng đã duyệt. Sửa prompt → tăng version.\n-->\n\n=== SYSTEM ===\nBạn là nhà từ điển học và giáo viên tiếng Trung giàu kinh nghiệm dạy người Việt.\nBạn tạo nội dung thẻ từ chính xác, tự nhiên, đúng cách người Trung Quốc đại lục dùng hiện nay, viết\nbằng chữ giản thể. Không bịa: mục nào không thực sự tồn tại thì trả mảng rỗng (hoặc null với trường\ncho phép null). Mọi phần giải thích viết bằng tiếng Việt tự nhiên, ngắn gọn.\nChỉ trả về một đối tượng JSON đúng schema được cung cấp, không thêm chữ nào khác.\n\n=== USER ===\nTạo nội dung học cho từ "{{lemma}}". Người học ở trình độ {{level}}.\n\nĐầu thẻ (cấp từ):\n\n- schema_version = 1, language = "zh", lemma = "{{lemma}}".\n- {{pos_rule}} classifier là lượng từ, particle là trợ từ, numeral là số từ.\n- ipa = { "us": null, "uk": null }, cefr = null.\n- register: mức trang trọng chung của từ.\n- forms = { "inflections": [], "variants": [] }.\n- language_extra: kind = "zh", simplified = "{{lemma}}", traditional là dạng phồn thể (giống giản thể\n  thì ghi lại chữ đó), hsk = {{hsk}}, pinyin là âm của nghĩa đầu tiên, tones là thanh từng âm tiết\n  (1–4, 5 là thanh nhẹ), sense_pinyin có đúng một âm cho mỗi nghĩa, cùng thứ tự với senses.\n- {{readings_rule}}\n\nTab Nghĩa (senses):\n\n- Chỉ nghĩa phổ biến ở trình độ người học, tối đa 3, sắp theo tần suất (phổ biến nhất trước).\n- Chỉ gồm nghĩa của ĐÚNG loại từ trên thẻ. Bỏ hẳn nghĩa thuộc loại từ khác, kể cả khi rất phổ biến\n  (vd thẻ tính từ 长 chỉ có cháng "dài", không có zhǎng "lớn lên" vì đó là động từ; thẻ tính từ 好 không\n  có hào "thích"). Thà ít nghĩa còn hơn lẫn loại từ.\n- Từ có âm khác nhưng CÙNG loại từ thì mỗi âm là một nghĩa riêng (vd động từ 看: kàn "nhìn", kān\n  "trông coi"), miễn là nghĩa đó phổ biến ở trình độ người học.\n- definition_en ngắn, dễ hiểu, tự viết; meaning_vi ngắn gọn, tự nhiên, không dịch từ-đối-từ.\n- Trợ từ, lượng từ: meaning_vi nói rõ chức năng và cách dùng, không dịch gượng thành một từ tiếng Việt.\n- image_query: 2–4 từ tiếng Anh mô tả một hình ảnh cụ thể, dễ nhớ cho nghĩa này.\n\nTab Ví dụ (senses[].examples):\n\n- 3 câu mỗi nghĩa, ngữ cảnh đời thường, 6–18 chữ; từ xung quanh không khó hơn {{level}}; có\n  translation_vi.\n- highlight: đúng chữ của từ này trong câu, phải có nguyên văn trong sentence.\n\nTab Cách dùng (theo từng nghĩa):\n\n- collocations: chỉ cụm người bản ngữ thực sự hay dùng, ghi pattern (vd "động từ + tân ngữ", "lượng\n  từ + danh từ"), tối đa 8. Lượng từ: ghi các danh từ đi cùng.\n- idioms: thành ngữ, tục ngữ thông dụng chứa từ này, gắn register; không có thì [].\n- common_mistakes: tối đa 3 lỗi người Việt hay mắc với nghĩa này (wrong, correct, explanation_vi),\n  như sai trật tự từ theo tiếng Việt, nhầm lượng từ, nhầm từ gần nghĩa. Không có lỗi điển hình thì [].\n\nTab Từ liên quan:\n\n- senses[].synonyms kèm nuance_vi nói rõ khác biệt sắc thái/ngữ cảnh; senses[].antonyms.\n- homonyms (cấp từ): từ đồng âm khác chữ dễ nhầm (homophone), hoặc cùng chữ khác âm (homograph).\n- word_family (cấp từ): từ ghép thông dụng chứa từ này, note_vi nếu cần.\n\nTab Ghi nhớ (cấp từ):\n\n- mnemonics: tối đa 2 mẹo ngắn cho người Việt, dựa vào bộ thủ, thành phần chữ hoặc hình ảnh (type:\n  sound, etymology, image, story). KHÔNG viết âm Hán Việt, không chế âm đọc tiếng Việt thay pinyin.\n- confusables: từ hay bị nhầm với từ này + difference_vi chỉ ra cách phân biệt.\n- etymology_vi: 1 câu về cấu tạo chữ nếu chắc chắn và giúp dễ nhớ, không thì null. Không bịa nguồn gốc.\n\nconfidence: 0–1 cho collocations, idioms, mnemonics (bạn chắc chắn đến đâu).\nKhông tạo mục slang riêng, không tạo mục ngữ pháp riêng.\n';
 
 // src/config/words.ts
 var SHARED_CONTENT_CEFR = "B1";
@@ -1467,6 +1596,69 @@ function buildWordContentPrompt(template, request) {
   };
 }
 
+// src/lib/llm/tasks/word-content-zh.ts
+function buildZhWordContentPrompt(template, request) {
+  if (template.task !== "word-content-zh") {
+    throw new Error(`Cần prompt word-content-zh, nhận ${template.task}`);
+  }
+  const { pos, hsk, readings } = request;
+  const lemma = request.lemma.trim();
+  const vars = {
+    lemma,
+    pos_rule: pos ? `pos = "${pos}".` : `pos: chọn MỘT loại từ phổ biến nhất của "${lemma}" trong tiếng Trung hiện đại.`,
+    hsk: hsk === null ? "null" : String(hsk),
+    level: hsk === null ? "HSK 3" : `HSK ${hsk}`,
+    readings_rule: readings.length > 0 ? `Âm đọc của từ này chỉ có thể là: ${readings.join(" | ")}. Mỗi phần tử của sense_pinyin phải là ĐÚNG một âm trong danh sách, chọn âm đúng với nghĩa đó. Không tự viết âm khác.` : `Từ điển không có từ này: tự viết pinyin có dấu, cách nhau theo âm tiết.`
+  };
+  return {
+    system: renderTemplate(template.system, vars),
+    prompt: renderTemplate(template.user, vars),
+    promptVersion: template.version
+  };
+}
+
+// src/lib/lang/zh/content-schema.ts
+import { z as z8 } from "npm:zod@4.6.5";
+var ZhPosSchema = z8.enum([
+  "noun",
+  "verb",
+  "adjective",
+  "adverb",
+  "pronoun",
+  "preposition",
+  "conjunction",
+  "interjection",
+  "classifier",
+  "particle",
+  "numeral",
+  "phrase"
+]);
+var ZhExtraSchema = ChineseExtraSchema.extend({
+  sense_pinyin: z8.array(z8.string().min(1)).min(1).max(5)
+});
+var ZhWordContentSchema = WordContentBaseSchema.extend({
+  language: z8.literal("zh"),
+  pos: ZhPosSchema,
+  ipa: z8.object({ us: z8.null(), uk: z8.null() }),
+  cefr: z8.null(),
+  language_extra: ZhExtraSchema
+}).superRefine((w, ctx) => {
+  if (w.language_extra.sense_pinyin.length !== w.senses.length) {
+    ctx.addIssue({
+      code: "custom",
+      path: ["language_extra", "sense_pinyin"],
+      message: "sense_pinyin phải có đúng một âm cho mỗi nghĩa"
+    });
+  }
+  if (w.language_extra.simplified !== w.lemma) {
+    ctx.addIssue({
+      code: "custom",
+      path: ["language_extra", "simplified"],
+      message: "simplified phải trùng lemma"
+    });
+  }
+});
+
 // src/lib/words/pipeline.ts
 async function findInStore(input, language, pos, deps) {
   const { lemma, surface, alternatives } = toLemma(input, {
@@ -1489,7 +1681,12 @@ async function findInStore(input, language, pos, deps) {
   }
   return { lemma, surface, alternatives, words: [] };
 }
+var LanguageNotEnabledError = class extends Error {
+};
 async function requestWord(request, userId, deps) {
+  if (languagePack(request.language).requiresFlag && !(userId && await deps.store.canUseFlaggedLanguage(userId))) {
+    throw new LanguageNotEnabledError(request.language);
+  }
   const pos = request.pos ?? null;
   const { lemma, alternatives, words } = await findInStore(
     request.lemma,
@@ -1557,11 +1754,51 @@ function retryDelayMs(attempts) {
   const minutes = JOB_RETRY_DELAYS_MINUTES[Math.min(attempts, JOB_RETRY_DELAYS_MINUTES.length) - 1] ?? JOB_RETRY_DELAYS_MINUTES[0];
   return minutes * 6e4;
 }
+async function generateEnglish(job, deps) {
+  const dictionary = languagePack(job.language).usesDictionaryApi ? await deps.fetchDictionary(job.lemma) : null;
+  const pos = job.pos;
+  const { system, prompt, promptVersion } = buildWordContentPrompt(deps.template, {
+    language: job.language,
+    lemma: job.lemma,
+    pos,
+    cefrLevel: SHARED_CONTENT_CEFR,
+    dictionary: dictionaryForPrompt(dictionary, pos)
+  });
+  const result = await deps.llm.generateJSON("word-content", {
+    system,
+    prompt,
+    schema: contentSchemaFor(job, pos),
+    preprocess: stripIpaSlashes
+  });
+  const content = { ...result.data, lemma: job.lemma };
+  return { content, usage: result.usage, model: result.model, promptVersion };
+}
+async function generateChinese(job, deps) {
+  if (!deps.zhTemplate) throw new Error("Thiếu prompt word-content-zh");
+  const readings = await deps.store.zhReadings(job.lemma);
+  const { system, prompt, promptVersion } = buildZhWordContentPrompt(deps.zhTemplate, {
+    lemma: job.lemma,
+    pos: job.pos,
+    hsk: null,
+    readings: allowedReadings(readings).map((r) => r.pinyin)
+  });
+  const result = await deps.llm.generateJSON("word-content-zh", {
+    system,
+    prompt,
+    schema: ZhWordContentSchema.refine(
+      (content2) => content2.lemma === job.lemma && (job.pos === null || content2.pos === job.pos),
+      { message: `Phải đúng từ "${job.lemma}"${job.pos ? ` (${job.pos})` : ""}` }
+    )
+  });
+  const { content } = applyLexicon(result.data, readings);
+  return { content, usage: result.usage, model: result.model, promptVersion };
+}
+var GENERATORS = { "word-content": generateEnglish, "word-content-zh": generateChinese };
 async function processJob(job, deps) {
   const now = deps.now ?? Date.now;
   try {
-    const dictionary = languagePack(job.language).usesDictionaryApi ? await deps.fetchDictionary(job.lemma) : null;
     const pos = job.pos;
+    const task = languagePack(job.language).contentTask;
     if (pos) {
       const existing = await deps.store.findWordId(job.language, job.lemma, pos);
       if (existing) {
@@ -1569,19 +1806,8 @@ async function processJob(job, deps) {
         return { status: "done", wordId: existing, created: false };
       }
     }
-    const { system, prompt, promptVersion } = buildWordContentPrompt(deps.template, {
-      language: job.language,
-      lemma: job.lemma,
-      pos,
-      cefrLevel: SHARED_CONTENT_CEFR,
-      dictionary: dictionaryForPrompt(dictionary, pos)
-    });
-    const result = await deps.llm.generateJSON("word-content", {
-      system,
-      prompt,
-      schema: contentSchemaFor(job, pos),
-      preprocess: stripIpaSlashes
-    });
+    const result = await GENERATORS[task](job, deps);
+    const { content, promptVersion } = result;
     if (deps.store.addUsage) {
       await deps.store.addUsage(job.id, {
         inputTokens: result.usage.inputTokens ?? 0,
@@ -1589,7 +1815,6 @@ async function processJob(job, deps) {
         costUsd: estimateCostUsd(result.model, result.usage)
       }).catch((error) => console.error("Ghi chi phí việc lỗi:", error));
     }
-    const content = { ...result.data, lemma: job.lemma };
     if (!pos) {
       const existing = await deps.store.findWordId(job.language, job.lemma, content.pos);
       if (existing) {
@@ -1601,7 +1826,7 @@ async function processJob(job, deps) {
     const rows = toWordRows(content, {
       wordId,
       senseId: () => deps.newId(),
-      generatedBy: `${result.model.provider}/${result.model.model} word-content@v${promptVersion}`,
+      generatedBy: `${result.model.provider}/${result.model.model} ${task}@v${promptVersion}`,
       reviewed: false
     });
     if (job.frequencyRank !== null) rows.word.frequency_rank = job.frequencyRank;
@@ -1691,6 +1916,9 @@ function createHandler(deps) {
       }
       return json(response);
     } catch (error) {
+      if (error instanceof LanguageNotEnabledError) {
+        return json({ error: "language_not_enabled" }, 403);
+      }
       console.error("generate-word lỗi:", error);
       return json({ error: "internal_error" }, 500);
     }
@@ -1721,6 +1949,7 @@ var worker = anthropicKey ? {
     }
   }),
   template: parsePromptTemplate(word_content_default),
+  zhTemplate: parsePromptTemplate(word_content_zh_default),
   fetchDictionary: (lemma) => fetchFreeDictionary(lemma),
   newId: () => crypto.randomUUID()
 } : null;

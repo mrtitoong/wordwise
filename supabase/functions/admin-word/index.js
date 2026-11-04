@@ -593,7 +593,10 @@ var EN_TTS_VOICES = {
 };
 var en = {
   code: "en",
+  requiresFlag: false,
+  contentTask: "word-content",
   wordAudioVoices: ["us", "uk"],
+  ttsVoice: (voice) => EN_TTS_VOICES[voice],
   speechLocale: (voice) => EN_TTS_VOICES[voice].locale,
   lemmatizes: true,
   usesDictionaryApi: true,
@@ -601,10 +604,14 @@ var en = {
 };
 
 // src/lib/lang/zh/index.ts
+var ZH_TTS_VOICE = { locale: "zh-CN", name: "zh-CN-XiaoxiaoNeural" };
 var zh = {
   code: "zh",
-  wordAudioVoices: [],
-  speechLocale: () => "zh-CN",
+  requiresFlag: true,
+  contentTask: "word-content-zh",
+  wordAudioVoices: ["us"],
+  ttsVoice: () => ZH_TTS_VOICE,
+  speechLocale: () => ZH_TTS_VOICE.locale,
   lemmatizes: false,
   usesDictionaryApi: false,
   requiresIpa: false
@@ -616,7 +623,12 @@ var PACKS = { en, zh };
 function plainPack(code) {
   return {
     code,
+    requiresFlag: true,
+    contentTask: "word-content",
     wordAudioVoices: [],
+    ttsVoice: () => {
+      throw new Error(`Chưa có giọng đọc cho ${code}`);
+    },
     speechLocale: () => code,
     lemmatizes: false,
     usesDictionaryApi: false,
@@ -645,6 +657,7 @@ var PosSchema = z2.enum([
   "phrasal_verb",
   "phrase"
 ]);
+var StoredPosSchema = z2.enum([...PosSchema.options, "classifier", "particle", "numeral"]);
 var RegisterSchema = z2.enum(["formal", "neutral", "informal", "slang", "offensive"]);
 var ipaText = text.refine((s) => !s.includes("/"), {
   message: "IPA không kèm dấu '/'"
@@ -749,7 +762,11 @@ var ChineseExtraSchema = z2.object({
   pinyin: text,
   /** Thanh điệu từng âm tiết: 1–4, 5 = thanh nhẹ. */
   tones: z2.array(z2.number().int().min(1).max(5)).min(1),
-  hsk: z2.number().int().min(1).max(9).nullable()
+  hsk: z2.number().int().min(1).max(9).nullable(),
+  /** Âm của từng nghĩa, cùng thứ tự với senses; `pinyin` là âm của nghĩa đầu. */
+  sense_pinyin: z2.array(text).min(1).max(5).optional(),
+  /** "ai": từ điển không có từ này hoặc âm AI chọn ngoài danh sách, cần người duyệt. */
+  reading_source: z2.enum(["dictionary", "ai"]).optional()
 });
 var LanguageExtraSchema = z2.discriminatedUnion("kind", [
   JapaneseExtraSchema,
@@ -823,14 +840,56 @@ var ResponseSchema = z3.array(
   })
 );
 
-// src/lib/schema/word-rows.ts
+// src/lib/lang/zh/content-schema.ts
 import { z as z4 } from "npm:zod@4.6.5";
-var WordDetailsColumnSchema = z4.object({
-  etymology_vi: z4.string().nullable(),
-  homonyms: z4.array(HomonymSchema),
-  word_family: z4.array(WordFamilyMemberSchema),
-  mnemonics: z4.array(MnemonicSchema),
-  confusables: z4.array(ConfusableSchema),
+var ZhPosSchema = z4.enum([
+  "noun",
+  "verb",
+  "adjective",
+  "adverb",
+  "pronoun",
+  "preposition",
+  "conjunction",
+  "interjection",
+  "classifier",
+  "particle",
+  "numeral",
+  "phrase"
+]);
+var ZhExtraSchema = ChineseExtraSchema.extend({
+  sense_pinyin: z4.array(z4.string().min(1)).min(1).max(5)
+});
+var ZhWordContentSchema = WordContentBaseSchema.extend({
+  language: z4.literal("zh"),
+  pos: ZhPosSchema,
+  ipa: z4.object({ us: z4.null(), uk: z4.null() }),
+  cefr: z4.null(),
+  language_extra: ZhExtraSchema
+}).superRefine((w, ctx) => {
+  if (w.language_extra.sense_pinyin.length !== w.senses.length) {
+    ctx.addIssue({
+      code: "custom",
+      path: ["language_extra", "sense_pinyin"],
+      message: "sense_pinyin phải có đúng một âm cho mỗi nghĩa"
+    });
+  }
+  if (w.language_extra.simplified !== w.lemma) {
+    ctx.addIssue({
+      code: "custom",
+      path: ["language_extra", "simplified"],
+      message: "simplified phải trùng lemma"
+    });
+  }
+});
+
+// src/lib/schema/word-rows.ts
+import { z as z5 } from "npm:zod@4.6.5";
+var WordDetailsColumnSchema = z5.object({
+  etymology_vi: z5.string().nullable(),
+  homonyms: z5.array(HomonymSchema),
+  word_family: z5.array(WordFamilyMemberSchema),
+  mnemonics: z5.array(MnemonicSchema),
+  confusables: z5.array(ConfusableSchema),
   confidence: ConfidenceSchema,
   language_extra: LanguageExtraSchema.nullable()
 });
@@ -873,120 +932,120 @@ function fromWordRows(rows) {
 }
 
 // src/lib/words/api.ts
-import { z as z6 } from "npm:zod@4.6.5";
+import { z as z7 } from "npm:zod@4.6.5";
 
 // src/lib/words/reverse.ts
-import { z as z5 } from "npm:zod@4.6.5";
-var ReverseRequestSchema = z5.object({
-  action: z5.literal("reverse"),
-  query: z5.string().trim().min(2).max(60)
+import { z as z6 } from "npm:zod@4.6.5";
+var ReverseRequestSchema = z6.object({
+  action: z6.literal("reverse"),
+  query: z6.string().trim().min(2).max(60)
 });
-var ReverseItemSchema = z5.object({
-  word: z5.string(),
+var ReverseItemSchema = z6.object({
+  word: z6.string(),
   pos: PosSchema.nullable(),
   /** Nghĩa tiếng Việt trong kho (null với gợi ý của AI chưa có trong kho). */
-  meaning: z5.string().nullable(),
+  meaning: z6.string().nullable(),
   /** Sắc thái do AI giải thích. */
-  nuance: z5.string().nullable(),
-  wordId: z5.string().nullable(),
-  source: z5.enum(["library", "ai"])
+  nuance: z6.string().nullable(),
+  wordId: z6.string().nullable(),
+  source: z6.enum(["library", "ai"])
 });
-var ReverseResponseSchema = z5.object({
-  items: z5.array(ReverseItemSchema),
+var ReverseResponseSchema = z6.object({
+  items: z6.array(ReverseItemSchema),
   /** Trạng thái phần AI: skipped (kho đã đủ), used, login_required, limit_reached, unavailable. */
-  ai: z5.enum(["skipped", "used", "login_required", "limit_reached", "unavailable"])
+  ai: z6.enum(["skipped", "used", "login_required", "limit_reached", "unavailable"])
 });
 
 // src/lib/words/api.ts
-var InputMethodSchema = z6.enum(["typed", "voice", "photo", "csv", "list", "url"]);
-var WordRequestSchema = z6.object({
-  action: z6.literal("request").default("request"),
-  lemma: z6.string().trim().min(1).max(64),
+var InputMethodSchema = z7.enum(["typed", "voice", "photo", "csv", "list", "url"]);
+var WordRequestSchema = z7.object({
+  action: z7.literal("request").default("request"),
+  lemma: z7.string().trim().min(1).max(64),
   language: LanguageSchema.default(DEFAULT_LANGUAGE),
   pos: PosSchema.nullish(),
   /** Từ chưa có trong kho: máy chủ tự thêm nghĩa phổ biến nhất vào sổ này khi tạo xong. */
-  notebookId: z6.uuid().nullish(),
-  contextSentence: z6.string().trim().max(500).nullish(),
+  notebookId: z7.uuid().nullish(),
+  contextSentence: z7.string().trim().max(500).nullish(),
   /** Ảnh chụp người dùng giữ làm ngữ cảnh (storage://user-images/{user_id}/…). */
-  contextImageUrl: z6.string().max(300).regex(/^storage:\/\/user-images\/[0-9a-f-]{36}\/[\w.-]+$/).nullish(),
+  contextImageUrl: z7.string().max(300).regex(/^storage:\/\/user-images\/[0-9a-f-]{36}\/[\w.-]+$/).nullish(),
   /** Bài viết nơi gặp từ (tab Link): link http(s) và tiêu đề. */
-  sourceUrl: z6.string().max(2e3).regex(/^https?:\/\//).nullish(),
-  sourceTitle: z6.string().trim().max(300).nullish(),
+  sourceUrl: z7.string().max(2e3).regex(/^https?:\/\//).nullish(),
+  sourceTitle: z7.string().trim().max(300).nullish(),
   inputMethod: InputMethodSchema.nullish(),
   /** Ghi chú riêng (cột nghĩa/ghi chú của file) → "Ghi chú của bạn" ở tab Nghĩa. */
-  note: z6.string().trim().max(500).nullish(),
+  note: z7.string().trim().max(500).nullish(),
   /** Tag của từ trong sổ (gom nhóm khi nhập file). */
-  tags: z6.array(z6.string().trim().min(1).max(30)).max(10).nullish()
+  tags: z7.array(z7.string().trim().min(1).max(30)).max(10).nullish()
 });
-var WorkerRequestSchema = z6.object({ action: z6.literal("work") });
-var ResolveRequestSchema = z6.object({
-  action: z6.literal("resolve"),
-  lemmas: z6.array(z6.string().trim().min(1).max(64)).min(1).max(50),
+var WorkerRequestSchema = z7.object({ action: z7.literal("work") });
+var ResolveRequestSchema = z7.object({
+  action: z7.literal("resolve"),
+  lemmas: z7.array(z7.string().trim().min(1).max(64)).min(1).max(50),
   language: LanguageSchema.default(DEFAULT_LANGUAGE)
 });
-var FunctionRequestSchema = z6.union([
+var FunctionRequestSchema = z7.union([
   WorkerRequestSchema,
   ResolveRequestSchema,
   ReverseRequestSchema,
   WordRequestSchema
 ]);
-var ImageCreditSchema = z6.object({
-  provider: z6.enum(["pexels", "unsplash"]),
-  author: z6.string(),
-  author_url: z6.string(),
-  source_url: z6.string()
+var ImageCreditSchema = z7.object({
+  provider: z7.enum(["pexels", "unsplash"]),
+  author: z7.string(),
+  author_url: z7.string(),
+  source_url: z7.string()
 });
-var WordMediaSchema = z6.object({
-  audio: z6.object({ us: z6.string().nullable(), uk: z6.string().nullable() }),
+var WordMediaSchema = z7.object({
+  audio: z7.object({ us: z7.string().nullable(), uk: z7.string().nullable() }),
   /** Theo đúng thứ tự `content.senses`. */
-  images: z6.array(z6.object({ url: z6.string(), credit: ImageCreditSchema }).nullable())
+  images: z7.array(z7.object({ url: z7.string(), credit: ImageCreditSchema }).nullable())
 });
-var StoredWordSchema = z6.object({
-  id: z6.string(),
+var StoredWordSchema = z7.object({
+  id: z7.string(),
   /** id các nghĩa theo đúng thứ tự `content.senses` (để tạo user_words). */
-  senseIds: z6.array(z6.string()),
+  senseIds: z7.array(z7.string()),
   content: WordContentSchema,
   media: WordMediaSchema
 });
 var base = {
   /** Dạng gốc đã chuẩn hóa ("running" → "run"). */
-  lemma: z6.string(),
+  lemma: z7.string(),
   /** Dạng gốc khác có thể đúng (vd leaves → leaf), để app hỏi lại người dùng. */
-  alternatives: z6.array(z6.string())
+  alternatives: z7.array(z7.string())
 };
-var WordResponseSchema = z6.discriminatedUnion("status", [
+var WordResponseSchema = z7.discriminatedUnion("status", [
   /** Đã có trong kho: trả ngay (một dòng cho mỗi loại từ). */
-  z6.object({ status: z6.literal("ready"), ...base, words: z6.array(StoredWordSchema).min(1) }),
+  z7.object({ status: z7.literal("ready"), ...base, words: z7.array(StoredWordSchema).min(1) }),
   /** Đang tạo nội dung: app hiện "Đang chuẩn bị nội dung" rồi hỏi lại sau. */
-  z6.object({ status: z6.literal("preparing"), ...base, jobId: z6.string() }),
+  z7.object({ status: z7.literal("preparing"), ...base, jobId: z7.string() }),
   /** Từ ngoài kho, khách chưa đăng nhập: mời đăng nhập. */
-  z6.object({ status: z6.literal("login_required"), ...base }),
+  z7.object({ status: z7.literal("login_required"), ...base }),
   /** Đã dùng hết số từ mới hôm nay. */
-  z6.object({
-    status: z6.literal("limit_reached"),
+  z7.object({
+    status: z7.literal("limit_reached"),
     ...base,
-    dailyLimit: z6.number().int(),
+    dailyLimit: z7.number().int(),
     /** Gói hiện tại: Free hết lượt thì mời nâng cấp Premium. */
-    plan: z6.enum(["free", "premium"]).default("free")
+    plan: z7.enum(["free", "premium"]).default("free")
   }),
   /** Nhập file khi chưa có Premium (máy chủ chặn, app mời nâng cấp). */
-  z6.object({ status: z6.literal("premium_required"), ...base })
+  z7.object({ status: z7.literal("premium_required"), ...base })
 ]);
-var WordSummarySchema = z6.object({
-  id: z6.string(),
-  lemma: z6.string(),
+var WordSummarySchema = z7.object({
+  id: z7.string(),
+  lemma: z7.string(),
   pos: PosSchema,
-  cefr: z6.string().nullable(),
-  senses: z6.array(z6.object({ id: z6.string(), meaning_vi: z6.string() })).min(1)
+  cefr: z7.string().nullable(),
+  senses: z7.array(z7.object({ id: z7.string(), meaning_vi: z7.string() })).min(1)
 });
-var ResolveResponseSchema = z6.object({
-  items: z6.array(
-    z6.object({
+var ResolveResponseSchema = z7.object({
+  items: z7.array(
+    z7.object({
       /** Chữ người dùng nhập (đã làm sạch). */
-      input: z6.string(),
+      input: z7.string(),
       ...base,
       /** Rỗng: chưa có trong kho. */
-      words: z6.array(WordSummarySchema)
+      words: z7.array(WordSummarySchema)
     })
   )
 });
@@ -1033,13 +1092,13 @@ function toStoredWord(row) {
 var word_content_default = '---\ntask: word-content\nversion: 3\nschema: src/lib/schema/word.ts (WordContentSchema, SCHEMA_VERSION 1)\n---\n\n<!--\nPrompt tạo nội dung thẻ từ 5 tab. Phần sau dòng "=== SYSTEM ===" là system prompt,\nsau "=== USER ===" là nội dung gửi kèm từng từ. Biến dạng {{tên}} do\nbuildWordContentPrompt() điền. Nội dung từ dùng chung cho mọi người nên KHÔNG có\ncâu ngữ cảnh của người dùng (quy tắc gói miễn phí). Sửa prompt → tăng version.\n-->\n\n=== SYSTEM ===\nBạn là nhà từ điển học và giáo viên {{language_name}} giàu kinh nghiệm dạy người Việt.\nBạn tạo nội dung thẻ từ chính xác, tự nhiên, đúng cách người bản ngữ dùng. Không bịa:\nmục nào không thực sự tồn tại thì trả mảng rỗng (hoặc null với trường cho phép null).\nMọi phần giải thích viết bằng tiếng Việt tự nhiên, ngắn gọn.\nChỉ trả về một đối tượng JSON đúng schema được cung cấp, không thêm chữ nào khác.\n\n=== USER ===\nTạo nội dung học cho từ "{{lemma}}" (ngôn ngữ: {{language}}, loại từ: {{pos_label}}).\nNgười học ở trình độ {{cefr_level}}.\nNghĩa tham khảo từ Wiktionary (có thể rỗng; chỉ để tham khảo, thứ tự KHÔNG theo tần suất): {{dictionary_json}}\n\nĐầu thẻ (cấp từ):\n\n- schema_version = 1, language = "{{language}}", lemma = "{{lemma}}".\n- {{pos_rule}}\n- ipa: us và uk, KHÔNG kèm dấu "/"; tách âm tiết bằng dấu chấm nếu được (vd "rɪˈzɪl.jənt").\n  Dùng ký hiệu quen thuộc trong từ điển học tập (Cambridge, Oxford): r chứ không ɹ, dʒ/tʃ\n  không có dấu nối, không ngoặc đơn, không ký hiệu phiên âm hẹp (ɫ, ʔ, ɾ).\n- cefr: trình độ CEFR phổ biến của từ (không phải trình độ người học).\n- register: mức trang trọng chung của từ.\n- forms.inflections: dạng chia/số nhiều/so sánh của ĐÚNG loại từ trên thẻ (danh từ chỉ có\n  plural, không ghi dạng động từ); irregular = true nếu bất quy tắc. Chỉ ghi dạng dùng được với\n  các nghĩa trong senses: danh từ không đếm được hoặc đã ở số nhiều (people, news) thì không\n  ghi plural.\n  forms.variants: biến thể chính tả Anh–Mỹ của chính từ này (colour/color), không có thì [].\n- language_extra = null với tiếng Anh.\n\nTab Nghĩa (senses):\n\n- Chỉ nghĩa phổ biến, tối đa 3, sắp theo tần suất (phổ biến nhất trước).\n- definition_en ngắn, dễ hiểu; meaning_vi ngắn gọn, tự nhiên, không dịch từ-đối-từ.\n- image_query: 2–4 từ tiếng Anh mô tả một hình ảnh cụ thể, dễ nhớ cho nghĩa này.\n\nTab Ví dụ (senses[].examples):\n\n- 3 câu mỗi nghĩa, ngữ cảnh đời thường, 8–18 từ; từ vựng xung quanh dễ hơn hoặc\n  bằng {{cefr_level}}; có translation_vi.\n- highlight: đúng dạng từ xuất hiện trong câu (vd "ran"), phải có nguyên văn trong sentence.\n\nTab Cách dùng (theo từng nghĩa):\n\n- collocations: chỉ cụm người bản ngữ thực sự hay dùng, ghi pattern (vd "verb + noun",\n  "adverb + adjective"), tối đa 8.\n- idioms: chỉ khi thực sự tồn tại, gắn register; không có thì [].\n- common_mistakes: tối đa 3 lỗi người Việt hay mắc với nghĩa này (wrong, correct,\n  explanation_vi), vd "resilient with stress" → "resilient to stress". Không có lỗi\n  điển hình thì [].\n\nTab Từ liên quan:\n\n- senses[].synonyms kèm nuance_vi nói rõ khác biệt sắc thái/ngữ cảnh; senses[].antonyms.\n- homonyms (cấp từ): từ viết giống (homograph) hoặc đọc giống (homophone) nhưng khác nghĩa.\n- word_family (cấp từ): các từ cùng họ (danh/động/tính/trạng từ), note_vi nếu cần.\n\nTab Ghi nhớ (cấp từ):\n\n- mnemonics: tối đa 2 mẹo ngắn cho người Việt (type: sound, etymology, image, story).\n- confusables: từ hay bị nhầm với từ này + difference_vi chỉ ra cách phân biệt.\n- etymology_vi: 1 câu về gốc từ/tiền tố/hậu tố nếu giúp dễ nhớ, không thì null.\n\nconfidence: 0–1 cho collocations, idioms, mnemonics (bạn chắc chắn đến đâu).\nKhông tạo mục slang riêng, không tạo mục ngữ pháp riêng.\n';
 
 // src/functions/admin-word/handler.ts
-import { z as z9 } from "npm:zod@4.6.5";
+import { z as z10 } from "npm:zod@4.6.5";
 
 // src/lib/admin/review.ts
-import { z as z8 } from "npm:zod@4.6.5";
+import { z as z9 } from "npm:zod@4.6.5";
 
 // src/lib/words/user-additions.ts
-import { z as z7 } from "npm:zod@4.6.5";
+import { z as z8 } from "npm:zod@4.6.5";
 var ADDITION_LIMITS = {
   sentence: 300,
   translation: 300,
@@ -1048,42 +1107,42 @@ var ADDITION_LIMITS = {
   note: 300,
   text: 500
 };
-var id = z7.string().min(1).max(64);
-var text2 = (max) => z7.string().trim().min(1).max(max);
-var optionalText = (max) => z7.string().trim().max(max).nullish().transform((s) => s ? s : null);
-var NoteAdditionSchema = z7.object({ id, text: text2(ADDITION_LIMITS.text) });
-var ExampleAdditionSchema = z7.object({
+var id = z8.string().min(1).max(64);
+var text2 = (max) => z8.string().trim().min(1).max(max);
+var optionalText = (max) => z8.string().trim().max(max).nullish().transform((s) => s ? s : null);
+var NoteAdditionSchema = z8.object({ id, text: text2(ADDITION_LIMITS.text) });
+var ExampleAdditionSchema = z8.object({
   id,
   sentence: text2(ADDITION_LIMITS.sentence),
   translation_vi: optionalText(ADDITION_LIMITS.translation)
 });
-var UsageAdditionSchema = z7.object({
+var UsageAdditionSchema = z8.object({
   id,
   phrase: text2(ADDITION_LIMITS.phrase),
   note: optionalText(ADDITION_LIMITS.note)
 });
-var RelatedAdditionSchema = z7.object({
+var RelatedAdditionSchema = z8.object({
   id,
   word: text2(ADDITION_LIMITS.word),
   note: optionalText(ADDITION_LIMITS.note)
 });
-var MemoryAdditionSchema = z7.object({ id, text: text2(ADDITION_LIMITS.text) });
-var CustomMeaningSchema = z7.string().trim().min(1).max(200);
+var MemoryAdditionSchema = z8.object({ id, text: text2(ADDITION_LIMITS.text) });
+var CustomMeaningSchema = z8.string().trim().min(1).max(200);
 
 // src/lib/words/word-card.ts
 var WORD_CARD_TABS = ["meaning", "examples", "usage", "related", "memory"];
 
 // src/lib/admin/review.ts
-var WarningSchema = z8.union([
-  z8.object({ code: z8.literal("spelling"), from: z8.string(), to: z8.string() }),
-  z8.object({ code: z8.literal("rare") }),
-  z8.object({ code: z8.literal("above_level"), cefr: z8.string(), target: z8.string() }),
-  z8.object({ code: z8.literal("many_senses"), count: z8.number() }),
-  z8.object({ code: z8.literal("no_context") }),
-  z8.object({
-    code: z8.literal("low_confidence"),
-    source: z8.enum(["sense", "content"]),
-    value: z8.number()
+var WarningSchema = z9.union([
+  z9.object({ code: z9.literal("spelling"), from: z9.string(), to: z9.string() }),
+  z9.object({ code: z9.literal("rare") }),
+  z9.object({ code: z9.literal("above_level"), cefr: z9.string(), target: z9.string() }),
+  z9.object({ code: z9.literal("many_senses"), count: z9.number() }),
+  z9.object({ code: z9.literal("no_context") }),
+  z9.object({
+    code: z9.literal("low_confidence"),
+    source: z9.enum(["sense", "content"]),
+    value: z9.number()
   })
 ]);
 var REGENERATE_TABS = WORD_CARD_TABS;
@@ -1183,9 +1242,9 @@ function mergeRegeneratedTab(current, generated, tab) {
 }
 
 // src/functions/admin-word/handler.ts
-var AdminWordRequestSchema = z9.object({
-  wordId: z9.uuid(),
-  tab: z9.enum(REGENERATE_TABS)
+var AdminWordRequestSchema = z10.object({
+  wordId: z10.uuid(),
+  tab: z10.enum(REGENERATE_TABS)
 });
 var CORS_HEADERS = {
   "access-control-allow-origin": "*",

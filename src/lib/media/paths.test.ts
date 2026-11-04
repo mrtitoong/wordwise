@@ -4,6 +4,10 @@ import { publicAudioUrl, sentenceAudioPath, slugifyLemma, wordAudioPath } from "
 describe("đường dẫn audio", () => {
   it("slug an toàn cho tên file", () => {
     expect(slugifyLemma("run")).toBe("run");
+    // Chữ Hán: mỗi từ một đường dẫn riêng, chỉ có ký tự ASCII.
+    expect(slugifyLemma("看")).toBe("u770b");
+    expect(slugifyLemma("学校")).toBe("u5b66u6821");
+    expect(slugifyLemma("看")).not.toBe(slugifyLemma("听"));
     expect(slugifyLemma("give up")).toBe("give_up");
     expect(slugifyLemma("don't")).toBe("don_t");
     expect(slugifyLemma("well-known")).toBe("well-known");

@@ -9,6 +9,8 @@ function emptyStore(): WordStore {
   return {
     findWords: vi.fn(async () => []),
     findWordId: vi.fn(async () => null),
+    canUseFlaggedLanguage: vi.fn(async () => false),
+    zhReadings: vi.fn(async () => []),
     requestJob: vi.fn(async () => ({
       limitReached: false as const,
       jobId: "job-1",

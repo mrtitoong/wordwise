@@ -19,8 +19,16 @@ import {
   SynonymSchema,
   WordContentSchema,
   WordFamilyMemberSchema,
+  type Cefr,
+  type StoredPos,
   type WordContent,
 } from "./word";
+
+/** Nội dung ghi được vào kho: tiếng Trung có thêm loại từ riêng và không có CEFR. */
+export type StorableContent = Omit<WordContent, "pos" | "cefr"> & {
+  pos: StoredPos;
+  cefr: Cefr | null;
+};
 
 /** Dữ liệu cấp từ lưu trong cột words.details. */
 export const WordDetailsColumnSchema = z.object({
@@ -37,10 +45,10 @@ export type WordRow = {
   id: string;
   language: WordContent["language"];
   lemma: string;
-  pos: WordContent["pos"];
+  pos: StoredPos;
   ipa_us: string | null;
   ipa_uk: string | null;
-  cefr: WordContent["cefr"];
+  cefr: Cefr | null;
   /** Thứ hạng tần suất (danh sách NGSL) nếu biết. */
   frequency_rank?: number | null;
   register: WordContent["register"];
@@ -84,7 +92,7 @@ type IdOptions = {
   reviewed?: boolean;
 };
 
-export function toWordRows(content: WordContent, ids: IdOptions): WordRows {
+export function toWordRows(content: StorableContent, ids: IdOptions): WordRows {
   const word: WordRow = {
     id: ids.wordId,
     language: content.language,

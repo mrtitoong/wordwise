@@ -80,11 +80,11 @@ test.describe("Thêm từ tiếng Trung", () => {
       .eq("user_id", await userIdByEmail(email));
     if (flag.error) throw new Error(flag.error.message);
     await page.reload();
-    await page
+    const chinese = page
       .getByRole("radiogroup", { name: "Ngôn ngữ đang học" })
-      .getByRole("radio", { name: "Tiếng Trung" })
-      .click();
-    await expect(page.getByText("Ôn tập tiếng Trung sắp có")).toBeVisible();
+      .getByRole("radio", { name: "Tiếng Trung" });
+    await chinese.click();
+    await expect(chinese).toBeChecked();
 
     await page.goto("/add");
     const tabs = page.getByRole("tablist");

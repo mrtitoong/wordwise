@@ -7,7 +7,12 @@
  * - Ảnh (~100 KB/ảnh): chỉ khi chắc chắn đang dùng Wi-Fi/mạng dây.
  * - Không tải khi offline hoặc máy bật "Tiết kiệm dữ liệu".
  */
+import { languageVoice, languagePack } from "@/lib/lang";
+import { learningLanguage } from "@/lib/lang/filter";
+import type { Voice } from "@/lib/media/tts-azure";
 import { addDays, studyDay } from "@/lib/review/day";
+import { hanziParts, strokeDataUrl } from "@/lib/review/hanzi";
+import type { Language } from "@/lib/schema/word";
 
 /** Tối đa số file mỗi lần tải trước. */
 export const PREFETCH_MAX_FILES = 300;
@@ -22,18 +27,21 @@ export type ConnectionInfo = {
   type?: string;
 };
 
-export type PrefetchPolicy = { audio: boolean; images: boolean };
+export type PrefetchPolicy = { strokes: boolean; audio: boolean; images: boolean };
 
 export function prefetchPolicy(connection: ConnectionInfo): PrefetchPolicy {
-  if (!connection.online || connection.saveData) return { audio: false, images: false };
-  if (connection.type === "wifi" || connection.type === "ethernet") {
-    return { audio: true, images: true };
+  if (!connection.online || connection.saveData) {
+    return { strokes: false, audio: false, images: false };
   }
+  if (connection.type === "wifi" || connection.type === "ethernet") {
+    return { strokes: true, audio: true, images: true };
+  }
+  // Dữ liệu nét ~1 KB/chữ nên tải cả khi dùng 4G; thiếu thì không viết được khi offline.
   if (connection.type === "cellular" || connection.type === "bluetooth") {
-    return { audio: false, images: false };
+    return { strokes: true, audio: false, images: false };
   }
   // Không biết loại mạng (iPhone, máy tính): chỉ audio (nhỏ).
-  return { audio: true, images: false };
+  return { strokes: true, audio: true, images: false };
 }
 
 type CardLike = { user_word_id: string; due: string; deleted_at: string | null };
@@ -61,22 +69,29 @@ export function senseIdsDueBy(
 }
 
 export type MediaSource = {
-  word: { audio_us_url: string | null; audio_uk_url: string | null };
+  word: {
+    lemma: string;
+    language: string;
+    audio_us_url: string | null;
+    audio_uk_url: string | null;
+  };
   sense: { image_url: string | null };
   examples: readonly { sentence: string }[];
 };
 
 export type PrefetchItem =
   | { kind: "audio"; url: string }
-  | { kind: "sentence"; sentence: string }
+  | { kind: "sentence"; sentence: string; language: Language; voice: Voice }
+  | { kind: "strokes"; url: string }
   | { kind: "image"; url: string };
 
-/** Danh sách file cần tải (bỏ trùng, tối đa PREFETCH_MAX_FILES), audio trước ảnh. */
+/** Danh sách file cần tải (bỏ trùng, tối đa PREFETCH_MAX_FILES): nét chữ, audio rồi tới ảnh. */
 export function prefetchItems(
   sources: readonly MediaSource[],
   voice: "us" | "uk",
   policy: PrefetchPolicy,
 ): PrefetchItem[] {
+  const strokes: PrefetchItem[] = [];
   const audio: PrefetchItem[] = [];
   const images: PrefetchItem[] = [];
   const seen = new Set<string>();
@@ -86,16 +101,27 @@ export function prefetchItems(
     list.push(item);
   };
   for (const source of sources) {
+    const language = learningLanguage(source.word.language);
+    if (policy.strokes && languagePack(language).writesStrokes) {
+      for (const { char, write } of hanziParts(source.word.lemma)) {
+        if (write) add(strokes, { kind: "strokes", url: strokeDataUrl(char) }, strokeDataUrl(char));
+      }
+    }
     if (policy.audio) {
-      const url = voice === "uk" ? source.word.audio_uk_url : source.word.audio_us_url;
+      const wordVoice = languageVoice(language, voice);
+      const url = wordVoice === "uk" ? source.word.audio_uk_url : source.word.audio_us_url;
       if (url) add(audio, { kind: "audio", url }, url);
       for (const example of source.examples.slice(0, PREFETCH_EXAMPLES_PER_SENSE)) {
-        add(audio, { kind: "sentence", sentence: example.sentence }, `s:${example.sentence}`);
+        add(
+          audio,
+          { kind: "sentence", sentence: example.sentence, language, voice: wordVoice },
+          `s:${example.sentence}`,
+        );
       }
     }
     if (policy.images && source.sense.image_url) {
       add(images, { kind: "image", url: source.sense.image_url }, source.sense.image_url);
     }
   }
-  return [...audio, ...images].slice(0, PREFETCH_MAX_FILES);
+  return [...strokes, ...audio, ...images].slice(0, PREFETCH_MAX_FILES);
 }

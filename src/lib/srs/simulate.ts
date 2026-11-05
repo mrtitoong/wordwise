@@ -18,6 +18,8 @@ export type SimulationOptions = {
    * mỗi ngày mở tối đa `newPerDay` thẻ (như app).
    */
   spelling?: boolean;
+  /** Thẻ Chính tả mở tối đa mỗi ngày; không có thì bằng `newPerDay` (tiếng Trung: 5). */
+  spellingPerDay?: number;
   /**
    * Có thẻ Phát âm (GĐ5, khi bật "Luyện phát âm"): mở khi thẻ Nghĩa đạt mức 2 (S ≥ 3 ngày), giới
    * hạn thẻ mới mỗi ngày riêng (như thẻ Chính tả).
@@ -100,7 +102,8 @@ export function simulate(options: SimulationOptions): SimulationDay[] {
         const skill = skillOf.get(index);
         if (skill && card.state === State.New) {
           // Giới hạn thẻ kỹ năng mới mỗi ngày: chưa tới lượt thì để sang ngày sau.
-          if (newSkillToday[skill] >= options.newPerDay) {
+          const limit = (skill === "spelling" ? options.spellingPerDay : null) ?? options.newPerDay;
+          if (newSkillToday[skill] >= limit) {
             cards[index] = { ...card, due: new Date(start + DAY_MS) };
             continue;
           }

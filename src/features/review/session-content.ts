@@ -4,11 +4,10 @@
  * Nội dung cho từng thẻ trong phiên ôn (nghĩa, ví dụ, âm thanh, câu gặp) và nguồn đáp án nhiễu cho
  * trắc nghiệm. Đọc IndexedDB trước, thiếu thì tải từ Supabase (có mạng).
  */
-import { DEFAULT_LANGUAGE } from "@/lib/lang";
 import type { LocalDb } from "@/lib/db/local";
 import type { CardRow, UserWordRow, WordRow, WordSenseRow } from "@/lib/db/types";
 import type { ChoiceSense } from "@/lib/review/mcq";
-import type { Pos } from "@/lib/schema/word";
+import type { Language, Pos } from "@/lib/schema/word";
 import { getSupabaseEnv } from "@/lib/supabase/env";
 import type { StoredWord } from "@/lib/words/api";
 import type { ReviewData } from "./use-review-data";
@@ -24,6 +23,8 @@ export type PreparedCard = {
   /** Câu người học gặp từ này (ưu tiên hiện). */
   context: string | null;
   confusables: string[];
+  /** Vị trí của nghĩa này trong từ. */
+  senseIndex: number;
 };
 
 /** Đọc/tải nội dung từ (kiểm tra bằng Zod, tải bằng Supabase – nặng): chỉ tải khi có thẻ cần đọc. */
@@ -83,8 +84,8 @@ export async function prepareCards(
     if (!word && (await fetchWordToLocal(db, wordId))) word = await readLocalWord(db, wordId);
     if (!word) continue;
     known.set(wordId, word);
-    const index = word.senseIds.indexOf(userWord.sense_id);
-    const sense = word.content.senses[Math.max(0, index)]!;
+    const senseIndex = Math.max(0, word.senseIds.indexOf(userWord.sense_id));
+    const sense = word.content.senses[senseIndex]!;
     const context =
       data.entries
         .filter((e) => !e.deleted_at && e.user_word_id === userWord.id && e.context_sentence)
@@ -98,6 +99,7 @@ export async function prepareCards(
       example: sense.examples[0] ?? null,
       context,
       confusables: word.content.confusables.map((c) => c.word),
+      senseIndex,
     });
   }
   return out;
@@ -123,16 +125,22 @@ async function findWordOfSense(senseId: string): Promise<string | null> {
 const POOL_TARGET = 40;
 
 /** Các nghĩa trong máy có thể làm đáp án trắc nghiệm (không gọi mạng). */
-export async function loadLocalChoices(db: LocalDb): Promise<ChoiceSense[]> {
+export async function loadLocalChoices(db: LocalDb, language: Language): Promise<ChoiceSense[]> {
   const [words, senses] = await Promise.all([db.words.toArray(), db.word_senses.toArray()]);
-  return toChoices(words, senses);
+  return toChoices(
+    words.filter((w) => w.language === language),
+    senses,
+  );
 }
 
 /**
  * Trong máy ít đáp án (người mới): lấy thêm từ thông dụng trong kho. Trả về nguồn mới, hoặc chính
  * `local` khi đã đủ (không gọi mạng) hoặc không lấy được.
  */
-export async function moreChoices(local: ChoiceSense[]): Promise<ChoiceSense[]> {
+export async function moreChoices(
+  local: ChoiceSense[],
+  language: Language,
+): Promise<ChoiceSense[]> {
   if (local.length >= POOL_TARGET || !getSupabaseEnv()) return local;
   const pool = [...local];
   try {
@@ -141,7 +149,7 @@ export async function moreChoices(local: ChoiceSense[]): Promise<ChoiceSense[]> 
     )
       .from("words")
       .select("id, lemma, pos, word_senses (id, meaning_vi, sense_order)")
-      .eq("language", DEFAULT_LANGUAGE)
+      .eq("language", language)
       .eq("is_hidden", false)
       .order("frequency_rank", { ascending: true, nullsFirst: false })
       .limit(120);

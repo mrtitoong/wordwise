@@ -9,10 +9,11 @@ import type { UserSettingsRow } from "@/lib/db/types";
 import { useOwner } from "@/lib/sync/owner";
 import { cn } from "@/lib/utils";
 
-type BooleanSetting = "practice_spelling" | "practice_speaking" | "multi_accent";
+type BooleanSetting = "practice_spelling" | "practice_hanzi" | "practice_speaking" | "multi_accent";
 
 const DEFAULTS: Record<BooleanSetting, boolean> = {
   practice_spelling: true,
+  practice_hanzi: true,
   practice_speaking: false,
   multi_accent: false,
 };
@@ -27,8 +28,8 @@ export function SettingSwitch({
   hint,
 }: {
   field: BooleanSetting;
-  label: "practiceSpelling" | "practiceSpeaking" | "multiAccent";
-  hint: "practiceSpellingHint" | "practiceSpeakingHint" | "multiAccentHint";
+  label: "practiceSpelling" | "practiceHanzi" | "practiceSpeaking" | "multiAccent";
+  hint: "practiceSpellingHint" | "practiceHanziHint" | "practiceSpeakingHint" | "multiAccentHint";
 }) {
   const t = useTranslations("settings");
   const owner = useOwner();

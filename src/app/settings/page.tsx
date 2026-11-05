@@ -11,6 +11,7 @@ import { InstallCard } from "@/features/offline/install-card";
 import { DailyNewLimit } from "@/features/settings/daily-new-limit";
 import { ReminderSettings } from "@/features/settings/reminder-settings";
 import { RetentionSetting } from "@/features/settings/retention-setting";
+import { SpellingSwitch } from "@/features/settings/spelling-switch";
 import { SettingSwitch } from "@/features/settings/setting-switch";
 import { getCurrentUser } from "@/lib/supabase/server";
 import { THEME_COOKIE, parseTheme } from "@/lib/theme";
@@ -91,11 +92,7 @@ export default async function SettingsPage() {
         >
           {t("reviewSection")}
         </h2>
-        <SettingSwitch
-          field="practice_spelling"
-          label="practiceSpelling"
-          hint="practiceSpellingHint"
-        />
+        <SpellingSwitch />
         <SettingSwitch
           field="practice_speaking"
           label="practiceSpeaking"

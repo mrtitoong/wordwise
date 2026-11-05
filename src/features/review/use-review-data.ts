@@ -20,7 +20,8 @@ import type {
   WordRow,
   WordSenseRow,
 } from "@/lib/db/types";
-import { forLanguage, learningLanguage } from "@/lib/lang/filter";
+import { forLanguage, learningLanguage, spellingEnabled } from "@/lib/lang/filter";
+import { languagePack } from "@/lib/lang";
 import type { SavedSession } from "@/lib/review/session";
 import type { TodayInput } from "@/lib/review/today";
 
@@ -106,6 +107,7 @@ export function learningScope(data: ReviewData) {
 }
 
 export function toTodayInput(data: ReviewData, relatedOf?: TodayInput["relatedOf"]): TodayInput {
+  const language = learningLanguage(data.settings.target_language);
   return {
     // Số từ mới và giới hạn ôn riêng từng ngôn ngữ; chuỗi ngày chung đọc thẳng data.logs.
     ...learningScope(data),
@@ -114,7 +116,8 @@ export function toTodayInput(data: ReviewData, relatedOf?: TodayInput["relatedOf
       dailyNewLimit: data.settings.daily_new_limit,
       dailyReviewLimit: data.settings.daily_review_limit,
       timeZone: data.settings.timezone,
-      practiceSpelling: data.settings.practice_spelling ?? true,
+      practiceSpelling: spellingEnabled(data.settings, language),
+      newSpellingLimit: languagePack(language).newSpellingPerDay,
       // Chấm phát âm cần tài khoản: khách không có thẻ Phát âm trong phiên.
       practiceSpeaking: (data.settings.practice_speaking ?? false) && data.owner !== GUEST_OWNER,
     },

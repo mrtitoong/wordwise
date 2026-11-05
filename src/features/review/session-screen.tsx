@@ -9,7 +9,8 @@ import { useTranslations } from "next-intl";
 import { Button } from "@/components/ui/button";
 import { Sheet } from "@/components/ui/sheet";
 import { showToast } from "@/components/ui/toast";
-import { DEFAULT_LANGUAGE, languagePack } from "@/lib/lang";
+import { DEFAULT_LANGUAGE, languagePack, languageVoice } from "@/lib/lang";
+import { learningLanguage, spellingEnabled } from "@/lib/lang/filter";
 import { getLocalDb } from "@/lib/db/local";
 import { randomId } from "@/lib/db/ids";
 import {
@@ -97,12 +98,21 @@ export type SessionOptions = {
  */
 const loadNewWord = () => import("./modes/new-word");
 const loadSpeaking = () => import("./modes/speaking");
+const loadHanzi = () => import("./modes/hanzi-writing");
 const NewWordIntro = dynamic(() => loadNewWord().then((m) => m.NewWordIntro), { ssr: false });
 const Speaking = dynamic(() => loadSpeaking().then((m) => m.Speaking), { ssr: false });
+const HanziWriting = dynamic(() => loadHanzi().then((m) => m.HanziWriting), { ssr: false });
 
 function preloadModes(queue: readonly SessionItem[], cards: Map<string, PreparedCard>) {
   if (queue.some((i) => i.isNew)) void loadNewWord();
   if (queue.some((i) => cards.get(i.cardId)?.card.skill === "speaking")) void loadSpeaking();
+  const writesHanzi = (i: SessionItem) => {
+    const prep = cards.get(i.cardId);
+    return (
+      prep?.card.skill === "spelling" && languagePack(prep.word.content.language).writesStrokes
+    );
+  };
+  if (queue.some(writesHanzi)) void loadHanzi();
 }
 
 type Kind = "full" | "short" | "single" | "retry" | "practice";
@@ -121,9 +131,10 @@ type Run = {
 /** Cách hỏi câu hiện tại (chọn một lần khi câu hiện ra). */
 type Ask =
   | { step: "intro" }
-  | { step: "flashcard"; reverse: boolean; intervals: Intervals }
+  | { step: "flashcard"; reverse: boolean; paper?: boolean; intervals: Intervals }
   | { step: "mcq"; mcq: Mcq; listen: boolean; voice: Voice }
   | { step: "writing"; task: WritingTask; listen: boolean; voice: Voice }
+  | { step: "hanzi"; level: MasteryLevel; voice: Voice }
   | { step: "speaking"; voice: Voice; locale: PronunciationLocale };
 
 const MUTE_KEY = "ww_review_muted";
@@ -134,7 +145,10 @@ const NEXT_QUESTION_MEASURE = "ww:next-question";
 const AVAILABLE_MODES: ReviewMode[] = ["flashcard", "mcq", "listening", "writing", "speaking"];
 
 function preferredVoice(settings: ReviewData["settings"]): Voice {
-  return settings.accent === "uk" ? "uk" : "us";
+  return languageVoice(
+    learningLanguage(settings.target_language),
+    settings.accent === "uk" ? "uk" : "us",
+  );
 }
 
 function readMuted(): boolean {
@@ -210,6 +224,12 @@ export function SessionScreen({ options }: { options: SessionOptions }) {
           voice: preferred,
           locale: languagePack(DEFAULT_LANGUAGE).speechLocale(preferred) as PronunciationLocale,
         };
+      }
+      if (
+        prep.card.skill === "spelling" &&
+        languagePack(prep.word.content.language).writesStrokes
+      ) {
+        return { step: "hanzi", level, voice };
       }
       if (prep.card.skill === "spelling") {
         // Luyện tập chọn chế độ: Tập viết luôn viết; Tập nghe thì nghe (không phát được thì viết).
@@ -320,13 +340,16 @@ export function SessionScreen({ options }: { options: SessionOptions }) {
       if (options.more) await openExtraWords(db, owner, options.more, now);
       await ensureSkillCards(db, owner, now);
       const fresh = await loadReviewData(owner);
+      const language = learningLanguage(fresh.settings.target_language);
       scheduler.current = createScheduler({
         desiredRetention: fresh.settings.desired_retention,
         weights: weightsOf(fresh.settings),
       });
       voices.current = {
         preferred: preferredVoice(fresh.settings),
-        multi: fresh.settings.multi_accent ?? false,
+        multi:
+          (fresh.settings.multi_accent ?? false) &&
+          languagePack(learningLanguage(fresh.settings.target_language)).wordAudioVoices.length > 1,
       };
       const day = studyDay(now, fresh.settings.timezone);
       const learning = fresh.userWords.filter((u) => !u.deleted_at && u.status === "learning");
@@ -358,7 +381,8 @@ export function SessionScreen({ options }: { options: SessionOptions }) {
             userWords: input.userWords,
             cards: input.cards,
             entries: input.entries,
-            practiceSpelling: fresh.settings.practice_spelling ?? true,
+            practiceSpelling: spellingEnabled(fresh.settings, language),
+            typedSpelling: !languagePack(language).writesStrokes,
             dayEnd: studyDayEnd(now, fresh.settings.timezone),
           },
           options.practice,
@@ -428,7 +452,9 @@ export function SessionScreen({ options }: { options: SessionOptions }) {
       const empty = next.position >= next.queue.length;
       // Đáp án nhiễu: trong máy đủ thì không gọi mạng; ít (người mới) thì lấy thêm trong kho. Phiên
       // trống thì không cần.
-      const choices = empty ? [] : await moreChoices(await loadLocalChoices(db));
+      const choices = empty
+        ? []
+        : await moreChoices(await loadLocalChoices(db, language), language);
       setData(fresh);
       setPool(choices);
       if (empty) {
@@ -487,9 +513,11 @@ export function SessionScreen({ options }: { options: SessionOptions }) {
           ? ask.listen
             ? "listening"
             : ask.step
-          : ask.step === "speaking"
-            ? "speaking"
-            : "flashcard";
+          : ask.step === "hanzi"
+            ? "writing"
+            : ask.step === "speaking"
+              ? "speaking"
+              : "flashcard";
       const levelBefore = masteryLevel(prep.card);
       const rating = intro
         ? INTRO_RATING
@@ -630,7 +658,14 @@ export function SessionScreen({ options }: { options: SessionOptions }) {
   }
 
   if (phase === "done" && summary && run && data) {
-    return <SessionResult summary={summary} owner={owner!} kind={run.kind} />;
+    return (
+      <SessionResult
+        summary={summary}
+        owner={owner!}
+        kind={run.kind}
+        language={learningLanguage(data.settings.target_language)}
+      />
+    );
   }
 
   const item = run?.queue[run.position];
@@ -708,6 +743,22 @@ export function SessionScreen({ options }: { options: SessionOptions }) {
             onAnswer={(a) => void handleAnswer(a)}
             onSkip={skip}
           />
+        ) : ask.step === "hanzi" ? (
+          <HanziWriting
+            item={prep}
+            voice={ask.voice}
+            muted={muted}
+            level={ask.level}
+            onAnswer={(a) => void handleAnswer(a)}
+            onMissing={() =>
+              setAsk({
+                step: "flashcard",
+                reverse: true,
+                paper: true,
+                intervals: intervalsOf(scheduler.current!, prep.card, new Date()),
+              })
+            }
+          />
         ) : ask.step === "writing" ? (
           <Writing
             item={prep}
@@ -731,6 +782,7 @@ export function SessionScreen({ options }: { options: SessionOptions }) {
             voice={voice}
             muted={muted}
             reverse={ask.reverse}
+            paper={ask.paper}
             intervals={ask.intervals}
             onAnswer={(a) => void handleAnswer(a)}
           />

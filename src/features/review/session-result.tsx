@@ -9,6 +9,7 @@ import { Button } from "@/components/ui/button";
 import { GUEST_OWNER } from "@/lib/db/ids";
 import { weightsOf } from "@/lib/db/repo";
 import type { SessionSummary } from "@/lib/review/session";
+import type { Language } from "@/lib/schema/word";
 import { computeStreak } from "@/lib/review/streak";
 import { planToday } from "@/lib/review/today";
 import { createScheduler } from "@/lib/srs/scheduler";
@@ -37,10 +38,12 @@ export function SessionResult({
   summary,
   owner,
   kind,
+  language,
 }: {
   summary: SessionSummary;
   owner: string;
   kind: "full" | "short" | "single" | "retry" | "practice";
+  language: Language;
 }) {
   const t = useTranslations("review.result");
   const router = useRouter();
@@ -121,7 +124,7 @@ export function SessionResult({
               <li key={m.wordId}>
                 <Link
                   href={`/words/${m.wordId}`}
-                  lang="en"
+                  lang={language}
                   className="flex min-h-11 items-center gap-1 rounded-full border px-4 text-sm focus-visible:outline-2 focus-visible:outline-ring"
                 >
                   {m.lemma}

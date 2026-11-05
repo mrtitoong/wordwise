@@ -1,7 +1,7 @@
 import { describe, expect, it } from "vitest";
 import { splitHighlight } from "@/lib/words/highlight";
-import { withoutHeldWords } from "../filter";
-import { zhCardInfo } from "./card";
+import { wordsByLanguage } from "../filter";
+import { pinyinOfSense, zhCardInfo } from "./card";
 import { applyHanViet, hanVietRule } from "./han-viet";
 import { parseLexicon } from "./lexicon";
 import { sentencePinyin, sentenceWords } from "./sentence-pinyin";
@@ -130,22 +130,50 @@ describe("splitHighlight với chữ Hán", () => {
   });
 });
 
-describe("withoutHeldWords", () => {
+describe("wordsByLanguage", () => {
   const words = [{ id: "en-word" }, { id: "zh-word" }];
   const entries = [
     { notebook_id: "en-book", user_word_id: "en-word" },
     { notebook_id: "zh-book", user_word_id: "zh-word" },
   ];
 
-  it("bỏ từ trong sổ của ngôn ngữ chưa có phiên ôn", () => {
+  it("tách từ theo ngôn ngữ của sổ, để số từ mới tính riêng", () => {
     const notebooks = [
       { id: "en-book", language: "en" },
       { id: "zh-book", language: "zh" },
     ];
-    expect(withoutHeldWords(words, notebooks, entries)).toEqual([{ id: "en-word" }]);
+    const groups = wordsByLanguage(words, notebooks, entries);
+    expect(groups.get("en")).toEqual([{ id: "en-word" }]);
+    expect(groups.get("zh")).toEqual([{ id: "zh-word" }]);
   });
 
-  it("chỉ có sổ tiếng Anh thì giữ nguyên", () => {
-    expect(withoutHeldWords(words, [{ id: "en-book", language: "en" }], entries)).toEqual(words);
+  it("từ không nằm trong sổ nào coi như tiếng Anh", () => {
+    expect(wordsByLanguage(words, [], []).get("en")).toEqual(words);
+  });
+
+  it("bỏ từ của ngôn ngữ chưa có phiên ôn", () => {
+    const groups = wordsByLanguage(words, [{ id: "zh-book", language: "ja" }], entries);
+    expect(groups.get("en")).toEqual([{ id: "en-word" }]);
+    expect(groups.has("ja")).toBe(false);
+  });
+});
+
+describe("pinyinOfSense", () => {
+  const info = zhCardInfo({
+    lemma: "看",
+    language_extra: {
+      kind: "zh",
+      simplified: "看",
+      traditional: "看",
+      pinyin: "kàn",
+      tones: [4],
+      hsk: 1,
+      sense_pinyin: ["kàn", "kān"],
+    },
+  })!;
+
+  it("từ nhiều âm đọc theo nghĩa, thiếu thì dùng âm của từ", () => {
+    expect(pinyinOfSense(info, 1)).toBe("kān");
+    expect(pinyinOfSense(info, 5)).toBe("kàn");
   });
 });

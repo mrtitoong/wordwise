@@ -14,7 +14,6 @@ import { planToday } from "@/lib/review/today";
 import { createScheduler } from "@/lib/srs/scheduler";
 import { useOwner } from "@/lib/sync/owner";
 import { weightsOf } from "@/lib/db/repo";
-import { languagePack } from "@/lib/lang";
 import { LanguageSwitch } from "./language-switch";
 import { learningScope, toTodayInput, useReviewData } from "./use-review-data";
 
@@ -74,18 +73,6 @@ export function TodayScreen() {
   if (!view) return <div className="h-48 animate-pulse rounded-2xl bg-muted" aria-hidden />;
 
   const languageSwitch = owner && <LanguageSwitch owner={owner} current={view.language} />;
-
-  if (!languagePack(view.language).hasReview) {
-    return (
-      <div className="flex flex-col gap-4 pb-4">
-        {languageSwitch}
-        <EmptyState
-          title={t("reviewSoonTitle")}
-          body={t("reviewSoonBody", { count: view.words })}
-        />
-      </div>
-    );
-  }
 
   if (view.words === 0) {
     return (
@@ -224,7 +211,7 @@ export function TodayScreen() {
               <li key={w.wordId}>
                 <Link
                   href={`/words/${w.wordId}`}
-                  lang="en"
+                  lang={view.language}
                   className="flex min-h-11 items-center rounded-full border px-4 text-sm focus-visible:outline-2 focus-visible:outline-ring"
                 >
                   {w.lemma}

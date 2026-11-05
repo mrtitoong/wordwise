@@ -86,6 +86,25 @@ const lines = [
     );
   })(),
   "",
+  "## Tiếng Trung: thẻ Viết chữ mở tối đa 5 từ/ngày (Z3, 10 từ mới/ngày)",
+  "",
+  "Viết tay lâu hơn gõ nên thẻ Viết chữ mở chậm hơn thẻ Chính tả của tiếng Anh. Thời gian 20 giây/từ",
+  "là ước đoán (trung bình 1,8 chữ/từ), chưa đo trên người thật.",
+  "",
+  (() => {
+    const zh = simulate({ days: 365, newPerDay: 10, seed: 42, spelling: true, spellingPerDay: 5 });
+    const share = (days: typeof zh) =>
+      days.slice(270).reduce((sum, d) => sum + d.spellingReviews, 0) / 95;
+    const limited = share(zh);
+    const full = share(withSpelling);
+    const minutes = (n: number) => Math.round((n * 20) / 60);
+    return (
+      `Quý 4: ~${limited.toFixed(0)} lượt Viết chữ/ngày (khoảng ${minutes(limited)} phút), so với ` +
+      `~${full.toFixed(0)} lượt (khoảng ${minutes(full)} phút) nếu mở bằng số từ mới/ngày. Tổng cả ` +
+      `Nghĩa ~${averageLoad(zh, 270, 365).toFixed(0)} lượt/ngày.`
+    );
+  })(),
+  "",
   '## Thêm thẻ Phát âm (GĐ5, khi bật "Luyện phát âm", 10 từ/ngày)',
   "",
   "Thẻ Phát âm mở khi thẻ Nghĩa đạt mức 2 (S ≥ 3 ngày); mỗi loại thẻ kỹ năng có giới hạn mở mới",

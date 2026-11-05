@@ -5,6 +5,7 @@ import { Volume2 } from "lucide-react";
 import { useTranslations } from "next-intl";
 import { browserPlayerEnv, createPlayer, type PlaybackRate } from "@/lib/audio/player";
 import type { Voice } from "@/lib/media/tts-azure";
+import type { Language } from "@/lib/schema/word";
 import { sentenceAudioUrl } from "@/features/media/sentence-audio";
 import { cn } from "@/lib/utils";
 
@@ -25,6 +26,7 @@ export function sentenceAudio(senseId: string, index: number, voice: Voice, sent
 export function ListenPlayer({
   text,
   voice,
+  language,
   url,
   resolveUrl,
   autoPlay,
@@ -32,6 +34,7 @@ export function ListenPlayer({
 }: {
   text: string;
   voice: Voice;
+  language?: Language;
   url?: string | null;
   resolveUrl?: () => Promise<string | null>;
   autoPlay: boolean;
@@ -53,6 +56,7 @@ export function ListenPlayer({
       resolveUrl: resolveOnce,
       text,
       voice,
+      language,
       rate: speed,
       onEnd: () => setPlaying(false),
     });
@@ -63,7 +67,15 @@ export function ListenPlayer({
 
   useEffect(() => {
     if (autoPlay) {
-      void player.play({ url, resolveUrl: resolveOnce, text, voice, rate: 1, onEnd: () => {} });
+      void player.play({
+        url,
+        resolveUrl: resolveOnce,
+        text,
+        voice,
+        language,
+        rate: 1,
+        onEnd: () => {},
+      });
     }
     // Chỉ phát khi câu hiện ra.
     // eslint-disable-next-line react-hooks/exhaustive-deps

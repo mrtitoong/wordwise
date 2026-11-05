@@ -90,7 +90,6 @@ test.describe("Tiếng Trung sau cờ", () => {
 
     const languages = page.getByRole("radiogroup", { name: "Ngôn ngữ đang học" });
     await languages.getByRole("radio", { name: "Tiếng Trung" }).click();
-    await expect(page.getByText("Ôn tập tiếng Trung sắp có")).toBeVisible();
     await expect(languages.getByRole("radio", { name: "Tiếng Trung" })).toBeChecked();
 
     await page.goto(`/words/${wordId}`);

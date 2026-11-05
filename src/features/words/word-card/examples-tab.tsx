@@ -66,7 +66,9 @@ function ExampleItem({
           voice={voice}
           language={view.content.language}
           className="-ml-2"
-          resolveUrl={() => sentenceAudioUrl(sense.senseId, index, voice, example.sentence)}
+          resolveUrl={() =>
+            sentenceAudioUrl(sense.senseId, index, voice, example.sentence, view.content.language)
+          }
         />
         <button
           type="button"

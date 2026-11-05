@@ -84,6 +84,27 @@ const request = (over: Partial<PracticeRequest> = {}): PracticeRequest => ({
 const senses = (list: { userWord: UserWordRow }[]) => list.map((w) => w.userWord.sense_id);
 const cardOf = (id: string) => cards.find((c) => c.id === id)!;
 
+describe("Tập nghe khi thẻ Chính tả không gõ được", () => {
+  it("tiếng Trung chỉ có nghe → chọn nghĩa", () => {
+    const word = uw(1);
+    const meaning = card(word, "meaning");
+    const spelling = card(word, "spelling");
+    const plan = buildPractice(
+      {
+        userWords: [word],
+        cards: [meaning, spelling],
+        entries: [entry(word, "n1")],
+        practiceSpelling: true,
+        typedSpelling: false,
+      },
+      { ...DEFAULT_PRACTICE, mode: "listening" },
+      scheduler,
+      NOW,
+    );
+    expect(plan.items.map((item) => item.cardId)).toEqual([meaning.id]);
+  });
+});
+
 describe("practiceWords – phạm vi", () => {
   it("chỉ từ đã học: bỏ từ chưa ôn, Sắp học, Tạm ngưng", () => {
     expect(senses(practiceWords(input, request()))).toEqual(["s1", "s2", "s3", "s7"]);

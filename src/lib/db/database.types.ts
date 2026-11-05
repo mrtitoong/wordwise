@@ -1336,6 +1336,24 @@ export type Database = {
         };
         Relationships: [];
       };
+      zh_han_viet: {
+        Row: {
+          char: string;
+          readings: NonNullable<Json>;
+          reviewed: boolean;
+        };
+        Insert: {
+          char: string;
+          readings: NonNullable<Json>;
+          reviewed?: boolean;
+        };
+        Update: {
+          char?: string;
+          readings?: NonNullable<Json>;
+          reviewed?: boolean;
+        };
+        Relationships: [];
+      };
       zh_lexicon: {
         Row: {
           common: boolean;

@@ -1,0 +1,177 @@
+[
+  {
+    "char": "二",
+    "readings": ["nhị"],
+    "status": "ok"
+  },
+  {
+    "char": "云",
+    "readings": ["vân"],
+    "status": "ok"
+  },
+  {
+    "char": "亲",
+    "readings": ["thân", "thấn"],
+    "status": "ok"
+  },
+  {
+    "char": "什",
+    "readings": ["thập"],
+    "status": "ok"
+  },
+  {
+    "char": "似",
+    "readings": ["tự"],
+    "status": "edited"
+  },
+  {
+    "char": "便",
+    "readings": ["tiện"],
+    "status": "edited"
+  },
+  {
+    "char": "假",
+    "readings": ["giả", "giá"],
+    "status": "ok"
+  },
+  {
+    "char": "儿",
+    "readings": ["nhi"],
+    "status": "ok"
+  },
+  {
+    "char": "切",
+    "readings": ["thiết"],
+    "status": "edited"
+  },
+  {
+    "char": "别",
+    "readings": ["biệt"],
+    "status": "ok"
+  },
+  {
+    "char": "千",
+    "readings": ["thiên"],
+    "status": "ok"
+  },
+  {
+    "char": "参",
+    "readings": ["tham", "sâm", "sam"],
+    "status": "ok"
+  },
+  {
+    "char": "发",
+    "readings": ["phát"],
+    "status": "ok"
+  },
+  {
+    "char": "另",
+    "readings": ["lánh"],
+    "status": "ok"
+  },
+  {
+    "char": "告",
+    "readings": ["cáo", "cốc"],
+    "status": "ok"
+  },
+  {
+    "char": "喝",
+    "readings": ["hát", "hạt"],
+    "status": "ok"
+  },
+  {
+    "char": "好",
+    "readings": ["hảo", "hiếu"],
+    "status": "ok"
+  },
+  {
+    "char": "平",
+    "readings": ["bình"],
+    "status": "edited"
+  },
+  {
+    "char": "弄",
+    "readings": ["lộng"],
+    "status": "edited"
+  },
+  {
+    "char": "志",
+    "readings": ["chí"],
+    "status": "ok"
+  },
+  {
+    "char": "找",
+    "readings": ["hoa", "trảo"],
+    "status": "edited"
+  },
+  {
+    "char": "望",
+    "readings": ["vọng"],
+    "status": "edited"
+  },
+  {
+    "char": "查",
+    "readings": ["tra"],
+    "status": "edited"
+  },
+  {
+    "char": "比",
+    "readings": ["bỉ", "tỉ"],
+    "status": "ok"
+  },
+  {
+    "char": "爱",
+    "readings": ["ái"],
+    "status": "ok"
+  },
+  {
+    "char": "的",
+    "readings": ["đích"],
+    "status": "ok"
+  },
+  {
+    "char": "胜",
+    "readings": ["thắng", "thăng"],
+    "status": "ok"
+  },
+  {
+    "char": "解",
+    "readings": ["giải", "giới"],
+    "status": "edited"
+  },
+  {
+    "char": "记",
+    "readings": ["ký"],
+    "status": "ok"
+  },
+  {
+    "char": "输",
+    "readings": ["thâu"],
+    "status": "edited"
+  },
+  {
+    "char": "还",
+    "readings": ["hoàn", "toàn"],
+    "status": "edited"
+  },
+  {
+    "char": "那",
+    "readings": ["na", "nả"],
+    "status": "ok"
+  },
+  {
+    "char": "都",
+    "readings": ["đô"],
+    "status": "ok"
+  },
+  {
+    "char": "须",
+    "readings": ["tu"],
+    "status": "ok"
+  },
+  {
+    "char": "饭",
+    "readings": ["phạn"],
+    "status": "ok"
+  }
+]

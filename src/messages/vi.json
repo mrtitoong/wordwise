@@ -1599,7 +1599,7 @@
     },
     "flipHintPaper": "Viết chữ ra giấy, rồi chạm để xem đáp án",
     "speakZh": {
-      "noTones": "App chưa chấm thanh điệu. Hãy tự nghe và so với mẫu.",
+      "noTones": "App chưa chấm thanh điệu. Hãy so đường cao độ của bạn với mẫu.",
       "bandHint": "Chỉ xét phụ âm và vần, chưa xét thanh điệu.",
       "syllables": "Mức từng chữ",
       "band": {
@@ -1616,6 +1616,15 @@
         "unaspirated": "b, d, g: không bật hơi và không rung như b, đ tiếng Việt, nghe gần p, t, c nhẹ.",
         "umlaut": "ü: giữ lưỡi như i rồi chu tròn môi. Sau j, q, x, y viết là u nhưng vẫn đọc ü.",
         "ng": "-ng: kết thúc bằng cuống lưỡi, miệng hé. Đừng lẫn với -n đọc bằng đầu lưỡi."
+      },
+      "pitch": {
+        "title": "Đường cao độ",
+        "chart": "Đường cao độ của bạn so với mẫu, mỗi cột là một âm tiết",
+        "mine": "Bạn",
+        "sample": "Mẫu",
+        "hint": "Tự so hình dáng lên xuống của hai đường, không cần trùng khít. App không chấm phần này.",
+        "noSample": "Chưa có đường mẫu cho từ này. Hãy nghe mẫu rồi tự so.",
+        "missing": "Chưa đo được cao độ. Thử đọc to, rõ từng âm ở chỗ yên tĩnh."
       }
     }
   },

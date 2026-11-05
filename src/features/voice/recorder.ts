@@ -157,18 +157,23 @@ export async function startRecording({
   };
 }
 
-/** Bản thu → WAV PCM 16 kHz mono (base64) để gửi Azure Speech; im lặng thì null. */
-export async function blobToWavBase64(blob: Blob): Promise<string | null> {
+/** Giải mã audio (bản thu, file mẫu) thành mẫu âm mono 16 kHz. */
+export async function decodeToSamples(data: ArrayBuffer): Promise<Float32Array> {
   const context = new (audioContextCtor())();
   try {
-    const decoded = await context.decodeAudioData(await blob.arrayBuffer());
+    const decoded = await context.decodeAudioData(data);
     const channels = Array.from({ length: decoded.numberOfChannels }, (_, i) =>
       decoded.getChannelData(i),
     );
-    const samples = resample(downmix(channels), decoded.sampleRate, TARGET_SAMPLE_RATE);
-    if (rms(samples) < 0.003) return null;
-    return bytesToBase64(encodeWav(samples));
+    return resample(downmix(channels), decoded.sampleRate, TARGET_SAMPLE_RATE);
   } finally {
     void context.close().catch(() => {});
   }
+}
+
+/** Bản thu → WAV PCM 16 kHz mono (base64) để gửi Azure Speech; im lặng thì null. */
+export async function blobToWavBase64(blob: Blob): Promise<string | null> {
+  const samples = await decodeToSamples(await blob.arrayBuffer());
+  if (rms(samples) < 0.003) return null;
+  return bytesToBase64(encodeWav(samples));
 }

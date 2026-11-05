@@ -5,22 +5,34 @@ import { Mic, Square } from "lucide-react";
 import { useTranslations } from "next-intl";
 import { Button } from "@/components/ui/button";
 import { LevelMeter, MicErrorHelp, MicExplainSheet } from "@/features/voice/mic-ui";
-import { blobToWavBase64 } from "@/features/voice/recorder";
+import { blobToWavBase64, decodeToSamples } from "@/features/voice/recorder";
 import { useRecorder } from "@/features/voice/use-recorder";
 import { browserPlayerEnv, createPlayer } from "@/lib/audio/player";
 import { pinyinOfSense, zhCardInfo } from "@/lib/lang/zh/card";
 import type { PronunciationLocale, PronunciationResult } from "@/lib/pronunciation/api";
 import { BAND_SYMBOL, type ScoreBand } from "@/lib/pronunciation/feedback";
+import { pitchCurves } from "@/lib/pronunciation/pitch";
 import { requestAssessment } from "@/lib/pronunciation/request";
 import { zhBand, zhSyllables, zhTips } from "@/lib/pronunciation/zh-feedback";
 import { createClient } from "@/lib/supabase/client";
 import { getSupabaseEnv } from "@/lib/supabase/env";
+import { TARGET_SAMPLE_RATE } from "@/lib/voice/wav";
 import { cn } from "@/lib/utils";
 import { e2eAnswer } from "../e2e";
+import { PitchChart } from "./pitch-chart";
 import type { ModeProps } from "./types";
 import { WordHead } from "./word-face";
 
 type Problem = "noSpeech" | "login" | "limit" | "unavailable";
+
+/** Đường cao độ của một file audio; không đọc được thì null. */
+async function curvesOf(data: ArrayBuffer, syllables: number): Promise<number[][] | null> {
+  try {
+    return pitchCurves(await decodeToSamples(data), TARGET_SAMPLE_RATE, syllables);
+  } catch {
+    return null;
+  }
+}
 
 const BAND_TONE: Record<ScoreBand, string> = {
   good: "border-green-500 bg-green-50 text-green-800 dark:bg-green-950 dark:text-green-200",
@@ -45,6 +57,10 @@ export function SpeakPractice({
   const [scoring, setScoring] = useState(false);
   const [problem, setProblem] = useState<Problem | null>(null);
   const [result, setResult] = useState<PronunciationResult | null>(null);
+  const [mineCurves, setMineCurves] = useState<{ url: string; curves: number[][] | null } | null>(
+    null,
+  );
+  const [sampleCurves, setSampleCurves] = useState<number[][] | null>(null);
   const scored = useRef<string | null>(null);
   const player = useMemo(() => createPlayer(browserPlayerEnv()), []);
   const { content, media } = item.word;
@@ -57,6 +73,36 @@ export function SpeakPractice({
   const pinyin = zh ? pinyinOfSense(zh, item.senseIndex) : "";
 
   useEffect(() => () => player.stop(), [player]);
+
+  const readings = useMemo(() => pinyin.split(" ").filter(Boolean), [pinyin]);
+
+  // Đường mẫu: đo một lần từ file audio của từ (đã lưu trên máy thì đọc được cả khi offline).
+  useEffect(() => {
+    if (!sample) return;
+    let live = true;
+    void fetch(sample, { mode: "cors", credentials: "omit" })
+      .then((response) => (response.ok ? response.arrayBuffer() : null))
+      .then((data) => (data ? curvesOf(data, readings.length) : null))
+      .then((curves) => live && setSampleCurves(curves))
+      .catch(() => undefined);
+    return () => {
+      live = false;
+    };
+  }, [sample, readings]);
+
+  // Đường của người học: đo ngay trong máy, không cần máy chủ chấm xong.
+  useEffect(() => {
+    if (state.status !== "done") return;
+    const { url, blob } = state.recording;
+    let live = true;
+    void blob
+      .arrayBuffer()
+      .then((data) => curvesOf(data, readings.length))
+      .then((curves) => live && setMineCurves({ url, curves }));
+    return () => {
+      live = false;
+    };
+  }, [state, readings]);
 
   useEffect(() => {
     if (state.status !== "done" || scored.current === state.recording.url) return;
@@ -106,6 +152,7 @@ export function SpeakPractice({
   const band = result ? zhBand(result) : null;
   const syllables = result ? zhSyllables(result, lemma, pinyin) : null;
   const tips = syllables ? zhTips(syllables) : [];
+  const curves = mineCurves && mineCurves.url === mine ? mineCurves : null;
 
   return (
     <div className="flex flex-1 flex-col gap-4" {...e2eAnswer(lemma)}>
@@ -144,6 +191,8 @@ export function SpeakPractice({
           {t(`problem.${problem}`)}
         </p>
       )}
+
+      {curves && <PitchChart mine={curves.curves} sample={sampleCurves} labels={readings} />}
 
       {result && band && (
         <section className="flex flex-col gap-3" aria-live="polite">

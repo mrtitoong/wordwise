@@ -1599,7 +1599,7 @@
     },
     "flipHintPaper": "Write the characters on paper, then tap to check",
     "speakZh": {
-      "noTones": "Tones are not scored yet. Listen and compare with the sample yourself.",
+      "noTones": "Tones are not scored yet. Compare your pitch line with the sample.",
       "bandHint": "Consonants and vowels only, not tones.",
       "syllables": "Result for each character",
       "band": {
@@ -1616,6 +1616,15 @@
         "unaspirated": "b, d, g: no puff of air and no voicing, closer to a soft p, t, k.",
         "umlaut": "ü: hold the tongue as for i and round the lips. After j, q, x, y it is written u but still read ü.",
         "ng": "-ng: finish at the back of the tongue, mouth slightly open. Do not mix it with -n."
+      },
+      "pitch": {
+        "title": "Pitch line",
+        "chart": "Your pitch line compared with the sample, one column per syllable",
+        "mine": "You",
+        "sample": "Sample",
+        "hint": "Compare how the two lines rise and fall. They do not need to match exactly. This is not scored.",
+        "noSample": "No sample line for this word yet. Listen to the sample and compare yourself.",
+        "missing": "Could not measure your pitch. Try reading each syllable clearly somewhere quiet."
       }
     }
   },

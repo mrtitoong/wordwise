@@ -47,6 +47,7 @@ test.describe("Tập phát âm tiếng Trung", () => {
     }
     await expect(band).toBeVisible({ timeout: 15_000 });
     await expect(page.getByText(/\d+ điểm/)).toHaveCount(0);
+    await expect(page.getByRole("heading", { name: "Đường cao độ" })).toBeVisible();
     await noHorizontalScroll(page);
 
     await page.getByRole("button", { name: "Tiếp", exact: true }).click();

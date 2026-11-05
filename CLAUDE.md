@@ -57,7 +57,7 @@ Repo: https://github.com/mrtitoong/wordwise
 - Mobile-first: mọi màn hình dùng được ở 360px, nút ≥ 44px.
 - Commit nhỏ, theo Conventional Commits.
 
-## Tiếng Trung (đang làm, nhánh feature/zh)
+## Tiếng Trung (đang làm, nhánh zh/*, gộp vào main sau cờ)
 - Kế hoạch: docs/plan-zh.md. Mọi thứ sau cờ feature_zh; không được làm
   thay đổi hành vi tiếng Anh đang beta. Migration chỉ thêm, không sửa cột cũ.
 - Chữ chính giản thể; pinyin lấy theo từ (CC-CEDICT) trước, thư viện sau.
@@ -686,3 +686,4 @@ Repo: https://github.com/mrtitoong/wordwise
   từ bằng Gõ, Thư viện, File; Ảnh/Nói/Link làm sau. Cờ theo tài khoản bật bằng SQL. Safari iPhone chưa thử, phải thử ở
   Z3. Kết quả thí nghiệm ở docs/zh-spike.md.
 - 2026-11-05 (sửa chấm Khó, chủ sản phẩm duyệt; khách nhỏ tuổi mới học phản ánh trả lời đúng mà số câu vẫn tăng): **Thay quyết định 27/10 và phần "giữ chấm Khó" của 04/11.** Đúng mà chậm ở bước học/học lại là **Nhớ**, số câu không tăng vì chậm; gợi ý và sai 1 chữ vẫn Khó. Thẻ đã qua bước học: câu gõ chữ chỉ tính chậm khi vượt **cả** 2× trung vị tổng thời gian **lẫn** 2× trung vị giây mỗi chữ. Không dùng riêng mốc theo chữ: thử trên số liệu thật, từ 5–7 chữ bị Khó nhiều hơn (3 → 7 lượt). Nghe → gõ có mốc riêng với nghe → chọn nghĩa. Không chỉnh theo CEFR: thời gian phụ thuộc người học và độ dài từ, từ A1 lại chậm hơn B2, và nới theo CEFR cho người mới học ít thời gian nhất. Số liệu 30 ngày chỉ có 3 người; nhật ký không ghi lỗi gõ.
+- 2026-11-05 (Z1c xong): Bảng `zh_han_viet` (theo chữ, `readings` = [{am, meaning_vi}], `reviewed`) có 900 chữ, 35 chữ theo người duyệt. Nguồn `data/zh/han-viet.json`, sinh bằng `scripts/han-viet/finalize.ts` từ gợi ý + `han-viet-decisions.json`; sửa chữ nào thì đổi trong decisions, chạy lại rồi áp `scripts/out/han-viet.sql` (ghi đè theo chữ, lệnh ở `data/zh/README.md`). Âm người duyệt thêm chưa có nghĩa (3 âm, `meaning_vi` null). **Chữ 找 đang ghi "hoa, trảo": chủ sản phẩm sẽ sửa sau.** 240 chữ dùng âm máy theo quyết định 04/11 nên coi tiêu chí Z1 "900 chữ đã duyệt" là đạt. Chưa nối vào thẻ từ (Z2). Đã áp lên cloud.

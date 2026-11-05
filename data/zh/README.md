@@ -15,4 +15,4 @@ giải nén rồi chạy `npx tsx scripts/build-zh-lexicon.ts <file>`.
 Unihan nhưng không lấy âm từ Unihan), chữ có `reviewed: true` lấy theo người duyệt (`han-viet-decisions.json`).
 
 Sinh lại: `npx tsx scripts/han-viet/finalize.ts`, rồi áp `scripts/out/han-viet.sql` lên cloud:
-`npx -y supabase@2.119.0 db query --project-ref jhvyyahowopzrpyenwdh -f scripts/out/han-viet.sql`.
+`npx -y supabase@2.119.0 db query --linked --project-ref jhvyyahowopzrpyenwdh -f scripts/out/han-viet.sql`.

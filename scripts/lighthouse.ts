@@ -38,11 +38,43 @@ const median = (values: number[]) => {
   return sorted[Math.floor(sorted.length / 2)]!;
 };
 
-async function main() {
-  const chrome = await chromeLauncher.launch({
+/** Số lần đo lại khi công cụ hỏng giữa chừng (Chrome chết, mất kết nối); không áp dụng cho điểm thấp. */
+const CRASH_RETRIES = 2;
+
+const launchChrome = () =>
+  chromeLauncher.launch({
     chromePath: process.env.CHROME_PATH ?? chromium.executablePath(),
     chromeFlags: ["--headless=new", "--no-sandbox"],
   });
+
+async function main() {
+  let chrome = await launchChrome();
+
+  /** Một lượt đo; hỏng thì mở lại Chrome rồi đo lại, báo lý do lên trang Actions. */
+  async function measure(path: string, cookie: string | undefined) {
+    for (let attempt = 0; ; attempt++) {
+      try {
+        const result = await lighthouse(`${BASE}${path}`, {
+          port: chrome.port,
+          output: "html",
+          logLevel: "error",
+          onlyCategories: [...CATEGORIES],
+          extraHeaders: cookie ? { Cookie: cookie } : undefined,
+        });
+        if (!result) throw new Error(`Lighthouse không chạy được ${path}`);
+        return result;
+      } catch (error) {
+        const message = error instanceof Error ? error.message : String(error);
+        const level = attempt < CRASH_RETRIES ? "warning" : "error";
+        console.log(`::${level} title=Lighthouse hỏng ở ${path}::${message.split("
+")[0]}`);
+        if (attempt >= CRASH_RETRIES) throw error;
+        chrome.kill();
+        chrome = await launchChrome();
+      }
+    }
+  }
+
   mkdirSync("lighthouse-report", { recursive: true });
   const rows: { page: string; scores: Record<string, number>; metrics: Record<string, string> }[] =
     [];
@@ -51,14 +83,7 @@ async function main() {
       const runs: Record<string, number>[] = [];
       let metrics: Record<string, string> = {};
       for (let i = 0; i < RUNS; i++) {
-        const result = await lighthouse(`${BASE}${page.path}`, {
-          port: chrome.port,
-          output: "html",
-          logLevel: "error",
-          onlyCategories: [...CATEGORIES],
-          extraHeaders: page.cookie ? { Cookie: page.cookie } : undefined,
-        });
-        if (!result) throw new Error(`Lighthouse không chạy được ${page.path}`);
+        const result = await measure(page.path, page.cookie);
         const { lhr } = result;
         runs.push(
           Object.fromEntries(

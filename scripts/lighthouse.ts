@@ -66,8 +66,8 @@ async function main() {
       } catch (error) {
         const message = error instanceof Error ? error.message : String(error);
         const level = attempt < CRASH_RETRIES ? "warning" : "error";
-        console.log(`::${level} title=Lighthouse hỏng ở ${path}::${message.split("
-")[0]}`);
+        console.log(`::${level} title=Lighthouse hỏng ở ${path}::${message.split(/?
+/)[0]}`);
         if (attempt >= CRASH_RETRIES) throw error;
         chrome.kill();
         chrome = await launchChrome();

@@ -1,0 +1,9858 @@
+[
+  {
+    "char": "爱",
+    "readings": [
+      {
+        "am": "ái",
+        "meaning_vi": "yêu, thương, mến"
+      }
+    ],
+    "reviewed": true
+  },
+  {
+    "char": "八",
+    "readings": [
+      {
+        "am": "bát",
+        "meaning_vi": "số tám"
+      }
+    ],
+    "reviewed": false
+  },
+  {
+    "char": "爸",
+    "readings": [
+      {
+        "am": "bá",
+        "meaning_vi": "cha, bố"
+      }
+    ],
+    "reviewed": false
+  },
+  {
+    "char": "吧",
+    "readings": [
+      {
+        "am": "ba",
+        "meaning_vi": "quán bar; trợ từ"
+      }
+    ],
+    "reviewed": false
+  },
+  {
+    "char": "白",
+    "readings": [
+      {
+        "am": "bạch",
+        "meaning_vi": "màu trắng, sáng, rõ"
+      }
+    ],
+    "reviewed": false
+  },
+  {
+    "char": "百",
+    "readings": [
+      {
+        "am": "bách",
+        "meaning_vi": "số trăm"
+      }
+    ],
+    "reviewed": false
+  },
+  {
+    "char": "班",
+    "readings": [
+      {
+        "am": "ban",
+        "meaning_vi": "lớp, ca, nhóm, ban"
+      }
+    ],
+    "reviewed": false
+  },
+  {
+    "char": "半",
+    "readings": [
+      {
+        "am": "bán",
+        "meaning_vi": "một nửa"
+      }
+    ],
+    "reviewed": false
+  },
+  {
+    "char": "帮",
+    "readings": [
+      {
+        "am": "bang",
+        "meaning_vi": "giúp đỡ, phe nhóm"
+      }
+    ],
+    "reviewed": false
+  },
+  {
+    "char": "包",
+    "readings": [
+      {
+        "am": "bao",
+        "meaning_vi": "bao bọc, gói, túi"
+      }
+    ],
+    "reviewed": false
+  },
+  {
+    "char": "杯",
+    "readings": [
+      {
+        "am": "bôi",
+        "meaning_vi": "cái chén, cốc"
+      }
+    ],
+    "reviewed": false
+  },
+  {
+    "char": "北",
+    "readings": [
+      {
+        "am": "bắc",
+        "meaning_vi": "phương bắc"
+      },
+      {
+        "am": "bội",
+        "meaning_vi": "thua chạy, quay lưng"
+      }
+    ],
+    "reviewed": false
+  },
+  {
+    "char": "备",
+    "readings": [
+      {
+        "am": "bị",
+        "meaning_vi": "đầy đủ, chuẩn bị, phòng bị"
+      }
+    ],
+    "reviewed": false
+  },
+  {
+    "char": "本",
+    "readings": [
+      {
+        "am": "bản",
+        "meaning_vi": "gốc, vốn, quyển"
+      }
+    ],
+    "reviewed": false
+  },
+  {
+    "char": "比",
+    "readings": [
+      {
+        "am": "bỉ",
+        "meaning_vi": "so sánh"
+      },
+      {
+        "am": "tỉ",
+        "meaning_vi": "so sánh, tỉ lệ"
+      }
+    ],
+    "reviewed": true
+  },
+  {
+    "char": "边",
+    "readings": [
+      {
+        "am": "biên",
+        "meaning_vi": "bên, rìa, biên giới"
+      }
+    ],
+    "reviewed": false
+  },
+  {
+    "char": "别",
+    "readings": [
+      {
+        "am": "biệt",
+        "meaning_vi": "chia lìa, khác, đừng"
+      }
+    ],
+    "reviewed": true
+  },
+  {
+    "char": "病",
+    "readings": [
+      {
+        "am": "bệnh",
+        "meaning_vi": "bệnh, ốm đau"
+      }
+    ],
+    "reviewed": false
+  },
+  {
+    "char": "不",
+    "readings": [
+      {
+        "am": "bất",
+        "meaning_vi": "không, chẳng"
+      },
+      {
+        "am": "phủ",
+        "meaning_vi": "không (cuối câu hỏi)"
+      }
+    ],
+    "reviewed": false
+  },
+  {
+    "char": "菜",
+    "readings": [
+      {
+        "am": "thái",
+        "meaning_vi": "rau, món ăn"
+      }
+    ],
+    "reviewed": false
+  },
+  {
+    "char": "茶",
+    "readings": [
+      {
+        "am": "trà",
+        "meaning_vi": "cây trà, nước trà"
+      }
+    ],
+    "reviewed": false
+  },
+  {
+    "char": "差",
+    "readings": [
+      {
+        "am": "sai",
+        "meaning_vi": "sai lệch, khác biệt, sai khiến"
+      },
+      {
+        "am": "sái",
+        "meaning_vi": "bệnh khỏi"
+      },
+      {
+        "am": "soa",
+        "meaning_vi": "so le, không đều"
+      }
+    ],
+    "reviewed": false
+  },
+  {
+    "char": "常",
+    "readings": [
+      {
+        "am": "thường",
+        "meaning_vi": "thường xuyên, bình thường"
+      }
+    ],
+    "reviewed": false
+  },
+  {
+    "char": "场",
+    "readings": [
+      {
+        "am": "trường",
+        "meaning_vi": "bãi đất, nơi, sân"
+      }
+    ],
+    "reviewed": false
+  },
+  {
+    "char": "唱",
+    "readings": [
+      {
+        "am": "xướng",
+        "meaning_vi": "hát, ca"
+      }
+    ],
+    "reviewed": false
+  },
+  {
+    "char": "车",
+    "readings": [
+      {
+        "am": "xa",
+        "meaning_vi": "xe"
+      }
+    ],
+    "reviewed": false
+  },
+  {
+    "char": "吃",
+    "readings": [
+      {
+        "am": "ngật",
+        "meaning_vi": "ăn; nói lắp"
+      },
+      {
+        "am": "cật",
+        "meaning_vi": "ăn, uống"
+      }
+    ],
+    "reviewed": false
+  },
+  {
+    "char": "出",
+    "readings": [
+      {
+        "am": "xuất",
+        "meaning_vi": "ra, đưa ra"
+      },
+      {
+        "am": "xuyết",
+        "meaning_vi": "hồi, màn kịch"
+      }
+    ],
+    "reviewed": false
+  },
+  {
+    "char": "穿",
+    "readings": [
+      {
+        "am": "xuyên",
+        "meaning_vi": "xuyên qua, mặc"
+      }
+    ],
+    "reviewed": false
+  },
+  {
+    "char": "床",
+    "readings": [
+      {
+        "am": "sàng",
+        "meaning_vi": "cái giường"
+      }
+    ],
+    "reviewed": false
+  },
+  {
+    "char": "次",
+    "readings": [
+      {
+        "am": "thứ",
+        "meaning_vi": "lần, thứ tự, hạng nhì"
+      },
+      {
+        "am": "tứ",
+        "meaning_vi": "chỗ nghỉ tạm (thông 輜 trong một số từ)"
+      }
+    ],
+    "reviewed": false
+  },
+  {
+    "char": "从",
+    "readings": [
+      {
+        "am": "tùng",
+        "meaning_vi": "theo, từ, tùy tùng"
+      },
+      {
+        "am": "túng",
+        "meaning_vi": "buông thả, dọc (thông 縱)"
+      }
+    ],
+    "reviewed": false
+  },
+  {
+    "char": "错",
+    "readings": [
+      {
+        "am": "thố",
+        "meaning_vi": "sai, lầm, xen lẫn"
+      },
+      {
+        "am": "thác",
+        "meaning_vi": "sai, lẫn lộn, đan xen"
+      }
+    ],
+    "reviewed": false
+  },
+  {
+    "char": "答",
+    "readings": [
+      {
+        "am": "đáp",
+        "meaning_vi": "trả lời, đáp lại"
+      }
+    ],
+    "reviewed": false
+  },
+  {
+    "char": "打",
+    "readings": [
+      {
+        "am": "đả",
+        "meaning_vi": "đánh, đập"
+      }
+    ],
+    "reviewed": false
+  },
+  {
+    "char": "大",
+    "readings": [
+      {
+        "am": "đại",
+        "meaning_vi": "lớn, to"
+      },
+      {
+        "am": "thái",
+        "meaning_vi": "rất lớn (thái tử, thái cực)"
+      }
+    ],
+    "reviewed": false
+  },
+  {
+    "char": "蛋",
+    "readings": [
+      {
+        "am": "đản",
+        "meaning_vi": "trứng"
+      }
+    ],
+    "reviewed": false
+  },
+  {
+    "char": "到",
+    "readings": [
+      {
+        "am": "đáo",
+        "meaning_vi": "đến, tới"
+      }
+    ],
+    "reviewed": false
+  },
+  {
+    "char": "道",
+    "readings": [
+      {
+        "am": "đạo",
+        "meaning_vi": "đường, đạo lý, nói"
+      }
+    ],
+    "reviewed": false
+  },
+  {
+    "char": "得",
+    "readings": [
+      {
+        "am": "đắc",
+        "meaning_vi": "được, đạt được"
+      }
+    ],
+    "reviewed": false
+  },
+  {
+    "char": "地",
+    "readings": [
+      {
+        "am": "địa",
+        "meaning_vi": "đất, địa điểm"
+      }
+    ],
+    "reviewed": false
+  },
+  {
+    "char": "的",
+    "readings": [
+      {
+        "am": "đích",
+        "meaning_vi": "đích, mục tiêu, trợ từ sở hữu; xác thực, thật"
+      }
+    ],
+    "reviewed": true
+  },
+  {
+    "char": "等",
+    "readings": [
+      {
+        "am": "đẳng",
+        "meaning_vi": "bậc, hạng, đợi, bằng nhau"
+      }
+    ],
+    "reviewed": false
+  },
+  {
+    "char": "弟",
+    "readings": [
+      {
+        "am": "đệ",
+        "meaning_vi": "em trai"
+      }
+    ],
+    "reviewed": false
+  },
+  {
+    "char": "第",
+    "readings": [
+      {
+        "am": "đệ",
+        "meaning_vi": "thứ (số thứ tự), nhà lớn"
+      }
+    ],
+    "reviewed": false
+  },
+  {
+    "char": "点",
+    "readings": [
+      {
+        "am": "điểm",
+        "meaning_vi": "chấm, điểm, chỉ điểm"
+      }
+    ],
+    "reviewed": false
+  },
+  {
+    "char": "电",
+    "readings": [
+      {
+        "am": "điện",
+        "meaning_vi": "điện, chớp"
+      }
+    ],
+    "reviewed": false
+  },
+  {
+    "char": "店",
+    "readings": [
+      {
+        "am": "điếm",
+        "meaning_vi": "cửa hiệu, quán"
+      }
+    ],
+    "reviewed": false
+  },
+  {
+    "char": "东",
+    "readings": [
+      {
+        "am": "đông",
+        "meaning_vi": "phương đông, chủ"
+      }
+    ],
+    "reviewed": false
+  },
+  {
+    "char": "动",
+    "readings": [
+      {
+        "am": "động",
+        "meaning_vi": "động, cử động"
+      }
+    ],
+    "reviewed": false
+  },
+  {
+    "char": "都",
+    "readings": [
+      {
+        "am": "đô",
+        "meaning_vi": "kinh đô, thành phố lớn; đều, cả (phó từ)"
+      }
+    ],
+    "reviewed": true
+  },
+  {
+    "char": "读",
+    "readings": [
+      {
+        "am": "độc",
+        "meaning_vi": "đọc"
+      },
+      {
+        "am": "đậu",
+        "meaning_vi": "chấm câu, ngắt câu"
+      }
+    ],
+    "reviewed": false
+  },
+  {
+    "char": "对",
+    "readings": [
+      {
+        "am": "đối",
+        "meaning_vi": "đối đáp, đúng, đối diện"
+      }
+    ],
+    "reviewed": false
+  },
+  {
+    "char": "多",
+    "readings": [
+      {
+        "am": "đa",
+        "meaning_vi": "nhiều"
+      }
+    ],
+    "reviewed": false
+  },
+  {
+    "char": "饿",
+    "readings": [
+      {
+        "am": "ngạ",
+        "meaning_vi": "đói"
+      }
+    ],
+    "reviewed": false
+  },
+  {
+    "char": "儿",
+    "readings": [
+      {
+        "am": "nhi",
+        "meaning_vi": "trẻ con, con"
+      }
+    ],
+    "reviewed": true
+  },
+  {
+    "char": "二",
+    "readings": [
+      {
+        "am": "nhị",
+        "meaning_vi": "hai"
+      }
+    ],
+    "reviewed": true
+  },
+  {
+    "char": "饭",
+    "readings": [
+      {
+        "am": "phạn",
+        "meaning_vi": "cơm, bữa ăn"
+      }
+    ],
+    "reviewed": true
+  },
+  {
+    "char": "方",
+    "readings": [
+      {
+        "am": "phương",
+        "meaning_vi": "phương hướng, vuông, cách"
+      }
+    ],
+    "reviewed": false
+  },
+  {
+    "char": "房",
+    "readings": [
+      {
+        "am": "phòng",
+        "meaning_vi": "nhà, buồng, phòng"
+      }
+    ],
+    "reviewed": false
+  },
+  {
+    "char": "放",
+    "readings": [
+      {
+        "am": "phóng",
+        "meaning_vi": "thả, buông, đặt ra"
+      },
+      {
+        "am": "phỏng",
+        "meaning_vi": "theo, noi theo (như 仿)"
+      }
+    ],
+    "reviewed": false
+  },
+  {
+    "char": "飞",
+    "readings": [
+      {
+        "am": "phi",
+        "meaning_vi": "bay"
+      }
+    ],
+    "reviewed": false
+  },
+  {
+    "char": "非",
+    "readings": [
+      {
+        "am": "phi",
+        "meaning_vi": "không phải, sai trái"
+      }
+    ],
+    "reviewed": false
+  },
+  {
+    "char": "分",
+    "readings": [
+      {
+        "am": "phân",
+        "meaning_vi": "chia, phân chia"
+      },
+      {
+        "am": "phận",
+        "meaning_vi": "phần, danh phận"
+      }
+    ],
+    "reviewed": false
+  },
+  {
+    "char": "风",
+    "readings": [
+      {
+        "am": "phong",
+        "meaning_vi": "gió, phong tục"
+      }
+    ],
+    "reviewed": false
+  },
+  {
+    "char": "服",
+    "readings": [
+      {
+        "am": "phục",
+        "meaning_vi": "quần áo, chịu theo, uống"
+      }
+    ],
+    "reviewed": false
+  },
+  {
+    "char": "干",
+    "readings": [
+      {
+        "am": "can",
+        "meaning_vi": "khô, can dự, thiên can"
+      },
+      {
+        "am": "càn",
+        "meaning_vi": "khô (乾), trời, quẻ càn"
+      },
+      {
+        "am": "cán",
+        "meaning_vi": "thân cây, làm việc, cán bộ (幹)"
+      }
+    ],
+    "reviewed": false
+  },
+  {
+    "char": "高",
+    "readings": [
+      {
+        "am": "cao",
+        "meaning_vi": "cao"
+      }
+    ],
+    "reviewed": false
+  },
+  {
+    "char": "告",
+    "readings": [
+      {
+        "am": "cáo",
+        "meaning_vi": "báo, thưa, tố cáo"
+      },
+      {
+        "am": "cốc",
+        "meaning_vi": "xin, thỉnh cầu (hiếm)"
+      }
+    ],
+    "reviewed": true
+  },
+  {
+    "char": "哥",
+    "readings": [
+      {
+        "am": "ca",
+        "meaning_vi": "anh"
+      }
+    ],
+    "reviewed": false
+  },
+  {
+    "char": "歌",
+    "readings": [
+      {
+        "am": "ca",
+        "meaning_vi": "hát, bài hát"
+      }
+    ],
+    "reviewed": false
+  },
+  {
+    "char": "个",
+    "readings": [
+      {
+        "am": "cá",
+        "meaning_vi": "cái, chiếc, lượng từ"
+      }
+    ],
+    "reviewed": false
+  },
+  {
+    "char": "给",
+    "readings": [
+      {
+        "am": "cấp",
+        "meaning_vi": "cấp cho, đưa cho"
+      }
+    ],
+    "reviewed": false
+  },
+  {
+    "char": "跟",
+    "readings": [
+      {
+        "am": "ngân",
+        "meaning_vi": "gót chân, theo sau"
+      },
+      {
+        "am": "cân",
+        "meaning_vi": "gót chân (ít dùng)"
+      }
+    ],
+    "reviewed": false
+  },
+  {
+    "char": "工",
+    "readings": [
+      {
+        "am": "công",
+        "meaning_vi": "việc, thợ, công nhân"
+      }
+    ],
+    "reviewed": false
+  },
+  {
+    "char": "关",
+    "readings": [
+      {
+        "am": "quan",
+        "meaning_vi": "cửa ải, đóng, liên quan"
+      }
+    ],
+    "reviewed": false
+  },
+  {
+    "char": "馆",
+    "readings": [
+      {
+        "am": "quán",
+        "meaning_vi": "nhà trọ, quán, cơ quan"
+      }
+    ],
+    "reviewed": false
+  },
+  {
+    "char": "贵",
+    "readings": [
+      {
+        "am": "quý",
+        "meaning_vi": "sang, đắt, quý"
+      }
+    ],
+    "reviewed": false
+  },
+  {
+    "char": "国",
+    "readings": [
+      {
+        "am": "quốc",
+        "meaning_vi": "nước, quốc gia"
+      }
+    ],
+    "reviewed": false
+  },
+  {
+    "char": "果",
+    "readings": [
+      {
+        "am": "quả",
+        "meaning_vi": "quả, trái, kết quả"
+      }
+    ],
+    "reviewed": false
+  },
+  {
+    "char": "过",
+    "readings": [
+      {
+        "am": "quá",
+        "meaning_vi": "qua, vượt, lỗi"
+      },
+      {
+        "am": "qua",
+        "meaning_vi": "đi qua, trải qua"
+      }
+    ],
+    "reviewed": false
+  },
+  {
+    "char": "还",
+    "readings": [
+      {
+        "am": "hoàn",
+        "meaning_vi": "trả lại, về"
+      },
+      {
+        "am": "toàn",
+        "meaning_vi": null
+      }
+    ],
+    "reviewed": true
+  },
+  {
+    "char": "孩",
+    "readings": [
+      {
+        "am": "hài",
+        "meaning_vi": "trẻ con, em bé"
+      }
+    ],
+    "reviewed": false
+  },
+  {
+    "char": "汉",
+    "readings": [
+      {
+        "am": "hán",
+        "meaning_vi": "sông Hán, người Hán, nhà Hán"
+      }
+    ],
+    "reviewed": false
+  },
+  {
+    "char": "好",
+    "readings": [
+      {
+        "am": "hảo",
+        "meaning_vi": "tốt, đẹp, hay"
+      },
+      {
+        "am": "hiếu",
+        "meaning_vi": "ưa thích, yêu thích"
+      }
+    ],
+    "reviewed": true
+  },
+  {
+    "char": "号",
+    "readings": [
+      {
+        "am": "hiệu",
+        "meaning_vi": "dấu hiệu, số, tên gọi"
+      },
+      {
+        "am": "hào",
+        "meaning_vi": "gọi to, kêu, hô"
+      }
+    ],
+    "reviewed": false
+  },
+  {
+    "char": "喝",
+    "readings": [
+      {
+        "am": "hát",
+        "meaning_vi": "uống, hét lớn"
+      },
+      {
+        "am": "hạt",
+        "meaning_vi": "quát tháo, hò hét"
+      }
+    ],
+    "reviewed": true
+  },
+  {
+    "char": "和",
+    "readings": [
+      {
+        "am": "hòa",
+        "meaning_vi": "hòa thuận, cùng, và"
+      },
+      {
+        "am": "họa",
+        "meaning_vi": "họa theo, ứng đáp"
+      }
+    ],
+    "reviewed": false
+  },
+  {
+    "char": "很",
+    "readings": [
+      {
+        "am": "ngận",
+        "meaning_vi": "rất, lắm; trái ngược, hung ác"
+      }
+    ],
+    "reviewed": false
+  },
+  {
+    "char": "后",
+    "readings": [
+      {
+        "am": "hậu",
+        "meaning_vi": "sau; hoàng hậu"
+      }
+    ],
+    "reviewed": false
+  },
+  {
+    "char": "候",
+    "readings": [
+      {
+        "am": "hậu",
+        "meaning_vi": "chờ đợi, thời tiết, khí hậu"
+      }
+    ],
+    "reviewed": false
+  },
+  {
+    "char": "花",
+    "readings": [
+      {
+        "am": "hoa",
+        "meaning_vi": "bông hoa, tiêu pha"
+      }
+    ],
+    "reviewed": false
+  },
+  {
+    "char": "话",
+    "readings": [
+      {
+        "am": "thoại",
+        "meaning_vi": "lời nói, câu chuyện"
+      }
+    ],
+    "reviewed": false
+  },
+  {
+    "char": "坏",
+    "readings": [
+      {
+        "am": "hoại",
+        "meaning_vi": "hư hỏng, phá hủy"
+      }
+    ],
+    "reviewed": false
+  },
+  {
+    "char": "欢",
+    "readings": [
+      {
+        "am": "hoan",
+        "meaning_vi": "vui mừng, ưa thích"
+      }
+    ],
+    "reviewed": false
+  },
+  {
+    "char": "回",
+    "readings": [
+      {
+        "am": "hồi",
+        "meaning_vi": "quay về, lần, chương"
+      }
+    ],
+    "reviewed": false
+  },
+  {
+    "char": "会",
+    "readings": [
+      {
+        "am": "hội",
+        "meaning_vi": "họp, gặp, hiểu biết"
+      },
+      {
+        "am": "cối",
+        "meaning_vi": "tính gộp (cối kế)"
+      }
+    ],
+    "reviewed": false
+  },
+  {
+    "char": "火",
+    "readings": [
+      {
+        "am": "hỏa",
+        "meaning_vi": "lửa, cháy, nóng giận"
+      }
+    ],
+    "reviewed": false
+  },
+  {
+    "char": "机",
+    "readings": [
+      {
+        "am": "cơ",
+        "meaning_vi": "máy móc, cơ hội"
+      }
+    ],
+    "reviewed": false
+  },
+  {
+    "char": "鸡",
+    "readings": [
+      {
+        "am": "kê",
+        "meaning_vi": "con gà"
+      }
+    ],
+    "reviewed": false
+  },
+  {
+    "char": "几",
+    "readings": [
+      {
+        "am": "kỷ",
+        "meaning_vi": "cái ghế kỷ, bàn nhỏ"
+      },
+      {
+        "am": "cơ",
+        "meaning_vi": "mấy, gần, điềm"
+      },
+      {
+        "am": "ki",
+        "meaning_vi": "mấy, bao nhiêu (kỷ hà)"
+      }
+    ],
+    "reviewed": false
+  },
+  {
+    "char": "记",
+    "readings": [
+      {
+        "am": "ký",
+        "meaning_vi": "ghi chép, nhớ"
+      }
+    ],
+    "reviewed": true
+  },
+  {
+    "char": "家",
+    "readings": [
+      {
+        "am": "gia",
+        "meaning_vi": "nhà, gia đình"
+      },
+      {
+        "am": "cô",
+        "meaning_vi": "đồ dùng (gia cụ), dạng 傢"
+      }
+    ],
+    "reviewed": false
+  },
+  {
+    "char": "假",
+    "readings": [
+      {
+        "am": "giả",
+        "meaning_vi": "không thật, giả dối"
+      },
+      {
+        "am": "giá",
+        "meaning_vi": "nghỉ phép, kỳ nghỉ"
+      }
+    ],
+    "reviewed": true
+  },
+  {
+    "char": "间",
+    "readings": [
+      {
+        "am": "gian",
+        "meaning_vi": "khoảng giữa, phòng"
+      },
+      {
+        "am": "nhàn",
+        "meaning_vi": "rảnh rỗi (nhàn)"
+      }
+    ],
+    "reviewed": false
+  },
+  {
+    "char": "见",
+    "readings": [
+      {
+        "am": "kiến",
+        "meaning_vi": "thấy, gặp"
+      },
+      {
+        "am": "hiện",
+        "meaning_vi": "hiện ra, xuất hiện"
+      }
+    ],
+    "reviewed": false
+  },
+  {
+    "char": "教",
+    "readings": [
+      {
+        "am": "giáo",
+        "meaning_vi": "dạy bảo, tôn giáo"
+      },
+      {
+        "am": "giao",
+        "meaning_vi": "dạy, khiến (đọc xưa)"
+      }
+    ],
+    "reviewed": false
+  },
+  {
+    "char": "叫",
+    "readings": [
+      {
+        "am": "khiếu",
+        "meaning_vi": "kêu, gọi, la"
+      }
+    ],
+    "reviewed": false
+  },
+  {
+    "char": "觉",
+    "readings": [
+      {
+        "am": "giác",
+        "meaning_vi": "cảm thấy, tỉnh ngộ"
+      },
+      {
+        "am": "giáo",
+        "meaning_vi": "giấc ngủ"
+      }
+    ],
+    "reviewed": false
+  },
+  {
+    "char": "姐",
+    "readings": [
+      {
+        "am": "tả",
+        "meaning_vi": "chị, tiểu thư"
+      },
+      {
+        "am": "thư",
+        "meaning_vi": "chị, cô gái (tiểu thư)"
+      }
+    ],
+    "reviewed": false
+  },
+  {
+    "char": "介",
+    "readings": [
+      {
+        "am": "giới",
+        "meaning_vi": "ở giữa, giới thiệu"
+      }
+    ],
+    "reviewed": false
+  },
+  {
+    "char": "今",
+    "readings": [
+      {
+        "am": "kim",
+        "meaning_vi": "nay, hiện tại"
+      }
+    ],
+    "reviewed": false
+  },
+  {
+    "char": "进",
+    "readings": [
+      {
+        "am": "tiến",
+        "meaning_vi": "tiến lên, vào"
+      }
+    ],
+    "reviewed": false
+  },
+  {
+    "char": "京",
+    "readings": [
+      {
+        "am": "kinh",
+        "meaning_vi": "kinh đô, thủ đô"
+      }
+    ],
+    "reviewed": false
+  },
+  {
+    "char": "净",
+    "readings": [
+      {
+        "am": "tịnh",
+        "meaning_vi": "sạch, trong sạch"
+      },
+      {
+        "am": "tĩnh",
+        "meaning_vi": "sạch sẽ"
+      }
+    ],
+    "reviewed": false
+  },
+  {
+    "char": "九",
+    "readings": [
+      {
+        "am": "cửu",
+        "meaning_vi": "số chín"
+      }
+    ],
+    "reviewed": false
+  },
+  {
+    "char": "就",
+    "readings": [
+      {
+        "am": "tựu",
+        "meaning_vi": "đến, thành, ngay"
+      }
+    ],
+    "reviewed": false
+  },
+  {
+    "char": "开",
+    "readings": [
+      {
+        "am": "khai",
+        "meaning_vi": "mở, bắt đầu"
+      }
+    ],
+    "reviewed": false
+  },
+  {
+    "char": "看",
+    "readings": [
+      {
+        "am": "khán",
+        "meaning_vi": "xem, nhìn"
+      },
+      {
+        "am": "khan",
+        "meaning_vi": "trông coi, canh giữ"
+      }
+    ],
+    "reviewed": false
+  },
+  {
+    "char": "考",
+    "readings": [
+      {
+        "am": "khảo",
+        "meaning_vi": "thi, xét, cha đã mất"
+      }
+    ],
+    "reviewed": false
+  },
+  {
+    "char": "渴",
+    "readings": [
+      {
+        "am": "khát",
+        "meaning_vi": "khát nước, thèm khao khát"
+      }
+    ],
+    "reviewed": false
+  },
+  {
+    "char": "客",
+    "readings": [
+      {
+        "am": "khách",
+        "meaning_vi": "khách, người ngoài đến"
+      }
+    ],
+    "reviewed": false
+  },
+  {
+    "char": "课",
+    "readings": [
+      {
+        "am": "khóa",
+        "meaning_vi": "bài học, giờ học, khóa"
+      }
+    ],
+    "reviewed": false
+  },
+  {
+    "char": "口",
+    "readings": [
+      {
+        "am": "khẩu",
+        "meaning_vi": "miệng, cửa, nhân khẩu"
+      }
+    ],
+    "reviewed": false
+  },
+  {
+    "char": "块",
+    "readings": [
+      {
+        "am": "khối",
+        "meaning_vi": "cục, tảng, miếng"
+      }
+    ],
+    "reviewed": false
+  },
+  {
+    "char": "快",
+    "readings": [
+      {
+        "am": "khoái",
+        "meaning_vi": "nhanh, vui sướng, sảng khoái"
+      }
+    ],
+    "reviewed": false
+  },
+  {
+    "char": "来",
+    "readings": [
+      {
+        "am": "lai",
+        "meaning_vi": "đến, tới, về sau"
+      }
+    ],
+    "reviewed": false
+  },
+  {
+    "char": "老",
+    "readings": [
+      {
+        "am": "lão",
+        "meaning_vi": "già, người già, cũ"
+      }
+    ],
+    "reviewed": false
+  },
+  {
+    "char": "了",
+    "readings": [
+      {
+        "am": "liễu",
+        "meaning_vi": "xong, hiểu rõ, sáng suốt"
+      }
+    ],
+    "reviewed": false
+  },
+  {
+    "char": "累",
+    "readings": [
+      {
+        "am": "lũy",
+        "meaning_vi": "chồng chất, tích lũy, liên lụy"
+      },
+      {
+        "am": "luy",
+        "meaning_vi": "dây trói, vướng mắc"
+      }
+    ],
+    "reviewed": false
+  },
+  {
+    "char": "冷",
+    "readings": [
+      {
+        "am": "lãnh",
+        "meaning_vi": "lạnh, lạnh lùng"
+      }
+    ],
+    "reviewed": false
+  },
+  {
+    "char": "里",
+    "readings": [
+      {
+        "am": "lý",
+        "meaning_vi": "bên trong, dặm, làng"
+      }
+    ],
+    "reviewed": false
+  },
+  {
+    "char": "两",
+    "readings": [
+      {
+        "am": "lưỡng",
+        "meaning_vi": "hai, đôi"
+      },
+      {
+        "am": "lạng",
+        "meaning_vi": "đơn vị cân, lạng"
+      }
+    ],
+    "reviewed": false
+  },
+  {
+    "char": "零",
+    "readings": [
+      {
+        "am": "linh",
+        "meaning_vi": "số không, lẻ tẻ, rơi rụng"
+      }
+    ],
+    "reviewed": false
+  },
+  {
+    "char": "六",
+    "readings": [
+      {
+        "am": "lục",
+        "meaning_vi": "số sáu"
+      }
+    ],
+    "reviewed": false
+  },
+  {
+    "char": "楼",
+    "readings": [
+      {
+        "am": "lâu",
+        "meaning_vi": "nhà lầu, tầng lầu"
+      }
+    ],
+    "reviewed": false
+  },
+  {
+    "char": "路",
+    "readings": [
+      {
+        "am": "lộ",
+        "meaning_vi": "đường, con đường"
+      }
+    ],
+    "reviewed": false
+  },
+  {
+    "char": "妈",
+    "readings": [
+      {
+        "am": "ma",
+        "meaning_vi": "mẹ"
+      }
+    ],
+    "reviewed": false
+  },
+  {
+    "char": "马",
+    "readings": [
+      {
+        "am": "mã",
+        "meaning_vi": "con ngựa"
+      }
+    ],
+    "reviewed": false
+  },
+  {
+    "char": "吗",
+    "readings": [
+      {
+        "am": "ma",
+        "meaning_vi": "trợ từ nghi vấn"
+      }
+    ],
+    "reviewed": false
+  },
+  {
+    "char": "买",
+    "readings": [
+      {
+        "am": "mãi",
+        "meaning_vi": "mua"
+      }
+    ],
+    "reviewed": false
+  },
+  {
+    "char": "慢",
+    "readings": [
+      {
+        "am": "mạn",
+        "meaning_vi": "chậm, khinh mạn"
+      }
+    ],
+    "reviewed": false
+  },
+  {
+    "char": "忙",
+    "readings": [
+      {
+        "am": "mang",
+        "meaning_vi": "bận rộn, vội vàng"
+      }
+    ],
+    "reviewed": false
+  },
+  {
+    "char": "毛",
+    "readings": [
+      {
+        "am": "mao",
+        "meaning_vi": "lông, tóc, hào (tiền)"
+      }
+    ],
+    "reviewed": false
+  },
+  {
+    "char": "么",
+    "readings": [
+      {
+        "am": "yêu",
+        "meaning_vi": "nhỏ bé, số một (幺)"
+      },
+      {
+        "am": "ma",
+        "meaning_vi": "trợ từ, thế nào (麼)"
+      }
+    ],
+    "reviewed": false
+  },
+  {
+    "char": "没",
+    "readings": [
+      {
+        "am": "một",
+        "meaning_vi": "chìm, mất, không có"
+      },
+      {
+        "am": "mất",
+        "meaning_vi": "mất, chìm đắm"
+      }
+    ],
+    "reviewed": false
+  },
+  {
+    "char": "妹",
+    "readings": [
+      {
+        "am": "muội",
+        "meaning_vi": "em gái"
+      }
+    ],
+    "reviewed": false
+  },
+  {
+    "char": "门",
+    "readings": [
+      {
+        "am": "môn",
+        "meaning_vi": "cửa, ngành, môn"
+      }
+    ],
+    "reviewed": false
+  },
+  {
+    "char": "们",
+    "readings": [
+      {
+        "am": "môn",
+        "meaning_vi": "hậu tố chỉ số nhiều"
+      }
+    ],
+    "reviewed": false
+  },
+  {
+    "char": "米",
+    "readings": [
+      {
+        "am": "mễ",
+        "meaning_vi": "gạo, mét"
+      }
+    ],
+    "reviewed": false
+  },
+  {
+    "char": "面",
+    "readings": [
+      {
+        "am": "diện",
+        "meaning_vi": "mặt, bề mặt, phương diện"
+      },
+      {
+        "am": "miến",
+        "meaning_vi": "bột mì, mì (麵)"
+      }
+    ],
+    "reviewed": false
+  },
+  {
+    "char": "名",
+    "readings": [
+      {
+        "am": "danh",
+        "meaning_vi": "tên, tiếng tăm"
+      }
+    ],
+    "reviewed": false
+  },
+  {
+    "char": "明",
+    "readings": [
+      {
+        "am": "minh",
+        "meaning_vi": "sáng, rõ ràng, triều Minh"
+      }
+    ],
+    "reviewed": false
+  },
+  {
+    "char": "拿",
+    "readings": [
+      {
+        "am": "nã",
+        "meaning_vi": "cầm, nắm, bắt"
+      }
+    ],
+    "reviewed": false
+  },
+  {
+    "char": "哪",
+    "readings": [
+      {
+        "am": "na",
+        "meaning_vi": "nào, đâu (nghi vấn)"
+      },
+      {
+        "am": "nả",
+        "meaning_vi": "nào, đâu"
+      }
+    ],
+    "reviewed": false
+  },
+  {
+    "char": "那",
+    "readings": [
+      {
+        "am": "na",
+        "meaning_vi": "kia, đó"
+      },
+      {
+        "am": "nả",
+        "meaning_vi": "nào, sao (nghi vấn)"
+      }
+    ],
+    "reviewed": true
+  },
+  {
+    "char": "奶",
+    "readings": [
+      {
+        "am": "nãi",
+        "meaning_vi": "sữa, bú, vú"
+      }
+    ],
+    "reviewed": false
+  },
+  {
+    "char": "男",
+    "readings": [
+      {
+        "am": "nam",
+        "meaning_vi": "đàn ông, con trai"
+      }
+    ],
+    "reviewed": false
+  },
+  {
+    "char": "南",
+    "readings": [
+      {
+        "am": "nam",
+        "meaning_vi": "phương nam"
+      }
+    ],
+    "reviewed": false
+  },
+  {
+    "char": "难",
+    "readings": [
+      {
+        "am": "nan",
+        "meaning_vi": "khó, khó khăn"
+      },
+      {
+        "am": "nạn",
+        "meaning_vi": "tai nạn, hoạn nạn"
+      }
+    ],
+    "reviewed": false
+  },
+  {
+    "char": "脑",
+    "readings": [
+      {
+        "am": "não",
+        "meaning_vi": "óc, bộ não"
+      }
+    ],
+    "reviewed": false
+  },
+  {
+    "char": "呢",
+    "readings": [
+      {
+        "am": "ni",
+        "meaning_vi": "trợ từ nghi vấn; tiếng thì thầm"
+      },
+      {
+        "am": "nê",
+        "meaning_vi": "tiếng thì thầm, lải nhải"
+      }
+    ],
+    "reviewed": false
+  },
+  {
+    "char": "能",
+    "readings": [
+      {
+        "am": "năng",
+        "meaning_vi": "có thể, tài năng, khả năng"
+      },
+      {
+        "am": "nại",
+        "meaning_vi": "con ba ba ba chân (hiếm)"
+      }
+    ],
+    "reviewed": false
+  },
+  {
+    "char": "你",
+    "readings": [
+      {
+        "am": "nễ",
+        "meaning_vi": "anh, ngươi, mày"
+      }
+    ],
+    "reviewed": false
+  },
+  {
+    "char": "年",
+    "readings": [
+      {
+        "am": "niên",
+        "meaning_vi": "năm, tuổi"
+      }
+    ],
+    "reviewed": false
+  },
+  {
+    "char": "您",
+    "readings": [
+      {
+        "am": "nâm",
+        "meaning_vi": "ngài, ông, bà (kính xưng)"
+      }
+    ],
+    "reviewed": false
+  },
+  {
+    "char": "牛",
+    "readings": [
+      {
+        "am": "ngưu",
+        "meaning_vi": "con trâu, con bò"
+      }
+    ],
+    "reviewed": false
+  },
+  {
+    "char": "女",
+    "readings": [
+      {
+        "am": "nữ",
+        "meaning_vi": "đàn bà, con gái"
+      }
+    ],
+    "reviewed": false
+  },
+  {
+    "char": "旁",
+    "readings": [
+      {
+        "am": "bàng",
+        "meaning_vi": "bên cạnh, bên"
+      },
+      {
+        "am": "bạng",
+        "meaning_vi": "dựa, kề sát"
+      }
+    ],
+    "reviewed": false
+  },
+  {
+    "char": "跑",
+    "readings": [
+      {
+        "am": "bào",
+        "meaning_vi": "chạy; đào, cào đất"
+      },
+      {
+        "am": "bạo",
+        "meaning_vi": "chạy (đọc khác)"
+      }
+    ],
+    "reviewed": false
+  },
+  {
+    "char": "朋",
+    "readings": [
+      {
+        "am": "bằng",
+        "meaning_vi": "bạn bè, bạn hữu"
+      }
+    ],
+    "reviewed": false
+  },
+  {
+    "char": "票",
+    "readings": [
+      {
+        "am": "phiếu",
+        "meaning_vi": "vé, phiếu, lá phiếu"
+      },
+      {
+        "am": "phiêu",
+        "meaning_vi": "nhanh nhẹn, lướt nhẹ"
+      }
+    ],
+    "reviewed": false
+  },
+  {
+    "char": "七",
+    "readings": [
+      {
+        "am": "thất",
+        "meaning_vi": "số bảy"
+      }
+    ],
+    "reviewed": false
+  },
+  {
+    "char": "期",
+    "readings": [
+      {
+        "am": "kỳ",
+        "meaning_vi": "kỳ hạn, thời kỳ, hẹn"
+      },
+      {
+        "am": "ky",
+        "meaning_vi": "một năm, tròn năm"
+      }
+    ],
+    "reviewed": false
+  },
+  {
+    "char": "起",
+    "readings": [
+      {
+        "am": "khởi",
+        "meaning_vi": "dậy, bắt đầu, nổi lên"
+      }
+    ],
+    "reviewed": false
+  },
+  {
+    "char": "气",
+    "readings": [
+      {
+        "am": "khí",
+        "meaning_vi": "hơi, không khí, khí chất"
+      }
+    ],
+    "reviewed": false
+  },
+  {
+    "char": "汽",
+    "readings": [
+      {
+        "am": "khí",
+        "meaning_vi": "hơi nước, hơi"
+      }
+    ],
+    "reviewed": false
+  },
+  {
+    "char": "前",
+    "readings": [
+      {
+        "am": "tiền",
+        "meaning_vi": "trước, phía trước"
+      }
+    ],
+    "reviewed": false
+  },
+  {
+    "char": "钱",
+    "readings": [
+      {
+        "am": "tiền",
+        "meaning_vi": "tiền bạc, đồng tiền"
+      },
+      {
+        "am": "tiễn",
+        "meaning_vi": "họ Tiễn, cái xẻng"
+      }
+    ],
+    "reviewed": false
+  },
+  {
+    "char": "请",
+    "readings": [
+      {
+        "am": "thỉnh",
+        "meaning_vi": "mời, xin, thỉnh cầu"
+      },
+      {
+        "am": "tính",
+        "meaning_vi": "hỏi thăm (hiếm)"
+      }
+    ],
+    "reviewed": false
+  },
+  {
+    "char": "球",
+    "readings": [
+      {
+        "am": "cầu",
+        "meaning_vi": "quả bóng, hình cầu"
+      }
+    ],
+    "reviewed": false
+  },
+  {
+    "char": "去",
+    "readings": [
+      {
+        "am": "khứ",
+        "meaning_vi": "đi, qua đi, trừ bỏ"
+      }
+    ],
+    "reviewed": false
+  },
+  {
+    "char": "热",
+    "readings": [
+      {
+        "am": "nhiệt",
+        "meaning_vi": "nóng, nhiệt độ"
+      }
+    ],
+    "reviewed": false
+  },
+  {
+    "char": "人",
+    "readings": [
+      {
+        "am": "nhân",
+        "meaning_vi": "người"
+      }
+    ],
+    "reviewed": false
+  },
+  {
+    "char": "认",
+    "readings": [
+      {
+        "am": "nhận",
+        "meaning_vi": "nhận biết, thừa nhận"
+      }
+    ],
+    "reviewed": false
+  },
+  {
+    "char": "日",
+    "readings": [
+      {
+        "am": "nhật",
+        "meaning_vi": "ngày, mặt trời"
+      }
+    ],
+    "reviewed": false
+  },
+  {
+    "char": "肉",
+    "readings": [
+      {
+        "am": "nhục",
+        "meaning_vi": "thịt"
+      }
+    ],
+    "reviewed": false
+  },
+  {
+    "char": "三",
+    "readings": [
+      {
+        "am": "tam",
+        "meaning_vi": "số ba"
+      }
+    ],
+    "reviewed": false
+  },
+  {
+    "char": "山",
+    "readings": [
+      {
+        "am": "sơn",
+        "meaning_vi": "núi"
+      }
+    ],
+    "reviewed": false
+  },
+  {
+    "char": "商",
+    "readings": [
+      {
+        "am": "thương",
+        "meaning_vi": "buôn bán, bàn bạc"
+      }
+    ],
+    "reviewed": false
+  },
+  {
+    "char": "上",
+    "readings": [
+      {
+        "am": "thượng",
+        "meaning_vi": "trên, lên"
+      }
+    ],
+    "reviewed": false
+  },
+  {
+    "char": "少",
+    "readings": [
+      {
+        "am": "thiểu",
+        "meaning_vi": "ít, thiếu"
+      },
+      {
+        "am": "thiếu",
+        "meaning_vi": "trẻ tuổi"
+      }
+    ],
+    "reviewed": false
+  },
+  {
+    "char": "绍",
+    "readings": [
+      {
+        "am": "thiệu",
+        "meaning_vi": "nối tiếp, giới thiệu"
+      }
+    ],
+    "reviewed": false
+  },
+  {
+    "char": "身",
+    "readings": [
+      {
+        "am": "thân",
+        "meaning_vi": "thân thể, bản thân"
+      }
+    ],
+    "reviewed": false
+  },
+  {
+    "char": "什",
+    "readings": [
+      {
+        "am": "thập",
+        "meaning_vi": "mười, đồ dùng linh tinh; thập vật, nhiều thứ"
+      }
+    ],
+    "reviewed": true
+  },
+  {
+    "char": "生",
+    "readings": [
+      {
+        "am": "sinh",
+        "meaning_vi": "sống, sinh ra"
+      }
+    ],
+    "reviewed": false
+  },
+  {
+    "char": "师",
+    "readings": [
+      {
+        "am": "sư",
+        "meaning_vi": "thầy, quân đội"
+      }
+    ],
+    "reviewed": false
+  },
+  {
+    "char": "十",
+    "readings": [
+      {
+        "am": "thập",
+        "meaning_vi": "số mười"
+      }
+    ],
+    "reviewed": false
+  },
+  {
+    "char": "时",
+    "readings": [
+      {
+        "am": "thời",
+        "meaning_vi": "thời gian, lúc"
+      }
+    ],
+    "reviewed": false
+  },
+  {
+    "char": "识",
+    "readings": [
+      {
+        "am": "thức",
+        "meaning_vi": "hiểu biết, kiến thức"
+      },
+      {
+        "am": "chí",
+        "meaning_vi": "ghi nhớ, dấu hiệu"
+      }
+    ],
+    "reviewed": false
+  },
+  {
+    "char": "事",
+    "readings": [
+      {
+        "am": "sự",
+        "meaning_vi": "việc, sự việc"
+      }
+    ],
+    "reviewed": false
+  },
+  {
+    "char": "试",
+    "readings": [
+      {
+        "am": "thí",
+        "meaning_vi": "thử, thi"
+      }
+    ],
+    "reviewed": false
+  },
+  {
+    "char": "视",
+    "readings": [
+      {
+        "am": "thị",
+        "meaning_vi": "nhìn, xem"
+      }
+    ],
+    "reviewed": false
+  },
+  {
+    "char": "是",
+    "readings": [
+      {
+        "am": "thị",
+        "meaning_vi": "là, đúng"
+      }
+    ],
+    "reviewed": false
+  },
+  {
+    "char": "手",
+    "readings": [
+      {
+        "am": "thủ",
+        "meaning_vi": "tay"
+      }
+    ],
+    "reviewed": false
+  },
+  {
+    "char": "书",
+    "readings": [
+      {
+        "am": "thư",
+        "meaning_vi": "sách, viết, thư"
+      }
+    ],
+    "reviewed": false
+  },
+  {
+    "char": "树",
+    "readings": [
+      {
+        "am": "thụ",
+        "meaning_vi": "cây, trồng cây"
+      }
+    ],
+    "reviewed": false
+  },
+  {
+    "char": "谁",
+    "readings": [
+      {
+        "am": "thùy",
+        "meaning_vi": "ai, người nào"
+      }
+    ],
+    "reviewed": false
+  },
+  {
+    "char": "水",
+    "readings": [
+      {
+        "am": "thủy",
+        "meaning_vi": "nước"
+      }
+    ],
+    "reviewed": false
+  },
+  {
+    "char": "睡",
+    "readings": [
+      {
+        "am": "thụy",
+        "meaning_vi": "ngủ"
+      }
+    ],
+    "reviewed": false
+  },
+  {
+    "char": "说",
+    "readings": [
+      {
+        "am": "thuyết",
+        "meaning_vi": "nói, giải thích, lời bàn"
+      },
+      {
+        "am": "thuế",
+        "meaning_vi": "thuyết phục, du thuyết"
+      },
+      {
+        "am": "duyệt",
+        "meaning_vi": "vui vẻ (cổ)"
+      }
+    ],
+    "reviewed": false
+  },
+  {
+    "char": "四",
+    "readings": [
+      {
+        "am": "tứ",
+        "meaning_vi": "số bốn"
+      }
+    ],
+    "reviewed": false
+  },
+  {
+    "char": "送",
+    "readings": [
+      {
+        "am": "tống",
+        "meaning_vi": "tiễn, đưa, gửi"
+      }
+    ],
+    "reviewed": false
+  },
+  {
+    "char": "诉",
+    "readings": [
+      {
+        "am": "tố",
+        "meaning_vi": "kể, kiện cáo, tố cáo"
+      }
+    ],
+    "reviewed": false
+  },
+  {
+    "char": "岁",
+    "readings": [
+      {
+        "am": "tuế",
+        "meaning_vi": "tuổi, năm"
+      }
+    ],
+    "reviewed": false
+  },
+  {
+    "char": "他",
+    "readings": [
+      {
+        "am": "tha",
+        "meaning_vi": "người khác, anh ấy"
+      }
+    ],
+    "reviewed": false
+  },
+  {
+    "char": "她",
+    "readings": [
+      {
+        "am": "tha",
+        "meaning_vi": "cô ấy, chị ấy"
+      }
+    ],
+    "reviewed": false
+  },
+  {
+    "char": "太",
+    "readings": [
+      {
+        "am": "thái",
+        "meaning_vi": "quá, rất, lớn"
+      }
+    ],
+    "reviewed": false
+  },
+  {
+    "char": "体",
+    "readings": [
+      {
+        "am": "thể",
+        "meaning_vi": "thân thể, hình thể"
+      },
+      {
+        "am": "bổn",
+        "meaning_vi": "thô vụng (体 giản thể)"
+      }
+    ],
+    "reviewed": false
+  },
+  {
+    "char": "天",
+    "readings": [
+      {
+        "am": "thiên",
+        "meaning_vi": "trời, ngày"
+      }
+    ],
+    "reviewed": false
+  },
+  {
+    "char": "条",
+    "readings": [
+      {
+        "am": "điều",
+        "meaning_vi": "cành nhỏ, điều khoản, dải"
+      },
+      {
+        "am": "thiều",
+        "meaning_vi": "cành cây (cổ)"
+      }
+    ],
+    "reviewed": false
+  },
+  {
+    "char": "听",
+    "readings": [
+      {
+        "am": "thính",
+        "meaning_vi": "nghe"
+      },
+      {
+        "am": "hân",
+        "meaning_vi": "cười mỉm (chữ 听 gốc)"
+      }
+    ],
+    "reviewed": false
+  },
+  {
+    "char": "同",
+    "readings": [
+      {
+        "am": "đồng",
+        "meaning_vi": "cùng, giống nhau"
+      },
+      {
+        "am": "đống",
+        "meaning_vi": "ngõ, hẻm (衕)"
+      }
+    ],
+    "reviewed": false
+  },
+  {
+    "char": "图",
+    "readings": [
+      {
+        "am": "đồ",
+        "meaning_vi": "bản vẽ, tranh, mưu tính"
+      }
+    ],
+    "reviewed": false
+  },
+  {
+    "char": "外",
+    "readings": [
+      {
+        "am": "ngoại",
+        "meaning_vi": "bên ngoài"
+      }
+    ],
+    "reviewed": false
+  },
+  {
+    "char": "玩",
+    "readings": [
+      {
+        "am": "ngoạn",
+        "meaning_vi": "chơi, thưởng thức"
+      }
+    ],
+    "reviewed": false
+  },
+  {
+    "char": "晚",
+    "readings": [
+      {
+        "am": "vãn",
+        "meaning_vi": "buổi tối, muộn"
+      }
+    ],
+    "reviewed": false
+  },
+  {
+    "char": "网",
+    "readings": [
+      {
+        "am": "võng",
+        "meaning_vi": "lưới, mạng"
+      }
+    ],
+    "reviewed": false
+  },
+  {
+    "char": "忘",
+    "readings": [
+      {
+        "am": "vong",
+        "meaning_vi": "quên"
+      },
+      {
+        "am": "vọng",
+        "meaning_vi": "quên (đọc khác)"
+      }
+    ],
+    "reviewed": false
+  },
+  {
+    "char": "文",
+    "readings": [
+      {
+        "am": "văn",
+        "meaning_vi": "chữ, văn chương, văn hóa"
+      },
+      {
+        "am": "vấn",
+        "meaning_vi": "che đậy, tô điểm"
+      }
+    ],
+    "reviewed": false
+  },
+  {
+    "char": "问",
+    "readings": [
+      {
+        "am": "vấn",
+        "meaning_vi": "hỏi"
+      }
+    ],
+    "reviewed": false
+  },
+  {
+    "char": "我",
+    "readings": [
+      {
+        "am": "ngã",
+        "meaning_vi": "tôi, ta"
+      }
+    ],
+    "reviewed": false
+  },
+  {
+    "char": "五",
+    "readings": [
+      {
+        "am": "ngũ",
+        "meaning_vi": "số năm"
+      }
+    ],
+    "reviewed": false
+  },
+  {
+    "char": "午",
+    "readings": [
+      {
+        "am": "ngọ",
+        "meaning_vi": "giờ ngọ, buổi trưa"
+      }
+    ],
+    "reviewed": false
+  },
+  {
+    "char": "西",
+    "readings": [
+      {
+        "am": "tây",
+        "meaning_vi": "phương tây"
+      }
+    ],
+    "reviewed": false
+  },
+  {
+    "char": "息",
+    "readings": [
+      {
+        "am": "tức",
+        "meaning_vi": "hơi thở, nghỉ, tin tức"
+      }
+    ],
+    "reviewed": false
+  },
+  {
+    "char": "习",
+    "readings": [
+      {
+        "am": "tập",
+        "meaning_vi": "học, luyện, thói quen"
+      }
+    ],
+    "reviewed": false
+  },
+  {
+    "char": "洗",
+    "readings": [
+      {
+        "am": "tẩy",
+        "meaning_vi": "rửa, giặt"
+      },
+      {
+        "am": "tiển",
+        "meaning_vi": "họ Tiển"
+      }
+    ],
+    "reviewed": false
+  },
+  {
+    "char": "喜",
+    "readings": [
+      {
+        "am": "hỉ",
+        "meaning_vi": "vui mừng"
+      }
+    ],
+    "reviewed": false
+  },
+  {
+    "char": "系",
+    "readings": [
+      {
+        "am": "hệ",
+        "meaning_vi": "hệ thống, liên quan, buộc"
+      }
+    ],
+    "reviewed": false
+  },
+  {
+    "char": "下",
+    "readings": [
+      {
+        "am": "hạ",
+        "meaning_vi": "dưới, xuống, thấp"
+      }
+    ],
+    "reviewed": false
+  },
+  {
+    "char": "先",
+    "readings": [
+      {
+        "am": "tiên",
+        "meaning_vi": "trước, đầu tiên"
+      },
+      {
+        "am": "tiến",
+        "meaning_vi": "đi trước, dẫn đầu (ít dùng)"
+      }
+    ],
+    "reviewed": false
+  },
+  {
+    "char": "现",
+    "readings": [
+      {
+        "am": "hiện",
+        "meaning_vi": "hiện tại, xuất hiện"
+      }
+    ],
+    "reviewed": false
+  },
+  {
+    "char": "想",
+    "readings": [
+      {
+        "am": "tưởng",
+        "meaning_vi": "nghĩ, nhớ, suy nghĩ"
+      }
+    ],
+    "reviewed": false
+  },
+  {
+    "char": "小",
+    "readings": [
+      {
+        "am": "tiểu",
+        "meaning_vi": "nhỏ, bé"
+      }
+    ],
+    "reviewed": false
+  },
+  {
+    "char": "校",
+    "readings": [
+      {
+        "am": "hiệu",
+        "meaning_vi": "trường học"
+      },
+      {
+        "am": "giáo",
+        "meaning_vi": "so sánh, hiệu đính"
+      }
+    ],
+    "reviewed": false
+  },
+  {
+    "char": "笑",
+    "readings": [
+      {
+        "am": "tiếu",
+        "meaning_vi": "cười"
+      }
+    ],
+    "reviewed": false
+  },
+  {
+    "char": "些",
+    "readings": [
+      {
+        "am": "ta",
+        "meaning_vi": "một chút, một ít"
+      },
+      {
+        "am": "tá",
+        "meaning_vi": "trợ từ cuối câu (ít dùng)"
+      }
+    ],
+    "reviewed": false
+  },
+  {
+    "char": "写",
+    "readings": [
+      {
+        "am": "tả",
+        "meaning_vi": "viết, vẽ, miêu tả"
+      }
+    ],
+    "reviewed": false
+  },
+  {
+    "char": "谢",
+    "readings": [
+      {
+        "am": "tạ",
+        "meaning_vi": "cảm ơn, từ tạ, tàn rụng"
+      }
+    ],
+    "reviewed": false
+  },
+  {
+    "char": "新",
+    "readings": [
+      {
+        "am": "tân",
+        "meaning_vi": "mới"
+      }
+    ],
+    "reviewed": false
+  },
+  {
+    "char": "星",
+    "readings": [
+      {
+        "am": "tinh",
+        "meaning_vi": "ngôi sao"
+      }
+    ],
+    "reviewed": false
+  },
+  {
+    "char": "行",
+    "readings": [
+      {
+        "am": "hành",
+        "meaning_vi": "đi, làm, thi hành"
+      },
+      {
+        "am": "hạnh",
+        "meaning_vi": "đức hạnh, nết na"
+      },
+      {
+        "am": "hàng",
+        "meaning_vi": "hàng lối, ngân hàng"
+      }
+    ],
+    "reviewed": false
+  },
+  {
+    "char": "兴",
+    "readings": [
+      {
+        "am": "hưng",
+        "meaning_vi": "hưng thịnh, nổi lên"
+      },
+      {
+        "am": "hứng",
+        "meaning_vi": "hứng thú, cảm hứng"
+      }
+    ],
+    "reviewed": false
+  },
+  {
+    "char": "休",
+    "readings": [
+      {
+        "am": "hưu",
+        "meaning_vi": "nghỉ ngơi, thôi, ngừng"
+      }
+    ],
+    "reviewed": false
+  },
+  {
+    "char": "学",
+    "readings": [
+      {
+        "am": "học",
+        "meaning_vi": "học, học tập"
+      }
+    ],
+    "reviewed": false
+  },
+  {
+    "char": "样",
+    "readings": [
+      {
+        "am": "dạng",
+        "meaning_vi": "hình dạng, kiểu mẫu"
+      }
+    ],
+    "reviewed": false
+  },
+  {
+    "char": "要",
+    "readings": [
+      {
+        "am": "yếu",
+        "meaning_vi": "quan trọng, cần thiết"
+      },
+      {
+        "am": "yêu",
+        "meaning_vi": "yêu cầu, đòi hỏi"
+      }
+    ],
+    "reviewed": false
+  },
+  {
+    "char": "爷",
+    "readings": [
+      {
+        "am": "gia",
+        "meaning_vi": "ông, cha, người đàn ông lớn tuổi"
+      }
+    ],
+    "reviewed": false
+  },
+  {
+    "char": "也",
+    "readings": [
+      {
+        "am": "dã",
+        "meaning_vi": "cũng, vậy (trợ từ)"
+      }
+    ],
+    "reviewed": false
+  },
+  {
+    "char": "页",
+    "readings": [
+      {
+        "am": "hiệt",
+        "meaning_vi": "trang giấy, đầu"
+      },
+      {
+        "am": "trang",
+        "meaning_vi": "trang sách"
+      }
+    ],
+    "reviewed": false
+  },
+  {
+    "char": "一",
+    "readings": [
+      {
+        "am": "nhất",
+        "meaning_vi": "một, số một"
+      }
+    ],
+    "reviewed": false
+  },
+  {
+    "char": "衣",
+    "readings": [
+      {
+        "am": "y",
+        "meaning_vi": "áo, quần áo"
+      },
+      {
+        "am": "ý",
+        "meaning_vi": "mặc (động từ)"
+      }
+    ],
+    "reviewed": false
+  },
+  {
+    "char": "医",
+    "readings": [
+      {
+        "am": "y",
+        "meaning_vi": "chữa bệnh, thầy thuốc"
+      }
+    ],
+    "reviewed": false
+  },
+  {
+    "char": "影",
+    "readings": [
+      {
+        "am": "ảnh",
+        "meaning_vi": "bóng, hình ảnh"
+      }
+    ],
+    "reviewed": false
+  },
+  {
+    "char": "用",
+    "readings": [
+      {
+        "am": "dụng",
+        "meaning_vi": "dùng, sử dụng"
+      }
+    ],
+    "reviewed": false
+  },
+  {
+    "char": "友",
+    "readings": [
+      {
+        "am": "hữu",
+        "meaning_vi": "bạn bè"
+      }
+    ],
+    "reviewed": false
+  },
+  {
+    "char": "有",
+    "readings": [
+      {
+        "am": "hữu",
+        "meaning_vi": "có"
+      },
+      {
+        "am": "hựu",
+        "meaning_vi": "lại, thêm (cổ)"
+      }
+    ],
+    "reviewed": false
+  },
+  {
+    "char": "右",
+    "readings": [
+      {
+        "am": "hữu",
+        "meaning_vi": "bên phải"
+      }
+    ],
+    "reviewed": false
+  },
+  {
+    "char": "雨",
+    "readings": [
+      {
+        "am": "vũ",
+        "meaning_vi": "mưa"
+      }
+    ],
+    "reviewed": false
+  },
+  {
+    "char": "语",
+    "readings": [
+      {
+        "am": "ngữ",
+        "meaning_vi": "lời nói, ngôn ngữ"
+      },
+      {
+        "am": "ngứ",
+        "meaning_vi": "nói với (ít dùng)"
+      }
+    ],
+    "reviewed": false
+  },
+  {
+    "char": "元",
+    "readings": [
+      {
+        "am": "nguyên",
+        "meaning_vi": "đầu tiên, đồng tiền"
+      }
+    ],
+    "reviewed": false
+  },
+  {
+    "char": "远",
+    "readings": [
+      {
+        "am": "viễn",
+        "meaning_vi": "xa"
+      }
+    ],
+    "reviewed": false
+  },
+  {
+    "char": "院",
+    "readings": [
+      {
+        "am": "viện",
+        "meaning_vi": "sân, cơ quan, bệnh viện"
+      }
+    ],
+    "reviewed": false
+  },
+  {
+    "char": "月",
+    "readings": [
+      {
+        "am": "nguyệt",
+        "meaning_vi": "mặt trăng, tháng"
+      }
+    ],
+    "reviewed": false
+  },
+  {
+    "char": "再",
+    "readings": [
+      {
+        "am": "tái",
+        "meaning_vi": "lại, lần nữa"
+      }
+    ],
+    "reviewed": false
+  },
+  {
+    "char": "在",
+    "readings": [
+      {
+        "am": "tại",
+        "meaning_vi": "ở, tại"
+      }
+    ],
+    "reviewed": false
+  },
+  {
+    "char": "早",
+    "readings": [
+      {
+        "am": "tảo",
+        "meaning_vi": "sớm"
+      }
+    ],
+    "reviewed": false
+  },
+  {
+    "char": "怎",
+    "readings": [
+      {
+        "am": "chẩm",
+        "meaning_vi": "sao, thế nào"
+      }
+    ],
+    "reviewed": false
+  },
+  {
+    "char": "站",
+    "readings": [
+      {
+        "am": "trạm",
+        "meaning_vi": "nhà ga, trạm, đứng"
+      }
+    ],
+    "reviewed": false
+  },
+  {
+    "char": "找",
+    "readings": [
+      {
+        "am": "hoa",
+        "meaning_vi": null
+      },
+      {
+        "am": "trảo",
+        "meaning_vi": null
+      }
+    ],
+    "reviewed": true
+  },
+  {
+    "char": "这",
+    "readings": [
+      {
+        "am": "giá",
+        "meaning_vi": "này, cái này"
+      },
+      {
+        "am": "gía",
+        "meaning_vi": "đón (ít dùng)"
+      }
+    ],
+    "reviewed": false
+  },
+  {
+    "char": "着",
+    "readings": [
+      {
+        "am": "trước",
+        "meaning_vi": "mặc, đặt, bám vào; trước (dạng viết khác)"
+      },
+      {
+        "am": "trứ",
+        "meaning_vi": "rõ rệt, viết ra, trước tác"
+      }
+    ],
+    "reviewed": false
+  },
+  {
+    "char": "真",
+    "readings": [
+      {
+        "am": "chân",
+        "meaning_vi": "thật, thực"
+      }
+    ],
+    "reviewed": false
+  },
+  {
+    "char": "正",
+    "readings": [
+      {
+        "am": "chính",
+        "meaning_vi": "ngay thẳng, đúng"
+      },
+      {
+        "am": "chánh",
+        "meaning_vi": "chính (biến âm), chủ chốt"
+      },
+      {
+        "am": "chinh",
+        "meaning_vi": "tháng giêng"
+      }
+    ],
+    "reviewed": false
+  },
+  {
+    "char": "知",
+    "readings": [
+      {
+        "am": "tri",
+        "meaning_vi": "biết"
+      },
+      {
+        "am": "trí",
+        "meaning_vi": "trí tuệ (cổ)"
+      }
+    ],
+    "reviewed": false
+  },
+  {
+    "char": "中",
+    "readings": [
+      {
+        "am": "trung",
+        "meaning_vi": "giữa, trong"
+      },
+      {
+        "am": "trúng",
+        "meaning_vi": "trúng, đúng"
+      }
+    ],
+    "reviewed": false
+  },
+  {
+    "char": "重",
+    "readings": [
+      {
+        "am": "trọng",
+        "meaning_vi": "nặng, quan trọng"
+      },
+      {
+        "am": "trùng",
+        "meaning_vi": "lặp lại, tầng lớp"
+      }
+    ],
+    "reviewed": false
+  },
+  {
+    "char": "住",
+    "readings": [
+      {
+        "am": "trú",
+        "meaning_vi": "ở, ngụ"
+      }
+    ],
+    "reviewed": false
+  },
+  {
+    "char": "准",
+    "readings": [
+      {
+        "am": "chuẩn",
+        "meaning_vi": "cho phép, chuẩn, đúng"
+      }
+    ],
+    "reviewed": false
+  },
+  {
+    "char": "桌",
+    "readings": [
+      {
+        "am": "trác",
+        "meaning_vi": "cái bàn"
+      }
+    ],
+    "reviewed": false
+  },
+  {
+    "char": "子",
+    "readings": [
+      {
+        "am": "tử",
+        "meaning_vi": "con, thầy, tiếng gọi"
+      },
+      {
+        "am": "tý",
+        "meaning_vi": "chi thứ nhất trong mười hai chi"
+      }
+    ],
+    "reviewed": false
+  },
+  {
+    "char": "字",
+    "readings": [
+      {
+        "am": "tự",
+        "meaning_vi": "chữ"
+      }
+    ],
+    "reviewed": false
+  },
+  {
+    "char": "走",
+    "readings": [
+      {
+        "am": "tẩu",
+        "meaning_vi": "chạy, đi"
+      }
+    ],
+    "reviewed": false
+  },
+  {
+    "char": "最",
+    "readings": [
+      {
+        "am": "tối",
+        "meaning_vi": "nhất, hơn hết"
+      }
+    ],
+    "reviewed": false
+  },
+  {
+    "char": "昨",
+    "readings": [
+      {
+        "am": "tạc",
+        "meaning_vi": "hôm qua"
+      }
+    ],
+    "reviewed": false
+  },
+  {
+    "char": "左",
+    "readings": [
+      {
+        "am": "tả",
+        "meaning_vi": "bên trái"
+      }
+    ],
+    "reviewed": false
+  },
+  {
+    "char": "作",
+    "readings": [
+      {
+        "am": "tác",
+        "meaning_vi": "làm, tạo ra"
+      },
+      {
+        "am": "tá",
+        "meaning_vi": "làm (biến âm)"
+      }
+    ],
+    "reviewed": false
+  },
+  {
+    "char": "坐",
+    "readings": [
+      {
+        "am": "tọa",
+        "meaning_vi": "ngồi"
+      }
+    ],
+    "reviewed": false
+  },
+  {
+    "char": "做",
+    "readings": [
+      {
+        "am": "tố",
+        "meaning_vi": "làm"
+      }
+    ],
+    "reviewed": false
+  },
+  {
+    "char": "啊",
+    "readings": [
+      {
+        "am": "a",
+        "meaning_vi": "tiếng thán từ, ôi, a"
+      }
+    ],
+    "reviewed": false
+  },
+  {
+    "char": "安",
+    "readings": [
+      {
+        "am": "an",
+        "meaning_vi": "yên ổn, bình yên"
+      }
+    ],
+    "reviewed": false
+  },
+  {
+    "char": "般",
+    "readings": [
+      {
+        "am": "ban",
+        "meaning_vi": "loại, thứ, bình thường"
+      },
+      {
+        "am": "bàn",
+        "meaning_vi": "vui chơi, bàn hoàn"
+      },
+      {
+        "am": "bát",
+        "meaning_vi": "bát nhã"
+      }
+    ],
+    "reviewed": false
+  },
+  {
+    "char": "板",
+    "readings": [
+      {
+        "am": "bản",
+        "meaning_vi": "tấm ván, bảng"
+      }
+    ],
+    "reviewed": false
+  },
+  {
+    "char": "办",
+    "readings": [
+      {
+        "am": "biện",
+        "meaning_vi": "làm, xử lý, lo liệu"
+      }
+    ],
+    "reviewed": false
+  },
+  {
+    "char": "饱",
+    "readings": [
+      {
+        "am": "bão",
+        "meaning_vi": "no, đầy đủ"
+      }
+    ],
+    "reviewed": false
+  },
+  {
+    "char": "报",
+    "readings": [
+      {
+        "am": "báo",
+        "meaning_vi": "thông báo, báo đáp"
+      }
+    ],
+    "reviewed": false
+  },
+  {
+    "char": "背",
+    "readings": [
+      {
+        "am": "bối",
+        "meaning_vi": "lưng, quay lưng"
+      },
+      {
+        "am": "bội",
+        "meaning_vi": "làm trái, phản bội"
+      }
+    ],
+    "reviewed": false
+  },
+  {
+    "char": "笔",
+    "readings": [
+      {
+        "am": "bút",
+        "meaning_vi": "cây bút, viết"
+      }
+    ],
+    "reviewed": false
+  },
+  {
+    "char": "必",
+    "readings": [
+      {
+        "am": "tất",
+        "meaning_vi": "ắt hẳn, nhất định"
+      }
+    ],
+    "reviewed": false
+  },
+  {
+    "char": "变",
+    "readings": [
+      {
+        "am": "biến",
+        "meaning_vi": "thay đổi, biến đổi"
+      }
+    ],
+    "reviewed": false
+  },
+  {
+    "char": "便",
+    "readings": [
+      {
+        "am": "tiện",
+        "meaning_vi": "thuận lợi, tiện lợi"
+      }
+    ],
+    "reviewed": true
+  },
+  {
+    "char": "遍",
+    "readings": [
+      {
+        "am": "biến",
+        "meaning_vi": "khắp, lượt, lần"
+      }
+    ],
+    "reviewed": false
+  },
+  {
+    "char": "表",
+    "readings": [
+      {
+        "am": "biểu",
+        "meaning_vi": "bên ngoài, biểu thị, đồng hồ"
+      }
+    ],
+    "reviewed": false
+  },
+  {
+    "char": "部",
+    "readings": [
+      {
+        "am": "bộ",
+        "meaning_vi": "bộ phận, bộ môn"
+      }
+    ],
+    "reviewed": false
+  },
+  {
+    "char": "才",
+    "readings": [
+      {
+        "am": "tài",
+        "meaning_vi": "tài năng, mới, vừa"
+      }
+    ],
+    "reviewed": false
+  },
+  {
+    "char": "参",
+    "readings": [
+      {
+        "am": "tham",
+        "meaning_vi": "tham gia, tham khảo"
+      },
+      {
+        "am": "sâm",
+        "meaning_vi": "sao Sâm, nhân sâm"
+      },
+      {
+        "am": "sam",
+        "meaning_vi": "sam soi, so le (sâm si)"
+      }
+    ],
+    "reviewed": true
+  },
+  {
+    "char": "餐",
+    "readings": [
+      {
+        "am": "xan",
+        "meaning_vi": "ăn, bữa ăn"
+      }
+    ],
+    "reviewed": false
+  },
+  {
+    "char": "草",
+    "readings": [
+      {
+        "am": "thảo",
+        "meaning_vi": "cỏ, phác thảo"
+      }
+    ],
+    "reviewed": false
+  },
+  {
+    "char": "层",
+    "readings": [
+      {
+        "am": "tằng",
+        "meaning_vi": "tầng, lớp"
+      }
+    ],
+    "reviewed": false
+  },
+  {
+    "char": "查",
+    "readings": [
+      {
+        "am": "tra",
+        "meaning_vi": "kiểm tra, xét hỏi"
+      }
+    ],
+    "reviewed": true
+  },
+  {
+    "char": "长",
+    "readings": [
+      {
+        "am": "trường",
+        "meaning_vi": "dài, lâu"
+      },
+      {
+        "am": "trưởng",
+        "meaning_vi": "lớn, đứng đầu, người đứng đầu"
+      }
+    ],
+    "reviewed": false
+  },
+  {
+    "char": "超",
+    "readings": [
+      {
+        "am": "siêu",
+        "meaning_vi": "vượt qua, siêu việt"
+      }
+    ],
+    "reviewed": false
+  },
+  {
+    "char": "晨",
+    "readings": [
+      {
+        "am": "thần",
+        "meaning_vi": "buổi sáng sớm"
+      }
+    ],
+    "reviewed": false
+  },
+  {
+    "char": "称",
+    "readings": [
+      {
+        "am": "xưng",
+        "meaning_vi": "gọi, xưng hô"
+      },
+      {
+        "am": "xứng",
+        "meaning_vi": "phù hợp, cân xứng"
+      }
+    ],
+    "reviewed": false
+  },
+  {
+    "char": "成",
+    "readings": [
+      {
+        "am": "thành",
+        "meaning_vi": "nên, hoàn thành"
+      }
+    ],
+    "reviewed": false
+  },
+  {
+    "char": "楚",
+    "readings": [
+      {
+        "am": "sở",
+        "meaning_vi": "nước Sở, đau đớn, rõ ràng"
+      }
+    ],
+    "reviewed": false
+  },
+  {
+    "char": "处",
+    "readings": [
+      {
+        "am": "xứ",
+        "meaning_vi": "nơi chốn, xử sự"
+      },
+      {
+        "am": "xử",
+        "meaning_vi": "xử lý, ở, sống"
+      }
+    ],
+    "reviewed": false
+  },
+  {
+    "char": "船",
+    "readings": [
+      {
+        "am": "thuyền",
+        "meaning_vi": "thuyền, tàu"
+      }
+    ],
+    "reviewed": false
+  },
+  {
+    "char": "吹",
+    "readings": [
+      {
+        "am": "xuy",
+        "meaning_vi": "thổi"
+      }
+    ],
+    "reviewed": false
+  },
+  {
+    "char": "春",
+    "readings": [
+      {
+        "am": "xuân",
+        "meaning_vi": "mùa xuân"
+      },
+      {
+        "am": "thuân",
+        "meaning_vi": "xuân (biến âm, ít dùng)"
+      }
+    ],
+    "reviewed": false
+  },
+  {
+    "char": "词",
+    "readings": [
+      {
+        "am": "từ",
+        "meaning_vi": "lời, từ ngữ, thể từ"
+      }
+    ],
+    "reviewed": false
+  },
+  {
+    "char": "带",
+    "readings": [
+      {
+        "am": "đới",
+        "meaning_vi": "dây đai, mang, vùng"
+      }
+    ],
+    "reviewed": false
+  },
+  {
+    "char": "单",
+    "readings": [
+      {
+        "am": "đơn",
+        "meaning_vi": "một, lẻ, đơn giản"
+      },
+      {
+        "am": "thiền",
+        "meaning_vi": "thiền vu"
+      },
+      {
+        "am": "thiện",
+        "meaning_vi": "họ Thiện"
+      }
+    ],
+    "reviewed": false
+  },
+  {
+    "char": "但",
+    "readings": [
+      {
+        "am": "đãn",
+        "meaning_vi": "nhưng, chỉ"
+      }
+    ],
+    "reviewed": false
+  },
+  {
+    "char": "当",
+    "readings": [
+      {
+        "am": "đương",
+        "meaning_vi": "đang, nên, gánh vác"
+      },
+      {
+        "am": "đáng",
+        "meaning_vi": "xứng đáng"
+      },
+      {
+        "am": "đang",
+        "meaning_vi": "tiếng leng keng"
+      }
+    ],
+    "reviewed": false
+  },
+  {
+    "char": "倒",
+    "readings": [
+      {
+        "am": "đảo",
+        "meaning_vi": "ngã, đổ, đảo ngược"
+      }
+    ],
+    "reviewed": false
+  },
+  {
+    "char": "灯",
+    "readings": [
+      {
+        "am": "đăng",
+        "meaning_vi": "đèn"
+      }
+    ],
+    "reviewed": false
+  },
+  {
+    "char": "低",
+    "readings": [
+      {
+        "am": "đê",
+        "meaning_vi": "thấp, hèn"
+      }
+    ],
+    "reviewed": false
+  },
+  {
+    "char": "典",
+    "readings": [
+      {
+        "am": "điển",
+        "meaning_vi": "sách kinh điển, phép tắc"
+      }
+    ],
+    "reviewed": false
+  },
+  {
+    "char": "掉",
+    "readings": [
+      {
+        "am": "điệu",
+        "meaning_vi": "lay động, rơi, đổi"
+      },
+      {
+        "am": "trạo",
+        "meaning_vi": "lay, vẫy"
+      }
+    ],
+    "reviewed": false
+  },
+  {
+    "char": "定",
+    "readings": [
+      {
+        "am": "định",
+        "meaning_vi": "yên định, quyết định"
+      }
+    ],
+    "reviewed": false
+  },
+  {
+    "char": "冬",
+    "readings": [
+      {
+        "am": "đông",
+        "meaning_vi": "mùa đông"
+      }
+    ],
+    "reviewed": false
+  },
+  {
+    "char": "懂",
+    "readings": [
+      {
+        "am": "đổng",
+        "meaning_vi": "hiểu biết"
+      }
+    ],
+    "reviewed": false
+  },
+  {
+    "char": "度",
+    "readings": [
+      {
+        "am": "độ",
+        "meaning_vi": "mức độ, đo đạc, qua"
+      },
+      {
+        "am": "đạc",
+        "meaning_vi": "đo lường, suy đoán"
+      }
+    ],
+    "reviewed": false
+  },
+  {
+    "char": "短",
+    "readings": [
+      {
+        "am": "đoản",
+        "meaning_vi": "ngắn"
+      }
+    ],
+    "reviewed": false
+  },
+  {
+    "char": "段",
+    "readings": [
+      {
+        "am": "đoạn",
+        "meaning_vi": "đoạn, khúc"
+      }
+    ],
+    "reviewed": false
+  },
+  {
+    "char": "队",
+    "readings": [
+      {
+        "am": "đội",
+        "meaning_vi": "đội, hàng ngũ"
+      },
+      {
+        "am": "toại",
+        "meaning_vi": "đường hầm (cổ)"
+      }
+    ],
+    "reviewed": false
+  },
+  {
+    "char": "而",
+    "readings": [
+      {
+        "am": "nhi",
+        "meaning_vi": "mà, và"
+      }
+    ],
+    "reviewed": false
+  },
+  {
+    "char": "发",
+    "readings": [
+      {
+        "am": "phát",
+        "meaning_vi": "phát ra, phát triển; tóc (髮)"
+      }
+    ],
+    "reviewed": true
+  },
+  {
+    "char": "法",
+    "readings": [
+      {
+        "am": "pháp",
+        "meaning_vi": "phép, luật, nước Pháp"
+      }
+    ],
+    "reviewed": false
+  },
+  {
+    "char": "份",
+    "readings": [
+      {
+        "am": "phân",
+        "meaning_vi": "phần, suất"
+      },
+      {
+        "am": "bân",
+        "meaning_vi": "văn nhã (彬)"
+      }
+    ],
+    "reviewed": false
+  },
+  {
+    "char": "封",
+    "readings": [
+      {
+        "am": "phong",
+        "meaning_vi": "phong, niêm, ban đất"
+      }
+    ],
+    "reviewed": false
+  },
+  {
+    "char": "复",
+    "readings": [
+      {
+        "am": "phục",
+        "meaning_vi": "trở lại, khôi phục, báo đáp"
+      },
+      {
+        "am": "phúc",
+        "meaning_vi": "che, lật; kép"
+      },
+      {
+        "am": "phức",
+        "meaning_vi": "phức tạp, kép"
+      }
+    ],
+    "reviewed": false
+  },
+  {
+    "char": "该",
+    "readings": [
+      {
+        "am": "cai",
+        "meaning_vi": "nên, ấy, bao gồm"
+      }
+    ],
+    "reviewed": false
+  },
+  {
+    "char": "改",
+    "readings": [
+      {
+        "am": "cải",
+        "meaning_vi": "sửa đổi"
+      }
+    ],
+    "reviewed": false
+  },
+  {
+    "char": "感",
+    "readings": [
+      {
+        "am": "cảm",
+        "meaning_vi": "cảm xúc, cảm nhận"
+      }
+    ],
+    "reviewed": false
+  },
+  {
+    "char": "刚",
+    "readings": [
+      {
+        "am": "cương",
+        "meaning_vi": "cứng, vừa mới"
+      }
+    ],
+    "reviewed": false
+  },
+  {
+    "char": "更",
+    "readings": [
+      {
+        "am": "canh",
+        "meaning_vi": "đổi, canh giờ đêm"
+      },
+      {
+        "am": "cánh",
+        "meaning_vi": "càng, hơn nữa"
+      }
+    ],
+    "reviewed": false
+  },
+  {
+    "char": "公",
+    "readings": [
+      {
+        "am": "công",
+        "meaning_vi": "chung, công bằng, ông"
+      }
+    ],
+    "reviewed": false
+  },
+  {
+    "char": "共",
+    "readings": [
+      {
+        "am": "cộng",
+        "meaning_vi": "chung, cùng, tổng cộng"
+      }
+    ],
+    "reviewed": false
+  },
+  {
+    "char": "狗",
+    "readings": [
+      {
+        "am": "cẩu",
+        "meaning_vi": "con chó"
+      }
+    ],
+    "reviewed": false
+  },
+  {
+    "char": "够",
+    "readings": [
+      {
+        "am": "cấu",
+        "meaning_vi": "đủ, đạt đủ"
+      }
+    ],
+    "reviewed": false
+  },
+  {
+    "char": "故",
+    "readings": [
+      {
+        "am": "cố",
+        "meaning_vi": "cũ, nguyên cớ, cố ý"
+      }
+    ],
+    "reviewed": false
+  },
+  {
+    "char": "顾",
+    "readings": [
+      {
+        "am": "cố",
+        "meaning_vi": "ngoảnh lại, chăm nom"
+      }
+    ],
+    "reviewed": false
+  },
+  {
+    "char": "观",
+    "readings": [
+      {
+        "am": "quan",
+        "meaning_vi": "xem, nhìn, quan sát"
+      },
+      {
+        "am": "quán",
+        "meaning_vi": "đạo quán, lầu quan sát"
+      }
+    ],
+    "reviewed": false
+  },
+  {
+    "char": "惯",
+    "readings": [
+      {
+        "am": "quán",
+        "meaning_vi": "quen, thói quen"
+      }
+    ],
+    "reviewed": false
+  },
+  {
+    "char": "广",
+    "readings": [
+      {
+        "am": "quảng",
+        "meaning_vi": "rộng, rộng rãi"
+      }
+    ],
+    "reviewed": false
+  },
+  {
+    "char": "海",
+    "readings": [
+      {
+        "am": "hải",
+        "meaning_vi": "biển"
+      }
+    ],
+    "reviewed": false
+  },
+  {
+    "char": "喊",
+    "readings": [
+      {
+        "am": "hảm",
+        "meaning_vi": "hô, la hét"
+      }
+    ],
+    "reviewed": false
+  },
+  {
+    "char": "合",
+    "readings": [
+      {
+        "am": "hợp",
+        "meaning_vi": "hợp, gộp, phù hợp"
+      },
+      {
+        "am": "cáp",
+        "meaning_vi": "cửa nách, gác cổng"
+      }
+    ],
+    "reviewed": false
+  },
+  {
+    "char": "河",
+    "readings": [
+      {
+        "am": "hà",
+        "meaning_vi": "sông"
+      }
+    ],
+    "reviewed": false
+  },
+  {
+    "char": "黑",
+    "readings": [
+      {
+        "am": "hắc",
+        "meaning_vi": "đen, tối"
+      }
+    ],
+    "reviewed": false
+  },
+  {
+    "char": "红",
+    "readings": [
+      {
+        "am": "hồng",
+        "meaning_vi": "đỏ"
+      }
+    ],
+    "reviewed": false
+  },
+  {
+    "char": "忽",
+    "readings": [
+      {
+        "am": "hốt",
+        "meaning_vi": "chợt, bỗng, coi nhẹ"
+      }
+    ],
+    "reviewed": false
+  },
+  {
+    "char": "湖",
+    "readings": [
+      {
+        "am": "hồ",
+        "meaning_vi": "hồ nước"
+      }
+    ],
+    "reviewed": false
+  },
+  {
+    "char": "护",
+    "readings": [
+      {
+        "am": "hộ",
+        "meaning_vi": "bảo vệ, giúp đỡ"
+      }
+    ],
+    "reviewed": false
+  },
+  {
+    "char": "划",
+    "readings": [
+      {
+        "am": "hoạch",
+        "meaning_vi": "vạch, kế hoạch"
+      },
+      {
+        "am": "họa",
+        "meaning_vi": "chèo thuyền, vạch"
+      }
+    ],
+    "reviewed": false
+  },
+  {
+    "char": "画",
+    "readings": [
+      {
+        "am": "họa",
+        "meaning_vi": "vẽ, bức tranh"
+      },
+      {
+        "am": "hoạch",
+        "meaning_vi": "nét vạch, kế hoạch"
+      }
+    ],
+    "reviewed": false
+  },
+  {
+    "char": "换",
+    "readings": [
+      {
+        "am": "hoán",
+        "meaning_vi": "đổi, thay"
+      }
+    ],
+    "reviewed": false
+  },
+  {
+    "char": "黄",
+    "readings": [
+      {
+        "am": "hoàng",
+        "meaning_vi": "màu vàng"
+      }
+    ],
+    "reviewed": false
+  },
+  {
+    "char": "活",
+    "readings": [
+      {
+        "am": "hoạt",
+        "meaning_vi": "sống, linh hoạt"
+      }
+    ],
+    "reviewed": false
+  },
+  {
+    "char": "或",
+    "readings": [
+      {
+        "am": "hoặc",
+        "meaning_vi": "hoặc, có lẽ"
+      }
+    ],
+    "reviewed": false
+  },
+  {
+    "char": "级",
+    "readings": [
+      {
+        "am": "cấp",
+        "meaning_vi": "bậc, hạng, cấp"
+      }
+    ],
+    "reviewed": false
+  },
+  {
+    "char": "急",
+    "readings": [
+      {
+        "am": "cấp",
+        "meaning_vi": "gấp, vội, khẩn"
+      }
+    ],
+    "reviewed": false
+  },
+  {
+    "char": "己",
+    "readings": [
+      {
+        "am": "kỷ",
+        "meaning_vi": "mình, bản thân; can Kỷ"
+      }
+    ],
+    "reviewed": false
+  },
+  {
+    "char": "计",
+    "readings": [
+      {
+        "am": "kế",
+        "meaning_vi": "tính toán, mưu kế"
+      }
+    ],
+    "reviewed": false
+  },
+  {
+    "char": "际",
+    "readings": [
+      {
+        "am": "tế",
+        "meaning_vi": "giao tiếp, biên giới, dịp"
+      }
+    ],
+    "reviewed": false
+  },
+  {
+    "char": "绩",
+    "readings": [
+      {
+        "am": "tích",
+        "meaning_vi": "công lao, thành tích"
+      }
+    ],
+    "reviewed": false
+  },
+  {
+    "char": "加",
+    "readings": [
+      {
+        "am": "gia",
+        "meaning_vi": "thêm, tăng, cộng"
+      }
+    ],
+    "reviewed": false
+  },
+  {
+    "char": "检",
+    "readings": [
+      {
+        "am": "kiểm",
+        "meaning_vi": "kiểm tra, xem xét"
+      }
+    ],
+    "reviewed": false
+  },
+  {
+    "char": "件",
+    "readings": [
+      {
+        "am": "kiện",
+        "meaning_vi": "món, vật kiện, văn kiện"
+      }
+    ],
+    "reviewed": false
+  },
+  {
+    "char": "健",
+    "readings": [
+      {
+        "am": "kiện",
+        "meaning_vi": "khỏe mạnh, mạnh"
+      }
+    ],
+    "reviewed": false
+  },
+  {
+    "char": "讲",
+    "readings": [
+      {
+        "am": "giảng",
+        "meaning_vi": "nói, giảng giải"
+      }
+    ],
+    "reviewed": false
+  },
+  {
+    "char": "交",
+    "readings": [
+      {
+        "am": "giao",
+        "meaning_vi": "giao nhau, trao, kết giao"
+      }
+    ],
+    "reviewed": false
+  },
+  {
+    "char": "角",
+    "readings": [
+      {
+        "am": "giác",
+        "meaning_vi": "góc, sừng, cái sừng"
+      },
+      {
+        "am": "giốc",
+        "meaning_vi": "tên một âm trong ngũ âm"
+      },
+      {
+        "am": "lục",
+        "meaning_vi": "Lục Lý, tên đất"
+      }
+    ],
+    "reviewed": false
+  },
+  {
+    "char": "饺",
+    "readings": [
+      {
+        "am": "giảo",
+        "meaning_vi": "bánh chẻ, sủi cảo"
+      }
+    ],
+    "reviewed": false
+  },
+  {
+    "char": "脚",
+    "readings": [
+      {
+        "am": "cước",
+        "meaning_vi": "chân, bàn chân"
+      }
+    ],
+    "reviewed": false
+  },
+  {
+    "char": "接",
+    "readings": [
+      {
+        "am": "tiếp",
+        "meaning_vi": "nối, đón, tiếp nhận"
+      }
+    ],
+    "reviewed": false
+  },
+  {
+    "char": "街",
+    "readings": [
+      {
+        "am": "nhai",
+        "meaning_vi": "đường phố"
+      },
+      {
+        "am": "phố",
+        "meaning_vi": "đường phố (âm Nôm hóa)"
+      }
+    ],
+    "reviewed": false
+  },
+  {
+    "char": "节",
+    "readings": [
+      {
+        "am": "tiết",
+        "meaning_vi": "đốt tre, tiết, lễ tiết"
+      }
+    ],
+    "reviewed": false
+  },
+  {
+    "char": "结",
+    "readings": [
+      {
+        "am": "kết",
+        "meaning_vi": "thắt, nối, kết thúc"
+      }
+    ],
+    "reviewed": false
+  },
+  {
+    "char": "借",
+    "readings": [
+      {
+        "am": "tạ",
+        "meaning_vi": "mượn, nhờ, tá điền"
+      },
+      {
+        "am": "tá",
+        "meaning_vi": "mượn, vay"
+      }
+    ],
+    "reviewed": false
+  },
+  {
+    "char": "斤",
+    "readings": [
+      {
+        "am": "cân",
+        "meaning_vi": "cân (đơn vị), cái rìu"
+      }
+    ],
+    "reviewed": false
+  },
+  {
+    "char": "近",
+    "readings": [
+      {
+        "am": "cận",
+        "meaning_vi": "gần"
+      }
+    ],
+    "reviewed": false
+  },
+  {
+    "char": "经",
+    "readings": [
+      {
+        "am": "kinh",
+        "meaning_vi": "kinh sách, đi qua, kinh doanh"
+      }
+    ],
+    "reviewed": false
+  },
+  {
+    "char": "睛",
+    "readings": [
+      {
+        "am": "tinh",
+        "meaning_vi": "con ngươi, tròng mắt"
+      }
+    ],
+    "reviewed": false
+  },
+  {
+    "char": "静",
+    "readings": [
+      {
+        "am": "tĩnh",
+        "meaning_vi": "yên lặng, yên tĩnh"
+      }
+    ],
+    "reviewed": false
+  },
+  {
+    "char": "久",
+    "readings": [
+      {
+        "am": "cửu",
+        "meaning_vi": "lâu, lâu dài"
+      }
+    ],
+    "reviewed": false
+  },
+  {
+    "char": "酒",
+    "readings": [
+      {
+        "am": "tửu",
+        "meaning_vi": "rượu"
+      }
+    ],
+    "reviewed": false
+  },
+  {
+    "char": "举",
+    "readings": [
+      {
+        "am": "cử",
+        "meaning_vi": "nâng lên, đề cử, tiến cử"
+      }
+    ],
+    "reviewed": false
+  },
+  {
+    "char": "句",
+    "readings": [
+      {
+        "am": "cú",
+        "meaning_vi": "câu văn"
+      },
+      {
+        "am": "câu",
+        "meaning_vi": "cong, câu thúc"
+      }
+    ],
+    "reviewed": false
+  },
+  {
+    "char": "卡",
+    "readings": [
+      {
+        "am": "tạp",
+        "meaning_vi": "cửa ải, trạm kiểm soát"
+      },
+      {
+        "am": "ca",
+        "meaning_vi": "thẻ, card (phiên âm)"
+      }
+    ],
+    "reviewed": false
+  },
+  {
+    "char": "康",
+    "readings": [
+      {
+        "am": "khang",
+        "meaning_vi": "khỏe mạnh, yên ổn"
+      }
+    ],
+    "reviewed": false
+  },
+  {
+    "char": "靠",
+    "readings": [
+      {
+        "am": "khảo",
+        "meaning_vi": "dựa, nương tựa"
+      }
+    ],
+    "reviewed": false
+  },
+  {
+    "char": "科",
+    "readings": [
+      {
+        "am": "khoa",
+        "meaning_vi": "ngành, khoa, khoa cử"
+      }
+    ],
+    "reviewed": false
+  },
+  {
+    "char": "可",
+    "readings": [
+      {
+        "am": "khả",
+        "meaning_vi": "có thể, được, khá"
+      },
+      {
+        "am": "khắc",
+        "meaning_vi": "Khả Hãn (khắc hãn)"
+      }
+    ],
+    "reviewed": false
+  },
+  {
+    "char": "克",
+    "readings": [
+      {
+        "am": "khắc",
+        "meaning_vi": "chiến thắng, kiềm chế, gam"
+      }
+    ],
+    "reviewed": false
+  },
+  {
+    "char": "刻",
+    "readings": [
+      {
+        "am": "khắc",
+        "meaning_vi": "chạm khắc, khắc giờ, hà khắc"
+      }
+    ],
+    "reviewed": false
+  },
+  {
+    "char": "空",
+    "readings": [
+      {
+        "am": "không",
+        "meaning_vi": "trống rỗng, hư không"
+      },
+      {
+        "am": "khống",
+        "meaning_vi": "rảnh rỗi, thiếu"
+      }
+    ],
+    "reviewed": false
+  },
+  {
+    "char": "哭",
+    "readings": [
+      {
+        "am": "khốc",
+        "meaning_vi": "khóc, khóc lóc"
+      }
+    ],
+    "reviewed": false
+  },
+  {
+    "char": "筷",
+    "readings": [
+      {
+        "am": "khoái",
+        "meaning_vi": "đũa"
+      }
+    ],
+    "reviewed": false
+  },
+  {
+    "char": "拉",
+    "readings": [
+      {
+        "am": "lạp",
+        "meaning_vi": "kéo, lôi; bẻ gãy (nghĩa cổ)"
+      }
+    ],
+    "reviewed": false
+  },
+  {
+    "char": "蓝",
+    "readings": [
+      {
+        "am": "lam",
+        "meaning_vi": "màu xanh lam, cây chàm"
+      }
+    ],
+    "reviewed": false
+  },
+  {
+    "char": "篮",
+    "readings": [
+      {
+        "am": "lam",
+        "meaning_vi": "cái giỏ, rổ"
+      }
+    ],
+    "reviewed": false
+  },
+  {
+    "char": "乐",
+    "readings": [
+      {
+        "am": "lạc",
+        "meaning_vi": "vui, vui vẻ"
+      },
+      {
+        "am": "nhạc",
+        "meaning_vi": "âm nhạc"
+      },
+      {
+        "am": "nhạo",
+        "meaning_vi": "thích, ưa (nhạo sơn)"
+      }
+    ],
+    "reviewed": false
+  },
+  {
+    "char": "离",
+    "readings": [
+      {
+        "am": "ly",
+        "meaning_vi": "rời, chia lìa"
+      },
+      {
+        "am": "li",
+        "meaning_vi": "rời xa, cách biệt"
+      }
+    ],
+    "reviewed": false
+  },
+  {
+    "char": "礼",
+    "readings": [
+      {
+        "am": "lễ",
+        "meaning_vi": "lễ nghi, lễ phép, quà"
+      }
+    ],
+    "reviewed": false
+  },
+  {
+    "char": "理",
+    "readings": [
+      {
+        "am": "lý",
+        "meaning_vi": "lẽ phải, đạo lý, xử lý"
+      }
+    ],
+    "reviewed": false
+  },
+  {
+    "char": "力",
+    "readings": [
+      {
+        "am": "lực",
+        "meaning_vi": "sức, sức mạnh"
+      }
+    ],
+    "reviewed": false
+  },
+  {
+    "char": "利",
+    "readings": [
+      {
+        "am": "lợi",
+        "meaning_vi": "lợi ích, sắc bén"
+      }
+    ],
+    "reviewed": false
+  },
+  {
+    "char": "例",
+    "readings": [
+      {
+        "am": "lệ",
+        "meaning_vi": "ví dụ, thông lệ, điều lệ"
+      }
+    ],
+    "reviewed": false
+  },
+  {
+    "char": "脸",
+    "readings": [
+      {
+        "am": "kiểm",
+        "meaning_vi": "mặt, khuôn mặt"
+      },
+      {
+        "am": "liểm",
+        "meaning_vi": "má, mặt (âm khác)"
+      }
+    ],
+    "reviewed": false
+  },
+  {
+    "char": "练",
+    "readings": [
+      {
+        "am": "luyện",
+        "meaning_vi": "rèn luyện, tập"
+      }
+    ],
+    "reviewed": false
+  },
+  {
+    "char": "凉",
+    "readings": [
+      {
+        "am": "lương",
+        "meaning_vi": "mát, lạnh"
+      }
+    ],
+    "reviewed": false
+  },
+  {
+    "char": "亮",
+    "readings": [
+      {
+        "am": "lượng",
+        "meaning_vi": "sáng, rạng"
+      }
+    ],
+    "reviewed": false
+  },
+  {
+    "char": "辆",
+    "readings": [
+      {
+        "am": "lượng",
+        "meaning_vi": "chiếc (xe)"
+      }
+    ],
+    "reviewed": false
+  },
+  {
+    "char": "量",
+    "readings": [
+      {
+        "am": "lượng",
+        "meaning_vi": "đo lường, số lượng"
+      },
+      {
+        "am": "lường",
+        "meaning_vi": "đo, liệu chừng"
+      }
+    ],
+    "reviewed": false
+  },
+  {
+    "char": "留",
+    "readings": [
+      {
+        "am": "lưu",
+        "meaning_vi": "giữ lại, ở lại"
+      }
+    ],
+    "reviewed": false
+  },
+  {
+    "char": "流",
+    "readings": [
+      {
+        "am": "lưu",
+        "meaning_vi": "chảy, dòng chảy"
+      }
+    ],
+    "reviewed": false
+  },
+  {
+    "char": "旅",
+    "readings": [
+      {
+        "am": "lữ",
+        "meaning_vi": "đi xa, quân lữ, khách trọ"
+      }
+    ],
+    "reviewed": false
+  },
+  {
+    "char": "绿",
+    "readings": [
+      {
+        "am": "lục",
+        "meaning_vi": "màu xanh lục"
+      }
+    ],
+    "reviewed": false
+  },
+  {
+    "char": "论",
+    "readings": [
+      {
+        "am": "luận",
+        "meaning_vi": "bàn bạc, bàn luận"
+      },
+      {
+        "am": "luân",
+        "meaning_vi": "Luận ngữ (đọc luân)"
+      }
+    ],
+    "reviewed": false
+  },
+  {
+    "char": "卖",
+    "readings": [
+      {
+        "am": "mại",
+        "meaning_vi": "bán"
+      }
+    ],
+    "reviewed": false
+  },
+  {
+    "char": "满",
+    "readings": [
+      {
+        "am": "mãn",
+        "meaning_vi": "đầy, đủ, thỏa"
+      }
+    ],
+    "reviewed": false
+  },
+  {
+    "char": "猫",
+    "readings": [
+      {
+        "am": "miêu",
+        "meaning_vi": "con mèo"
+      }
+    ],
+    "reviewed": false
+  },
+  {
+    "char": "末",
+    "readings": [
+      {
+        "am": "mạt",
+        "meaning_vi": "ngọn, cuối, bột"
+      }
+    ],
+    "reviewed": false
+  },
+  {
+    "char": "目",
+    "readings": [
+      {
+        "am": "mục",
+        "meaning_vi": "mắt, mục lục, hạng mục"
+      }
+    ],
+    "reviewed": false
+  },
+  {
+    "char": "鸟",
+    "readings": [
+      {
+        "am": "điểu",
+        "meaning_vi": "chim"
+      }
+    ],
+    "reviewed": false
+  },
+  {
+    "char": "弄",
+    "readings": [
+      {
+        "am": "lộng",
+        "meaning_vi": "đùa giỡn, làm, bày trò"
+      }
+    ],
+    "reviewed": true
+  },
+  {
+    "char": "努",
+    "readings": [
+      {
+        "am": "nỗ",
+        "meaning_vi": "cố gắng, gắng sức"
+      }
+    ],
+    "reviewed": false
+  },
+  {
+    "char": "爬",
+    "readings": [
+      {
+        "am": "ba",
+        "meaning_vi": "bò, leo, trèo"
+      }
+    ],
+    "reviewed": false
+  },
+  {
+    "char": "怕",
+    "readings": [
+      {
+        "am": "phạ",
+        "meaning_vi": "sợ, e sợ"
+      },
+      {
+        "am": "bạch",
+        "meaning_vi": "yên lặng, điềm tĩnh"
+      }
+    ],
+    "reviewed": false
+  },
+  {
+    "char": "排",
+    "readings": [
+      {
+        "am": "bài",
+        "meaning_vi": "sắp xếp, hàng, đẩy ra"
+      }
+    ],
+    "reviewed": false
+  },
+  {
+    "char": "碰",
+    "readings": [
+      {
+        "am": "bính",
+        "meaning_vi": "va chạm, đụng"
+      }
+    ],
+    "reviewed": false
+  },
+  {
+    "char": "篇",
+    "readings": [
+      {
+        "am": "thiên",
+        "meaning_vi": "bài, thiên văn chương"
+      }
+    ],
+    "reviewed": false
+  },
+  {
+    "char": "片",
+    "readings": [
+      {
+        "am": "phiến",
+        "meaning_vi": "mảnh, tấm, miếng"
+      }
+    ],
+    "reviewed": false
+  },
+  {
+    "char": "漂",
+    "readings": [
+      {
+        "am": "phiêu",
+        "meaning_vi": "trôi nổi, lênh đênh"
+      },
+      {
+        "am": "phiểu",
+        "meaning_vi": "giặt tẩy, ngâm"
+      },
+      {
+        "am": "phiếu",
+        "meaning_vi": "đẹp, xinh (漂亮)"
+      }
+    ],
+    "reviewed": false
+  },
+  {
+    "char": "平",
+    "readings": [
+      {
+        "am": "bình",
+        "meaning_vi": "bằng phẳng, hòa bình"
+      }
+    ],
+    "reviewed": true
+  },
+  {
+    "char": "瓶",
+    "readings": [
+      {
+        "am": "bình",
+        "meaning_vi": "cái bình, chai lọ"
+      }
+    ],
+    "reviewed": false
+  },
+  {
+    "char": "普",
+    "readings": [
+      {
+        "am": "phổ",
+        "meaning_vi": "khắp, rộng rãi, phổ biến"
+      }
+    ],
+    "reviewed": false
+  },
+  {
+    "char": "其",
+    "readings": [
+      {
+        "am": "kỳ",
+        "meaning_vi": "ấy, đó, của nó"
+      },
+      {
+        "am": "cơ",
+        "meaning_vi": "trợ từ cuối câu"
+      }
+    ],
+    "reviewed": false
+  },
+  {
+    "char": "骑",
+    "readings": [
+      {
+        "am": "kỵ",
+        "meaning_vi": "cưỡi ngựa, kỵ binh"
+      }
+    ],
+    "reviewed": false
+  },
+  {
+    "char": "千",
+    "readings": [
+      {
+        "am": "thiên",
+        "meaning_vi": "nghìn, số một nghìn; 秋千: cái đu (chữ 韆)"
+      }
+    ],
+    "reviewed": true
+  },
+  {
+    "char": "墙",
+    "readings": [
+      {
+        "am": "tường",
+        "meaning_vi": "bức tường, vách"
+      }
+    ],
+    "reviewed": false
+  },
+  {
+    "char": "且",
+    "readings": [
+      {
+        "am": "thả",
+        "meaning_vi": "hãy, vả lại, mà còn"
+      },
+      {
+        "am": "thư",
+        "meaning_vi": "trợ từ, ngữ khí"
+      }
+    ],
+    "reviewed": false
+  },
+  {
+    "char": "青",
+    "readings": [
+      {
+        "am": "thanh",
+        "meaning_vi": "xanh, màu xanh, trẻ"
+      }
+    ],
+    "reviewed": false
+  },
+  {
+    "char": "轻",
+    "readings": [
+      {
+        "am": "khinh",
+        "meaning_vi": "nhẹ, coi thường"
+      }
+    ],
+    "reviewed": false
+  },
+  {
+    "char": "清",
+    "readings": [
+      {
+        "am": "thanh",
+        "meaning_vi": "trong, sạch, triều Thanh"
+      }
+    ],
+    "reviewed": false
+  },
+  {
+    "char": "情",
+    "readings": [
+      {
+        "am": "tình",
+        "meaning_vi": "tình cảm, tình yêu"
+      }
+    ],
+    "reviewed": false
+  },
+  {
+    "char": "晴",
+    "readings": [
+      {
+        "am": "tình",
+        "meaning_vi": "trời tạnh, trời nắng"
+      }
+    ],
+    "reviewed": false
+  },
+  {
+    "char": "秋",
+    "readings": [
+      {
+        "am": "thu",
+        "meaning_vi": "mùa thu"
+      }
+    ],
+    "reviewed": false
+  },
+  {
+    "char": "求",
+    "readings": [
+      {
+        "am": "cầu",
+        "meaning_vi": "cầu xin, tìm kiếm, yêu cầu"
+      }
+    ],
+    "reviewed": false
+  },
+  {
+    "char": "取",
+    "readings": [
+      {
+        "am": "thủ",
+        "meaning_vi": "lấy, nhận, chọn"
+      }
+    ],
+    "reviewed": false
+  },
+  {
+    "char": "全",
+    "readings": [
+      {
+        "am": "toàn",
+        "meaning_vi": "đầy đủ, trọn vẹn, tất cả"
+      }
+    ],
+    "reviewed": false
+  },
+  {
+    "char": "确",
+    "readings": [
+      {
+        "am": "xác",
+        "meaning_vi": "chắc chắn, đúng thật"
+      }
+    ],
+    "reviewed": false
+  },
+  {
+    "char": "然",
+    "readings": [
+      {
+        "am": "nhiên",
+        "meaning_vi": "đúng vậy, như thế, tự nhiên"
+      }
+    ],
+    "reviewed": false
+  },
+  {
+    "char": "让",
+    "readings": [
+      {
+        "am": "nhượng",
+        "meaning_vi": "nhường, để cho, nhượng bộ"
+      }
+    ],
+    "reviewed": false
+  },
+  {
+    "char": "如",
+    "readings": [
+      {
+        "am": "như",
+        "meaning_vi": "như, giống, nếu"
+      }
+    ],
+    "reviewed": false
+  },
+  {
+    "char": "入",
+    "readings": [
+      {
+        "am": "nhập",
+        "meaning_vi": "vào, đi vào, gia nhập"
+      }
+    ],
+    "reviewed": false
+  },
+  {
+    "char": "色",
+    "readings": [
+      {
+        "am": "sắc",
+        "meaning_vi": "màu sắc, vẻ mặt, nhan sắc"
+      }
+    ],
+    "reviewed": false
+  },
+  {
+    "char": "声",
+    "readings": [
+      {
+        "am": "thanh",
+        "meaning_vi": "tiếng, âm thanh"
+      }
+    ],
+    "reviewed": false
+  },
+  {
+    "char": "省",
+    "readings": [
+      {
+        "am": "tỉnh",
+        "meaning_vi": "tỉnh, đơn vị hành chính"
+      },
+      {
+        "am": "tiển",
+        "meaning_vi": "xem xét, thăm hỏi"
+      }
+    ],
+    "reviewed": false
+  },
+  {
+    "char": "实",
+    "readings": [
+      {
+        "am": "thực",
+        "meaning_vi": "thật, đầy, sự thật"
+      }
+    ],
+    "reviewed": false
+  },
+  {
+    "char": "食",
+    "readings": [
+      {
+        "am": "thực",
+        "meaning_vi": "ăn, đồ ăn"
+      },
+      {
+        "am": "tự",
+        "meaning_vi": "cho ăn, nuôi"
+      }
+    ],
+    "reviewed": false
+  },
+  {
+    "char": "使",
+    "readings": [
+      {
+        "am": "sử",
+        "meaning_vi": "sai khiến, dùng"
+      },
+      {
+        "am": "sứ",
+        "meaning_vi": "sứ giả"
+      }
+    ],
+    "reviewed": false
+  },
+  {
+    "char": "示",
+    "readings": [
+      {
+        "am": "thị",
+        "meaning_vi": "bảo cho biết, chỉ thị"
+      }
+    ],
+    "reviewed": false
+  },
+  {
+    "char": "市",
+    "readings": [
+      {
+        "am": "thị",
+        "meaning_vi": "chợ, thành thị"
+      }
+    ],
+    "reviewed": false
+  },
+  {
+    "char": "适",
+    "readings": [
+      {
+        "am": "thích",
+        "meaning_vi": "vừa hợp, thích hợp, đi tới"
+      }
+    ],
+    "reviewed": false
+  },
+  {
+    "char": "室",
+    "readings": [
+      {
+        "am": "thất",
+        "meaning_vi": "phòng, nhà"
+      }
+    ],
+    "reviewed": false
+  },
+  {
+    "char": "收",
+    "readings": [
+      {
+        "am": "thu",
+        "meaning_vi": "thu nhận, thu về"
+      }
+    ],
+    "reviewed": false
+  },
+  {
+    "char": "受",
+    "readings": [
+      {
+        "am": "thụ",
+        "meaning_vi": "nhận, chịu"
+      }
+    ],
+    "reviewed": false
+  },
+  {
+    "char": "舒",
+    "readings": [
+      {
+        "am": "thư",
+        "meaning_vi": "duỗi ra, thư thái"
+      }
+    ],
+    "reviewed": false
+  },
+  {
+    "char": "熟",
+    "readings": [
+      {
+        "am": "thục",
+        "meaning_vi": "chín, quen thuộc"
+      }
+    ],
+    "reviewed": false
+  },
+  {
+    "char": "数",
+    "readings": [
+      {
+        "am": "số",
+        "meaning_vi": "con số, số lượng"
+      },
+      {
+        "am": "sổ",
+        "meaning_vi": "đếm"
+      },
+      {
+        "am": "sác",
+        "meaning_vi": "nhiều lần, dồn dập"
+      }
+    ],
+    "reviewed": false
+  },
+  {
+    "char": "顺",
+    "readings": [
+      {
+        "am": "thuận",
+        "meaning_vi": "xuôi, thuận theo"
+      }
+    ],
+    "reviewed": false
+  },
+  {
+    "char": "司",
+    "readings": [
+      {
+        "am": "ty",
+        "meaning_vi": "chủ quản, cơ quan"
+      },
+      {
+        "am": "tư",
+        "meaning_vi": "cai quản, công ty (phiên âm khác)"
+      }
+    ],
+    "reviewed": false
+  },
+  {
+    "char": "思",
+    "readings": [
+      {
+        "am": "tư",
+        "meaning_vi": "nghĩ, suy nghĩ"
+      },
+      {
+        "am": "tứ",
+        "meaning_vi": "ý tứ, tâm tứ"
+      }
+    ],
+    "reviewed": false
+  },
+  {
+    "char": "算",
+    "readings": [
+      {
+        "am": "toán",
+        "meaning_vi": "tính, tính toán"
+      }
+    ],
+    "reviewed": false
+  },
+  {
+    "char": "虽",
+    "readings": [
+      {
+        "am": "tuy",
+        "meaning_vi": "tuy, dù"
+      }
+    ],
+    "reviewed": false
+  },
+  {
+    "char": "随",
+    "readings": [
+      {
+        "am": "tùy",
+        "meaning_vi": "theo, tùy"
+      }
+    ],
+    "reviewed": false
+  },
+  {
+    "char": "所",
+    "readings": [
+      {
+        "am": "sở",
+        "meaning_vi": "nơi chốn, chỗ"
+      }
+    ],
+    "reviewed": false
+  },
+  {
+    "char": "它",
+    "readings": [
+      {
+        "am": "tha",
+        "meaning_vi": "nó, cái khác"
+      },
+      {
+        "am": "đà",
+        "meaning_vi": "rắn (dạng cổ)"
+      }
+    ],
+    "reviewed": false
+  },
+  {
+    "char": "态",
+    "readings": [
+      {
+        "am": "thái",
+        "meaning_vi": "thái độ, hình thái"
+      }
+    ],
+    "reviewed": false
+  },
+  {
+    "char": "堂",
+    "readings": [
+      {
+        "am": "đường",
+        "meaning_vi": "nhà chính, sảnh đường"
+      }
+    ],
+    "reviewed": false
+  },
+  {
+    "char": "讨",
+    "readings": [
+      {
+        "am": "thảo",
+        "meaning_vi": "đòi, trừng phạt, bàn bạc"
+      }
+    ],
+    "reviewed": false
+  },
+  {
+    "char": "套",
+    "readings": [
+      {
+        "am": "sáo",
+        "meaning_vi": "bộ, vỏ bọc, khuôn sáo"
+      }
+    ],
+    "reviewed": false
+  },
+  {
+    "char": "特",
+    "readings": [
+      {
+        "am": "đặc",
+        "meaning_vi": "riêng biệt, đặc biệt"
+      }
+    ],
+    "reviewed": false
+  },
+  {
+    "char": "疼",
+    "readings": [
+      {
+        "am": "đông",
+        "meaning_vi": "đau"
+      }
+    ],
+    "reviewed": false
+  },
+  {
+    "char": "提",
+    "readings": [
+      {
+        "am": "đề",
+        "meaning_vi": "nêu ra, xách, cầm"
+      },
+      {
+        "am": "đê",
+        "meaning_vi": "đê (dạng cổ), nắm"
+      }
+    ],
+    "reviewed": false
+  },
+  {
+    "char": "题",
+    "readings": [
+      {
+        "am": "đề",
+        "meaning_vi": "đầu đề, vấn đề, câu hỏi"
+      }
+    ],
+    "reviewed": false
+  },
+  {
+    "char": "铁",
+    "readings": [
+      {
+        "am": "thiết",
+        "meaning_vi": "sắt, kim loại sắt"
+      }
+    ],
+    "reviewed": false
+  },
+  {
+    "char": "庭",
+    "readings": [
+      {
+        "am": "đình",
+        "meaning_vi": "sân, nhà, triều đình"
+      }
+    ],
+    "reviewed": false
+  },
+  {
+    "char": "停",
+    "readings": [
+      {
+        "am": "đình",
+        "meaning_vi": "dừng lại, ngừng"
+      }
+    ],
+    "reviewed": false
+  },
+  {
+    "char": "挺",
+    "readings": [
+      {
+        "am": "đĩnh",
+        "meaning_vi": "thẳng, nổi bật, chống đỡ"
+      }
+    ],
+    "reviewed": false
+  },
+  {
+    "char": "通",
+    "readings": [
+      {
+        "am": "thông",
+        "meaning_vi": "suốt, thông suốt, thông thạo"
+      }
+    ],
+    "reviewed": false
+  },
+  {
+    "char": "头",
+    "readings": [
+      {
+        "am": "đầu",
+        "meaning_vi": "cái đầu, đứng đầu"
+      }
+    ],
+    "reviewed": false
+  },
+  {
+    "char": "推",
+    "readings": [
+      {
+        "am": "suy",
+        "meaning_vi": "suy xét, suy đoán"
+      },
+      {
+        "am": "thôi",
+        "meaning_vi": "đẩy, thoái thác"
+      }
+    ],
+    "reviewed": false
+  },
+  {
+    "char": "腿",
+    "readings": [
+      {
+        "am": "thối",
+        "meaning_vi": "cái đùi, chân"
+      }
+    ],
+    "reviewed": false
+  },
+  {
+    "char": "完",
+    "readings": [
+      {
+        "am": "hoàn",
+        "meaning_vi": "xong, trọn vẹn"
+      }
+    ],
+    "reviewed": false
+  },
+  {
+    "char": "碗",
+    "readings": [
+      {
+        "am": "oản",
+        "meaning_vi": "cái bát, chén"
+      }
+    ],
+    "reviewed": false
+  },
+  {
+    "char": "万",
+    "readings": [
+      {
+        "am": "vạn",
+        "meaning_vi": "mười nghìn, muôn"
+      },
+      {
+        "am": "mặc",
+        "meaning_vi": "họ Mặc Kỳ (万俟)"
+      }
+    ],
+    "reviewed": false
+  },
+  {
+    "char": "王",
+    "readings": [
+      {
+        "am": "vương",
+        "meaning_vi": "vua, bậc quân chủ"
+      },
+      {
+        "am": "vượng",
+        "meaning_vi": "hưng thịnh, làm vua"
+      }
+    ],
+    "reviewed": false
+  },
+  {
+    "char": "往",
+    "readings": [
+      {
+        "am": "vãng",
+        "meaning_vi": "đi, đã qua"
+      }
+    ],
+    "reviewed": false
+  },
+  {
+    "char": "为",
+    "readings": [
+      {
+        "am": "vi",
+        "meaning_vi": "làm, là"
+      },
+      {
+        "am": "vị",
+        "meaning_vi": "vì, bởi, giúp"
+      }
+    ],
+    "reviewed": false
+  },
+  {
+    "char": "位",
+    "readings": [
+      {
+        "am": "vị",
+        "meaning_vi": "ngôi, chỗ, địa vị"
+      }
+    ],
+    "reviewed": false
+  },
+  {
+    "char": "味",
+    "readings": [
+      {
+        "am": "vị",
+        "meaning_vi": "mùi vị, nếm"
+      }
+    ],
+    "reviewed": false
+  },
+  {
+    "char": "喂",
+    "readings": [
+      {
+        "am": "uý",
+        "meaning_vi": "này, alô; cho ăn"
+      }
+    ],
+    "reviewed": false
+  },
+  {
+    "char": "温",
+    "readings": [
+      {
+        "am": "ôn",
+        "meaning_vi": "ấm, ôn hòa, ôn tập"
+      }
+    ],
+    "reviewed": false
+  },
+  {
+    "char": "闻",
+    "readings": [
+      {
+        "am": "văn",
+        "meaning_vi": "nghe, tin tức"
+      },
+      {
+        "am": "vấn",
+        "meaning_vi": "ngửi, tiếng tăm"
+      }
+    ],
+    "reviewed": false
+  },
+  {
+    "char": "务",
+    "readings": [
+      {
+        "am": "vụ",
+        "meaning_vi": "việc, công việc, chuyên chú"
+      }
+    ],
+    "reviewed": false
+  },
+  {
+    "char": "物",
+    "readings": [
+      {
+        "am": "vật",
+        "meaning_vi": "đồ vật, sự vật"
+      }
+    ],
+    "reviewed": false
+  },
+  {
+    "char": "夏",
+    "readings": [
+      {
+        "am": "hạ",
+        "meaning_vi": "mùa hè; nước Hạ, người Hoa"
+      }
+    ],
+    "reviewed": false
+  },
+  {
+    "char": "相",
+    "readings": [
+      {
+        "am": "tương",
+        "meaning_vi": "lẫn nhau, cùng"
+      },
+      {
+        "am": "tướng",
+        "meaning_vi": "hình dáng, quan tể tướng"
+      }
+    ],
+    "reviewed": false
+  },
+  {
+    "char": "响",
+    "readings": [
+      {
+        "am": "hưởng",
+        "meaning_vi": "tiếng vang, âm thanh"
+      }
+    ],
+    "reviewed": false
+  },
+  {
+    "char": "向",
+    "readings": [
+      {
+        "am": "hướng",
+        "meaning_vi": "phương hướng, hướng về"
+      },
+      {
+        "am": "hưởng",
+        "meaning_vi": "hướng về, ngả theo"
+      }
+    ],
+    "reviewed": false
+  },
+  {
+    "char": "像",
+    "readings": [
+      {
+        "am": "tượng",
+        "meaning_vi": "hình tượng, giống"
+      }
+    ],
+    "reviewed": false
+  },
+  {
+    "char": "鞋",
+    "readings": [
+      {
+        "am": "hài",
+        "meaning_vi": "giày, dép"
+      }
+    ],
+    "reviewed": false
+  },
+  {
+    "char": "心",
+    "readings": [
+      {
+        "am": "tâm",
+        "meaning_vi": "tim, lòng, tâm tính"
+      }
+    ],
+    "reviewed": false
+  },
+  {
+    "char": "信",
+    "readings": [
+      {
+        "am": "tín",
+        "meaning_vi": "tin, thư tín, uy tín"
+      },
+      {
+        "am": "thân",
+        "meaning_vi": "duỗi ra (như 伸)"
+      }
+    ],
+    "reviewed": false
+  },
+  {
+    "char": "姓",
+    "readings": [
+      {
+        "am": "tính",
+        "meaning_vi": "họ, họ tên"
+      }
+    ],
+    "reviewed": false
+  },
+  {
+    "char": "须",
+    "readings": [
+      {
+        "am": "tu",
+        "meaning_vi": "cần phải; râu; chốc lát (tu du)"
+      }
+    ],
+    "reviewed": true
+  },
+  {
+    "char": "许",
+    "readings": [
+      {
+        "am": "hứa",
+        "meaning_vi": "hứa, cho phép"
+      },
+      {
+        "am": "hử",
+        "meaning_vi": "nơi chốn, khoảng chừng"
+      }
+    ],
+    "reviewed": false
+  },
+  {
+    "char": "选",
+    "readings": [
+      {
+        "am": "tuyển",
+        "meaning_vi": "chọn lựa"
+      }
+    ],
+    "reviewed": false
+  },
+  {
+    "char": "雪",
+    "readings": [
+      {
+        "am": "tuyết",
+        "meaning_vi": "tuyết; rửa sạch"
+      }
+    ],
+    "reviewed": false
+  },
+  {
+    "char": "言",
+    "readings": [
+      {
+        "am": "ngôn",
+        "meaning_vi": "lời nói, nói"
+      }
+    ],
+    "reviewed": false
+  },
+  {
+    "char": "颜",
+    "readings": [
+      {
+        "am": "nhan",
+        "meaning_vi": "mặt, sắc mặt, màu sắc"
+      }
+    ],
+    "reviewed": false
+  },
+  {
+    "char": "眼",
+    "readings": [
+      {
+        "am": "nhãn",
+        "meaning_vi": "mắt"
+      }
+    ],
+    "reviewed": false
+  },
+  {
+    "char": "阳",
+    "readings": [
+      {
+        "am": "dương",
+        "meaning_vi": "mặt trời, dương"
+      }
+    ],
+    "reviewed": false
+  },
+  {
+    "char": "养",
+    "readings": [
+      {
+        "am": "dưỡng",
+        "meaning_vi": "nuôi, nuôi dưỡng"
+      },
+      {
+        "am": "dượng",
+        "meaning_vi": "phụng dưỡng người trên"
+      }
+    ],
+    "reviewed": false
+  },
+  {
+    "char": "药",
+    "readings": [
+      {
+        "am": "dược",
+        "meaning_vi": "thuốc"
+      }
+    ],
+    "reviewed": false
+  },
+  {
+    "char": "业",
+    "readings": [
+      {
+        "am": "nghiệp",
+        "meaning_vi": "nghề, sự nghiệp"
+      }
+    ],
+    "reviewed": false
+  },
+  {
+    "char": "夜",
+    "readings": [
+      {
+        "am": "dạ",
+        "meaning_vi": "đêm"
+      }
+    ],
+    "reviewed": false
+  },
+  {
+    "char": "宜",
+    "readings": [
+      {
+        "am": "nghi",
+        "meaning_vi": "thích hợp, nên"
+      }
+    ],
+    "reviewed": false
+  },
+  {
+    "char": "已",
+    "readings": [
+      {
+        "am": "dĩ",
+        "meaning_vi": "đã, thôi"
+      }
+    ],
+    "reviewed": false
+  },
+  {
+    "char": "以",
+    "readings": [
+      {
+        "am": "dĩ",
+        "meaning_vi": "lấy, để, dùng"
+      }
+    ],
+    "reviewed": false
+  },
+  {
+    "char": "椅",
+    "readings": [
+      {
+        "am": "ỷ",
+        "meaning_vi": "ghế dựa"
+      },
+      {
+        "am": "y",
+        "meaning_vi": "cây y (cây thuộc loại thân gỗ)"
+      }
+    ],
+    "reviewed": false
+  },
+  {
+    "char": "亿",
+    "readings": [
+      {
+        "am": "ức",
+        "meaning_vi": "trăm triệu"
+      }
+    ],
+    "reviewed": false
+  },
+  {
+    "char": "意",
+    "readings": [
+      {
+        "am": "ý",
+        "meaning_vi": "ý nghĩ, ý muốn"
+      }
+    ],
+    "reviewed": false
+  },
+  {
+    "char": "因",
+    "readings": [
+      {
+        "am": "nhân",
+        "meaning_vi": "nguyên nhân, bởi vì"
+      }
+    ],
+    "reviewed": false
+  },
+  {
+    "char": "阴",
+    "readings": [
+      {
+        "am": "âm",
+        "meaning_vi": "âm, bóng râm, mặt trăng"
+      }
+    ],
+    "reviewed": false
+  },
+  {
+    "char": "音",
+    "readings": [
+      {
+        "am": "âm",
+        "meaning_vi": "âm thanh, tiếng"
+      }
+    ],
+    "reviewed": false
+  },
+  {
+    "char": "银",
+    "readings": [
+      {
+        "am": "ngân",
+        "meaning_vi": "bạc, tiền"
+      }
+    ],
+    "reviewed": false
+  },
+  {
+    "char": "印",
+    "readings": [
+      {
+        "am": "ấn",
+        "meaning_vi": "con dấu, in"
+      }
+    ],
+    "reviewed": false
+  },
+  {
+    "char": "应",
+    "readings": [
+      {
+        "am": "ứng",
+        "meaning_vi": "đáp lại, ứng phó"
+      },
+      {
+        "am": "ưng",
+        "meaning_vi": "nên, đáng"
+      }
+    ],
+    "reviewed": false
+  },
+  {
+    "char": "英",
+    "readings": [
+      {
+        "am": "anh",
+        "meaning_vi": "hoa, tinh anh, anh tuấn"
+      }
+    ],
+    "reviewed": false
+  },
+  {
+    "char": "迎",
+    "readings": [
+      {
+        "am": "nghênh",
+        "meaning_vi": "đón, đón tiếp"
+      }
+    ],
+    "reviewed": false
+  },
+  {
+    "char": "永",
+    "readings": [
+      {
+        "am": "vĩnh",
+        "meaning_vi": "lâu dài, mãi mãi"
+      }
+    ],
+    "reviewed": false
+  },
+  {
+    "char": "由",
+    "readings": [
+      {
+        "am": "do",
+        "meaning_vi": "bởi, từ, nguyên do"
+      }
+    ],
+    "reviewed": false
+  },
+  {
+    "char": "油",
+    "readings": [
+      {
+        "am": "du",
+        "meaning_vi": "dầu, mỡ"
+      }
+    ],
+    "reviewed": false
+  },
+  {
+    "char": "游",
+    "readings": [
+      {
+        "am": "du",
+        "meaning_vi": "chơi, đi chơi, bơi"
+      }
+    ],
+    "reviewed": false
+  },
+  {
+    "char": "又",
+    "readings": [
+      {
+        "am": "hựu",
+        "meaning_vi": "lại, lại nữa"
+      }
+    ],
+    "reviewed": false
+  },
+  {
+    "char": "于",
+    "readings": [
+      {
+        "am": "vu",
+        "meaning_vi": "ở, tại, đến"
+      },
+      {
+        "am": "ư",
+        "meaning_vi": "ở, tại (於)"
+      }
+    ],
+    "reviewed": false
+  },
+  {
+    "char": "鱼",
+    "readings": [
+      {
+        "am": "ngư",
+        "meaning_vi": "con cá"
+      }
+    ],
+    "reviewed": false
+  },
+  {
+    "char": "育",
+    "readings": [
+      {
+        "am": "dục",
+        "meaning_vi": "nuôi dưỡng, giáo dục"
+      }
+    ],
+    "reviewed": false
+  },
+  {
+    "char": "园",
+    "readings": [
+      {
+        "am": "viên",
+        "meaning_vi": "vườn"
+      }
+    ],
+    "reviewed": false
+  },
+  {
+    "char": "原",
+    "readings": [
+      {
+        "am": "nguyên",
+        "meaning_vi": "gốc, đồng bằng, ban đầu"
+      }
+    ],
+    "reviewed": false
+  },
+  {
+    "char": "愿",
+    "readings": [
+      {
+        "am": "nguyện",
+        "meaning_vi": "muốn, mong, ước nguyện"
+      }
+    ],
+    "reviewed": false
+  },
+  {
+    "char": "越",
+    "readings": [
+      {
+        "am": "việt",
+        "meaning_vi": "vượt qua, nước Việt"
+      }
+    ],
+    "reviewed": false
+  },
+  {
+    "char": "云",
+    "readings": [
+      {
+        "am": "vân",
+        "meaning_vi": "mây (雲); nói rằng (云)"
+      }
+    ],
+    "reviewed": true
+  },
+  {
+    "char": "运",
+    "readings": [
+      {
+        "am": "vận",
+        "meaning_vi": "vận chuyển, vận mệnh"
+      }
+    ],
+    "reviewed": false
+  },
+  {
+    "char": "咱",
+    "readings": [
+      {
+        "am": "chúng",
+        "meaning_vi": "chúng ta (khẩu ngữ)"
+      }
+    ],
+    "reviewed": false
+  },
+  {
+    "char": "脏",
+    "readings": [
+      {
+        "am": "tạng",
+        "meaning_vi": "nội tạng (臟)"
+      },
+      {
+        "am": "tang",
+        "meaning_vi": "bẩn, dơ (髒)"
+      }
+    ],
+    "reviewed": false
+  },
+  {
+    "char": "澡",
+    "readings": [
+      {
+        "am": "tảo",
+        "meaning_vi": "tắm rửa"
+      }
+    ],
+    "reviewed": false
+  },
+  {
+    "char": "占",
+    "readings": [
+      {
+        "am": "chiếm",
+        "meaning_vi": "chiếm giữ"
+      },
+      {
+        "am": "chiêm",
+        "meaning_vi": "bói, xem điềm"
+      }
+    ],
+    "reviewed": false
+  },
+  {
+    "char": "照",
+    "readings": [
+      {
+        "am": "chiếu",
+        "meaning_vi": "soi, chiếu sáng"
+      }
+    ],
+    "reviewed": false
+  },
+  {
+    "char": "者",
+    "readings": [
+      {
+        "am": "giả",
+        "meaning_vi": "người (làm việc gì), kẻ"
+      }
+    ],
+    "reviewed": false
+  },
+  {
+    "char": "直",
+    "readings": [
+      {
+        "am": "trực",
+        "meaning_vi": "thẳng, ngay thẳng"
+      }
+    ],
+    "reviewed": false
+  },
+  {
+    "char": "只",
+    "readings": [
+      {
+        "am": "chỉ",
+        "meaning_vi": "chỉ, chỉ có"
+      },
+      {
+        "am": "chích",
+        "meaning_vi": "chiếc, một mình (隻)"
+      },
+      {
+        "am": "chi",
+        "meaning_vi": "trợ từ cuối câu (只)"
+      }
+    ],
+    "reviewed": false
+  },
+  {
+    "char": "纸",
+    "readings": [
+      {
+        "am": "chỉ",
+        "meaning_vi": "giấy"
+      }
+    ],
+    "reviewed": false
+  },
+  {
+    "char": "钟",
+    "readings": [
+      {
+        "am": "chung",
+        "meaning_vi": "chuông, đồng hồ, chén"
+      }
+    ],
+    "reviewed": false
+  },
+  {
+    "char": "周",
+    "readings": [
+      {
+        "am": "chu",
+        "meaning_vi": "vòng quanh, tuần, nhà Chu"
+      }
+    ],
+    "reviewed": false
+  },
+  {
+    "char": "主",
+    "readings": [
+      {
+        "am": "chủ",
+        "meaning_vi": "chủ, người đứng đầu"
+      }
+    ],
+    "reviewed": false
+  },
+  {
+    "char": "助",
+    "readings": [
+      {
+        "am": "trợ",
+        "meaning_vi": "giúp đỡ"
+      }
+    ],
+    "reviewed": false
+  },
+  {
+    "char": "装",
+    "readings": [
+      {
+        "am": "trang",
+        "meaning_vi": "trang phục, trang bị, giả vờ"
+      }
+    ],
+    "reviewed": false
+  },
+  {
+    "char": "自",
+    "readings": [
+      {
+        "am": "tự",
+        "meaning_vi": "tự mình, từ"
+      }
+    ],
+    "reviewed": false
+  },
+  {
+    "char": "租",
+    "readings": [
+      {
+        "am": "tô",
+        "meaning_vi": "thuê, thuế ruộng"
+      }
+    ],
+    "reviewed": false
+  },
+  {
+    "char": "组",
+    "readings": [
+      {
+        "am": "tổ",
+        "meaning_vi": "tổ chức, nhóm"
+      }
+    ],
+    "reviewed": false
+  },
+  {
+    "char": "嘴",
+    "readings": [
+      {
+        "am": "chuỷ",
+        "meaning_vi": "cái miệng, mỏ"
+      }
+    ],
+    "reviewed": false
+  },
+  {
+    "char": "座",
+    "readings": [
+      {
+        "am": "tòa",
+        "meaning_vi": "chỗ ngồi, tòa"
+      }
+    ],
+    "reviewed": false
+  },
+  {
+    "char": "按",
+    "readings": [
+      {
+        "am": "án",
+        "meaning_vi": "đè, ấn xuống; theo, dựa vào"
+      }
+    ],
+    "reviewed": false
+  },
+  {
+    "char": "把",
+    "readings": [
+      {
+        "am": "bả",
+        "meaning_vi": "nắm, cầm; một nắm"
+      },
+      {
+        "am": "bá",
+        "meaning_vi": "cán, chuôi; quyền bính"
+      }
+    ],
+    "reviewed": false
+  },
+  {
+    "char": "搬",
+    "readings": [
+      {
+        "am": "ban",
+        "meaning_vi": "dọn, chuyển, khuân vác"
+      }
+    ],
+    "reviewed": false
+  },
+  {
+    "char": "保",
+    "readings": [
+      {
+        "am": "bảo",
+        "meaning_vi": "giữ gìn, bảo vệ, bảo đảm"
+      }
+    ],
+    "reviewed": false
+  },
+  {
+    "char": "被",
+    "readings": [
+      {
+        "am": "bị",
+        "meaning_vi": "chịu, bị; cái chăn"
+      },
+      {
+        "am": "bí",
+        "meaning_vi": "phủ lên, che trùm"
+      }
+    ],
+    "reviewed": false
+  },
+  {
+    "char": "币",
+    "readings": [
+      {
+        "am": "tệ",
+        "meaning_vi": "tiền tệ"
+      }
+    ],
+    "reviewed": false
+  },
+  {
+    "char": "标",
+    "readings": [
+      {
+        "am": "tiêu",
+        "meaning_vi": "dấu hiệu, mục tiêu, nêu lên"
+      }
+    ],
+    "reviewed": false
+  },
+  {
+    "char": "并",
+    "readings": [
+      {
+        "am": "tịnh",
+        "meaning_vi": "cùng, đều, hợp lại"
+      },
+      {
+        "am": "tinh",
+        "meaning_vi": "hợp nhất, gồm thâu"
+      }
+    ],
+    "reviewed": false
+  },
+  {
+    "char": "播",
+    "readings": [
+      {
+        "am": "bá",
+        "meaning_vi": "gieo, truyền, phát tán"
+      }
+    ],
+    "reviewed": false
+  },
+  {
+    "char": "补",
+    "readings": [
+      {
+        "am": "bổ",
+        "meaning_vi": "vá, sửa; bồi bổ"
+      }
+    ],
+    "reviewed": false
+  },
+  {
+    "char": "布",
+    "readings": [
+      {
+        "am": "bố",
+        "meaning_vi": "vải; bày ra, ban bố"
+      }
+    ],
+    "reviewed": false
+  },
+  {
+    "char": "步",
+    "readings": [
+      {
+        "am": "bộ",
+        "meaning_vi": "bước đi; bước, cách"
+      }
+    ],
+    "reviewed": false
+  },
+  {
+    "char": "材",
+    "readings": [
+      {
+        "am": "tài",
+        "meaning_vi": "gỗ, vật liệu; tài chất"
+      }
+    ],
+    "reviewed": false
+  },
+  {
+    "char": "采",
+    "readings": [
+      {
+        "am": "thái",
+        "meaning_vi": "hái, lượm; vẻ, sắc"
+      },
+      {
+        "am": "thải",
+        "meaning_vi": "hái, chọn lấy"
+      }
+    ],
+    "reviewed": false
+  },
+  {
+    "char": "彩",
+    "readings": [
+      {
+        "am": "thải",
+        "meaning_vi": "màu sắc, rực rỡ"
+      }
+    ],
+    "reviewed": false
+  },
+  {
+    "char": "曾",
+    "readings": [
+      {
+        "am": "tằng",
+        "meaning_vi": "từng; tầng, chồng (tằng tôn)"
+      },
+      {
+        "am": "tăng",
+        "meaning_vi": "họ Tăng"
+      }
+    ],
+    "reviewed": false
+  },
+  {
+    "char": "察",
+    "readings": [
+      {
+        "am": "sát",
+        "meaning_vi": "xét, xem xét kỹ"
+      }
+    ],
+    "reviewed": false
+  },
+  {
+    "char": "产",
+    "readings": [
+      {
+        "am": "sản",
+        "meaning_vi": "sinh đẻ, sản xuất, tài sản"
+      }
+    ],
+    "reviewed": false
+  },
+  {
+    "char": "厂",
+    "readings": [
+      {
+        "am": "xưởng",
+        "meaning_vi": "nhà máy, xưởng"
+      },
+      {
+        "am": "hán",
+        "meaning_vi": "sườn núi, bộ Hán"
+      }
+    ],
+    "reviewed": false
+  },
+  {
+    "char": "朝",
+    "readings": [
+      {
+        "am": "triều",
+        "meaning_vi": "triều đình; hướng về"
+      },
+      {
+        "am": "trào",
+        "meaning_vi": "buổi sáng (triêu)"
+      },
+      {
+        "am": "triêu",
+        "meaning_vi": "buổi sáng sớm"
+      }
+    ],
+    "reviewed": false
+  },
+  {
+    "char": "吵",
+    "readings": [
+      {
+        "am": "sảo",
+        "meaning_vi": "ồn ào, cãi nhau"
+      }
+    ],
+    "reviewed": false
+  },
+  {
+    "char": "衬",
+    "readings": [
+      {
+        "am": "sấn",
+        "meaning_vi": "lót trong, áo lót; làm nền"
+      }
+    ],
+    "reviewed": false
+  },
+  {
+    "char": "城",
+    "readings": [
+      {
+        "am": "thành",
+        "meaning_vi": "tường thành, thành phố"
+      }
+    ],
+    "reviewed": false
+  },
+  {
+    "char": "程",
+    "readings": [
+      {
+        "am": "trình",
+        "meaning_vi": "đường đi, quy trình, hạn độ"
+      }
+    ],
+    "reviewed": false
+  },
+  {
+    "char": "持",
+    "readings": [
+      {
+        "am": "trì",
+        "meaning_vi": "cầm giữ, giữ vững"
+      }
+    ],
+    "reviewed": false
+  },
+  {
+    "char": "充",
+    "readings": [
+      {
+        "am": "sung",
+        "meaning_vi": "đầy đủ, bù vào, làm giả"
+      }
+    ],
+    "reviewed": false
+  },
+  {
+    "char": "初",
+    "readings": [
+      {
+        "am": "sơ",
+        "meaning_vi": "lúc đầu, ban đầu"
+      }
+    ],
+    "reviewed": false
+  },
+  {
+    "char": "除",
+    "readings": [
+      {
+        "am": "trừ",
+        "meaning_vi": "bỏ đi, trừ khử; phép chia"
+      }
+    ],
+    "reviewed": false
+  },
+  {
+    "char": "础",
+    "readings": [
+      {
+        "am": "sở",
+        "meaning_vi": "đá tảng kê chân cột, nền móng"
+      }
+    ],
+    "reviewed": false
+  },
+  {
+    "char": "传",
+    "readings": [
+      {
+        "am": "truyền",
+        "meaning_vi": "trao lại, lan truyền"
+      },
+      {
+        "am": "truyện",
+        "meaning_vi": "truyện, sách ghi chép"
+      }
+    ],
+    "reviewed": false
+  },
+  {
+    "char": "创",
+    "readings": [
+      {
+        "am": "sáng",
+        "meaning_vi": "khởi đầu, làm ra cái mới"
+      },
+      {
+        "am": "sang",
+        "meaning_vi": "vết thương"
+      }
+    ],
+    "reviewed": false
+  },
+  {
+    "char": "此",
+    "readings": [
+      {
+        "am": "thử",
+        "meaning_vi": "này, cái này"
+      }
+    ],
+    "reviewed": false
+  },
+  {
+    "char": "村",
+    "readings": [
+      {
+        "am": "thôn",
+        "meaning_vi": "làng, xóm"
+      }
+    ],
+    "reviewed": false
+  },
+  {
+    "char": "存",
+    "readings": [
+      {
+        "am": "tồn",
+        "meaning_vi": "còn, giữ lại, lưu giữ"
+      }
+    ],
+    "reviewed": false
+  },
+  {
+    "char": "达",
+    "readings": [
+      {
+        "am": "đạt",
+        "meaning_vi": "thông suốt, đến, thành công"
+      }
+    ],
+    "reviewed": false
+  },
+  {
+    "char": "代",
+    "readings": [
+      {
+        "am": "đại",
+        "meaning_vi": "thay thế, đời, thời đại"
+      }
+    ],
+    "reviewed": false
+  },
+  {
+    "char": "待",
+    "readings": [
+      {
+        "am": "đãi",
+        "meaning_vi": "đối xử, chiêu đãi"
+      },
+      {
+        "am": "đại",
+        "meaning_vi": "chờ đợi"
+      }
+    ],
+    "reviewed": false
+  },
+  {
+    "char": "刀",
+    "readings": [
+      {
+        "am": "đao",
+        "meaning_vi": "con dao, binh khí"
+      }
+    ],
+    "reviewed": false
+  },
+  {
+    "char": "导",
+    "readings": [
+      {
+        "am": "đạo",
+        "meaning_vi": "dẫn dắt, hướng dẫn"
+      }
+    ],
+    "reviewed": false
+  },
+  {
+    "char": "底",
+    "readings": [
+      {
+        "am": "để",
+        "meaning_vi": "đáy, nền, gốc"
+      }
+    ],
+    "reviewed": false
+  },
+  {
+    "char": "调",
+    "readings": [
+      {
+        "am": "điều",
+        "meaning_vi": "điều hòa, điều chỉnh"
+      },
+      {
+        "am": "điệu",
+        "meaning_vi": "giọng điệu, âm điệu"
+      }
+    ],
+    "reviewed": false
+  },
+  {
+    "char": "订",
+    "readings": [
+      {
+        "am": "đính",
+        "meaning_vi": "đặt, ký kết, sửa cho đúng"
+      }
+    ],
+    "reviewed": false
+  },
+  {
+    "char": "断",
+    "readings": [
+      {
+        "am": "đoạn",
+        "meaning_vi": "cắt đứt, dứt, phán đoán"
+      }
+    ],
+    "reviewed": false
+  },
+  {
+    "char": "顿",
+    "readings": [
+      {
+        "am": "đốn",
+        "meaning_vi": "dừng, bữa, chốc lát"
+      }
+    ],
+    "reviewed": false
+  },
+  {
+    "char": "烦",
+    "readings": [
+      {
+        "am": "phiền",
+        "meaning_vi": "buồn bực, rắc rối, làm phiền"
+      }
+    ],
+    "reviewed": false
+  },
+  {
+    "char": "反",
+    "readings": [
+      {
+        "am": "phản",
+        "meaning_vi": "trái lại, chống lại"
+      },
+      {
+        "am": "phiên",
+        "meaning_vi": "lật lại (ít dùng)"
+      }
+    ],
+    "reviewed": false
+  },
+  {
+    "char": "范",
+    "readings": [
+      {
+        "am": "phạm",
+        "meaning_vi": "khuôn mẫu, phạm vi, họ Phạm"
+      }
+    ],
+    "reviewed": false
+  },
+  {
+    "char": "防",
+    "readings": [
+      {
+        "am": "phòng",
+        "meaning_vi": "ngăn ngừa, phòng bị"
+      }
+    ],
+    "reviewed": false
+  },
+  {
+    "char": "访",
+    "readings": [
+      {
+        "am": "phỏng",
+        "meaning_vi": "thăm hỏi, tìm hỏi"
+      }
+    ],
+    "reviewed": false
+  },
+  {
+    "char": "啡",
+    "readings": [
+      {
+        "am": "phê",
+        "meaning_vi": "dùng trong cà phê"
+      }
+    ],
+    "reviewed": false
+  },
+  {
+    "char": "费",
+    "readings": [
+      {
+        "am": "phí",
+        "meaning_vi": "tiêu tốn, chi phí"
+      }
+    ],
+    "reviewed": false
+  },
+  {
+    "char": "丰",
+    "readings": [
+      {
+        "am": "phong",
+        "meaning_vi": "dồi dào, phong phú"
+      }
+    ],
+    "reviewed": false
+  },
+  {
+    "char": "否",
+    "readings": [
+      {
+        "am": "phủ",
+        "meaning_vi": "không, phủ nhận"
+      },
+      {
+        "am": "bĩ",
+        "meaning_vi": "xấu, bế tắc"
+      }
+    ],
+    "reviewed": false
+  },
+  {
+    "char": "夫",
+    "readings": [
+      {
+        "am": "phu",
+        "meaning_vi": "chồng, đàn ông, người làm việc"
+      },
+      {
+        "am": "phù",
+        "meaning_vi": "trợ từ, vậy, ấy"
+      }
+    ],
+    "reviewed": false
+  },
+  {
+    "char": "福",
+    "readings": [
+      {
+        "am": "phúc",
+        "meaning_vi": "điều tốt lành, may mắn"
+      }
+    ],
+    "reviewed": false
+  },
+  {
+    "char": "父",
+    "readings": [
+      {
+        "am": "phụ",
+        "meaning_vi": "cha"
+      },
+      {
+        "am": "phủ",
+        "meaning_vi": "tiếng gọi tôn xưng đàn ông"
+      }
+    ],
+    "reviewed": false
+  },
+  {
+    "char": "付",
+    "readings": [
+      {
+        "am": "phó",
+        "meaning_vi": "giao cho, trả tiền"
+      }
+    ],
+    "reviewed": false
+  },
+  {
+    "char": "负",
+    "readings": [
+      {
+        "am": "phụ",
+        "meaning_vi": "mang vác, cô phụ, thua"
+      }
+    ],
+    "reviewed": false
+  },
+  {
+    "char": "富",
+    "readings": [
+      {
+        "am": "phú",
+        "meaning_vi": "giàu có, dồi dào"
+      }
+    ],
+    "reviewed": false
+  },
+  {
+    "char": "概",
+    "readings": [
+      {
+        "am": "khái",
+        "meaning_vi": "đại khái, chung, phong thái"
+      }
+    ],
+    "reviewed": false
+  },
+  {
+    "char": "赶",
+    "readings": [
+      {
+        "am": "cản",
+        "meaning_vi": "đuổi theo, đuổi kịp"
+      }
+    ],
+    "reviewed": false
+  },
+  {
+    "char": "敢",
+    "readings": [
+      {
+        "am": "cảm",
+        "meaning_vi": "dám, dũng cảm"
+      }
+    ],
+    "reviewed": false
+  },
+  {
+    "char": "格",
+    "readings": [
+      {
+        "am": "cách",
+        "meaning_vi": "khuôn khổ, phép tắc, ô"
+      },
+      {
+        "am": "các",
+        "meaning_vi": "cây cành dài (hiếm)"
+      }
+    ],
+    "reviewed": false
+  },
+  {
+    "char": "各",
+    "readings": [
+      {
+        "am": "các",
+        "meaning_vi": "mỗi, các"
+      }
+    ],
+    "reviewed": false
+  },
+  {
+    "char": "根",
+    "readings": [
+      {
+        "am": "căn",
+        "meaning_vi": "rễ, gốc"
+      }
+    ],
+    "reviewed": false
+  },
+  {
+    "char": "功",
+    "readings": [
+      {
+        "am": "công",
+        "meaning_vi": "công lao, hiệu quả"
+      }
+    ],
+    "reviewed": false
+  },
+  {
+    "char": "姑",
+    "readings": [
+      {
+        "am": "cô",
+        "meaning_vi": "cô, chị em gái của cha"
+      }
+    ],
+    "reviewed": false
+  },
+  {
+    "char": "古",
+    "readings": [
+      {
+        "am": "cổ",
+        "meaning_vi": "xưa, cũ"
+      }
+    ],
+    "reviewed": false
+  },
+  {
+    "char": "挂",
+    "readings": [
+      {
+        "am": "quải",
+        "meaning_vi": "treo, móc"
+      }
+    ],
+    "reviewed": false
+  },
+  {
+    "char": "怪",
+    "readings": [
+      {
+        "am": "quái",
+        "meaning_vi": "lạ, kỳ quái, trách"
+      }
+    ],
+    "reviewed": false
+  },
+  {
+    "char": "管",
+    "readings": [
+      {
+        "am": "quản",
+        "meaning_vi": "ống, trông coi, quản lý"
+      }
+    ],
+    "reviewed": false
+  },
+  {
+    "char": "光",
+    "readings": [
+      {
+        "am": "quang",
+        "meaning_vi": "ánh sáng, sáng"
+      }
+    ],
+    "reviewed": false
+  },
+  {
+    "char": "规",
+    "readings": [
+      {
+        "am": "quy",
+        "meaning_vi": "compa, phép tắc, quy củ"
+      }
+    ],
+    "reviewed": false
+  },
+  {
+    "char": "哈",
+    "readings": [
+      {
+        "am": "cáp",
+        "meaning_vi": "tiếng cười, ha, hà hơi"
+      },
+      {
+        "am": "ha",
+        "meaning_vi": "tiếng cười ha ha"
+      }
+    ],
+    "reviewed": false
+  },
+  {
+    "char": "害",
+    "readings": [
+      {
+        "am": "hại",
+        "meaning_vi": "làm hại, tai hại"
+      }
+    ],
+    "reviewed": false
+  },
+  {
+    "char": "何",
+    "readings": [
+      {
+        "am": "hà",
+        "meaning_vi": "sao, gì, nào"
+      }
+    ],
+    "reviewed": false
+  },
+  {
+    "char": "互",
+    "readings": [
+      {
+        "am": "hỗ",
+        "meaning_vi": "lẫn nhau, qua lại"
+      }
+    ],
+    "reviewed": false
+  },
+  {
+    "char": "华",
+    "readings": [
+      {
+        "am": "hoa",
+        "meaning_vi": "đẹp, tinh hoa, Trung Hoa"
+      },
+      {
+        "am": "hóa",
+        "meaning_vi": "họ Hóa, tên núi Hóa"
+      }
+    ],
+    "reviewed": false
+  },
+  {
+    "char": "化",
+    "readings": [
+      {
+        "am": "hóa",
+        "meaning_vi": "biến đổi, cảm hóa"
+      }
+    ],
+    "reviewed": false
+  },
+  {
+    "char": "环",
+    "readings": [
+      {
+        "am": "hoàn",
+        "meaning_vi": "vòng, vòng tròn, bao quanh"
+      }
+    ],
+    "reviewed": false
+  },
+  {
+    "char": "婚",
+    "readings": [
+      {
+        "am": "hôn",
+        "meaning_vi": "kết hôn, cưới hỏi"
+      }
+    ],
+    "reviewed": false
+  },
+  {
+    "char": "积",
+    "readings": [
+      {
+        "am": "tích",
+        "meaning_vi": "chất chứa, tích lũy"
+      }
+    ],
+    "reviewed": false
+  },
+  {
+    "char": "基",
+    "readings": [
+      {
+        "am": "cơ",
+        "meaning_vi": "nền móng, cơ sở"
+      }
+    ],
+    "reviewed": false
+  },
+  {
+    "char": "及",
+    "readings": [
+      {
+        "am": "cập",
+        "meaning_vi": "kịp, tới, và"
+      }
+    ],
+    "reviewed": false
+  },
+  {
+    "char": "极",
+    "readings": [
+      {
+        "am": "cực",
+        "meaning_vi": "rất, tột cùng, cực điểm"
+      }
+    ],
+    "reviewed": false
+  },
+  {
+    "char": "集",
+    "readings": [
+      {
+        "am": "tập",
+        "meaning_vi": "họp, tụ, tập hợp"
+      }
+    ],
+    "reviewed": false
+  },
+  {
+    "char": "纪",
+    "readings": [
+      {
+        "am": "kỷ",
+        "meaning_vi": "kỷ luật, ghi chép, thế kỷ"
+      }
+    ],
+    "reviewed": false
+  },
+  {
+    "char": "技",
+    "readings": [
+      {
+        "am": "kỹ",
+        "meaning_vi": "tài nghề, kỹ năng"
+      }
+    ],
+    "reviewed": false
+  },
+  {
+    "char": "济",
+    "readings": [
+      {
+        "am": "tế",
+        "meaning_vi": "giúp đỡ, cứu tế, qua sông"
+      },
+      {
+        "am": "tể",
+        "meaning_vi": "đông đúc (tể tể)"
+      }
+    ],
+    "reviewed": false
+  },
+  {
+    "char": "继",
+    "readings": [
+      {
+        "am": "kế",
+        "meaning_vi": "nối tiếp, kế thừa"
+      }
+    ],
+    "reviewed": false
+  },
+  {
+    "char": "价",
+    "readings": [
+      {
+        "am": "giá",
+        "meaning_vi": "giá cả, giá trị"
+      },
+      {
+        "am": "giới",
+        "meaning_vi": "người hầu, người đưa tin"
+      }
+    ],
+    "reviewed": false
+  },
+  {
+    "char": "架",
+    "readings": [
+      {
+        "am": "giá",
+        "meaning_vi": "giá đỡ, khung, cái giá"
+      }
+    ],
+    "reviewed": false
+  },
+  {
+    "char": "坚",
+    "readings": [
+      {
+        "am": "kiên",
+        "meaning_vi": "cứng, vững chắc"
+      }
+    ],
+    "reviewed": false
+  },
+  {
+    "char": "简",
+    "readings": [
+      {
+        "am": "giản",
+        "meaning_vi": "đơn giản, sơ lược, thẻ tre"
+      }
+    ],
+    "reviewed": false
+  },
+  {
+    "char": "建",
+    "readings": [
+      {
+        "am": "kiến",
+        "meaning_vi": "xây dựng, thiết lập"
+      }
+    ],
+    "reviewed": false
+  },
+  {
+    "char": "将",
+    "readings": [
+      {
+        "am": "tương",
+        "meaning_vi": "sắp, sẽ, tương lai"
+      },
+      {
+        "am": "tướng",
+        "meaning_vi": "tướng, người chỉ huy"
+      },
+      {
+        "am": "thương",
+        "meaning_vi": "xin, mời (cổ)"
+      }
+    ],
+    "reviewed": false
+  },
+  {
+    "char": "蕉",
+    "readings": [
+      {
+        "am": "tiêu",
+        "meaning_vi": "cây chuối"
+      }
+    ],
+    "reviewed": false
+  },
+  {
+    "char": "较",
+    "readings": [
+      {
+        "am": "giảo",
+        "meaning_vi": "so sánh, tương đối"
+      },
+      {
+        "am": "giác",
+        "meaning_vi": "so sánh (âm khác)"
+      }
+    ],
+    "reviewed": false
+  },
+  {
+    "char": "解",
+    "readings": [
+      {
+        "am": "giải",
+        "meaning_vi": "cởi, giải thích, giải quyết"
+      },
+      {
+        "am": "giới",
+        "meaning_vi": "giải đi, áp giải"
+      }
+    ],
+    "reviewed": true
+  },
+  {
+    "char": "界",
+    "readings": [
+      {
+        "am": "giới",
+        "meaning_vi": "ranh giới, cõi"
+      }
+    ],
+    "reviewed": false
+  },
+  {
+    "char": "金",
+    "readings": [
+      {
+        "am": "kim",
+        "meaning_vi": "vàng, kim loại"
+      }
+    ],
+    "reviewed": false
+  },
+  {
+    "char": "仅",
+    "readings": [
+      {
+        "am": "cận",
+        "meaning_vi": "chỉ, mới chỉ, gần"
+      }
+    ],
+    "reviewed": false
+  },
+  {
+    "char": "尽",
+    "readings": [
+      {
+        "am": "tận",
+        "meaning_vi": "hết, cùng tận, dốc hết"
+      }
+    ],
+    "reviewed": false
+  },
+  {
+    "char": "紧",
+    "readings": [
+      {
+        "am": "khẩn",
+        "meaning_vi": "gấp, chặt, căng"
+      }
+    ],
+    "reviewed": false
+  },
+  {
+    "char": "精",
+    "readings": [
+      {
+        "am": "tinh",
+        "meaning_vi": "tinh túy, tinh anh, giỏi"
+      }
+    ],
+    "reviewed": false
+  },
+  {
+    "char": "景",
+    "readings": [
+      {
+        "am": "cảnh",
+        "meaning_vi": "cảnh vật, phong cảnh"
+      },
+      {
+        "am": "ảnh",
+        "meaning_vi": "bóng (nghĩa cổ)"
+      }
+    ],
+    "reviewed": false
+  },
+  {
+    "char": "警",
+    "readings": [
+      {
+        "am": "cảnh",
+        "meaning_vi": "cảnh báo, cảnh sát"
+      }
+    ],
+    "reviewed": false
+  },
+  {
+    "char": "境",
+    "readings": [
+      {
+        "am": "cảnh",
+        "meaning_vi": "cõi, biên giới, hoàn cảnh"
+      }
+    ],
+    "reviewed": false
+  },
+  {
+    "char": "旧",
+    "readings": [
+      {
+        "am": "cựu",
+        "meaning_vi": "cũ, xưa"
+      }
+    ],
+    "reviewed": false
+  },
+  {
+    "char": "救",
+    "readings": [
+      {
+        "am": "cứu",
+        "meaning_vi": "cứu giúp, cứu vớt"
+      }
+    ],
+    "reviewed": false
+  },
+  {
+    "char": "具",
+    "readings": [
+      {
+        "am": "cụ",
+        "meaning_vi": "dụng cụ, đầy đủ, bày biện"
+      }
+    ],
+    "reviewed": false
+  },
+  {
+    "char": "剧",
+    "readings": [
+      {
+        "am": "kịch",
+        "meaning_vi": "kịch, vở diễn, dữ dội"
+      }
+    ],
+    "reviewed": false
+  },
+  {
+    "char": "据",
+    "readings": [
+      {
+        "am": "cứ",
+        "meaning_vi": "căn cứ, chứng cứ"
+      }
+    ],
+    "reviewed": false
+  },
+  {
+    "char": "决",
+    "readings": [
+      {
+        "am": "quyết",
+        "meaning_vi": "quyết định, quyết đoán"
+      }
+    ],
+    "reviewed": false
+  },
+  {
+    "char": "绝",
+    "readings": [
+      {
+        "am": "tuyệt",
+        "meaning_vi": "dứt, tuyệt vời, cực kỳ"
+      }
+    ],
+    "reviewed": false
+  },
+  {
+    "char": "咖",
+    "readings": [
+      {
+        "am": "ca",
+        "meaning_vi": "phiên âm cà phê (ca phê)"
+      }
+    ],
+    "reviewed": false
+  },
+  {
+    "char": "恐",
+    "readings": [
+      {
+        "am": "khủng",
+        "meaning_vi": "sợ hãi, e rằng"
+      }
+    ],
+    "reviewed": false
+  },
+  {
+    "char": "苦",
+    "readings": [
+      {
+        "am": "khổ",
+        "meaning_vi": "đắng, cực khổ"
+      }
+    ],
+    "reviewed": false
+  },
+  {
+    "char": "裤",
+    "readings": [
+      {
+        "am": "khố",
+        "meaning_vi": "quần"
+      }
+    ],
+    "reviewed": false
+  },
+  {
+    "char": "况",
+    "readings": [
+      {
+        "am": "huống",
+        "meaning_vi": "huống chi, tình huống"
+      }
+    ],
+    "reviewed": false
+  },
+  {
+    "char": "困",
+    "readings": [
+      {
+        "am": "khốn",
+        "meaning_vi": "khốn khó, cùng quẫn"
+      },
+      {
+        "am": "khổn",
+        "meaning_vi": "buồn ngủ, mệt mỏi"
+      }
+    ],
+    "reviewed": false
+  },
+  {
+    "char": "浪",
+    "readings": [
+      {
+        "am": "lãng",
+        "meaning_vi": "sóng; phóng túng"
+      },
+      {
+        "am": "làng",
+        "meaning_vi": "tên sông Thương Lãng"
+      }
+    ],
+    "reviewed": false
+  },
+  {
+    "char": "类",
+    "readings": [
+      {
+        "am": "loại",
+        "meaning_vi": "loại, giống, phân loại"
+      }
+    ],
+    "reviewed": false
+  },
+  {
+    "char": "李",
+    "readings": [
+      {
+        "am": "lý",
+        "meaning_vi": "cây mận; họ Lý"
+      }
+    ],
+    "reviewed": false
+  },
+  {
+    "char": "历",
+    "readings": [
+      {
+        "am": "lịch",
+        "meaning_vi": "trải qua; lịch pháp, lịch"
+      }
+    ],
+    "reviewed": false
+  },
+  {
+    "char": "立",
+    "readings": [
+      {
+        "am": "lập",
+        "meaning_vi": "đứng, dựng, thành lập"
+      },
+      {
+        "am": "vị",
+        "meaning_vi": "ngôi vị (cổ)"
+      }
+    ],
+    "reviewed": false
+  },
+  {
+    "char": "丽",
+    "readings": [
+      {
+        "am": "lệ",
+        "meaning_vi": "đẹp, lộng lệ"
+      },
+      {
+        "am": "li",
+        "meaning_vi": "Cao Li (Cao Ly)"
+      }
+    ],
+    "reviewed": false
+  },
+  {
+    "char": "连",
+    "readings": [
+      {
+        "am": "liên",
+        "meaning_vi": "nối liền, liên tiếp"
+      }
+    ],
+    "reviewed": false
+  },
+  {
+    "char": "联",
+    "readings": [
+      {
+        "am": "liên",
+        "meaning_vi": "liên kết, liên hợp"
+      }
+    ],
+    "reviewed": false
+  },
+  {
+    "char": "烈",
+    "readings": [
+      {
+        "am": "liệt",
+        "meaning_vi": "mãnh liệt, nóng; liệt sĩ"
+      }
+    ],
+    "reviewed": false
+  },
+  {
+    "char": "领",
+    "readings": [
+      {
+        "am": "lãnh",
+        "meaning_vi": "cổ áo; lãnh đạo, nhận"
+      },
+      {
+        "am": "lĩnh",
+        "meaning_vi": "lĩnh nhận, thống lĩnh"
+      }
+    ],
+    "reviewed": false
+  },
+  {
+    "char": "另",
+    "readings": [
+      {
+        "am": "lánh",
+        "meaning_vi": "khác, riêng ra"
+      }
+    ],
+    "reviewed": true
+  },
+  {
+    "char": "龙",
+    "readings": [
+      {
+        "am": "long",
+        "meaning_vi": "con rồng"
+      }
+    ],
+    "reviewed": false
+  },
+  {
+    "char": "录",
+    "readings": [
+      {
+        "am": "lục",
+        "meaning_vi": "ghi chép, sao lục"
+      }
+    ],
+    "reviewed": false
+  },
+  {
+    "char": "乱",
+    "readings": [
+      {
+        "am": "loạn",
+        "meaning_vi": "rối loạn, nổi loạn"
+      }
+    ],
+    "reviewed": false
+  },
+  {
+    "char": "落",
+    "readings": [
+      {
+        "am": "lạc",
+        "meaning_vi": "rơi rụng; thôn xóm"
+      }
+    ],
+    "reviewed": false
+  },
+  {
+    "char": "麻",
+    "readings": [
+      {
+        "am": "ma",
+        "meaning_vi": "cây gai, đay; tê"
+      },
+      {
+        "am": "má",
+        "meaning_vi": "cây gai (đọc khác)"
+      }
+    ],
+    "reviewed": false
+  },
+  {
+    "char": "冒",
+    "readings": [
+      {
+        "am": "mạo",
+        "meaning_vi": "trùm lên; giả mạo, liều"
+      },
+      {
+        "am": "mặc",
+        "meaning_vi": "Mặc Đốn (tên vua Hung Nô)"
+      }
+    ],
+    "reviewed": false
+  },
+  {
+    "char": "媒",
+    "readings": [
+      {
+        "am": "môi",
+        "meaning_vi": "làm mối; môi giới, truyền thông"
+      }
+    ],
+    "reviewed": false
+  },
+  {
+    "char": "每",
+    "readings": [
+      {
+        "am": "mỗi",
+        "meaning_vi": "mỗi, từng"
+      }
+    ],
+    "reviewed": false
+  },
+  {
+    "char": "美",
+    "readings": [
+      {
+        "am": "mỹ",
+        "meaning_vi": "đẹp; nước Mỹ"
+      }
+    ],
+    "reviewed": false
+  },
+  {
+    "char": "迷",
+    "readings": [
+      {
+        "am": "mê",
+        "meaning_vi": "lầm lạc, say mê"
+      }
+    ],
+    "reviewed": false
+  },
+  {
+    "char": "民",
+    "readings": [
+      {
+        "am": "dân",
+        "meaning_vi": "người dân, nhân dân"
+      }
+    ],
+    "reviewed": false
+  },
+  {
+    "char": "命",
+    "readings": [
+      {
+        "am": "mệnh",
+        "meaning_vi": "mạng sống; mệnh lệnh, số phận"
+      }
+    ],
+    "reviewed": false
+  },
+  {
+    "char": "某",
+    "readings": [
+      {
+        "am": "mỗ",
+        "meaning_vi": "nào đó, người nào đó"
+      }
+    ],
+    "reviewed": false
+  },
+  {
+    "char": "母",
+    "readings": [
+      {
+        "am": "mẫu",
+        "meaning_vi": "mẹ"
+      }
+    ],
+    "reviewed": false
+  },
+  {
+    "char": "木",
+    "readings": [
+      {
+        "am": "mộc",
+        "meaning_vi": "cây, gỗ"
+      }
+    ],
+    "reviewed": false
+  },
+  {
+    "char": "内",
+    "readings": [
+      {
+        "am": "nội",
+        "meaning_vi": "bên trong"
+      },
+      {
+        "am": "nạp",
+        "meaning_vi": "nạp vào (cổ)"
+      }
+    ],
+    "reviewed": false
+  },
+  {
+    "char": "念",
+    "readings": [
+      {
+        "am": "niệm",
+        "meaning_vi": "nhớ nghĩ, đọc, ý niệm"
+      }
+    ],
+    "reviewed": false
+  },
+  {
+    "char": "娘",
+    "readings": [
+      {
+        "am": "nương",
+        "meaning_vi": "mẹ; cô gái, nàng"
+      }
+    ],
+    "reviewed": false
+  },
+  {
+    "char": "农",
+    "readings": [
+      {
+        "am": "nông",
+        "meaning_vi": "nghề làm ruộng, nông nghiệp"
+      }
+    ],
+    "reviewed": false
+  },
+  {
+    "char": "暖",
+    "readings": [
+      {
+        "am": "noãn",
+        "meaning_vi": "ấm áp"
+      },
+      {
+        "am": "nuyền",
+        "meaning_vi": "ấm (âm khác)"
+      }
+    ],
+    "reviewed": false
+  },
+  {
+    "char": "拍",
+    "readings": [
+      {
+        "am": "phách",
+        "meaning_vi": "vỗ, đập; nhịp"
+      }
+    ],
+    "reviewed": false
+  },
+  {
+    "char": "牌",
+    "readings": [
+      {
+        "am": "bài",
+        "meaning_vi": "thẻ, bảng, quân bài"
+      }
+    ],
+    "reviewed": false
+  },
+  {
+    "char": "派",
+    "readings": [
+      {
+        "am": "phái",
+        "meaning_vi": "phe phái, sai phái"
+      }
+    ],
+    "reviewed": false
+  },
+  {
+    "char": "判",
+    "readings": [
+      {
+        "am": "phán",
+        "meaning_vi": "phán xét, phân biệt"
+      }
+    ],
+    "reviewed": false
+  },
+  {
+    "char": "胖",
+    "readings": [
+      {
+        "am": "bàn",
+        "meaning_vi": "thư thái, yên ổn"
+      },
+      {
+        "am": "phán",
+        "meaning_vi": "béo, mập"
+      }
+    ],
+    "reviewed": false
+  },
+  {
+    "char": "配",
+    "readings": [
+      {
+        "am": "phối",
+        "meaning_vi": "phối hợp, sánh đôi"
+      }
+    ],
+    "reviewed": false
+  },
+  {
+    "char": "批",
+    "readings": [
+      {
+        "am": "phê",
+        "meaning_vi": "phê bình, phê duyệt"
+      }
+    ],
+    "reviewed": false
+  },
+  {
+    "char": "皮",
+    "readings": [
+      {
+        "am": "bì",
+        "meaning_vi": "da, vỏ"
+      }
+    ],
+    "reviewed": false
+  },
+  {
+    "char": "啤",
+    "readings": [
+      {
+        "am": "tì",
+        "meaning_vi": "bia (trong 啤酒)"
+      }
+    ],
+    "reviewed": false
+  },
+  {
+    "char": "品",
+    "readings": [
+      {
+        "am": "phẩm",
+        "meaning_vi": "phẩm chất, hàng hóa, cấp bậc"
+      }
+    ],
+    "reviewed": false
+  },
+  {
+    "char": "评",
+    "readings": [
+      {
+        "am": "bình",
+        "meaning_vi": "bình luận, đánh giá"
+      }
+    ],
+    "reviewed": false
+  },
+  {
+    "char": "苹",
+    "readings": [
+      {
+        "am": "bình",
+        "meaning_vi": "cây bèo; táo (苹果)"
+      },
+      {
+        "am": "tần",
+        "meaning_vi": "rau tần (蘋)"
+      }
+    ],
+    "reviewed": false
+  },
+  {
+    "char": "破",
+    "readings": [
+      {
+        "am": "phá",
+        "meaning_vi": "phá vỡ, làm hỏng"
+      }
+    ],
+    "reviewed": false
+  },
+  {
+    "char": "齐",
+    "readings": [
+      {
+        "am": "tề",
+        "meaning_vi": "đều, ngang nhau; nước Tề"
+      }
+    ],
+    "reviewed": false
+  },
+  {
+    "char": "奇",
+    "readings": [
+      {
+        "am": "kỳ",
+        "meaning_vi": "lạ, hiếm"
+      },
+      {
+        "am": "cơ",
+        "meaning_vi": "lẻ (số lẻ)"
+      }
+    ],
+    "reviewed": false
+  },
+  {
+    "char": "器",
+    "readings": [
+      {
+        "am": "khí",
+        "meaning_vi": "đồ dùng, dụng cụ"
+      }
+    ],
+    "reviewed": false
+  },
+  {
+    "char": "强",
+    "readings": [
+      {
+        "am": "cường",
+        "meaning_vi": "mạnh, khỏe"
+      },
+      {
+        "am": "cưỡng",
+        "meaning_vi": "gượng ép, bướng"
+      }
+    ],
+    "reviewed": false
+  },
+  {
+    "char": "桥",
+    "readings": [
+      {
+        "am": "kiều",
+        "meaning_vi": "cây cầu"
+      }
+    ],
+    "reviewed": false
+  },
+  {
+    "char": "巧",
+    "readings": [
+      {
+        "am": "xảo",
+        "meaning_vi": "khéo léo, tinh xảo"
+      }
+    ],
+    "reviewed": false
+  },
+  {
+    "char": "切",
+    "readings": [
+      {
+        "am": "thiết",
+        "meaning_vi": "cắt; thiết tha, cần thiết"
+      }
+    ],
+    "reviewed": true
+  },
+  {
+    "char": "亲",
+    "readings": [
+      {
+        "am": "thân",
+        "meaning_vi": "thân thích, cha mẹ, gần gũi"
+      },
+      {
+        "am": "thấn",
+        "meaning_vi": "thông gia (親家)"
+      }
+    ],
+    "reviewed": true
+  },
+  {
+    "char": "庆",
+    "readings": [
+      {
+        "am": "khánh",
+        "meaning_vi": "mừng, chúc mừng"
+      }
+    ],
+    "reviewed": false
+  },
+  {
+    "char": "区",
+    "readings": [
+      {
+        "am": "khu",
+        "meaning_vi": "khu vực, địa hạt"
+      },
+      {
+        "am": "âu",
+        "meaning_vi": "họ Âu"
+      }
+    ],
+    "reviewed": false
+  },
+  {
+    "char": "缺",
+    "readings": [
+      {
+        "am": "khuyết",
+        "meaning_vi": "thiếu, khuyết điểm"
+      }
+    ],
+    "reviewed": false
+  },
+  {
+    "char": "裙",
+    "readings": [
+      {
+        "am": "quần",
+        "meaning_vi": "váy"
+      }
+    ],
+    "reviewed": false
+  },
+  {
+    "char": "群",
+    "readings": [
+      {
+        "am": "quần",
+        "meaning_vi": "bầy, đàn, nhóm"
+      }
+    ],
+    "reviewed": false
+  },
+  {
+    "char": "任",
+    "readings": [
+      {
+        "am": "nhiệm",
+        "meaning_vi": "nhiệm vụ, đảm nhiệm"
+      },
+      {
+        "am": "nhâm",
+        "meaning_vi": "họ Nhâm"
+      }
+    ],
+    "reviewed": false
+  },
+  {
+    "char": "仍",
+    "readings": [
+      {
+        "am": "nhưng",
+        "meaning_vi": "vẫn, còn, nhân đó"
+      }
+    ],
+    "reviewed": false
+  },
+  {
+    "char": "容",
+    "readings": [
+      {
+        "am": "dung",
+        "meaning_vi": "chứa đựng, dung nạp"
+      },
+      {
+        "am": "dong",
+        "meaning_vi": "dong dỏng, dáng vẻ (ít dùng)"
+      }
+    ],
+    "reviewed": false
+  },
+  {
+    "char": "赛",
+    "readings": [
+      {
+        "am": "trại",
+        "meaning_vi": "thi đấu, cuộc thi"
+      }
+    ],
+    "reviewed": false
+  },
+  {
+    "char": "散",
+    "readings": [
+      {
+        "am": "tán",
+        "meaning_vi": "tan ra, phân tán"
+      },
+      {
+        "am": "tản",
+        "meaning_vi": "rời rạc, tản mạn"
+      }
+    ],
+    "reviewed": false
+  },
+  {
+    "char": "沙",
+    "readings": [
+      {
+        "am": "sa",
+        "meaning_vi": "cát"
+      }
+    ],
+    "reviewed": false
+  },
+  {
+    "char": "衫",
+    "readings": [
+      {
+        "am": "sam",
+        "meaning_vi": "áo"
+      }
+    ],
+    "reviewed": false
+  },
+  {
+    "char": "善",
+    "readings": [
+      {
+        "am": "thiện",
+        "meaning_vi": "lành, tốt"
+      }
+    ],
+    "reviewed": false
+  },
+  {
+    "char": "伤",
+    "readings": [
+      {
+        "am": "thương",
+        "meaning_vi": "vết thương, tổn hại"
+      }
+    ],
+    "reviewed": false
+  },
+  {
+    "char": "设",
+    "readings": [
+      {
+        "am": "thiết",
+        "meaning_vi": "đặt ra, thiết lập"
+      }
+    ],
+    "reviewed": false
+  },
+  {
+    "char": "社",
+    "readings": [
+      {
+        "am": "xã",
+        "meaning_vi": "đất thờ, xã hội, đoàn thể"
+      }
+    ],
+    "reviewed": false
+  },
+  {
+    "char": "深",
+    "readings": [
+      {
+        "am": "thâm",
+        "meaning_vi": "sâu"
+      }
+    ],
+    "reviewed": false
+  },
+  {
+    "char": "神",
+    "readings": [
+      {
+        "am": "thần",
+        "meaning_vi": "thần linh, tinh thần"
+      }
+    ],
+    "reviewed": false
+  },
+  {
+    "char": "升",
+    "readings": [
+      {
+        "am": "thăng",
+        "meaning_vi": "lên, bay lên"
+      }
+    ],
+    "reviewed": false
+  },
+  {
+    "char": "胜",
+    "readings": [
+      {
+        "am": "thắng",
+        "meaning_vi": "được cuộc, chiến thắng"
+      },
+      {
+        "am": "thăng",
+        "meaning_vi": "gánh vác (勝任, ít dùng)"
+      }
+    ],
+    "reviewed": true
+  },
+  {
+    "char": "失",
+    "readings": [
+      {
+        "am": "thất",
+        "meaning_vi": "mất, sai lầm"
+      }
+    ],
+    "reviewed": false
+  },
+  {
+    "char": "石",
+    "readings": [
+      {
+        "am": "thạch",
+        "meaning_vi": "đá"
+      },
+      {
+        "am": "đán",
+        "meaning_vi": "đơn vị dung lượng (ít dùng)"
+      }
+    ],
+    "reviewed": false
+  },
+  {
+    "char": "始",
+    "readings": [
+      {
+        "am": "thủy",
+        "meaning_vi": "bắt đầu"
+      }
+    ],
+    "reviewed": false
+  },
+  {
+    "char": "世",
+    "readings": [
+      {
+        "am": "thế",
+        "meaning_vi": "đời, thế gian"
+      }
+    ],
+    "reviewed": false
+  },
+  {
+    "char": "式",
+    "readings": [
+      {
+        "am": "thức",
+        "meaning_vi": "kiểu mẫu, nghi thức"
+      }
+    ],
+    "reviewed": false
+  },
+  {
+    "char": "似",
+    "readings": [
+      {
+        "am": "tự",
+        "meaning_vi": "giống, như"
+      }
+    ],
+    "reviewed": true
+  },
+  {
+    "char": "势",
+    "readings": [
+      {
+        "am": "thế",
+        "meaning_vi": "quyền lực, thế lực"
+      }
+    ],
+    "reviewed": false
+  },
+  {
+    "char": "首",
+    "readings": [
+      {
+        "am": "thủ",
+        "meaning_vi": "đầu, đứng đầu"
+      }
+    ],
+    "reviewed": false
+  },
+  {
+    "char": "输",
+    "readings": [
+      {
+        "am": "thâu",
+        "meaning_vi": "vận chuyển, đưa"
+      }
+    ],
+    "reviewed": true
+  },
+  {
+    "char": "属",
+    "readings": [
+      {
+        "am": "thuộc",
+        "meaning_vi": "thuộc về, loài"
+      },
+      {
+        "am": "chúc",
+        "meaning_vi": "dặn dò, chú tâm"
+      }
+    ],
+    "reviewed": false
+  },
+  {
+    "char": "术",
+    "readings": [
+      {
+        "am": "thuật",
+        "meaning_vi": "nghề, phương pháp"
+      }
+    ],
+    "reviewed": false
+  },
+  {
+    "char": "束",
+    "readings": [
+      {
+        "am": "thúc",
+        "meaning_vi": "bó, buộc, ràng buộc"
+      }
+    ],
+    "reviewed": false
+  },
+  {
+    "char": "双",
+    "readings": [
+      {
+        "am": "song",
+        "meaning_vi": "đôi, cặp"
+      }
+    ],
+    "reviewed": false
+  },
+  {
+    "char": "死",
+    "readings": [
+      {
+        "am": "tử",
+        "meaning_vi": "chết"
+      }
+    ],
+    "reviewed": false
+  },
+  {
+    "char": "速",
+    "readings": [
+      {
+        "am": "tốc",
+        "meaning_vi": "nhanh"
+      }
+    ],
+    "reviewed": false
+  },
+  {
+    "char": "台",
+    "readings": [
+      {
+        "am": "đài",
+        "meaning_vi": "cái đài, bục, đài các"
+      },
+      {
+        "am": "thai",
+        "meaning_vi": "họ Thai, tên đất (台州)"
+      }
+    ],
+    "reviewed": false
+  },
+  {
+    "char": "谈",
+    "readings": [
+      {
+        "am": "đàm",
+        "meaning_vi": "nói chuyện, bàn luận"
+      }
+    ],
+    "reviewed": false
+  },
+  {
+    "char": "汤",
+    "readings": [
+      {
+        "am": "thang",
+        "meaning_vi": "canh, nước nấu, thuốc sắc"
+      },
+      {
+        "am": "thương",
+        "meaning_vi": "nước chảy mạnh (湯湯)"
+      }
+    ],
+    "reviewed": false
+  },
+  {
+    "char": "糖",
+    "readings": [
+      {
+        "am": "đường",
+        "meaning_vi": "đường, chất ngọt, kẹo"
+      }
+    ],
+    "reviewed": false
+  },
+  {
+    "char": "甜",
+    "readings": [
+      {
+        "am": "điềm",
+        "meaning_vi": "ngọt, ngon ngọt"
+      }
+    ],
+    "reviewed": false
+  },
+  {
+    "char": "跳",
+    "readings": [
+      {
+        "am": "khiêu",
+        "meaning_vi": "nhảy, nhảy lên"
+      },
+      {
+        "am": "thiêu",
+        "meaning_vi": "nhảy (âm khác)"
+      }
+    ],
+    "reviewed": false
+  },
+  {
+    "char": "痛",
+    "readings": [
+      {
+        "am": "thống",
+        "meaning_vi": "đau, đau đớn"
+      }
+    ],
+    "reviewed": false
+  },
+  {
+    "char": "突",
+    "readings": [
+      {
+        "am": "đột",
+        "meaning_vi": "bất ngờ, xông tới"
+      }
+    ],
+    "reviewed": false
+  },
+  {
+    "char": "土",
+    "readings": [
+      {
+        "am": "thổ",
+        "meaning_vi": "đất, đất đai"
+      },
+      {
+        "am": "độ",
+        "meaning_vi": "nơi, chỗ (âm cổ)"
+      }
+    ],
+    "reviewed": false
+  },
+  {
+    "char": "团",
+    "readings": [
+      {
+        "am": "đoàn",
+        "meaning_vi": "tròn, nhóm, tập thể"
+      }
+    ],
+    "reviewed": false
+  },
+  {
+    "char": "退",
+    "readings": [
+      {
+        "am": "thoái",
+        "meaning_vi": "lui, rút lui"
+      }
+    ],
+    "reviewed": false
+  },
+  {
+    "char": "望",
+    "readings": [
+      {
+        "am": "vọng",
+        "meaning_vi": "trông, mong, ngắm"
+      }
+    ],
+    "reviewed": true
+  },
+  {
+    "char": "危",
+    "readings": [
+      {
+        "am": "nguy",
+        "meaning_vi": "nguy hiểm, cao"
+      }
+    ],
+    "reviewed": false
+  },
+  {
+    "char": "围",
+    "readings": [
+      {
+        "am": "vi",
+        "meaning_vi": "vây quanh, bao vây"
+      }
+    ],
+    "reviewed": false
+  },
+  {
+    "char": "伟",
+    "readings": [
+      {
+        "am": "vĩ",
+        "meaning_vi": "to lớn, vĩ đại"
+      }
+    ],
+    "reviewed": false
+  },
+  {
+    "char": "卫",
+    "readings": [
+      {
+        "am": "vệ",
+        "meaning_vi": "bảo vệ, phòng giữ"
+      }
+    ],
+    "reviewed": false
+  },
+  {
+    "char": "握",
+    "readings": [
+      {
+        "am": "ác",
+        "meaning_vi": "nắm, cầm"
+      }
+    ],
+    "reviewed": false
+  },
+  {
+    "char": "屋",
+    "readings": [
+      {
+        "am": "ốc",
+        "meaning_vi": "nhà, mái nhà"
+      }
+    ],
+    "reviewed": false
+  },
+  {
+    "char": "武",
+    "readings": [
+      {
+        "am": "vũ",
+        "meaning_vi": "võ, quân sự"
+      }
+    ],
+    "reviewed": false
+  },
+  {
+    "char": "舞",
+    "readings": [
+      {
+        "am": "vũ",
+        "meaning_vi": "múa, nhảy múa"
+      }
+    ],
+    "reviewed": false
+  },
+  {
+    "char": "误",
+    "readings": [
+      {
+        "am": "ngộ",
+        "meaning_vi": "lầm, sai lầm"
+      }
+    ],
+    "reviewed": false
+  },
+  {
+    "char": "希",
+    "readings": [
+      {
+        "am": "hi",
+        "meaning_vi": "hiếm, mong muốn"
+      }
+    ],
+    "reviewed": false
+  },
+  {
+    "char": "戏",
+    "readings": [
+      {
+        "am": "hí",
+        "meaning_vi": "trò, diễn kịch, đùa"
+      },
+      {
+        "am": "hy",
+        "meaning_vi": "than thở (âm khác)"
+      }
+    ],
+    "reviewed": false
+  },
+  {
+    "char": "显",
+    "readings": [
+      {
+        "am": "hiển",
+        "meaning_vi": "rõ rệt, hiện ra"
+      }
+    ],
+    "reviewed": false
+  },
+  {
+    "char": "险",
+    "readings": [
+      {
+        "am": "hiểm",
+        "meaning_vi": "nguy hiểm, hiểm trở"
+      }
+    ],
+    "reviewed": false
+  },
+  {
+    "char": "线",
+    "readings": [
+      {
+        "am": "tuyến",
+        "meaning_vi": "sợi chỉ, đường dây"
+      }
+    ],
+    "reviewed": false
+  },
+  {
+    "char": "乡",
+    "readings": [
+      {
+        "am": "hương",
+        "meaning_vi": "làng, quê hương"
+      }
+    ],
+    "reviewed": false
+  },
+  {
+    "char": "香",
+    "readings": [
+      {
+        "am": "hương",
+        "meaning_vi": "thơm, mùi thơm, nhang"
+      }
+    ],
+    "reviewed": false
+  },
+  {
+    "char": "箱",
+    "readings": [
+      {
+        "am": "tương",
+        "meaning_vi": "rương, hòm, thùng"
+      }
+    ],
+    "reviewed": false
+  },
+  {
+    "char": "象",
+    "readings": [
+      {
+        "am": "tượng",
+        "meaning_vi": "con voi, hình tượng"
+      }
+    ],
+    "reviewed": false
+  },
+  {
+    "char": "消",
+    "readings": [
+      {
+        "am": "tiêu",
+        "meaning_vi": "tan mất, tiêu hao"
+      }
+    ],
+    "reviewed": false
+  },
+  {
+    "char": "效",
+    "readings": [
+      {
+        "am": "hiệu",
+        "meaning_vi": "hiệu quả, noi theo"
+      }
+    ],
+    "reviewed": false
+  },
+  {
+    "char": "血",
+    "readings": [
+      {
+        "am": "huyết",
+        "meaning_vi": "máu"
+      },
+      {
+        "am": "huyệt",
+        "meaning_vi": "hang, huyệt (ít dùng)"
+      }
+    ],
+    "reviewed": false
+  },
+  {
+    "char": "形",
+    "readings": [
+      {
+        "am": "hình",
+        "meaning_vi": "hình dạng, hình thể"
+      }
+    ],
+    "reviewed": false
+  },
+  {
+    "char": "幸",
+    "readings": [
+      {
+        "am": "hạnh",
+        "meaning_vi": "may mắn, hạnh phúc"
+      }
+    ],
+    "reviewed": false
+  },
+  {
+    "char": "性",
+    "readings": [
+      {
+        "am": "tính",
+        "meaning_vi": "bản tính, tính chất"
+      },
+      {
+        "am": "tánh",
+        "meaning_vi": "tính (biến âm)"
+      }
+    ],
+    "reviewed": false
+  },
+  {
+    "char": "修",
+    "readings": [
+      {
+        "am": "tu",
+        "meaning_vi": "sửa, tu sửa, tu hành"
+      }
+    ],
+    "reviewed": false
+  },
+  {
+    "char": "需",
+    "readings": [
+      {
+        "am": "nhu",
+        "meaning_vi": "cần, nhu cầu"
+      }
+    ],
+    "reviewed": false
+  },
+  {
+    "char": "续",
+    "readings": [
+      {
+        "am": "tục",
+        "meaning_vi": "tiếp tục, nối"
+      }
+    ],
+    "reviewed": false
+  },
+  {
+    "char": "宣",
+    "readings": [
+      {
+        "am": "tuyên",
+        "meaning_vi": "tuyên bố, truyền rộng"
+      }
+    ],
+    "reviewed": false
+  },
+  {
+    "char": "训",
+    "readings": [
+      {
+        "am": "huấn",
+        "meaning_vi": "dạy bảo, huấn luyện"
+      }
+    ],
+    "reviewed": false
+  },
+  {
+    "char": "压",
+    "readings": [
+      {
+        "am": "áp",
+        "meaning_vi": "ép, đè, áp lực"
+      },
+      {
+        "am": "yếp",
+        "meaning_vi": "chán, đè (ít dùng)"
+      }
+    ],
+    "reviewed": false
+  },
+  {
+    "char": "烟",
+    "readings": [
+      {
+        "am": "yên",
+        "meaning_vi": "khói, thuốc lá"
+      }
+    ],
+    "reviewed": false
+  },
+  {
+    "char": "演",
+    "readings": [
+      {
+        "am": "diễn",
+        "meaning_vi": "diễn xuất, biểu diễn"
+      }
+    ],
+    "reviewed": false
+  },
+  {
+    "char": "验",
+    "readings": [
+      {
+        "am": "nghiệm",
+        "meaning_vi": "kiểm nghiệm, thử"
+      }
+    ],
+    "reviewed": false
+  },
+  {
+    "char": "羊",
+    "readings": [
+      {
+        "am": "dương",
+        "meaning_vi": "con dê, con cừu"
+      }
+    ],
+    "reviewed": false
+  },
+  {
+    "char": "义",
+    "readings": [
+      {
+        "am": "nghĩa",
+        "meaning_vi": "nghĩa lý, đạo nghĩa"
+      }
+    ],
+    "reviewed": false
+  },
+  {
+    "char": "艺",
+    "readings": [
+      {
+        "am": "nghệ",
+        "meaning_vi": "tài nghệ, nghệ thuật"
+      }
+    ],
+    "reviewed": false
+  },
+  {
+    "char": "议",
+    "readings": [
+      {
+        "am": "nghị",
+        "meaning_vi": "bàn bạc, nghị luận"
+      }
+    ],
+    "reviewed": false
+  },
+  {
+    "char": "易",
+    "readings": [
+      {
+        "am": "dị",
+        "meaning_vi": "dễ"
+      },
+      {
+        "am": "dịch",
+        "meaning_vi": "đổi, trao đổi, Kinh Dịch"
+      }
+    ],
+    "reviewed": false
+  },
+  {
+    "char": "营",
+    "readings": [
+      {
+        "am": "doanh",
+        "meaning_vi": "kinh doanh, doanh trại"
+      }
+    ],
+    "reviewed": false
+  },
+  {
+    "char": "赢",
+    "readings": [
+      {
+        "am": "doanh",
+        "meaning_vi": "thắng, lãi, thừa"
+      }
+    ],
+    "reviewed": false
+  },
+  {
+    "char": "泳",
+    "readings": [
+      {
+        "am": "vịnh",
+        "meaning_vi": "bơi lội"
+      }
+    ],
+    "reviewed": false
+  },
+  {
+    "char": "优",
+    "readings": [
+      {
+        "am": "ưu",
+        "meaning_vi": "tốt, hơn, ưu tú"
+      }
+    ],
+    "reviewed": false
+  },
+  {
+    "char": "邮",
+    "readings": [
+      {
+        "am": "bưu",
+        "meaning_vi": "bưu điện, đưa thư"
+      }
+    ],
+    "reviewed": false
+  },
+  {
+    "char": "预",
+    "readings": [
+      {
+        "am": "dự",
+        "meaning_vi": "trước, dự bị, dự đoán"
+      }
+    ],
+    "reviewed": false
+  },
+  {
+    "char": "员",
+    "readings": [
+      {
+        "am": "viên",
+        "meaning_vi": "nhân viên, thành viên"
+      },
+      {
+        "am": "vận",
+        "meaning_vi": "họ Vận (ít dùng)"
+      }
+    ],
+    "reviewed": false
+  },
+  {
+    "char": "约",
+    "readings": [
+      {
+        "am": "ước",
+        "meaning_vi": "hẹn, giao ước, khoảng chừng"
+      },
+      {
+        "am": "yêu",
+        "meaning_vi": "cân, mời (ít dùng)"
+      }
+    ],
+    "reviewed": false
+  },
+  {
+    "char": "杂",
+    "readings": [
+      {
+        "am": "tạp",
+        "meaning_vi": "lẫn lộn, tạp nham"
+      }
+    ],
+    "reviewed": false
+  },
+  {
+    "char": "造",
+    "readings": [
+      {
+        "am": "tạo",
+        "meaning_vi": "làm ra, chế tạo"
+      },
+      {
+        "am": "thảo",
+        "meaning_vi": "đến (cổ, ít dùng)"
+      }
+    ],
+    "reviewed": false
+  },
+  {
+    "char": "责",
+    "readings": [
+      {
+        "am": "trách",
+        "meaning_vi": "trách nhiệm, trách móc"
+      }
+    ],
+    "reviewed": false
+  },
+  {
+    "char": "增",
+    "readings": [
+      {
+        "am": "tăng",
+        "meaning_vi": "thêm, tăng lên"
+      }
+    ],
+    "reviewed": false
+  },
+  {
+    "char": "展",
+    "readings": [
+      {
+        "am": "triển",
+        "meaning_vi": "mở ra, phát triển, bày ra"
+      }
+    ],
+    "reviewed": false
+  },
+  {
+    "char": "张",
+    "readings": [
+      {
+        "am": "trương",
+        "meaning_vi": "giương, mở; họ Trương; tờ"
+      }
+    ],
+    "reviewed": false
+  },
+  {
+    "char": "章",
+    "readings": [
+      {
+        "am": "chương",
+        "meaning_vi": "chương sách, văn chương, huy chương"
+      }
+    ],
+    "reviewed": false
+  },
+  {
+    "char": "争",
+    "readings": [
+      {
+        "am": "tranh",
+        "meaning_vi": "giành, tranh đấu"
+      }
+    ],
+    "reviewed": false
+  },
+  {
+    "char": "整",
+    "readings": [
+      {
+        "am": "chỉnh",
+        "meaning_vi": "ngay ngắn, chỉnh đốn, đầy đủ"
+      }
+    ],
+    "reviewed": false
+  },
+  {
+    "char": "证",
+    "readings": [
+      {
+        "am": "chứng",
+        "meaning_vi": "bằng chứng, chứng minh"
+      }
+    ],
+    "reviewed": false
+  },
+  {
+    "char": "支",
+    "readings": [
+      {
+        "am": "chi",
+        "meaning_vi": "nhánh, chi nhánh, chi tiêu"
+      }
+    ],
+    "reviewed": false
+  },
+  {
+    "char": "汁",
+    "readings": [
+      {
+        "am": "trấp",
+        "meaning_vi": "nước ép, nhựa, chất lỏng"
+      }
+    ],
+    "reviewed": false
+  },
+  {
+    "char": "值",
+    "readings": [
+      {
+        "am": "trị",
+        "meaning_vi": "giá trị, đáng giá, trực"
+      }
+    ],
+    "reviewed": false
+  },
+  {
+    "char": "职",
+    "readings": [
+      {
+        "am": "chức",
+        "meaning_vi": "chức vụ, nghề nghiệp"
+      }
+    ],
+    "reviewed": false
+  },
+  {
+    "char": "止",
+    "readings": [
+      {
+        "am": "chỉ",
+        "meaning_vi": "dừng lại, ngừng"
+      }
+    ],
+    "reviewed": false
+  },
+  {
+    "char": "指",
+    "readings": [
+      {
+        "am": "chỉ",
+        "meaning_vi": "ngón tay, chỉ trỏ, chỉ dẫn"
+      }
+    ],
+    "reviewed": false
+  },
+  {
+    "char": "至",
+    "readings": [
+      {
+        "am": "chí",
+        "meaning_vi": "đến, rất, cực"
+      }
+    ],
+    "reviewed": false
+  },
+  {
+    "char": "志",
+    "readings": [
+      {
+        "am": "chí",
+        "meaning_vi": "ý chí, chí hướng; ghi chép (誌), tạp chí"
+      }
+    ],
+    "reviewed": true
+  },
+  {
+    "char": "制",
+    "readings": [
+      {
+        "am": "chế",
+        "meaning_vi": "chế tạo, chế độ, kiềm chế"
+      }
+    ],
+    "reviewed": false
+  },
+  {
+    "char": "终",
+    "readings": [
+      {
+        "am": "chung",
+        "meaning_vi": "cuối cùng, kết thúc"
+      }
+    ],
+    "reviewed": false
+  },
+  {
+    "char": "种",
+    "readings": [
+      {
+        "am": "chủng",
+        "meaning_vi": "giống, loại, chủng loại"
+      },
+      {
+        "am": "chúng",
+        "meaning_vi": "trồng trọt (đọc chủng/chúng)"
+      }
+    ],
+    "reviewed": false
+  },
+  {
+    "char": "众",
+    "readings": [
+      {
+        "am": "chúng",
+        "meaning_vi": "đông người, quần chúng"
+      }
+    ],
+    "reviewed": false
+  },
+  {
+    "char": "猪",
+    "readings": [
+      {
+        "am": "trư",
+        "meaning_vi": "con heo, con lợn"
+      }
+    ],
+    "reviewed": false
+  },
+  {
+    "char": "注",
+    "readings": [
+      {
+        "am": "chú",
+        "meaning_vi": "rót vào, chú ý, chú thích"
+      }
+    ],
+    "reviewed": false
+  },
+  {
+    "char": "祝",
+    "readings": [
+      {
+        "am": "chúc",
+        "meaning_vi": "chúc mừng, cầu chúc"
+      }
+    ],
+    "reviewed": false
+  },
+  {
+    "char": "抓",
+    "readings": [
+      {
+        "am": "trảo",
+        "meaning_vi": "cào, nắm, bắt"
+      }
+    ],
+    "reviewed": false
+  },
+  {
+    "char": "专",
+    "readings": [
+      {
+        "am": "chuyên",
+        "meaning_vi": "chuyên môn, chuyên nhất"
+      }
+    ],
+    "reviewed": false
+  },
+  {
+    "char": "转",
+    "readings": [
+      {
+        "am": "chuyển",
+        "meaning_vi": "chuyển dời, xoay"
+      },
+      {
+        "am": "chuyến",
+        "meaning_vi": "vòng, lượt quay"
+      }
+    ],
+    "reviewed": false
+  },
+  {
+    "char": "状",
+    "readings": [
+      {
+        "am": "trạng",
+        "meaning_vi": "hình dạng, tình trạng, đơn kiện"
+      }
+    ],
+    "reviewed": false
+  },
+  {
+    "char": "追",
+    "readings": [
+      {
+        "am": "truy",
+        "meaning_vi": "đuổi theo, truy tìm"
+      }
+    ],
+    "reviewed": false
+  },
+  {
+    "char": "资",
+    "readings": [
+      {
+        "am": "tư",
+        "meaning_vi": "của cải, tiền vốn, tư cách"
+      }
+    ],
+    "reviewed": false
+  },
+  {
+    "char": "总",
+    "readings": [
+      {
+        "am": "tổng",
+        "meaning_vi": "gồm tất cả, tổng cộng"
+      }
+    ],
+    "reviewed": false
+  },
+  {
+    "char": "足",
+    "readings": [
+      {
+        "am": "túc",
+        "meaning_vi": "chân; đầy đủ"
+      }
+    ],
+    "reviewed": false
+  },
+  {
+    "char": "族",
+    "readings": [
+      {
+        "am": "tộc",
+        "meaning_vi": "dòng họ, dân tộc"
+      }
+    ],
+    "reviewed": false
+  }
+]

@@ -37,7 +37,12 @@ describe("chọn chữ cần duyệt", () => {
   it("máy không chắc, lặp âm, không có âm đều phải duyệt dù đã khớp", () => {
     expect(reasonsOf(item({ confidence: 0.5 }), false)).toEqual(["conf"]);
     expect(reasonsOf(item({}), true)).toEqual(["dup"]);
-    expect(reasonsOf(item({ readings: [], unihan: [] }), false)).toEqual(["thieu", "none"]);
+    expect(reasonsOf(item({ readings: [], unihan: ["quơ"] }), false)).toEqual(["none"]);
+  });
+
+  it("khác Unihan hoặc Unihan không có thì dùng âm máy, kể cả khi máy không chắc", () => {
+    expect(reasonsOf(item({ unihan: ["món"], confidence: 0.5 }), true)).toEqual([]);
+    expect(reasonsOf(item({ unihan: [], confidence: 0.5 }), true)).toEqual([]);
   });
 });
 

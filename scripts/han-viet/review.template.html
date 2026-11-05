@@ -55,19 +55,19 @@ textarea { width: 100%; min-height: 120px; font: 13px/1.4 ui-monospace, monospac
 <main>
   <div class="intro">
     <h1>Duyệt âm Hán Việt</h1>
-    <p>900 chữ HSK 1–3. Âm do máy gợi ý rồi đối chiếu Unihan, nhưng Unihan lẫn cả âm Nôm nên không dùng thẳng được. Những chữ dưới đây cần người biết Hán Việt xác nhận.</p>
+    <p>900 chữ HSK 1–3. Âm do máy gợi ý rồi đối chiếu Unihan, nhưng Unihan lẫn cả âm Nôm nên không dùng thẳng được. Những chữ ở tab Cần duyệt cần người biết Hán Việt xác nhận. Cách viết thống nhất dùng y (lý, kỷ, mỹ).</p>
     <ul>
       <li>Ô nhập là âm sẽ dùng, âm thông dụng nhất viết đầu, cách nhau bằng dấu phẩy.</li>
       <li>Đúng thì bấm <b>Đúng</b>. Sai hoặc thiếu thì sửa trong ô rồi bấm <b>Lưu sửa</b>.</li>
       <li>Chữ không có âm Hán Việt thông dụng thì xóa trống ô rồi bấm Lưu sửa.</li>
     </ul>
-    <p>Tab “Đã khớp” là các chữ máy và Unihan cho cùng âm đầu. Không bắt buộc, nhưng nhờ xem lướt nếu có thời gian.</p>
+    <p>Tab “Dùng âm máy” là các chữ đã chốt dùng âm máy gợi ý. Không bắt buộc, nhưng nếu thấy âm sai thì vẫn sửa được.</p>
   </div>
   <div class="bar">
     <div class="progress"><b id="count">0/0</b><span>chữ cần duyệt đã xong</span><span id="status" class="status" role="status">Đang kết nối…</span></div>
     <div class="tabs" role="group" aria-label="Lọc danh sách">
       <button type="button" data-tab="todo">Cần duyệt</button>
-      <button type="button" data-tab="matched">Đã khớp</button>
+      <button type="button" data-tab="matched">Dùng âm máy</button>
       <button type="button" data-tab="done">Đã duyệt</button>
       <button type="button" id="export">Chép kết quả</button>
     </div>

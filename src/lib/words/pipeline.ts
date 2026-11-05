@@ -93,6 +93,8 @@ export interface WordStore {
   zhLexicon(words: readonly string[]): Promise<Lexicon>;
   /** Âm Hán Việt của các chữ. */
   zhHanViet(chars: readonly string[]): Promise<HanVietTable>;
+  /** Dạng giản thể của chữ người dùng nhập; không có trong từ điển thì giữ nguyên. */
+  zhSimplified(text: string): Promise<string>;
   requestJob(
     userId: string,
     language: Language,
@@ -139,11 +141,11 @@ async function findInStore(
   pos: Pos | null,
   deps: PipelineDeps,
 ): Promise<{ lemma: string; surface: string; alternatives: string[]; words: StoredWord[] }> {
-  const { lemma, surface, alternatives } = toLemma(input, {
-    language,
-    pos,
-    lemmatizer: deps.lemmatizer,
-  });
+  const base = toLemma(input, { language, pos, lemmatizer: deps.lemmatizer });
+  const { surface, alternatives } = base;
+  const lemma = languagePack(language).hasTraditional
+    ? await deps.store.zhSimplified(base.lemma)
+    : base.lemma;
   const words = await deps.store.findWords(language, lemma, pos);
   if (words.length > 0) return { lemma, surface, alternatives, words };
 
@@ -165,16 +167,30 @@ async function findInStore(
 /** Ngôn ngữ đang làm dở mà tài khoản chưa được bật cờ. */
 export class LanguageNotEnabledError extends Error {}
 
+/** Chữ không thể là từ của ngôn ngữ đó (tiếng Trung mà không có chữ Hán). */
+export class InvalidWordError extends Error {}
+
+export async function assertLanguageEnabled(
+  language: Language,
+  userId: string | null,
+  store: Pick<WordStore, "canUseFlaggedLanguage">,
+): Promise<void> {
+  if (
+    languagePack(language).requiresFlag &&
+    !(userId && (await store.canUseFlaggedLanguage(userId)))
+  ) {
+    throw new LanguageNotEnabledError(language);
+  }
+}
+
 export async function requestWord(
   request: WordRequest,
   userId: string | null,
   deps: PipelineDeps,
 ): Promise<WordResponse> {
-  if (
-    languagePack(request.language).requiresFlag &&
-    !(userId && (await deps.store.canUseFlaggedLanguage(userId)))
-  ) {
-    throw new LanguageNotEnabledError(request.language);
+  await assertLanguageEnabled(request.language, userId, deps.store);
+  if (!languagePack(request.language).isWordText(request.lemma)) {
+    throw new InvalidWordError(request.lemma);
   }
   const pos = request.pos ?? null;
   const { lemma, alternatives, words } = await findInStore(

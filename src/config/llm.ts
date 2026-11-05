@@ -60,6 +60,7 @@ export const LLM_TASKS = [
   "sense-picker",
   "list-subtopics",
   "reverse-lookup",
+  "reverse-lookup-zh",
   "photo-ocr",
   "word-content-zh",
   "han-viet",
@@ -102,6 +103,7 @@ const DEFAULT_TASKS: Record<
   "list-subtopics": { containsUserData: true, models: ["claude-haiku", "claude-sonnet"] },
   // Câu tiếng Việt người dùng nói/gõ để tra ngược (Prompt 2.5) → chỉ trả phí.
   "reverse-lookup": { containsUserData: true, models: ["claude-sonnet", "claude-haiku"] },
+  "reverse-lookup-zh": { containsUserData: true, models: ["claude-sonnet", "claude-haiku"] },
   // Đọc chữ trên ảnh người dùng chụp khi Google Cloud Vision đọc kém (Prompt 2.6) → chỉ trả phí.
   "photo-ocr": { containsUserData: true, models: ["claude-sonnet", "claude-haiku"] },
 };

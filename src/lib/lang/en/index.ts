@@ -1,4 +1,4 @@
-import type { LanguagePack } from "../types";
+import { ENTRY_TABS, type LanguagePack } from "../types";
 
 /** Giọng Azure của tiếng Anh, theo giọng Mỹ/Anh trong Cài đặt. */
 export const EN_TTS_VOICES = {
@@ -17,4 +17,9 @@ export const en: LanguagePack = {
   usesDictionaryApi: true,
   requiresIpa: true,
   hasReview: true,
+  entryTabs: ENTRY_TABS,
+  isWordText: () => true,
+  hasTraditional: false,
+  searchesPinyin: false,
+  reverseTask: "reverse-lookup",
 };

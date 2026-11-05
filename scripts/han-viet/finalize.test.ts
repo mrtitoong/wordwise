@@ -5,13 +5,19 @@ import type { Suggestion } from "./suggest";
 const suggestion = (char: string, ...readings: [string, string][]) =>
   ({
     char,
+    level: 1,
     readings: readings.map(([am, meaning_vi]) => ({ am, meaning_vi })),
   }) as Suggestion;
 
 describe("finalizeReadings", () => {
   it("chữ chưa duyệt dùng âm máy, âm lặp gộp nghĩa", () => {
     expect(finalizeReadings([suggestion("都", ["đô", "kinh đô"], ["đô", "đều"])], [])).toEqual([
-      { char: "都", readings: [{ am: "đô", meaning_vi: "kinh đô; đều" }], reviewed: false },
+      {
+        char: "都",
+        readings: [{ am: "đô", meaning_vi: "kinh đô; đều" }],
+        reviewed: false,
+        level: 1,
+      },
     ]);
   });
 
@@ -28,6 +34,7 @@ describe("finalizeReadings", () => {
           { am: "hoàn", meaning_vi: "trả lại" },
         ],
         reviewed: true,
+        level: 1,
       },
     ]);
   });
@@ -37,14 +44,14 @@ describe("finalizeReadings", () => {
       [suggestion("个", ["cá", "cái"])],
       [{ char: "个", readings: [], status: "edited" }],
     );
-    expect(rows[0]).toEqual({ char: "个", readings: [], reviewed: true });
+    expect(rows[0]).toEqual({ char: "个", readings: [], reviewed: true, level: 1 });
   });
 });
 
 describe("toSql", () => {
   it("ghi đè theo chữ và thoát dấu nháy đơn", () => {
     const sql = toSql([
-      { char: "好", readings: [{ am: "hảo", meaning_vi: "it's good" }], reviewed: true },
+      { char: "好", readings: [{ am: "hảo", meaning_vi: "it's good" }], reviewed: true, level: 1 },
     ]);
     expect(sql).toContain("on conflict (char) do update");
     expect(sql).toContain('"am":"hảo"');

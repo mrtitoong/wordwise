@@ -1339,16 +1339,19 @@ export type Database = {
       zh_han_viet: {
         Row: {
           char: string;
+          level: number | null;
           readings: NonNullable<Json>;
           reviewed: boolean;
         };
         Insert: {
           char: string;
+          level?: number | null;
           readings: NonNullable<Json>;
           reviewed?: boolean;
         };
         Update: {
           char?: string;
+          level?: number | null;
           readings?: NonNullable<Json>;
           reviewed?: boolean;
         };
@@ -1358,18 +1361,21 @@ export type Database = {
         Row: {
           common: boolean;
           pinyin: string;
+          pinyin_key: string | null;
           simplified: string;
           traditional: string;
         };
         Insert: {
           common: boolean;
           pinyin: string;
+          pinyin_key?: never;
           simplified: string;
           traditional: string;
         };
         Update: {
           common?: boolean;
           pinyin?: string;
+          pinyin_key?: never;
           simplified?: string;
           traditional?: string;
         };
@@ -1512,6 +1518,7 @@ export type Database = {
         Args: { p_language?: string; p_limit?: number; p_prefix: string };
         Returns: Json;
       };
+      search_zh_pinyin: { Args: { p_key: string; p_limit?: number }; Returns: Json };
       sentence_audio_quota: { Args: { p_user_id: string }; Returns: Json };
       start_list_analysis: { Args: { p_list_id: string; p_options?: Json }; Returns: string };
       suggest_spellings: { Args: { p_language?: string; p_terms: string[] }; Returns: Json };

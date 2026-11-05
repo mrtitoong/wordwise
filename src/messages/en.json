@@ -1423,6 +1423,13 @@
       "articleHint": "Tap to select or deselect, drag across to select a phrase. Faded words are ones you already have.",
       "articleLabel": "Article text, tap a word to select it",
       "reviewHint": "Each word keeps its sentence from the article as where you met it, with the link."
+    },
+    "meaningLookup": {
+      "askAi": "Ask AI for the Chinese word for \"{query}\"",
+      "aiLogin": "Sign in to ask AI.",
+      "aiLimit": "You have used all AI lookups for today.",
+      "aiFailed": "Couldn't reach AI. Try again later.",
+      "aiEmpty": "AI found no matching word."
     }
   },
   "review": {

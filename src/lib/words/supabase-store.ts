@@ -129,6 +129,16 @@ export function createSupabaseWordStore(client: Client): WordStore {
       }
       return lexicon;
     },
+    async zhSimplified(text) {
+      const { data, error } = await client
+        .from("zh_lexicon")
+        .select("simplified, common")
+        .eq("traditional", text);
+      if (error) throw new Error(`zh_lexicon: ${error.message}`);
+      const rows = data ?? [];
+      if (rows.length === 0 || rows.some((row) => row.simplified === text)) return text;
+      return (rows.find((row) => row.common) ?? rows[0]!).simplified;
+    },
     async zhHanViet(chars) {
       const { data, error } = await client
         .from("zh_han_viet")

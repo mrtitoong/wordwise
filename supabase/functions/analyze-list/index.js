@@ -111,6 +111,7 @@ var LLM_TASKS = [
   "sense-picker",
   "list-subtopics",
   "reverse-lookup",
+  "reverse-lookup-zh",
   "photo-ocr",
   "word-content-zh",
   "han-viet"
@@ -147,6 +148,7 @@ var DEFAULT_TASKS = {
   "list-subtopics": { containsUserData: true, models: ["claude-haiku", "claude-sonnet"] },
   // Câu tiếng Việt người dùng nói/gõ để tra ngược (Prompt 2.5) → chỉ trả phí.
   "reverse-lookup": { containsUserData: true, models: ["claude-sonnet", "claude-haiku"] },
+  "reverse-lookup-zh": { containsUserData: true, models: ["claude-sonnet", "claude-haiku"] },
   // Đọc chữ trên ảnh người dùng chụp khi Google Cloud Vision đọc kém (Prompt 2.6) → chỉ trả phí.
   "photo-ocr": { containsUserData: true, models: ["claude-sonnet", "claude-haiku"] }
 };
@@ -184,6 +186,9 @@ function resolveLlmConfig(env = {}) {
 // src/lib/schema/word.ts
 import { z } from "npm:zod@4.6.5";
 
+// src/lib/lang/types.ts
+var ENTRY_TABS = ["typed", "voice", "photo", "url", "file"];
+
 // src/lib/lang/en/index.ts
 var EN_TTS_VOICES = {
   us: { locale: "en-US", name: "en-US-AvaNeural" },
@@ -199,8 +204,19 @@ var en = {
   lemmatizes: true,
   usesDictionaryApi: true,
   requiresIpa: true,
-  hasReview: true
+  hasReview: true,
+  entryTabs: ENTRY_TABS,
+  isWordText: () => true,
+  hasTraditional: false,
+  searchesPinyin: false,
+  reverseTask: "reverse-lookup"
 };
+
+// src/lib/lang/zh/query.ts
+var HAN = /\p{Script=Han}/u;
+function hasHan(text2) {
+  return HAN.test(text2);
+}
 
 // src/lib/lang/zh/index.ts
 var ZH_TTS_VOICE = { locale: "zh-CN", name: "zh-CN-XiaoxiaoNeural" };
@@ -214,7 +230,12 @@ var zh = {
   lemmatizes: false,
   usesDictionaryApi: false,
   requiresIpa: false,
-  hasReview: false
+  hasReview: false,
+  entryTabs: ["typed", "file"],
+  isWordText: hasHan,
+  hasTraditional: true,
+  searchesPinyin: true,
+  reverseTask: "reverse-lookup-zh"
 };
 
 // src/lib/lang/index.ts
@@ -232,7 +253,12 @@ function plainPack(code) {
     lemmatizes: false,
     usesDictionaryApi: false,
     requiresIpa: false,
-    hasReview: false
+    hasReview: false,
+    entryTabs: ENTRY_TABS,
+    isWordText: () => true,
+    hasTraditional: false,
+    searchesPinyin: false,
+    reverseTask: "reverse-lookup"
   };
 }
 function languagePack(code) {

@@ -1,4 +1,5 @@
 import type { LanguagePack } from "../types";
+import { hasHan } from "./query";
 
 const ZH_TTS_VOICE = { locale: "zh-CN", name: "zh-CN-XiaoxiaoNeural" };
 
@@ -13,4 +14,9 @@ export const zh: LanguagePack = {
   usesDictionaryApi: false,
   requiresIpa: false,
   hasReview: false,
+  entryTabs: ["typed", "file"],
+  isWordText: hasHan,
+  hasTraditional: true,
+  searchesPinyin: true,
+  reverseTask: "reverse-lookup-zh",
 };

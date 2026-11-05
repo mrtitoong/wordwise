@@ -92,6 +92,7 @@ async function runOne(db: LocalDb, record: ImportRecord) {
       try {
         response = await requestWord(createClient(), {
           lemma: item.lemma,
+          ...(record.language ? { language: record.language } : {}),
           notebookId: record.notebookId,
           contextSentence: item.context,
           inputMethod: "csv",

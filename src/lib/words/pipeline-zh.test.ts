@@ -8,6 +8,7 @@ import { createLlmRouter } from "@/lib/llm/router";
 import type { LLMProvider, ModelSpec, ProviderRequest } from "@/lib/llm/types";
 import type { WordRows } from "@/lib/schema/word-rows";
 import {
+  InvalidWordError,
   LanguageNotEnabledError,
   processJob,
   requestWord,
@@ -77,6 +78,7 @@ function setup(response: unknown, readings: { pinyin: string; common: boolean }[
     ),
     zhLexicon: vi.fn(async () => new Map()),
     zhHanViet: vi.fn(async () => new Map()),
+    zhSimplified: vi.fn(async (text: string) => text),
     saveWord: vi.fn(async (_job: string, rows: WordRows) => {
       saved.push(rows);
       return rows.word.id;
@@ -195,12 +197,30 @@ describe("cờ tiếng Trung", () => {
     store: {
       canUseFlaggedLanguage: vi.fn(async () => allowed),
       findWords: vi.fn(async () => []),
+      zhSimplified: vi.fn(async (text: string) => text),
       requestJob: vi.fn(async () => ({
         limitReached: false as const,
         jobId: "job-1",
         dailyLimit: 50,
       })),
     } as unknown as WordStore,
+  });
+
+  it("chữ phồn thể đổi về giản thể trước khi tìm và xếp việc", async () => {
+    const on = pipeline(true);
+    on.store.zhSimplified = vi.fn(async () => "学校");
+    const response = await requestWord({ ...request, lemma: "學校" }, "user", on);
+    expect(response).toMatchObject({ status: "preparing", lemma: "学校" });
+    expect(on.store.findWords).toHaveBeenCalledWith("zh", "学校", null);
+    expect(on.store.requestJob).toHaveBeenCalledWith("user", "zh", "学校", null);
+  });
+
+  it("không có chữ Hán thì không xếp việc, không tốn tiền", async () => {
+    const on = pipeline(true);
+    await expect(requestWord({ ...request, lemma: "xuexiao" }, "user", on)).rejects.toBeInstanceOf(
+      InvalidWordError,
+    );
+    expect(on.store.requestJob).not.toHaveBeenCalled();
   });
 
   it("chưa bật cờ hoặc là khách thì không tạo từ", async () => {

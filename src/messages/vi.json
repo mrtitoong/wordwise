@@ -1423,6 +1423,13 @@
       "articleHint": "Chạm để chọn hoặc bỏ chọn, kéo ngang để chọn cả cụm. Chữ mờ là từ bạn đã có.",
       "articleLabel": "Nội dung bài, chạm vào từ để chọn",
       "reviewHint": "Mỗi từ giữ câu trong bài làm câu bạn đã gặp, kèm link bài."
+    },
+    "meaningLookup": {
+      "askAi": "Hỏi AI từ tiếng Trung cho \"{query}\"",
+      "aiLogin": "Đăng nhập để hỏi AI.",
+      "aiLimit": "Hôm nay đã dùng hết lượt hỏi AI.",
+      "aiFailed": "Chưa hỏi được AI. Thử lại sau nhé.",
+      "aiEmpty": "AI không tìm được từ phù hợp."
     }
   },
   "review": {

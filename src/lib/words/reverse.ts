@@ -4,7 +4,8 @@
  * hạn lượt mỗi ngày). Hàm thuần: database và AI truyền vào.
  */
 import { z } from "zod";
-import { PosSchema, type Pos } from "@/lib/schema/word";
+import { DEFAULT_LANGUAGE, languagePack } from "@/lib/lang";
+import { LanguageSchema, StoredPosSchema, type Language, type StoredPos } from "@/lib/schema/word";
 
 export const REVERSE_MIN_LIBRARY = 3;
 export const REVERSE_MAX_ITEMS = 5;
@@ -12,13 +13,14 @@ export const REVERSE_MAX_ITEMS = 5;
 export const ReverseRequestSchema = z.object({
   action: z.literal("reverse"),
   query: z.string().trim().min(2).max(60),
+  language: LanguageSchema.default(DEFAULT_LANGUAGE),
 });
 
 export type ReverseRequest = z.infer<typeof ReverseRequestSchema>;
 
 export const ReverseItemSchema = z.object({
   word: z.string(),
-  pos: PosSchema.nullable(),
+  pos: StoredPosSchema.nullable(),
   /** Nghĩa tiếng Việt trong kho (null với gợi ý của AI chưa có trong kho). */
   meaning: z.string().nullable(),
   /** Sắc thái do AI giải thích. */
@@ -45,10 +47,14 @@ export type LibraryMatch = {
 };
 
 export interface ReverseDeps {
-  searchByMeaning(query: string): Promise<LibraryMatch[]>;
+  searchByMeaning(query: string, language: Language): Promise<LibraryMatch[]>;
   /** null khi chưa cấu hình AI. */
   suggest:
-    ((query: string) => Promise<{ word: string; pos: Pos | null; nuance_vi: string }[]>) | null;
+    | ((
+        query: string,
+        language: Language,
+      ) => Promise<{ word: string; pos: StoredPos | null; nuance_vi: string }[]>)
+    | null;
   consumeUsage(userId: string): Promise<{ allowed: boolean }>;
 }
 
@@ -57,10 +63,11 @@ export async function reverseLookup(
   userId: string | null,
   deps: ReverseDeps,
 ): Promise<ReverseResponse> {
-  const library: ReverseItem[] = (await deps.searchByMeaning(request.query))
+  const { language } = request;
+  const library: ReverseItem[] = (await deps.searchByMeaning(request.query, language))
     .slice(0, REVERSE_MAX_ITEMS)
     .map((m) => {
-      const pos = PosSchema.safeParse(m.pos);
+      const pos = StoredPosSchema.safeParse(m.pos);
       return {
         word: m.lemma,
         pos: pos.success ? pos.data : null,
@@ -78,7 +85,7 @@ export async function reverseLookup(
 
   let suggestions;
   try {
-    suggestions = await deps.suggest(request.query);
+    suggestions = await deps.suggest(request.query, language);
   } catch (error) {
     console.error("Tra ngược bằng AI lỗi:", error);
     return { items: library, ai: "unavailable" };
@@ -87,6 +94,7 @@ export async function reverseLookup(
   const items = [...library];
   for (const s of suggestions) {
     const word = s.word.trim().toLowerCase();
+    if (!languagePack(language).isWordText(word)) continue;
     if (!word || seen.has(word) || items.length >= REVERSE_MAX_ITEMS) continue;
     seen.add(word);
     items.push({

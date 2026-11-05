@@ -1339,17 +1339,17 @@ export type Database = {
       zh_han_viet: {
         Row: {
           char: string;
-          readings: Json;
+          readings: NonNullable<Json>;
           reviewed: boolean;
         };
         Insert: {
           char: string;
-          readings: Json;
+          readings: NonNullable<Json>;
           reviewed?: boolean;
         };
         Update: {
           char?: string;
-          readings?: Json;
+          readings?: NonNullable<Json>;
           reviewed?: boolean;
         };
         Relationships: [];

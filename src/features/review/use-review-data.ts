@@ -6,6 +6,8 @@
 import { useLiveQuery } from "dexie-react-hooks";
 import { defaultSettingsRow } from "@/lib/db/repo";
 import { GUEST_OWNER } from "@/lib/db/ids";
+import { letterCount } from "@/lib/grading/spelling";
+import type { TimingCard } from "@/lib/srs/grade";
 import { getLocalDb } from "@/lib/db/local";
 import { completedDays, freeLogIds, getSavedSession } from "@/lib/db/review-store";
 import type {
@@ -82,6 +84,17 @@ export async function loadReviewData(owner: string): Promise<ReviewData> {
     completedDays: done,
     saved,
   };
+}
+
+/** Thẻ → kỹ năng và số chữ cái của từ, để so thời gian trả lời (`timingBaseline`). */
+export function timingCards(data: ReviewData): Map<string, TimingCard> {
+  const senseOf = new Map(data.userWords.map((uw) => [uw.id, uw.sense_id]));
+  return new Map(
+    data.cards.map((card) => {
+      const lemma = data.senses.get(senseOf.get(card.user_word_id) ?? "")?.word.lemma ?? "";
+      return [card.id, { skill: card.skill, letters: letterCount(lemma) }];
+    }),
+  );
 }
 
 export function toTodayInput(data: ReviewData, relatedOf?: TodayInput["relatedOf"]): TodayInput {

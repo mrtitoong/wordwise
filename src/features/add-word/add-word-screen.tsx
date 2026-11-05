@@ -15,7 +15,9 @@ import { ArticleEntry } from "./article-entry";
 import { BulkEntry } from "./bulk-entry";
 import { FileEntry } from "./file-entry";
 import { PhotoEntry } from "./photo/photo-entry";
+import { DEFAULT_LANGUAGE, languagePack, type EntryTab } from "@/lib/lang";
 import { learningLanguage } from "@/lib/lang/filter";
+import type { Language } from "@/lib/schema/word";
 import { VoiceEntry } from "./voice-entry";
 import { PremiumSheet } from "./premium-sheet";
 import { PreparingList } from "./preparing-list";
@@ -50,14 +52,14 @@ export type EntryContext = {
   inNotebookSenseIds: Set<string>;
   openSlots: number;
   dailyLimit: number;
+  /** Ngôn ngữ đang học. */
+  language: Language;
   /** Giọng Mỹ/Anh trong Cài đặt (nhận dạng giọng nói). */
   accent: "us" | "uk";
   /** Trình độ trong Cài đặt (tab Ảnh bỏ từ quá dễ khi tự chọn). */
   cefrLevel: string | null;
   onLimit: (plan: "free" | "premium", limit: number) => void;
 };
-
-const TABS = ["typed", "voice", "photo", "url", "file"] as const;
 
 export function AddWordScreen({ initialNotebookId }: { initialNotebookId: string | null }) {
   const t = useTranslations();
@@ -66,7 +68,7 @@ export function AddWordScreen({ initialNotebookId }: { initialNotebookId: string
   const online = useOnlineStatus();
   const [chosen, setChosen] = useState<string | null>(initialNotebookId);
   const [bulkText, setBulkText] = useState<string | null>(null);
-  const [tab, setTab] = useState<(typeof TABS)[number]>("typed");
+  const [chosenTab, setTab] = useState<EntryTab>("typed");
   const [limit, setLimit] = useState<{ plan: "free" | "premium"; limit: number } | null>(null);
 
   const data = useLiveQuery(async () => {
@@ -93,6 +95,8 @@ export function AddWordScreen({ initialNotebookId }: { initialNotebookId: string
   }, [owner]);
 
   const language = data?.language;
+  const tabs = languagePack(language ?? DEFAULT_LANGUAGE).entryTabs;
+  const tab = tabs.includes(chosenTab) ? chosenTab : "typed";
 
   // Người dùng bỏ qua 5 từ khởi đầu thì chưa có "Sổ của tôi".
   useEffect(() => {
@@ -132,8 +136,10 @@ export function AddWordScreen({ initialNotebookId }: { initialNotebookId: string
       notebookName: notebook.name,
       ownedSenseIds: new Set(live.map((u) => u.sense_id)),
       inNotebookSenseIds: new Set(live.filter((u) => inNotebook.has(u.id)).map((u) => u.sense_id)),
-      openSlots: data.slots,
+      // Ngôn ngữ chưa có phiên ôn: từ mới nằm ở Sắp học, không học trong hôm nay.
+      openSlots: languagePack(data.language).hasReview ? data.slots : 0,
       dailyLimit: data.dailyLimit,
+      language: data.language,
       accent: data.accent,
       cefrLevel: data.cefrLevel,
       onLimit: (plan, max) => setLimit({ plan, limit: max }),
@@ -178,9 +184,9 @@ export function AddWordScreen({ initialNotebookId }: { initialNotebookId: string
       <div
         role="tablist"
         aria-label={t("addWord.tabsLabel")}
-        className="grid grid-cols-5 gap-1 rounded-xl bg-muted p-1"
+        className="grid auto-cols-fr grid-flow-col gap-1 rounded-xl bg-muted p-1"
       >
-        {TABS.map((id) => {
+        {tabs.map((id) => {
           const active = id === tab;
           return (
             <button

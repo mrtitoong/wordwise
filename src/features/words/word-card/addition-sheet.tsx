@@ -128,6 +128,7 @@ export function AdditionSheet({
     layer === "examples" &&
     fields.a.trim().length > 0 &&
     !containsWordForm(fields.a, view.content.lemma, view.highlightTerms);
+  const { language } = view.content;
 
   async function apply(result: AdditionResult) {
     if (!result.ok) {
@@ -178,7 +179,7 @@ export function AdditionSheet({
               rows={3}
               required
               autoFocus
-              lang={layer === "examples" ? "en" : undefined}
+              lang={layer === "examples" ? language : undefined}
               className={inputClass}
             />
           ) : (
@@ -188,7 +189,7 @@ export function AdditionSheet({
               maxLength={keys.aMax}
               required
               autoFocus
-              lang="en"
+              lang={language}
               autoCapitalize="none"
               className={inputClass}
             />

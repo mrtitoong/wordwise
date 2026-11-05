@@ -11,7 +11,9 @@ import { z } from "zod";
 import { FunctionRequestSchema, type WordResponse } from "@/lib/words/api";
 import { reverseLookup, type ReverseDeps } from "@/lib/words/reverse";
 import {
+  InvalidWordError,
   LanguageNotEnabledError,
+  assertLanguageEnabled,
   requestWord,
   resolveWords,
   runWorker,
@@ -81,7 +83,10 @@ export function createHandler(deps: HandlerDeps) {
       if (body.action === "resolve") return json(await resolveWords(body, deps.pipeline));
 
       const userId = await deps.getUserId(request.headers.get("authorization"));
-      if (body.action === "reverse") return json(await reverseLookup(body, userId, deps.reverse));
+      if (body.action === "reverse") {
+        await assertLanguageEnabled(body.language, userId, deps.pipeline.store);
+        return json(await reverseLookup(body, userId, deps.reverse));
+      }
       const response: WordResponse = await requestWord(body, userId, deps.pipeline);
       if (response.status === "preparing" && deps.worker) {
         // Xử lý ngay việc vừa xếp; lỗi đã được ghi vào việc, cron sẽ thử lại.
@@ -96,6 +101,7 @@ export function createHandler(deps: HandlerDeps) {
       if (error instanceof LanguageNotEnabledError) {
         return json({ error: "language_not_enabled" }, 403);
       }
+      if (error instanceof InvalidWordError) return json({ error: "invalid_request" }, 400);
       console.error("generate-word lỗi:", error);
       return json({ error: "internal_error" }, 500);
     }

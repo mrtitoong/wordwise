@@ -49,7 +49,11 @@ export function BulkEntry({
         const words = parsed.lines.map((l) => l.word.slice(0, 64));
         const all: Resolved[] = [];
         for (let i = 0; i < words.length; i += CHUNK) {
-          const { items } = await resolveWords(createClient(), words.slice(i, i + CHUNK));
+          const { items } = await resolveWords(
+            createClient(),
+            words.slice(i, i + CHUNK),
+            context.language,
+          );
           all.push(...items);
         }
         if (!cancelled) setResolved(all);
@@ -60,7 +64,7 @@ export function BulkEntry({
     return () => {
       cancelled = true;
     };
-  }, [parsed, context.online]);
+  }, [parsed, context.online, context.language]);
 
   const entries = useMemo<NormalizedEntry[] | null>(() => {
     if (!resolved) return null;
@@ -70,6 +74,7 @@ export function BulkEntry({
         { text: line.word, note: line.note },
         resolved[i] ?? null,
         context.ownedSenseIds,
+        context.language,
       );
       // Hai dòng ra cùng từ gốc (running, ran → run): chỉ thêm một lần.
       const key = entry.status === "invalid" ? `#${i}` : entry.lemma;
@@ -80,7 +85,7 @@ export function BulkEntry({
       }
       return entry;
     });
-  }, [resolved, parsed, context.ownedSenseIds, choices]);
+  }, [resolved, parsed, context.ownedSenseIds, context.language, choices]);
 
   const counted = useMemo(
     () => (entries ?? []).filter((e) => e.status !== "new" || context.signedIn),
@@ -152,7 +157,10 @@ export function BulkEntry({
                 )}
               >
                 <span className="flex min-w-0 flex-1 flex-col">
-                  <span className={cn("font-medium", skippedRow && "line-through")} lang="en">
+                  <span
+                    className={cn("font-medium", skippedRow && "line-through")}
+                    lang={context.language}
+                  >
                     {entry.changed
                       ? `${entry.surface} → ${entry.lemma}`
                       : entry.surface || parsed.lines[i]!.word}

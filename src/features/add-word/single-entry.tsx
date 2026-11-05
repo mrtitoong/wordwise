@@ -9,12 +9,14 @@ import { showToast } from "@/components/ui/toast";
 import { getLocalDb } from "@/lib/db/local";
 import { addSensesToNotebook } from "@/lib/db/repo";
 import { isMultiline } from "@/lib/entry/paste";
+import { languagePack } from "@/lib/lang";
 import { normalizeEntry } from "@/lib/entry/normalize";
 import { createClient } from "@/lib/supabase/client";
 import { getSupabaseEnv } from "@/lib/supabase/env";
 import { cn } from "@/lib/utils";
 import { toWordSummary, type InputMethod, type WordSummary } from "@/lib/words/api";
 import { requestWord, resolveWords } from "@/lib/words/request-word";
+import { MeaningLookup } from "./meaning-lookup";
 import type { EntryContext } from "./add-word-screen";
 import { notifyPreparing } from "./preparing-events";
 import { cacheSenses, findExact, useWordSuggestions } from "./word-search";
@@ -44,7 +46,14 @@ export function SingleEntry({
   const [contextSentence, setContextSentence] = useState("");
   const [busy, setBusy] = useState(false);
   const [message, setMessage] = useState<{ text: string; login?: boolean } | null>(null);
-  const suggestions = useWordSuggestions(getLocalDb(), picked ? "" : query, context.online);
+  const { language } = context;
+  const pack = languagePack(language);
+  const suggestions = useWordSuggestions(
+    getLocalDb(),
+    picked ? "" : query,
+    context.online,
+    language,
+  );
 
   const owned = (word: WordSummary) => word.senses.every((s) => context.ownedSenseIds.has(s.id));
   const exact = suggestions.items.some((w) => w.lemma.toLowerCase() === query.trim().toLowerCase());
@@ -75,8 +84,9 @@ export function SingleEntry({
     void (async () => {
       try {
         // Khớp đúng trong kho trước (nhanh); không có thì để máy chủ đưa về từ gốc (running → run).
-        const exact = await findExact(getLocalDb(), text, context.online);
-        const word = exact ?? (await resolveWords(createClient(), [text])).items[0]?.words[0];
+        const exact = await findExact(getLocalDb(), text, context.online, language);
+        const word =
+          exact ?? (await resolveWords(createClient(), [text], language)).items[0]?.words[0];
         if (cancelled) return;
         if (word) pick(word, text);
         else void requestNew(text);
@@ -102,6 +112,7 @@ export function SingleEntry({
     try {
       const response = await requestWord(createClient(), {
         lemma: text,
+        language,
         notebookId: context.signedIn ? context.notebookId : null,
         contextSentence: contextSentence.trim() || null,
         inputMethod,
@@ -164,7 +175,8 @@ export function SingleEntry({
     event.preventDefault();
     if (picked) void add();
     else if (suggestions.items[0]) pick(suggestions.items[0]);
-    else if (query.trim() && !suggestions.loading) void requestNew();
+    else if (suggestions.candidates[0]) void requestNew(suggestions.candidates[0].lemma);
+    else if (pack.isWordText(query) && query.trim() && !suggestions.loading) void requestNew();
   }
 
   function onPaste(event: ClipboardEvent<HTMLInputElement>) {
@@ -201,7 +213,7 @@ export function SingleEntry({
         autoCapitalize="none"
         autoComplete="off"
         spellCheck={false}
-        lang="en"
+        lang={language}
         enterKeyHint={picked ? "done" : "search"}
         className={cn(inputClass, "h-14 text-lg")}
       />
@@ -216,7 +228,7 @@ export function SingleEntry({
                 onClick={() => pick(word)}
                 className="flex min-h-12 w-full items-center gap-2 px-3 py-2 text-left hover:bg-muted focus-visible:outline-2 focus-visible:outline-ring"
               >
-                <span className="font-medium" lang="en">
+                <span className="font-medium" lang={language}>
                   {word.lemma}
                 </span>
                 <span className="text-xs text-muted-foreground">{tc(`posShort.${word.pos}`)}</span>
@@ -231,7 +243,25 @@ export function SingleEntry({
               </button>
             </li>
           ))}
-          {!exact && !suggestions.loading && (
+          {suggestions.candidates.map((candidate) => (
+            <li key={`${candidate.lemma}:${candidate.pinyin}`}>
+              <button
+                type="button"
+                onClick={() => void requestNew(candidate.lemma)}
+                disabled={busy}
+                className="flex min-h-12 w-full items-center gap-2 px-3 py-2 text-left hover:bg-muted focus-visible:outline-2 focus-visible:outline-ring"
+              >
+                <span className="font-medium" lang={language}>
+                  {candidate.lemma}
+                </span>
+                <span className="min-w-0 flex-1 truncate text-sm text-muted-foreground">
+                  {candidate.pinyin}
+                </span>
+                <Plus className="size-4 shrink-0 text-primary" aria-hidden />
+              </button>
+            </li>
+          ))}
+          {!exact && !suggestions.loading && pack.isWordText(query) && (
             <li>
               <button
                 type="button"
@@ -247,10 +277,20 @@ export function SingleEntry({
         </ul>
       )}
 
+      {!picked && pack.searchesPinyin && !pack.isWordText(query) && query.trim().length >= 2 && (
+        <MeaningLookup
+          key={query.trim()}
+          query={query.trim()}
+          language={language}
+          disabled={busy || !context.online}
+          onChoose={(word) => void requestNew(word)}
+        />
+      )}
+
       {picked && (
         <section className="flex flex-col gap-2 rounded-xl border p-3">
           <p className="flex items-baseline gap-2">
-            <span className="text-lg font-semibold" lang="en">
+            <span className="text-lg font-semibold" lang={language}>
               {picked.word.lemma}
             </span>
             <span className="text-sm text-muted-foreground">{tc(`pos.${picked.word.pos}`)}</span>
@@ -292,7 +332,7 @@ export function SingleEntry({
               onChange={(e) => setContextSentence(e.target.value)}
               maxLength={500}
               rows={2}
-              lang="en"
+              lang={language}
               className="rounded-lg border bg-background px-3 py-2 text-base focus-visible:outline-2 focus-visible:outline-ring"
             />
           </label>

@@ -1358,18 +1358,21 @@ export type Database = {
         Row: {
           common: boolean;
           pinyin: string;
+          pinyin_key: string | null;
           simplified: string;
           traditional: string;
         };
         Insert: {
           common: boolean;
           pinyin: string;
+          pinyin_key?: never;
           simplified: string;
           traditional: string;
         };
         Update: {
           common?: boolean;
           pinyin?: string;
+          pinyin_key?: never;
           simplified?: string;
           traditional?: string;
         };
@@ -1508,6 +1511,7 @@ export type Database = {
         Args: { p_language?: string; p_limit?: number; p_query: string };
         Returns: Json;
       };
+      search_zh_pinyin: { Args: { p_key: string; p_limit?: number }; Returns: Json };
       search_words: {
         Args: { p_language?: string; p_limit?: number; p_prefix: string };
         Returns: Json;

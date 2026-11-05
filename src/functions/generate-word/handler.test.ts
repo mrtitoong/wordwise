@@ -13,6 +13,7 @@ function emptyStore(): WordStore {
     zhReadings: vi.fn(async () => []),
     zhLexicon: vi.fn(async () => new Map()),
     zhHanViet: vi.fn(async () => new Map()),
+    zhSimplified: vi.fn(async (text: string) => text),
     requestJob: vi.fn(async () => ({
       limitReached: false as const,
       jobId: "job-1",

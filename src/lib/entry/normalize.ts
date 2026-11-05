@@ -4,6 +4,8 @@
  * kho của người dùng → giữ ngữ cảnh gốc. Hàm thuần; phần tra từ gốc chạy ở Edge Function
  * generate-word (lemmatizer ~3 MB chỉ ở máy chủ).
  */
+import { DEFAULT_LANGUAGE, languagePack } from "@/lib/lang";
+import type { Language } from "@/lib/schema/word";
 import type { WordSummary } from "@/lib/words/api";
 import { cleanSurface } from "./lemma";
 
@@ -66,13 +68,19 @@ export function normalizeEntry(
   raw: RawEntry,
   resolution: Resolution | null,
   ownedSenseIds: ReadonlySet<string>,
+  language: Language = DEFAULT_LANGUAGE,
 ): NormalizedEntry {
   const surface = cleanSurface(raw.text);
   const context = clip(raw.context, MAX_CONTEXT_LENGTH);
   const note = clip(raw.note, MAX_CONTEXT_LENGTH);
   const base = { surface, context, note };
 
-  if (!surface || surface.length > MAX_ENTRY_LENGTH || !/\p{L}/u.test(surface)) {
+  if (
+    !surface ||
+    surface.length > MAX_ENTRY_LENGTH ||
+    !/\p{L}/u.test(surface) ||
+    !languagePack(language).isWordText(surface)
+  ) {
     return { ...base, lemma: surface, changed: false, alternatives: [], status: "invalid" };
   }
   if (!resolution) {

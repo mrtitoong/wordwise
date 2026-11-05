@@ -102,6 +102,9 @@ function fakeStore(initial: WordContent[] = [], dailyLimit = 50) {
     async zhHanViet() {
       return new Map();
     },
+    async zhSimplified(text) {
+      return text;
+    },
     async requestJob(userId, language, lemma, pos): Promise<RequestJobResult> {
       let job = jobs.find(
         (j) =>

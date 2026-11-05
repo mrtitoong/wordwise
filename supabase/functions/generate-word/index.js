@@ -111,6 +111,7 @@ var LLM_TASKS = [
   "sense-picker",
   "list-subtopics",
   "reverse-lookup",
+  "reverse-lookup-zh",
   "photo-ocr",
   "word-content-zh",
   "han-viet"
@@ -147,6 +148,7 @@ var DEFAULT_TASKS = {
   "list-subtopics": { containsUserData: true, models: ["claude-haiku", "claude-sonnet"] },
   // Câu tiếng Việt người dùng nói/gõ để tra ngược (Prompt 2.5) → chỉ trả phí.
   "reverse-lookup": { containsUserData: true, models: ["claude-sonnet", "claude-haiku"] },
+  "reverse-lookup-zh": { containsUserData: true, models: ["claude-sonnet", "claude-haiku"] },
   // Đọc chữ trên ảnh người dùng chụp khi Google Cloud Vision đọc kém (Prompt 2.6) → chỉ trả phí.
   "photo-ocr": { containsUserData: true, models: ["claude-sonnet", "claude-haiku"] }
 };
@@ -729,6 +731,9 @@ function applyLexicon(draft, readings) {
 // src/lib/schema/word.ts
 import { z as z3 } from "npm:zod@4.6.5";
 
+// src/lib/lang/types.ts
+var ENTRY_TABS = ["typed", "voice", "photo", "url", "file"];
+
 // src/lib/lang/en/index.ts
 var EN_TTS_VOICES = {
   us: { locale: "en-US", name: "en-US-AvaNeural" },
@@ -744,8 +749,19 @@ var en = {
   lemmatizes: true,
   usesDictionaryApi: true,
   requiresIpa: true,
-  hasReview: true
+  hasReview: true,
+  entryTabs: ENTRY_TABS,
+  isWordText: () => true,
+  hasTraditional: false,
+  searchesPinyin: false,
+  reverseTask: "reverse-lookup"
 };
+
+// src/lib/lang/zh/query.ts
+var HAN = /\p{Script=Han}/u;
+function hasHan(text2) {
+  return HAN.test(text2);
+}
 
 // src/lib/lang/zh/index.ts
 var ZH_TTS_VOICE = { locale: "zh-CN", name: "zh-CN-XiaoxiaoNeural" };
@@ -759,7 +775,12 @@ var zh = {
   lemmatizes: false,
   usesDictionaryApi: false,
   requiresIpa: false,
-  hasReview: false
+  hasReview: false,
+  entryTabs: ["typed", "file"],
+  isWordText: hasHan,
+  hasTraditional: true,
+  searchesPinyin: true,
+  reverseTask: "reverse-lookup-zh"
 };
 
 // src/lib/lang/index.ts
@@ -778,7 +799,12 @@ function plainPack(code) {
     lemmatizes: false,
     usesDictionaryApi: false,
     requiresIpa: false,
-    hasReview: false
+    hasReview: false,
+    entryTabs: ENTRY_TABS,
+    isWordText: () => true,
+    hasTraditional: false,
+    searchesPinyin: false,
+    reverseTask: "reverse-lookup"
   };
 }
 function languagePack(code) {
@@ -1128,11 +1154,12 @@ var REVERSE_MIN_LIBRARY = 3;
 var REVERSE_MAX_ITEMS = 5;
 var ReverseRequestSchema = z6.object({
   action: z6.literal("reverse"),
-  query: z6.string().trim().min(2).max(60)
+  query: z6.string().trim().min(2).max(60),
+  language: LanguageSchema.default(DEFAULT_LANGUAGE)
 });
 var ReverseItemSchema = z6.object({
   word: z6.string(),
-  pos: PosSchema.nullable(),
+  pos: StoredPosSchema.nullable(),
   /** Nghĩa tiếng Việt trong kho (null với gợi ý của AI chưa có trong kho). */
   meaning: z6.string().nullable(),
   /** Sắc thái do AI giải thích. */
@@ -1146,8 +1173,9 @@ var ReverseResponseSchema = z6.object({
   ai: z6.enum(["skipped", "used", "login_required", "limit_reached", "unavailable"])
 });
 async function reverseLookup(request, userId, deps) {
-  const library = (await deps.searchByMeaning(request.query)).slice(0, REVERSE_MAX_ITEMS).map((m) => {
-    const pos = PosSchema.safeParse(m.pos);
+  const { language } = request;
+  const library = (await deps.searchByMeaning(request.query, language)).slice(0, REVERSE_MAX_ITEMS).map((m) => {
+    const pos = StoredPosSchema.safeParse(m.pos);
     return {
       word: m.lemma,
       pos: pos.success ? pos.data : null,
@@ -1164,7 +1192,7 @@ async function reverseLookup(request, userId, deps) {
   if (!quota.allowed) return { items: library, ai: "limit_reached" };
   let suggestions;
   try {
-    suggestions = await deps.suggest(request.query);
+    suggestions = await deps.suggest(request.query, language);
   } catch (error) {
     console.error("Tra ngược bằng AI lỗi:", error);
     return { items: library, ai: "unavailable" };
@@ -1173,6 +1201,7 @@ async function reverseLookup(request, userId, deps) {
   const items = [...library];
   for (const s of suggestions) {
     const word = s.word.trim().toLowerCase();
+    if (!languagePack(language).isWordText(word)) continue;
     if (!word || seen.has(word) || items.length >= REVERSE_MAX_ITEMS) continue;
     seen.add(word);
     items.push({
@@ -1355,6 +1384,13 @@ function createSupabaseWordStore(client) {
       }
       return lexicon;
     },
+    async zhSimplified(text2) {
+      const { data, error } = await client.from("zh_lexicon").select("simplified, common").eq("traditional", text2);
+      if (error) throw new Error(`zh_lexicon: ${error.message}`);
+      const rows = data ?? [];
+      if (rows.length === 0 || rows.some((row) => row.simplified === text2)) return text2;
+      return (rows.find((row) => row.common) ?? rows[0]).simplified;
+    },
     async zhHanViet(chars) {
       const { data, error } = await client.from("zh_han_viet").select("char, readings").in("char", [...chars]);
       if (error) throw new Error(`zh_han_viet: ${error.message}`);
@@ -1473,13 +1509,13 @@ var ReverseSuggestionsSchema = z8.object({
   items: z8.array(
     z8.object({
       word: z8.string().trim().min(1).max(64),
-      pos: PosSchema.nullable().catch(null),
+      pos: StoredPosSchema.nullable().catch(null),
       nuance_vi: z8.string().trim().min(1).max(200)
     })
   ).max(5)
 });
 function buildReverseLookupPrompt(template, query) {
-  if (template.task !== "reverse-lookup") {
+  if (!template.task.startsWith("reverse-lookup")) {
     throw new Error(`Cần prompt reverse-lookup, nhận ${template.task}`);
   }
   const clean = query.replace(/["\n\r]+/g, " ").trim().slice(0, 60);
@@ -1491,6 +1527,9 @@ function buildReverseLookupPrompt(template, query) {
 
 // raw:src/prompts/reverse-lookup.md
 var reverse_lookup_default = '---\ntask: reverse-lookup\nversion: 1\nschema: src/lib/llm/tasks/reverse-lookup.ts (ReverseSuggestionsSchema)\n---\n\n<!--\nTra ngược: người dùng nói/gõ một từ hoặc cụm tiếng Việt, gợi ý 3–5 từ tiếng Anh tương ứng kèm\nsắc thái để chọn học. Nội dung người dùng nhập nên chạy model trả phí (containsUserData).\nBiến {{query}} do buildReverseLookupPrompt() điền. Sửa prompt → tăng version.\n-->\n\n=== SYSTEM ===\nBạn là giáo viên tiếng Anh giàu kinh nghiệm dạy người Việt. Bạn gợi ý từ tiếng Anh chính xác,\nthông dụng, đúng cách người bản ngữ dùng, và giải thích khác biệt sắc thái bằng tiếng Việt ngắn\ngọn. Chỉ trả về một đối tượng JSON đúng schema, không thêm chữ nào khác.\n\n=== USER ===\nNgười học muốn biết tiếng Anh nói thế nào cho: "{{query}}".\n\n- Gợi ý 3 đến 5 từ hoặc cụm từ tiếng Anh (dạng gốc, viết thường, không mạo từ) tương ứng với\n  nghĩa này, thông dụng nhất trước.\n- pos: loại từ của gợi ý (noun, verb, adjective, adverb, phrasal_verb, phrase…).\n- nuance_vi: một câu ngắn nói rõ sắc thái hoặc ngữ cảnh dùng, để phân biệt các gợi ý với nhau.\n- Nếu "{{query}}" không phải tiếng Việt có nghĩa, trả items rỗng.\n';
+
+// raw:src/prompts/reverse-lookup-zh.md
+var reverse_lookup_zh_default = '---\ntask: reverse-lookup-zh\nversion: 1\nschema: src/lib/llm/tasks/reverse-lookup.ts (ReverseSuggestionsSchema)\n---\n\n<!--\nTra ngược: người dùng gõ một từ hoặc cụm tiếng Việt, gợi ý 3–5 từ tiếng Trung giản thể tương ứng kèm\nsắc thái để chọn học. Nội dung người dùng nhập nên chạy model trả phí (containsUserData).\nBiến {{query}} do buildReverseLookupPrompt() điền. Sửa prompt → tăng version.\n-->\n\n=== SYSTEM ===\nBạn là giáo viên tiếng Trung giàu kinh nghiệm dạy người Việt. Bạn gợi ý từ tiếng Trung chính xác,\nthông dụng, đúng cách người Trung Quốc đại lục dùng hiện nay, và giải thích khác biệt sắc thái bằng\ntiếng Việt ngắn gọn. Chỉ trả về một đối tượng JSON đúng schema, không thêm chữ nào khác.\n\n=== USER ===\nNgười học muốn biết tiếng Trung nói thế nào cho: "{{query}}".\n\n- Gợi ý 3 đến 5 từ tiếng Trung, chỉ viết bằng chữ giản thể, không kèm pinyin, thông dụng nhất trước.\n- pos: loại từ của gợi ý (noun, verb, adjective, adverb, classifier, particle, numeral, phrase…).\n- nuance_vi: một câu ngắn nói rõ sắc thái hoặc ngữ cảnh dùng, để phân biệt các gợi ý với nhau.\n- Nếu "{{query}}" không phải tiếng Việt có nghĩa, trả items rỗng.\n';
 
 // raw:src/prompts/word-content.md
 var word_content_default = '---\ntask: word-content\nversion: 3\nschema: src/lib/schema/word.ts (WordContentSchema, SCHEMA_VERSION 1)\n---\n\n<!--\nPrompt tạo nội dung thẻ từ 5 tab. Phần sau dòng "=== SYSTEM ===" là system prompt,\nsau "=== USER ===" là nội dung gửi kèm từng từ. Biến dạng {{tên}} do\nbuildWordContentPrompt() điền. Nội dung từ dùng chung cho mọi người nên KHÔNG có\ncâu ngữ cảnh của người dùng (quy tắc gói miễn phí). Sửa prompt → tăng version.\n-->\n\n=== SYSTEM ===\nBạn là nhà từ điển học và giáo viên {{language_name}} giàu kinh nghiệm dạy người Việt.\nBạn tạo nội dung thẻ từ chính xác, tự nhiên, đúng cách người bản ngữ dùng. Không bịa:\nmục nào không thực sự tồn tại thì trả mảng rỗng (hoặc null với trường cho phép null).\nMọi phần giải thích viết bằng tiếng Việt tự nhiên, ngắn gọn.\nChỉ trả về một đối tượng JSON đúng schema được cung cấp, không thêm chữ nào khác.\n\n=== USER ===\nTạo nội dung học cho từ "{{lemma}}" (ngôn ngữ: {{language}}, loại từ: {{pos_label}}).\nNgười học ở trình độ {{cefr_level}}.\nNghĩa tham khảo từ Wiktionary (có thể rỗng; chỉ để tham khảo, thứ tự KHÔNG theo tần suất): {{dictionary_json}}\n\nĐầu thẻ (cấp từ):\n\n- schema_version = 1, language = "{{language}}", lemma = "{{lemma}}".\n- {{pos_rule}}\n- ipa: us và uk, KHÔNG kèm dấu "/"; tách âm tiết bằng dấu chấm nếu được (vd "rɪˈzɪl.jənt").\n  Dùng ký hiệu quen thuộc trong từ điển học tập (Cambridge, Oxford): r chứ không ɹ, dʒ/tʃ\n  không có dấu nối, không ngoặc đơn, không ký hiệu phiên âm hẹp (ɫ, ʔ, ɾ).\n- cefr: trình độ CEFR phổ biến của từ (không phải trình độ người học).\n- register: mức trang trọng chung của từ.\n- forms.inflections: dạng chia/số nhiều/so sánh của ĐÚNG loại từ trên thẻ (danh từ chỉ có\n  plural, không ghi dạng động từ); irregular = true nếu bất quy tắc. Chỉ ghi dạng dùng được với\n  các nghĩa trong senses: danh từ không đếm được hoặc đã ở số nhiều (people, news) thì không\n  ghi plural.\n  forms.variants: biến thể chính tả Anh–Mỹ của chính từ này (colour/color), không có thì [].\n- language_extra = null với tiếng Anh.\n\nTab Nghĩa (senses):\n\n- Chỉ nghĩa phổ biến, tối đa 3, sắp theo tần suất (phổ biến nhất trước).\n- definition_en ngắn, dễ hiểu; meaning_vi ngắn gọn, tự nhiên, không dịch từ-đối-từ.\n- image_query: 2–4 từ tiếng Anh mô tả một hình ảnh cụ thể, dễ nhớ cho nghĩa này.\n\nTab Ví dụ (senses[].examples):\n\n- 3 câu mỗi nghĩa, ngữ cảnh đời thường, 8–18 từ; từ vựng xung quanh dễ hơn hoặc\n  bằng {{cefr_level}}; có translation_vi.\n- highlight: đúng dạng từ xuất hiện trong câu (vd "ran"), phải có nguyên văn trong sentence.\n\nTab Cách dùng (theo từng nghĩa):\n\n- collocations: chỉ cụm người bản ngữ thực sự hay dùng, ghi pattern (vd "verb + noun",\n  "adverb + adjective"), tối đa 8.\n- idioms: chỉ khi thực sự tồn tại, gắn register; không có thì [].\n- common_mistakes: tối đa 3 lỗi người Việt hay mắc với nghĩa này (wrong, correct,\n  explanation_vi), vd "resilient with stress" → "resilient to stress". Không có lỗi\n  điển hình thì [].\n\nTab Từ liên quan:\n\n- senses[].synonyms kèm nuance_vi nói rõ khác biệt sắc thái/ngữ cảnh; senses[].antonyms.\n- homonyms (cấp từ): từ viết giống (homograph) hoặc đọc giống (homophone) nhưng khác nghĩa.\n- word_family (cấp từ): các từ cùng họ (danh/động/tính/trạng từ), note_vi nếu cần.\n\nTab Ghi nhớ (cấp từ):\n\n- mnemonics: tối đa 2 mẹo ngắn cho người Việt (type: sound, etymology, image, story).\n- confusables: từ hay bị nhầm với từ này + difference_vi chỉ ra cách phân biệt.\n- etymology_vi: 1 câu về gốc từ/tiền tố/hậu tố nếu giúp dễ nhớ, không thì null.\n\nconfidence: 0–1 cho collocations, idioms, mnemonics (bạn chắc chắn đến đâu).\nKhông tạo mục slang riêng, không tạo mục ngữ pháp riêng.\n';
@@ -1724,7 +1763,7 @@ function applyHanViet(chosen, lemma, table) {
 // src/lib/lang/zh/sentence-pinyin.ts
 import { pinyin } from "npm:pinyin-pro@3.29.5";
 var MAX_WORD_CHARS = 6;
-var HAN = /\p{Script=Han}/u;
+var HAN2 = /\p{Script=Han}/u;
 var PUNCTUATION = {
   "，": ",",
   "。": ".",
@@ -1745,7 +1784,7 @@ function sentenceWords(sentences) {
     for (let start = 0; start < chars.length; start++) {
       for (let size = 2; size <= MAX_WORD_CHARS && start + size <= chars.length; size++) {
         const part = chars.slice(start, start + size);
-        if (!part.every((char) => HAN.test(char))) break;
+        if (!part.every((char) => HAN2.test(char))) break;
         words.add(part.join(""));
       }
     }
@@ -1773,7 +1812,7 @@ function sentencePinyin(sentence, lexicon, target) {
   let latin = false;
   for (let index = 0; index < chars.length; ) {
     const char = chars[index];
-    if (HAN.test(char)) {
+    if (HAN2.test(char)) {
       const word = wordAt(index);
       out += `${out ? " " : ""}${word?.reading ?? library[index]?.pinyin ?? ""}`;
       index += word?.size ?? 1;
@@ -1795,11 +1834,9 @@ function sentencePinyin(sentence, lexicon, target) {
 
 // src/lib/words/pipeline.ts
 async function findInStore(input, language, pos, deps) {
-  const { lemma, surface, alternatives } = toLemma(input, {
-    language,
-    pos,
-    lemmatizer: deps.lemmatizer
-  });
+  const base2 = toLemma(input, { language, pos, lemmatizer: deps.lemmatizer });
+  const { surface, alternatives } = base2;
+  const lemma = languagePack(language).hasTraditional ? await deps.store.zhSimplified(base2.lemma) : base2.lemma;
   const words = await deps.store.findWords(language, lemma, pos);
   if (words.length > 0) return { lemma, surface, alternatives, words };
   if (surface !== lemma) {
@@ -1817,9 +1854,17 @@ async function findInStore(input, language, pos, deps) {
 }
 var LanguageNotEnabledError = class extends Error {
 };
+var InvalidWordError = class extends Error {
+};
+async function assertLanguageEnabled(language, userId, store2) {
+  if (languagePack(language).requiresFlag && !(userId && await store2.canUseFlaggedLanguage(userId))) {
+    throw new LanguageNotEnabledError(language);
+  }
+}
 async function requestWord(request, userId, deps) {
-  if (languagePack(request.language).requiresFlag && !(userId && await deps.store.canUseFlaggedLanguage(userId))) {
-    throw new LanguageNotEnabledError(request.language);
+  await assertLanguageEnabled(request.language, userId, deps.store);
+  if (!languagePack(request.language).isWordText(request.lemma)) {
+    throw new InvalidWordError(request.lemma);
   }
   const pos = request.pos ?? null;
   const { lemma, alternatives, words } = await findInStore(
@@ -2061,7 +2106,10 @@ function createHandler(deps) {
       }
       if (body.action === "resolve") return json(await resolveWords(body, deps.pipeline));
       const userId = await deps.getUserId(request.headers.get("authorization"));
-      if (body.action === "reverse") return json(await reverseLookup(body, userId, deps.reverse));
+      if (body.action === "reverse") {
+        await assertLanguageEnabled(body.language, userId, deps.pipeline.store);
+        return json(await reverseLookup(body, userId, deps.reverse));
+      }
       const response = await requestWord(body, userId, deps.pipeline);
       if (response.status === "preparing" && deps.worker) {
         deps.waitUntil(
@@ -2075,6 +2123,7 @@ function createHandler(deps) {
       if (error instanceof LanguageNotEnabledError) {
         return json({ error: "language_not_enabled" }, 403);
       }
+      if (error instanceof InvalidWordError) return json({ error: "invalid_request" }, 400);
       console.error("generate-word lỗi:", error);
       return json({ error: "internal_error" }, 500);
     }
@@ -2111,20 +2160,27 @@ var worker = anthropicKey ? {
 } : null;
 if (!worker)
   console.warn("Chưa có ANTHROPIC_API_KEY: chỉ tra kho và xếp việc, không tạo nội dung.");
-var reverseTemplate = parsePromptTemplate(reverse_lookup_default);
+var reverseTemplates = {
+  "reverse-lookup": parsePromptTemplate(reverse_lookup_default),
+  "reverse-lookup-zh": parsePromptTemplate(reverse_lookup_zh_default)
+};
 Deno.serve(
   createHandler({
     pipeline: { store, lemmatizer: englishLemmatizer },
     worker,
     reverse: {
-      async searchByMeaning(query) {
-        const { data, error } = await supabase.rpc("search_by_meaning", { p_query: query });
+      async searchByMeaning(query, language) {
+        const { data, error } = await supabase.rpc("search_by_meaning", {
+          p_query: query,
+          p_language: language
+        });
         if (error) throw new Error(`search_by_meaning: ${error.message}`);
         return data ?? [];
       },
-      suggest: worker ? async (query) => {
-        const { system, prompt } = buildReverseLookupPrompt(reverseTemplate, query);
-        const result = await worker.llm.generateJSON("reverse-lookup", {
+      suggest: worker ? async (query, language) => {
+        const task = languagePack(language).reverseTask;
+        const { system, prompt } = buildReverseLookupPrompt(reverseTemplates[task], query);
+        const result = await worker.llm.generateJSON(task, {
           system,
           prompt,
           schema: ReverseSuggestionsSchema

@@ -32,9 +32,10 @@ export async function requestWord(
 export async function resolveWords(
   supabase: Pick<SupabaseClient, "functions">,
   lemmas: string[],
+  language: WordRequest["language"] = DEFAULT_LANGUAGE,
 ): Promise<ResolveResponse> {
   const { data, error } = await supabase.functions.invoke("generate-word", {
-    body: { action: "resolve", language: DEFAULT_LANGUAGE, lemmas },
+    body: { action: "resolve", language, lemmas },
   });
   if (error) throw error;
   return ResolveResponseSchema.parse(data);
@@ -44,9 +45,10 @@ export async function resolveWords(
 export async function reverseLookup(
   supabase: Pick<SupabaseClient, "functions">,
   query: string,
+  language: WordRequest["language"] = DEFAULT_LANGUAGE,
 ): Promise<ReverseResponse> {
   const { data, error } = await supabase.functions.invoke("generate-word", {
-    body: { action: "reverse", query },
+    body: { action: "reverse", query, language },
   });
   if (error) throw error;
   return ReverseResponseSchema.parse(data);

@@ -86,6 +86,7 @@ export function FileEntry({ context }: { context: EntryContext }) {
         { text: row.word, context: row.example, note: personalNote(row) },
         resolution,
         context.inNotebookSenseIds,
+        context.language,
       );
       if (entry.status !== "invalid" && seenLemma.has(entry.lemma)) {
         entry = { ...entry, status: "duplicate", options: [] } as NormalizedEntry;
@@ -102,7 +103,7 @@ export function FileEntry({ context }: { context: EntryContext }) {
           : null;
       return { row, entry, senseId };
     });
-  }, [rows, resolved, context.inNotebookSenseIds, choices]);
+  }, [rows, resolved, context.inNotebookSenseIds, context.language, choices]);
 
   const known = previews.filter((p) => p.senseId).length;
   const fresh = previews.filter((p) => p.entry?.status === "new").length;
@@ -177,7 +178,7 @@ export function FileEntry({ context }: { context: EntryContext }) {
       for (let i = 0; i < words.length; i += CHUNK) {
         setChecking({ done: i, total: words.length });
         const chunk = words.slice(i, i + CHUNK);
-        const { items } = await resolveWords(createClient(), chunk);
+        const { items } = await resolveWords(createClient(), chunk, context.language);
         chunk.forEach((word, j) => map.set(word, items[j]!));
       }
       setResolved(map);
@@ -207,6 +208,7 @@ export function FileEntry({ context }: { context: EntryContext }) {
       owner: context.owner,
       notebookId: context.notebookId,
       notebookName: context.notebookName,
+      language: context.language,
       fileName: fileName ?? "file",
       items,
       rejected: previews.length - items.length,
@@ -402,7 +404,7 @@ export function FileEntry({ context }: { context: EntryContext }) {
                     {p.row.line}
                   </span>
                   <span className="flex min-w-0 flex-1 flex-col">
-                    <span className="truncate font-medium" lang="en">
+                    <span className="truncate font-medium" lang={context.language}>
                       {p.entry?.changed
                         ? `${p.entry.surface} → ${p.entry.lemma}`
                         : p.row.word || "—"}

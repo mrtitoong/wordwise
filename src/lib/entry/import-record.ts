@@ -4,6 +4,7 @@
  * Hàm thuần; phần chạy ở src/features/import/import-runner.ts.
  */
 import { localDay } from "@/lib/review/day";
+import type { Language } from "@/lib/schema/word";
 
 export type ImportItemState =
   /** Chưa xử lý. */
@@ -36,6 +37,8 @@ export type ImportRecord = {
   owner: string;
   notebookId: string;
   notebookName: string;
+  /** Ngôn ngữ của sổ; bản ghi cũ không có là tiếng Anh. */
+  language?: Language;
   fileName: string;
   /** import_jobs.id trên máy chủ (null khi chưa tạo được, vd mất mạng). */
   serverJobId: string | null;

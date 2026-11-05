@@ -1,6 +1,9 @@
 import type { Voice } from "@/lib/media/tts-azure";
 import type { Language } from "@/lib/schema/word";
 
+export const ENTRY_TABS = ["typed", "voice", "photo", "url", "file"] as const;
+export type EntryTab = (typeof ENTRY_TABS)[number];
+
 /** Những gì app cần biết về một ngôn ngữ học. Khác biệt giữa các ngôn ngữ khai báo ở đây. */
 export interface LanguagePack {
   code: Language;
@@ -25,4 +28,14 @@ export interface LanguagePack {
   requiresIpa: boolean;
   /** Đã có phiên ôn; chưa có thì từ nằm yên ở Sắp học. */
   hasReview: boolean;
+  /** Các tab ở màn Thêm từ. */
+  entryTabs: readonly EntryTab[];
+  /** Chữ này có thể là một từ của ngôn ngữ không (tiếng Trung phải có chữ Hán). */
+  isWordText(text: string): boolean;
+  /** Có chữ phồn thể phải đổi sang giản thể khi nhập. */
+  hasTraditional: boolean;
+  /** Tìm được bằng pinyin. */
+  searchesPinyin: boolean;
+  /** Tác vụ AI gợi ý từ theo nghĩa tiếng Việt. */
+  reverseTask: "reverse-lookup" | "reverse-lookup-zh";
 }

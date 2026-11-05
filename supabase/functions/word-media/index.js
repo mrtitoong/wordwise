@@ -92,6 +92,9 @@ function createImageProviders(keys) {
 // src/lib/schema/word.ts
 import { z } from "npm:zod@4.6.5";
 
+// src/lib/lang/types.ts
+var ENTRY_TABS = ["typed", "voice", "photo", "url", "file"];
+
 // src/lib/lang/en/index.ts
 var EN_TTS_VOICES = {
   us: { locale: "en-US", name: "en-US-AvaNeural" },
@@ -107,8 +110,19 @@ var en = {
   lemmatizes: true,
   usesDictionaryApi: true,
   requiresIpa: true,
-  hasReview: true
+  hasReview: true,
+  entryTabs: ENTRY_TABS,
+  isWordText: () => true,
+  hasTraditional: false,
+  searchesPinyin: false,
+  reverseTask: "reverse-lookup"
 };
+
+// src/lib/lang/zh/query.ts
+var HAN = /\p{Script=Han}/u;
+function hasHan(text2) {
+  return HAN.test(text2);
+}
 
 // src/lib/lang/zh/index.ts
 var ZH_TTS_VOICE = { locale: "zh-CN", name: "zh-CN-XiaoxiaoNeural" };
@@ -122,7 +136,12 @@ var zh = {
   lemmatizes: false,
   usesDictionaryApi: false,
   requiresIpa: false,
-  hasReview: false
+  hasReview: false,
+  entryTabs: ["typed", "file"],
+  isWordText: hasHan,
+  hasTraditional: true,
+  searchesPinyin: true,
+  reverseTask: "reverse-lookup-zh"
 };
 
 // src/lib/lang/index.ts
@@ -141,7 +160,12 @@ function plainPack(code) {
     lemmatizes: false,
     usesDictionaryApi: false,
     requiresIpa: false,
-    hasReview: false
+    hasReview: false,
+    entryTabs: ENTRY_TABS,
+    isWordText: () => true,
+    hasTraditional: false,
+    searchesPinyin: false,
+    reverseTask: "reverse-lookup"
   };
 }
 function languagePack(code) {

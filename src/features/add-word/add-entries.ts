@@ -63,6 +63,7 @@ export async function addEntries(
     for (const [i, entry] of fresh.entries()) {
       const response = await requestWord(createClient(), {
         lemma: entry.lemma,
+        language: context.language,
         notebookId: context.notebookId,
         inputMethod: options.inputMethod,
         ...(entry.context ? { contextSentence: entry.context } : {}),

@@ -3,7 +3,7 @@
  * Câu tra do người dùng nhập nên tác vụ đánh dấu containsUserData (chỉ model trả phí).
  */
 import { z } from "zod";
-import { PosSchema } from "@/lib/schema/word";
+import { StoredPosSchema } from "@/lib/schema/word";
 import { renderTemplate, type PromptTemplate } from "../prompt-template";
 
 export const ReverseSuggestionsSchema = z.object({
@@ -11,7 +11,7 @@ export const ReverseSuggestionsSchema = z.object({
     .array(
       z.object({
         word: z.string().trim().min(1).max(64),
-        pos: PosSchema.nullable().catch(null),
+        pos: StoredPosSchema.nullable().catch(null),
         nuance_vi: z.string().trim().min(1).max(200),
       }),
     )
@@ -24,7 +24,7 @@ export function buildReverseLookupPrompt(
   template: PromptTemplate,
   query: string,
 ): { system: string; prompt: string } {
-  if (template.task !== "reverse-lookup") {
+  if (!template.task.startsWith("reverse-lookup")) {
     throw new Error(`Cần prompt reverse-lookup, nhận ${template.task}`);
   }
   // Bỏ ngoặc kép để câu tra không phá cấu trúc prompt.

@@ -1,10 +1,10 @@
 import type { Language } from "@/lib/schema/word";
 
 import { en } from "./en";
-import type { LanguagePack } from "./types";
+import { ENTRY_TABS, type LanguagePack } from "./types";
 import { zh } from "./zh";
 
-export type { LanguagePack } from "./types";
+export type { EntryTab, LanguagePack } from "./types";
 
 /** Như LanguageSchema, viết riêng để trang chính lọc theo ngôn ngữ mà không phải tải Zod. */
 export const LANGUAGES = ["en", "ja", "zh", "ko", "fr"] as const satisfies readonly Language[];
@@ -29,6 +29,11 @@ function plainPack(code: Language): LanguagePack {
     usesDictionaryApi: false,
     requiresIpa: false,
     hasReview: false,
+    entryTabs: ENTRY_TABS,
+    isWordText: () => true,
+    hasTraditional: false,
+    searchesPinyin: false,
+    reverseTask: "reverse-lookup",
   };
 }
 

@@ -98,6 +98,7 @@ export function defaultSettingsRow(owner: string, now = new Date()): UserSetting
     onboarded_at: null,
     practice_speaking: false,
     practice_spelling: true,
+    practice_hanzi: true,
     created_at: iso,
     updated_at: iso,
   };

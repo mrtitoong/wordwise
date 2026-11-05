@@ -31,7 +31,7 @@ export async function prefetchTomorrow(
     saveData: connection?.saveData,
     type: connection?.type,
   });
-  if (!policy.audio && !policy.images) return null;
+  if (!policy.strokes && !policy.audio && !policy.images) return null;
 
   const db = getLocalDb();
   const settings = (await db.user_settings.get(owner)) ?? defaultSettingsRow(owner, now);
@@ -74,14 +74,19 @@ export async function prefetchTomorrow(
   const items = prefetchItems(sources, voice, policy);
 
   const cache = await caches.open(CACHE_NAMES.media);
+  const staticCache = await caches.open(CACHE_NAMES.static);
   let saved = 0;
   const save = async (item: PrefetchItem) => {
-    const url = item.kind === "sentence" ? await sentenceAudioUrl(item.sentence, voice) : item.url;
-    if (!url || (await cache.match(url))) return;
+    const url =
+      item.kind === "sentence"
+        ? await sentenceAudioUrl(item.sentence, item.voice, item.language)
+        : item.url;
+    const target = item.kind === "strokes" ? staticCache : cache;
+    if (!url || (await target.match(url))) return;
     // Audio câu chưa có file (chưa ai nghe) thì máy chủ trả 404: bỏ qua, không tạo mới.
     const response = await fetch(url, { mode: "cors", credentials: "omit" }).catch(() => null);
     if (!response?.ok) return;
-    await cache.put(url, response);
+    await target.put(url, response);
     saved++;
   };
   const queue = [...items];

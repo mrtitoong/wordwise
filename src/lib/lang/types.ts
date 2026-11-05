@@ -36,6 +36,12 @@ export interface LanguagePack {
    * phải nhận mặt chữ. null = luôn hiện (chữ cái đã cho biết cách đọc).
    */
   hideReadingFromLevel: number | null;
+  /** Thẻ Chính tả là viết chữ theo nét (không gõ, không nghe → gõ). */
+  writesStrokes: boolean;
+  /** Công tắc trong Cài đặt của thẻ Chính tả. */
+  spellingSetting: "practice_spelling" | "practice_hanzi";
+  /** Thẻ Chính tả mở tối đa mỗi ngày; null = bằng số từ mới/ngày. */
+  newSpellingPerDay: number | null;
   /** Các tab ở màn Thêm từ. */
   entryTabs: readonly EntryTab[];
   /** Chữ này có thể là một từ của ngôn ngữ không (tiếng Trung phải có chữ Hán). */

@@ -85,7 +85,8 @@
       "mcq": "Trắc nghiệm",
       "writing": "Tập viết",
       "listening": "Tập nghe",
-      "speaking": "Phát âm"
+      "speaking": "Phát âm",
+      "writingStrokes": "Viết chữ"
     },
     "count": "Số câu",
     "countValue": "{count} câu",
@@ -245,7 +246,9 @@
       "menuIntro": "Cài từ menu của trình duyệt:",
       "menuStep1": "Bấm nút ⋮ (Chrome, Edge) ở góc trên bên phải, hoặc biểu tượng cài ở cuối thanh địa chỉ trên máy tính.",
       "menuStep2": "Chọn “Cài đặt ứng dụng” hoặc “Thêm vào Màn hình chính”."
-    }
+    },
+    "practiceHanzi": "Luyện viết chữ",
+    "practiceHanziHint": "Viết chữ Hán đúng thứ tự nét sau khi đã nhớ nghĩa. Viết tay tốn thời gian hơn gõ, tắt nếu bạn chỉ cần đọc hiểu."
   },
   "languages": {
     "vi": "Tiếng Việt",
@@ -1585,7 +1588,16 @@
       "hyphen": "Gạch nối",
       "apostrophe": "Dấu nháy",
       "backspace": "Xóa"
-    }
+    },
+    "hanzi": {
+      "prompt": "Viết chữ của từ này",
+      "progress": "Các chữ của từ",
+      "pad": "Ô viết chữ",
+      "hint": "Gợi ý",
+      "hintAgain": "Gợi ý thêm",
+      "giveUp": "Không nhớ"
+    },
+    "flipHintPaper": "Viết chữ ra giấy, rồi chạm để xem đáp án"
   },
   "mic": {
     "explainTitle": "Cho phép dùng micro",

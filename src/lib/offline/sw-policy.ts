@@ -66,6 +66,8 @@ export function classifyRequest(request: RequestInfo, origin: string): RouteKind
   }
   if (url.origin === origin) {
     if (url.pathname.startsWith("/_next/static/")) return "static";
+    // Dữ liệu nét chữ Hán: không đổi theo bản app, tải theo chữ.
+    if (url.pathname.startsWith("/hanzi/")) return "static";
     if (url.pathname.startsWith("/icons/") || /^\/(icon|apple-icon)[^/]*$/.test(url.pathname)) {
       return "static";
     }

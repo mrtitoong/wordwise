@@ -42,6 +42,8 @@ export type TodayInput = {
      * tắt).
      */
     practiceSpeaking?: boolean;
+    /** Thẻ Chính tả mới mỗi ngày; không có thì bằng số từ mới/ngày. */
+    newSpellingLimit?: number | null;
   };
   /** Chữ của từng nghĩa (sense_id → lemma); thiếu thì dùng chuỗi rỗng. */
   lemmaOf: (senseId: string) => string;
@@ -131,10 +133,12 @@ export function sessionSettings(input: TodayInput, now: Date): SessionSettings {
     // Thẻ Chính tả/Phát âm mới mỗi ngày (mỗi loại) không quá số từ mới/ngày: từ học trước mở
     // dần, không dồn.
     newSkillLimits: Object.fromEntries(
-      ["spelling", "speaking"].map((skill) => [
-        skill,
-        Math.max(0, input.settings.dailyNewLimit - openedToday(skill)),
-      ]),
+      ["spelling", "speaking"].map((skill) => {
+        const limit =
+          (skill === "spelling" ? input.settings.newSpellingLimit : null) ??
+          input.settings.dailyNewLimit;
+        return [skill, Math.max(0, limit - openedToday(skill))];
+      }),
     ),
     reviewsDoneToday: todays.filter((l) => !firstOfMeaning(l)).length,
     lastReviewAt: last ? new Date(last) : null,

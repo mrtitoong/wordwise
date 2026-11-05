@@ -85,7 +85,8 @@
       "mcq": "Multiple choice",
       "writing": "Writing",
       "listening": "Listening",
-      "speaking": "Speaking"
+      "speaking": "Speaking",
+      "writingStrokes": "Write characters"
     },
     "count": "Questions",
     "countValue": "{count} questions",
@@ -245,7 +246,9 @@
       "menuIntro": "Install from the browser menu:",
       "menuStep1": "Tap ⋮ (Chrome, Edge) in the top right corner, or the install icon at the end of the address bar on a computer.",
       "menuStep2": "Choose “Install app” or “Add to Home screen”."
-    }
+    },
+    "practiceHanzi": "Practise writing",
+    "practiceHanziHint": "Write Chinese characters in stroke order once you know the meaning. It takes longer than typing, so turn it off if you only need to read."
   },
   "languages": {
     "vi": "Tiếng Việt",
@@ -1585,7 +1588,16 @@
       "hyphen": "Hyphen",
       "apostrophe": "Apostrophe",
       "backspace": "Delete"
-    }
+    },
+    "hanzi": {
+      "prompt": "Write this word",
+      "progress": "Characters in this word",
+      "pad": "Writing pad",
+      "hint": "Hint",
+      "hintAgain": "More help",
+      "giveUp": "I don't remember"
+    },
+    "flipHintPaper": "Write the characters on paper, then tap to check"
   },
   "mic": {
     "explainTitle": "Allow the microphone",

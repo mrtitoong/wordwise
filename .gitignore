@@ -36,3 +36,6 @@ supabase/.temp/
 
 # Báo cáo Lighthouse (npm run lighthouse)
 /lighthouse-report
+
+# Dữ liệu nét chữ Hán, chép từ hanzi-writer-data khi build (npm run hanzi:copy).
+/public/hanzi

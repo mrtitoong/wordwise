@@ -4,6 +4,7 @@ import { useEffect, useMemo, useState, type ReactNode } from "react";
 import dynamic from "next/dynamic";
 import Link from "next/link";
 import { useTranslations } from "next-intl";
+import { learningLanguage, spellingEnabled } from "@/lib/lang/filter";
 import { EmptyState } from "@/components/empty-state";
 import { Button } from "@/components/ui/button";
 import { weightsOf } from "@/lib/db/repo";
@@ -49,7 +50,9 @@ export function StatsScreen() {
   const view = useMemo(() => {
     if (!data) return null;
     const skills = ["meaning"];
-    if (data.settings.practice_spelling ?? true) skills.push("spelling");
+    if (spellingEnabled(data.settings, learningLanguage(data.settings.target_language))) {
+      skills.push("spelling");
+    }
     if ((data.settings.practice_speaking ?? false) && data.owner !== GUEST_OWNER) {
       skills.push("speaking");
     }

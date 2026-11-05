@@ -14,8 +14,12 @@ export const zh: LanguagePack = {
   usesDictionaryApi: false,
   requiresIpa: false,
   hasReview: true,
-  reviewSkills: ["meaning"],
+  reviewSkills: ["meaning", "spelling"],
   hideReadingFromLevel: 2,
+  writesStrokes: true,
+  spellingSetting: "practice_hanzi",
+  // Viết tay lâu hơn gõ nhiều: mở bằng nửa số từ mới mặc định để tải ôn không quá nặng.
+  newSpellingPerDay: 5,
   entryTabs: ["typed", "file"],
   isWordText: hasHan,
   hasTraditional: true,

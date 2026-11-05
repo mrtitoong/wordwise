@@ -7,6 +7,14 @@ export function learningLanguage(target: string | null | undefined): Language {
   return LANGUAGES.find((code) => code === target) ?? DEFAULT_LANGUAGE;
 }
 
+/** Thẻ Chính tả của ngôn ngữ này có vào phiên ôn không. */
+export function spellingEnabled(
+  settings: { practice_spelling?: boolean | null; practice_hanzi?: boolean | null },
+  language: Language,
+): boolean {
+  return settings[languagePack(language).spellingSetting] ?? true;
+}
+
 /**
  * Từ của từng ngôn ngữ có phiên ôn, để số từ mới mỗi ngày tính riêng từng ngôn ngữ. Ngôn ngữ của từ
  * là ngôn ngữ của sổ chứa nó; không nằm trong sổ nào thì coi như ngôn ngữ mặc định. Từ của ngôn ngữ

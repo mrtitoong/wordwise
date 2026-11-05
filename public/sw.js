@@ -29,6 +29,7 @@
     }
     if (url.origin === origin) {
       if (url.pathname.startsWith("/_next/static/")) return "static";
+      if (url.pathname.startsWith("/hanzi/")) return "static";
       if (url.pathname.startsWith("/icons/") || /^\/(icon|apple-icon)[^/]*$/.test(url.pathname)) {
         return "static";
       }

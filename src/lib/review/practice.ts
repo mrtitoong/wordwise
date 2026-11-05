@@ -51,6 +51,8 @@ export type PracticeInput = {
   entries: readonly NotebookEntryRow[];
   /** "Luyện chính tả" trong Cài đặt: Trộn tự động có cả thẻ Chính tả. */
   practiceSpelling: boolean;
+  /** Thẻ Chính tả có dạng gõ (tiếng Trung viết theo nét nên Tập nghe chỉ có nghe → chọn nghĩa). */
+  typedSpelling?: boolean;
   /** Hết ngày học hôm nay: thẻ đến hạn trước lúc này là lượt ôn thật như "Ôn hôm nay". */
   dayEnd?: Date;
 };
@@ -122,6 +124,7 @@ function cardFor(
   word: WordCards,
   mode: PracticeMode,
   practiceSpelling: boolean,
+  typedSpelling: boolean,
   random: () => number,
 ): CardRow | null {
   switch (mode) {
@@ -133,7 +136,9 @@ function cardFor(
       return word.spelling;
     // Nghe → gõ khi thẻ Chính tả đã nhớ lại được (mức 2); còn lại nghe → chọn nghĩa.
     case "listening":
-      return word.spelling && masteryLevel(word.spelling) >= 2 ? word.spelling : word.meaning;
+      return typedSpelling && word.spelling && masteryLevel(word.spelling) >= 2
+        ? word.spelling
+        : word.meaning;
     // Tập phát âm cần thẻ Phát âm (thẻ Nghĩa đạt mức 2).
     case "speaking":
       return word.speaking;
@@ -154,7 +159,13 @@ export function buildPractice(
   random: () => number = Math.random,
 ): PracticePlan {
   const chosen = practiceWords(input, request).flatMap((word) => {
-    const card = cardFor(word, request.mode, input.practiceSpelling, random);
+    const card = cardFor(
+      word,
+      request.mode,
+      input.practiceSpelling,
+      input.typedSpelling ?? true,
+      random,
+    );
     return card ? [{ card, r: retrievability(scheduler, card, now), tie: random() }] : [];
   });
   chosen.sort((a, b) => a.r - b.r || a.tie - b.tie);

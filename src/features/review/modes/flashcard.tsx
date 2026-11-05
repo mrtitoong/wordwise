@@ -28,8 +28,9 @@ export function Flashcard({
   muted,
   onAnswer,
   reverse = false,
+  paper = false,
   intervals,
-}: ModeProps & { reverse?: boolean; intervals: Intervals }) {
+}: ModeProps & { reverse?: boolean; paper?: boolean; intervals: Intervals }) {
   const t = useTranslations("review");
   const [flipped, setFlipped] = useState(false);
   const [shownAt] = useState(() => Date.now());
@@ -118,7 +119,7 @@ export function Flashcard({
           <WordBack item={item} voice={voice} />
         ) : (
           <p className="text-center text-sm text-muted-foreground">
-            {t(reverse ? "flipHintReverse" : "flipHint")}
+            {t(paper ? "flipHintPaper" : reverse ? "flipHintReverse" : "flipHint")}
           </p>
         )}
       </div>

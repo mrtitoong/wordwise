@@ -2,6 +2,7 @@
 
 import { cachedSentenceAudioUrl } from "@/features/offline/media-cache";
 import type { Voice } from "@/lib/media/tts-azure";
+import type { Language } from "@/lib/schema/word";
 import { getSupabaseEnv } from "@/lib/supabase/env";
 
 /**
@@ -13,8 +14,9 @@ export async function sentenceAudioUrl(
   index: number,
   voice: Voice,
   sentence: string,
+  language?: Language,
 ): Promise<string | null> {
-  const cached = await cachedSentenceAudioUrl(sentence, voice);
+  const cached = await cachedSentenceAudioUrl(sentence, voice, language);
   if (cached) return cached;
   if (!getSupabaseEnv()) return null;
   const [{ createClient }, { requestSentenceAudioUrl }] = await Promise.all([

@@ -96,6 +96,8 @@ export type Outcome = {
   userMedianPerLetterMs?: number | null;
   /** Thẻ đang ở bước học/học lại: trả lời đúng mà chậm vẫn là Nhớ (chốt 2026-11-05). */
   learning?: boolean;
+  /** Không xét nhanh chậm (viết chữ Hán: viết tay lâu là bình thường). */
+  untimed?: boolean;
   /** Tập phát âm: điểm 0–100. */
   pronunciationScore?: number | null;
   /** Mức thuộc của thẻ trước câu hỏi. */
@@ -138,7 +140,10 @@ function rawGrade(outcome: Outcome): Grade {
 
   const { responseMs, userMedianMs } = outcome;
   const timed =
-    typeof responseMs === "number" && typeof userMedianMs === "number" && userMedianMs > 0;
+    !outcome.untimed &&
+    typeof responseMs === "number" &&
+    typeof userMedianMs === "number" &&
+    userMedianMs > 0;
   const slow = timed && !outcome.learning && isSlow(outcome);
   const fast = timed && responseMs! < FAST_FACTOR * userMedianMs!;
   if (outcome.usedHint || (outcome.hintLevel ?? 0) > 0 || outcome.typoCount === 1 || slow) {

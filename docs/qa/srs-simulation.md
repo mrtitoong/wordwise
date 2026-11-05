@@ -50,6 +50,13 @@ Cài đặt thì tải như bảng trên.
 
 Quý 4: ~220 lượt/ngày (gấp 1.96× chỉ thẻ Nghĩa), quý 2 → quý 4 tăng 1.29×, ngày cao nhất 250. Thử hạ tỉ lệ nhớ mục tiêu của thẻ Chính tả xuống 85%/80% chỉ giảm tải quý 4 khoảng 7%/12%, nên chưa dùng.
 
+## Tiếng Trung: thẻ Viết chữ mở tối đa 5 từ/ngày (Z3, 10 từ mới/ngày)
+
+Viết tay lâu hơn gõ nên thẻ Viết chữ mở chậm hơn thẻ Chính tả của tiếng Anh. Thời gian 20 giây/từ
+là ước đoán (trung bình 1,8 chữ/từ), chưa đo trên người thật.
+
+Quý 4: ~54 lượt Viết chữ/ngày (khoảng 18 phút), so với ~110 lượt (khoảng 37 phút) nếu mở bằng số từ mới/ngày. Tổng cả Nghĩa ~167 lượt/ngày.
+
 ## Thêm thẻ Phát âm (GĐ5, khi bật "Luyện phát âm", 10 từ/ngày)
 
 Thẻ Phát âm mở khi thẻ Nghĩa đạt mức 2 (S ≥ 3 ngày); mỗi loại thẻ kỹ năng có giới hạn mở mới

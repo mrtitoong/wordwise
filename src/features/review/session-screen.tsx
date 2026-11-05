@@ -9,7 +9,8 @@ import { useTranslations } from "next-intl";
 import { Button } from "@/components/ui/button";
 import { Sheet } from "@/components/ui/sheet";
 import { showToast } from "@/components/ui/toast";
-import { DEFAULT_LANGUAGE, languagePack } from "@/lib/lang";
+import { DEFAULT_LANGUAGE, languagePack, languageVoice } from "@/lib/lang";
+import { learningLanguage } from "@/lib/lang/filter";
 import { getLocalDb } from "@/lib/db/local";
 import { randomId } from "@/lib/db/ids";
 import {
@@ -134,7 +135,10 @@ const NEXT_QUESTION_MEASURE = "ww:next-question";
 const AVAILABLE_MODES: ReviewMode[] = ["flashcard", "mcq", "listening", "writing", "speaking"];
 
 function preferredVoice(settings: ReviewData["settings"]): Voice {
-  return settings.accent === "uk" ? "uk" : "us";
+  return languageVoice(
+    learningLanguage(settings.target_language),
+    settings.accent === "uk" ? "uk" : "us",
+  );
 }
 
 function readMuted(): boolean {
@@ -326,7 +330,9 @@ export function SessionScreen({ options }: { options: SessionOptions }) {
       });
       voices.current = {
         preferred: preferredVoice(fresh.settings),
-        multi: fresh.settings.multi_accent ?? false,
+        multi:
+          (fresh.settings.multi_accent ?? false) &&
+          languagePack(learningLanguage(fresh.settings.target_language)).wordAudioVoices.length > 1,
       };
       const day = studyDay(now, fresh.settings.timezone);
       const learning = fresh.userWords.filter((u) => !u.deleted_at && u.status === "learning");
@@ -428,7 +434,10 @@ export function SessionScreen({ options }: { options: SessionOptions }) {
       const empty = next.position >= next.queue.length;
       // Đáp án nhiễu: trong máy đủ thì không gọi mạng; ít (người mới) thì lấy thêm trong kho. Phiên
       // trống thì không cần.
-      const choices = empty ? [] : await moreChoices(await loadLocalChoices(db));
+      const language = learningLanguage(fresh.settings.target_language);
+      const choices = empty
+        ? []
+        : await moreChoices(await loadLocalChoices(db, language), language);
       setData(fresh);
       setPool(choices);
       if (empty) {
@@ -630,7 +639,14 @@ export function SessionScreen({ options }: { options: SessionOptions }) {
   }
 
   if (phase === "done" && summary && run && data) {
-    return <SessionResult summary={summary} owner={owner!} kind={run.kind} />;
+    return (
+      <SessionResult
+        summary={summary}
+        owner={owner!}
+        kind={run.kind}
+        language={learningLanguage(data.settings.target_language)}
+      />
+    );
   }
 
   const item = run?.queue[run.position];

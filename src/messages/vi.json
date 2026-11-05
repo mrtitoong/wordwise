@@ -53,9 +53,7 @@
       "label": "Ngôn ngữ đang học",
       "en": "Tiếng Anh",
       "zh": "Tiếng Trung"
-    },
-    "reviewSoonTitle": "Ôn tập tiếng Trung sắp có",
-    "reviewSoonBody": "{count, plural, =0 {Thêm từ tiếng Trung vào sổ để sẵn sàng ôn sau.} other {# từ đang nằm ở Sắp học, chờ phiên ôn tiếng Trung.}}"
+    }
   },
   "words": {
     "title": "Từ của tôi",

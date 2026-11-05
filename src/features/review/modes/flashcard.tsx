@@ -3,6 +3,7 @@
 import { useEffect, useRef, useState, type PointerEvent } from "react";
 import { Rating, type Grade } from "ts-fsrs";
 import { useTranslations } from "next-intl";
+import { readingConcealed } from "@/lib/review/cues";
 import { cn } from "@/lib/utils";
 import type { Intervals, ModeProps } from "./types";
 import { WordBack, WordHead } from "./word-face";
@@ -75,6 +76,7 @@ export function Flashcard({
     setDx(0);
   }
 
+  const conceal = readingConcealed(item.word.content.language, item.card, flipped);
   const label = (rating: Grade) => {
     const interval = intervals[rating];
     return t(`interval.${interval.unit}`, { count: interval.value });
@@ -105,7 +107,12 @@ export function Flashcard({
         {reverse && !flipped ? (
           <p className="text-center text-2xl font-semibold">{item.meaning}</p>
         ) : (
-          <WordHead item={item} voice={voice} autoPlay={!muted && (!reverse || flipped)} />
+          <WordHead
+            item={item}
+            voice={voice}
+            autoPlay={!muted && !conceal && (!reverse || flipped)}
+            conceal={conceal}
+          />
         )}
         {flipped ? (
           <WordBack item={item} voice={voice} />

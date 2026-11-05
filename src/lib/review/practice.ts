@@ -9,7 +9,7 @@
 import type { FSRS } from "ts-fsrs";
 import type { CardRow, NotebookEntryRow, UserWordRow } from "@/lib/db/types";
 import { learningStatus } from "@/lib/notebooks/progress";
-import { retrievability } from "@/lib/srs/cards";
+import { retrievability, type Skill } from "@/lib/srs/cards";
 import { isLeech, masteryLevel } from "@/lib/srs/mastery";
 import { isDueToday, type SessionItem } from "@/lib/srs/queue";
 
@@ -106,6 +106,15 @@ export function practiceWords(
         : status === scope.status);
     return keep ? [{ userWord, meaning, spelling, speaking }] : [];
   });
+}
+
+/** Chế độ chọn được với các kỹ năng của ngôn ngữ đang học. */
+export function practiceModesFor(skills: readonly Skill[]): PracticeMode[] {
+  return PRACTICE_MODES.filter(
+    (mode) =>
+      (mode !== "writing" || skills.includes("spelling")) &&
+      (mode !== "speaking" || skills.includes("speaking")),
+  );
 }
 
 /** Thẻ dùng để hỏi một từ theo chế độ; null khi từ chưa luyện được chế độ đó. */

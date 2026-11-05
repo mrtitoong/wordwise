@@ -1,3 +1,4 @@
+import type { Voice } from "@/lib/media/tts-azure";
 import type { Language } from "@/lib/schema/word";
 
 import { en } from "./en";
@@ -29,6 +30,8 @@ function plainPack(code: Language): LanguagePack {
     usesDictionaryApi: false,
     requiresIpa: false,
     hasReview: false,
+    reviewSkills: ["meaning"],
+    hideReadingFromLevel: null,
     entryTabs: ENTRY_TABS,
     isWordText: () => true,
     hasTraditional: false,
@@ -39,4 +42,10 @@ function plainPack(code: Language): LanguagePack {
 
 export function languagePack(code: Language): LanguagePack {
   return PACKS[code] ?? plainPack(code);
+}
+
+/** Giọng có audio của ngôn ngữ, theo giọng trong Cài đặt (tiếng Trung chỉ có một giọng). */
+export function languageVoice(code: Language, preferred: Voice): Voice {
+  const voices = languagePack(code).wordAudioVoices;
+  return voices.find((voice) => voice === preferred) ?? voices[0] ?? preferred;
 }

@@ -17,6 +17,8 @@ export const en: LanguagePack = {
   usesDictionaryApi: true,
   requiresIpa: true,
   hasReview: true,
+  reviewSkills: ["meaning", "spelling", "speaking"],
+  hideReadingFromLevel: null,
   entryTabs: ENTRY_TABS,
   isWordText: () => true,
   hasTraditional: false,

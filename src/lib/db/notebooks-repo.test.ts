@@ -14,7 +14,10 @@ import {
 import {
   addSensesToDefaultNotebook,
   addSensesToNotebook,
+  getOrCreateDefaultNotebook,
+  openExtraWords,
   openNewWords,
+  openSlotsToday,
   saveSettings,
 } from "./repo";
 
@@ -69,6 +72,35 @@ describe("thêm từ vào sổ", () => {
     expect(await openNewWords(db, USER)).toBe(0);
     // Ngày mai mở tiếp.
     expect(await openNewWords(db, USER, new Date(Date.now() + 86_400_000))).toBe(1);
+  });
+
+  it("số từ mới mỗi ngày tính riêng từng ngôn ngữ", async () => {
+    await addSensesToDefaultNotebook(db, USER, [S1, S2], "Sổ của tôi");
+    expect(await openSlotsToday(db, USER)).toBe(0);
+
+    const chinese = await getOrCreateDefaultNotebook(db, USER, "Sổ của tôi", "zh");
+    await addSensesToNotebook(db, USER, [{ senseId: S3 }], {
+      notebookId: chinese,
+      inputMethod: "typed",
+    });
+    const words = await db.user_words.toArray();
+    expect(words.find((w) => w.sense_id === S3)!.status).toBe("learning");
+
+    await saveSettings(db, USER, { target_language: "zh" });
+    expect(await openSlotsToday(db, USER)).toBe(1);
+  });
+
+  it("Học thêm từ mới chỉ mở từ của ngôn ngữ đang học", async () => {
+    await saveSettings(db, USER, { daily_new_limit: 0 });
+    await addSensesToDefaultNotebook(db, USER, [S1], "Sổ của tôi");
+    const chinese = await getOrCreateDefaultNotebook(db, USER, "Sổ của tôi", "zh");
+    await addSensesToNotebook(db, USER, [{ senseId: S3 }], {
+      notebookId: chinese,
+      inputMethod: "typed",
+    });
+    await saveSettings(db, USER, { target_language: "zh" });
+
+    expect(await openExtraWords(db, USER, 5)).toEqual([userWordId(USER, S3)]);
   });
 
   it("từ đã có trong kho: gắn thêm vào sổ, giữ lịch ôn; trùng trong sổ thì bỏ qua", async () => {

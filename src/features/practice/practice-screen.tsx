@@ -5,6 +5,8 @@ import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { useLiveQuery } from "dexie-react-hooks";
 import { useTranslations } from "next-intl";
+import { languagePack } from "@/lib/lang";
+import { learningLanguage } from "@/lib/lang/filter";
 import { EmptyState } from "@/components/empty-state";
 import { Button } from "@/components/ui/button";
 import { usePersonalData } from "@/features/notebooks/use-personal-data";
@@ -13,7 +15,7 @@ import { weightsOf } from "@/lib/db/repo";
 import {
   DEFAULT_PRACTICE,
   PRACTICE_COUNTS,
-  PRACTICE_MODES,
+  practiceModesFor,
   PRACTICE_STATUSES,
   buildPractice,
   practiceQuery,
@@ -64,6 +66,7 @@ export function PracticeScreen() {
     }
     const plan = buildPractice(input, request, scheduler, new Date());
     return {
+      language: learningLanguage(settings?.target_language),
       learned,
       notebooks: data.notebooks.filter((n) => !n.deleted_at),
       tags: [...tags].sort((a, b) => a.localeCompare(b)),
@@ -133,7 +136,7 @@ export function PracticeScreen() {
       </Group>
 
       <Group label={t("mode")}>
-        {PRACTICE_MODES.map((mode) => (
+        {practiceModesFor(languagePack(view.language).reviewSkills).map((mode) => (
           <Chip key={mode} selected={request.mode === mode} onClick={() => set({ mode })}>
             {t(`modes.${mode}`)}
           </Chip>

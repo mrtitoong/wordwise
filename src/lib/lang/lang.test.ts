@@ -52,7 +52,13 @@ describe("lọc theo ngôn ngữ đang học", () => {
       { id: "u-zh", sense_id: "s-zh" },
       { id: "u-unknown", sense_id: "s-unknown" },
     ],
-    cards: [{ user_word_id: "u-en" }, { user_word_id: "u-zh" }, { user_word_id: "u-unknown" }],
+    cards: [
+      { user_word_id: "u-en", skill: "meaning" },
+      { user_word_id: "u-en", skill: "speaking" },
+      { user_word_id: "u-zh", skill: "meaning" },
+      { user_word_id: "u-zh", skill: "speaking" },
+      { user_word_id: "u-unknown", skill: "meaning" },
+    ],
     entries: [{ user_word_id: "u-zh" }],
     notebooks: [{ language: "en" }, { language: "zh" }],
   };
@@ -62,7 +68,7 @@ describe("lọc theo ngôn ngữ đang học", () => {
   it("tiếng Anh: giữ cả từ máy chưa có nội dung, như trước khi có lọc", () => {
     const out = forLanguage(data, "en", languageOf);
     expect(out.userWords.map((u) => u.id)).toEqual(["u-en", "u-unknown"]);
-    expect(out.cards).toHaveLength(2);
+    expect(out.cards).toHaveLength(3);
     expect(out.entries).toEqual([]);
     expect(out.notebooks).toEqual([{ language: "en" }]);
   });
@@ -70,7 +76,8 @@ describe("lọc theo ngôn ngữ đang học", () => {
   it("tiếng Trung: chỉ dữ liệu tiếng Trung, không trộn thẻ", () => {
     const out = forLanguage(data, "zh", languageOf);
     expect(out.userWords.map((u) => u.id)).toEqual(["u-zh"]);
-    expect(out.cards).toEqual([{ user_word_id: "u-zh" }]);
+    // Tiếng Trung chưa có phát âm: thẻ đã tạo cũng không vào phiên.
+    expect(out.cards).toEqual([{ user_word_id: "u-zh", skill: "meaning" }]);
     expect(out.entries).toEqual([{ user_word_id: "u-zh" }]);
     expect(out.notebooks).toEqual([{ language: "zh" }]);
   });

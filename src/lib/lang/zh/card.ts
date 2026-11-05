@@ -20,6 +20,11 @@ export type ZhCardInfo = {
 
 type Content = { lemma: string; language_extra: LanguageExtra | null };
 
+/** Âm của một nghĩa: từ nhiều âm thì mỗi nghĩa đọc một kiểu. */
+export function pinyinOfSense(info: ZhCardInfo, senseIndex: number): string {
+  return info.sensePinyin?.[senseIndex] ?? info.pinyin;
+}
+
 export function zhCardInfo({ lemma, language_extra: extra }: Content): ZhCardInfo | null {
   if (extra?.kind !== "zh") return null;
   const hanViet = extra.han_viet ?? [];

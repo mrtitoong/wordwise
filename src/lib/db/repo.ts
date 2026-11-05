@@ -1,6 +1,6 @@
 import type { Grade } from "ts-fsrs";
 import { DEFAULT_LANGUAGE } from "@/lib/lang";
-import { withoutHeldWords } from "@/lib/lang/filter";
+import { learningLanguage, wordsByLanguage } from "@/lib/lang/filter";
 import { missingSkillCards, placedCardFields, type Skill } from "@/lib/srs/cards";
 import { applyReview, createScheduler, newCardFields } from "@/lib/srs/scheduler";
 import { introducedToday } from "@/lib/notebooks/introductions";
@@ -397,14 +397,17 @@ async function introduce(db: LocalDb, owner: string, now: Date): Promise<number>
     db.notebooks.where("user_id").equals(owner).toArray(),
     db.notebook_entries.where("user_id").equals(owner).toArray(),
   ]);
-  const ids = planDailyIntroductions({
-    notebooks,
-    entries,
-    userWords: withoutHeldWords(userWords, notebooks, entries),
-    dailyLimit: settings.daily_new_limit,
-    now,
-    timeZone: settings.timezone,
-  });
+  // Số từ mới/ngày tính riêng từng ngôn ngữ.
+  const ids = [...wordsByLanguage(userWords, notebooks, entries).values()].flatMap((words) =>
+    planDailyIntroductions({
+      notebooks,
+      entries,
+      userWords: words,
+      dailyLimit: settings.daily_new_limit,
+      now,
+      timeZone: settings.timezone,
+    }),
+  );
   const iso = now.toISOString();
   for (const id of ids) {
     const row = userWords.find((uw) => uw.id === id)!;
@@ -479,14 +482,10 @@ export async function openExtraWords(
   count: number,
   now = new Date(),
 ): Promise<string[]> {
-  const tables = [db.user_words, db.notebooks, db.notebook_entries, db.outbox];
+  const tables = [db.user_words, db.user_settings, db.notebooks, db.notebook_entries, db.outbox];
   const opened = await db.transaction("rw", tables, async () => {
-    const [userWords, notebooks, entries] = await Promise.all([
-      db.user_words.where("user_id").equals(owner).toArray(),
-      db.notebooks.where("user_id").equals(owner).toArray(),
-      db.notebook_entries.where("user_id").equals(owner).toArray(),
-    ]);
-    const queued = withoutHeldWords(userWords, notebooks, entries)
+    const { words } = await learningWords(db, owner, now);
+    const queued = words
       .filter((uw) => !uw.deleted_at && uw.status === "queued")
       .sort((a, b) => a.added_at.localeCompare(b.added_at) || a.id.localeCompare(b.id))
       .slice(0, Math.max(0, count));
@@ -507,9 +506,24 @@ export async function openSlotsToday(
   owner: string,
   now = new Date(),
 ): Promise<number> {
-  const settings = (await db.user_settings.get(owner)) ?? defaultSettingsRow(owner, now);
-  const userWords = await db.user_words.where("user_id").equals(owner).toArray();
-  return Math.max(0, settings.daily_new_limit - introducedToday(userWords, now, settings.timezone));
+  const { settings, words } = await learningWords(db, owner, now);
+  return Math.max(0, settings.daily_new_limit - introducedToday(words, now, settings.timezone));
+}
+
+/** Từ của ngôn ngữ đang học. */
+async function learningWords(db: LocalDb, owner: string, now: Date) {
+  const [settings, userWords, notebooks, entries] = await Promise.all([
+    db.user_settings.get(owner),
+    db.user_words.where("user_id").equals(owner).toArray(),
+    db.notebooks.where("user_id").equals(owner).toArray(),
+    db.notebook_entries.where("user_id").equals(owner).toArray(),
+  ]);
+  const row = settings ?? defaultSettingsRow(owner, now);
+  const language = learningLanguage(row.target_language);
+  return {
+    settings: row,
+    words: wordsByLanguage(userWords, notebooks, entries).get(language) ?? [],
+  };
 }
 
 export type UserWordPatch = Partial<

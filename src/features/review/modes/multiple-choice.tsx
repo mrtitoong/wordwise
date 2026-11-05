@@ -5,6 +5,7 @@ import { Check, X } from "lucide-react";
 import { useTranslations } from "next-intl";
 import { Button } from "@/components/ui/button";
 import type { Mcq } from "@/lib/review/mcq";
+import { readingConcealed } from "@/lib/review/cues";
 import { replaysAsHint } from "@/lib/review/listening";
 import { cn } from "@/lib/utils";
 import { e2eAnswer } from "../e2e";
@@ -70,6 +71,8 @@ export function MultipleChoice({
   });
 
   const toWord = !listen && mcq.direction === "meaning-to-word";
+  const language = item.word.content.language;
+  const conceal = readingConcealed(language, item.card, !!picked);
 
   return (
     <div className="flex flex-1 flex-col gap-4" {...e2eAnswer(item.word.content.lemma)}>
@@ -83,6 +86,7 @@ export function MultipleChoice({
           <ListenPlayer
             text={item.word.content.lemma}
             voice={voice}
+            language={language}
             url={item.word.media.audio[voice]}
             autoPlay={!muted}
             onReplay={setReplays}
@@ -91,7 +95,7 @@ export function MultipleChoice({
       ) : toWord ? (
         <p className="text-center text-2xl font-semibold">{mcq.prompt}</p>
       ) : (
-        <WordHead item={item} voice={voice} autoPlay={!muted} />
+        <WordHead item={item} voice={voice} autoPlay={!muted && !conceal} conceal={conceal} />
       )}
 
       <ul className="flex flex-col gap-2" aria-label={t("options")}>
@@ -104,7 +108,7 @@ export function MultipleChoice({
                 type="button"
                 disabled={!!picked}
                 onClick={() => choose(index)}
-                lang={toWord ? "en" : undefined}
+                lang={toWord ? language : undefined}
                 className={cn(
                   "flex min-h-14 w-full items-center gap-3 rounded-xl border-2 px-4 py-2 text-left focus-visible:outline-2 focus-visible:outline-ring",
                   picked && isAnswer && "border-green-500 bg-green-50 dark:bg-green-950",

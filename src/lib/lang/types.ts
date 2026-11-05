@@ -1,5 +1,6 @@
 import type { Voice } from "@/lib/media/tts-azure";
 import type { Language } from "@/lib/schema/word";
+import type { Skill } from "@/lib/srs/cards";
 
 export const ENTRY_TABS = ["typed", "voice", "photo", "url", "file"] as const;
 export type EntryTab = (typeof ENTRY_TABS)[number];
@@ -28,6 +29,13 @@ export interface LanguagePack {
   requiresIpa: boolean;
   /** Đã có phiên ôn; chưa có thì từ nằm yên ở Sắp học. */
   hasReview: boolean;
+  /** Kỹ năng ôn được; thẻ của kỹ năng khác (nếu có) không vào phiên, Luyện tập, Thống kê. */
+  reviewSkills: readonly Skill[];
+  /**
+   * Từ mức thuộc này, mặt câu hỏi ẩn cách đọc và không tự phát âm cho tới khi trả lời, để người học
+   * phải nhận mặt chữ. null = luôn hiện (chữ cái đã cho biết cách đọc).
+   */
+  hideReadingFromLevel: number | null;
   /** Các tab ở màn Thêm từ. */
   entryTabs: readonly EntryTab[];
   /** Chữ này có thể là một từ của ngôn ngữ không (tiếng Trung phải có chữ Hán). */

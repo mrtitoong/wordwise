@@ -1807,20 +1807,78 @@ function sentenceWords(sentences) {
   }
   return [...words];
 }
-var joined = (reading) => reading.replaceAll(" ", "");
+var BASE_TONE = { 一: "yī", 不: "bù" };
+var NEUTRAL_TONE = 5;
+var PARTICLES = "的了着得地过吗呢吧啊";
+var hasNeutralTone = (reading) => reading.tones.includes(NEUTRAL_TONE);
+var LIAO_WORDS = /* @__PURE__ */ new Set(["了解", "了不起", "了不得", "受不了", "不得了", "忘不了", "少不了"]);
+function readsParticleAsLiao(word, reading) {
+  return word.includes("了") && reading.pinyin.includes("liǎo") && !LIAO_WORDS.has(word);
+}
+var NOT_WORDS = /* @__PURE__ */ new Set(["这不", "那不"]);
+var COMMON_NEUTRAL_WORDS = /* @__PURE__ */ new Set([
+  "衣服",
+  "清楚",
+  "学生",
+  "知识",
+  "事情",
+  "朋友",
+  "时候",
+  "东西",
+  "地方",
+  "漂亮",
+  "明白",
+  "认识",
+  "告诉",
+  "意思",
+  "便宜",
+  "舒服",
+  "故事",
+  "多少",
+  "起来"
+]);
+function isKnownNeutralWord(word) {
+  return word[0] === word[1] || word.endsWith("子") || COMMON_NEUTRAL_WORDS.has(word);
+}
+function yieldsToNextWord(lexicon, word, next) {
+  if (word.length !== 2 || !next) return false;
+  if (PARTICLES.includes(next)) return false;
+  const pair = word[1] + next;
+  if (!isKnownNeutralWord(pair)) return false;
+  const following = allowedReadings(lexicon.get(pair));
+  const current = allowedReadings(lexicon.get(word.join("")));
+  return following.length === 1 && hasNeutralTone(following[0]) && !current.some(hasNeutralTone);
+}
+function neutralReading(word, readings) {
+  if (readings.length !== 2 || !COMMON_NEUTRAL_WORDS.has(word)) return void 0;
+  const plain = (reading) => pinyinKey(reading.pinyin).normalize("NFD").replace(/\p{M}/gu, "");
+  if (plain(readings[0]) !== plain(readings[1])) return void 0;
+  return readings.find(hasNeutralTone);
+}
 function sentencePinyin(sentence, lexicon, target) {
   const chars = Array.from(sentence);
   const library = pinyin(sentence, { type: "all", toneType: "symbol" });
   const libraryAt = (from, to) => library.slice(from, to).map((item) => item.pinyin).join("");
+  const spoken = (reading, start) => reading.split(" ").map((syllable, index) => {
+    const base2 = BASE_TONE[chars[start + index] ?? ""];
+    return syllable === base2 ? library[start + index]?.pinyin ?? syllable : syllable;
+  }).join("");
   function wordAt(start) {
     const rest = chars.slice(start);
-    if (target && rest.join("").startsWith(target.lemma)) {
-      return { size: Array.from(target.lemma).length, reading: joined(target.pinyin) };
+    const text2 = rest.join("");
+    if (target && text2.startsWith(target.lemma) && !text2.startsWith(target.lemma.repeat(2))) {
+      return { size: Array.from(target.lemma).length, reading: spoken(target.pinyin, start) };
     }
     for (let size = Math.min(MAX_WORD_CHARS, rest.length); size >= 2; size--) {
-      const allowed = allowedReadings(lexicon.get(rest.slice(0, size).join("")));
-      if (allowed.length === 1) return { size, reading: joined(allowed[0].pinyin) };
-      if (allowed.length > 1) return { size, reading: libraryAt(start, start + size) };
+      const part = rest.slice(0, size);
+      const word = part.join("");
+      const allowed = allowedReadings(lexicon.get(word));
+      if (allowed.length === 0 || NOT_WORDS.has(word)) continue;
+      if (allowed.some((r) => readsParticleAsLiao(word, r))) continue;
+      if (yieldsToNextWord(lexicon, part, rest[size])) continue;
+      const only = allowed.length === 1 ? allowed[0] : neutralReading(word, allowed);
+      if (only) return { size, reading: spoken(only.pinyin, start) };
+      return { size, reading: libraryAt(start, start + size) };
     }
     return null;
   }

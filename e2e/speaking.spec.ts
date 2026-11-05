@@ -51,15 +51,16 @@ test.describe("Tập phát âm", () => {
     await signInWithCode(page, uniqueEmail("speak"));
     await expect(page).toHaveURL("/");
     await waitForTestHooks(page);
-    await page.evaluate(
-      (patch) => (window as unknown as Hooks).__wordwiseE2E.patchCards("meaning", patch),
-      KNOWN,
-    );
+    // Dữ liệu khách có thể chưa chuyển xong sang tài khoản: đặt lại mức thuộc cho tới khi có thẻ.
     await expect
-      .poll(
-        async () =>
-          (await readLocalStore<Card>(page, "cards")).filter((c) => c.skill === "speaking").length,
-      )
+      .poll(async () => {
+        await page.evaluate(
+          (patch) => (window as unknown as Hooks).__wordwiseE2E.patchCards("meaning", patch),
+          KNOWN,
+        );
+        const cards = await readLocalStore<Card>(page, "cards");
+        return cards.filter((c) => c.skill === "speaking").length;
+      })
       .toBe(5);
     await mockScoring(page);
 

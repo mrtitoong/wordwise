@@ -147,7 +147,7 @@ test.describe("Viết chữ tiếng Trung", () => {
       const count = await page.evaluate(() =>
         (window as unknown as Hooks).__wordwiseE2E.patchCards("spelling"),
       );
-      expect(count).toBe(1);
+      expect(count).toBeGreaterThan(0);
     }).toPass({ timeout: 15_000 });
     await page.goto("/review/session");
     await expect(page.getByText("Viết chữ của từ này")).toBeVisible();

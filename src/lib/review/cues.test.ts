@@ -38,6 +38,10 @@ describe("practiceModesFor", () => {
     expect(practiceModesFor(["meaning"])).toEqual(["auto", "flashcard", "mcq", "listening"]);
   });
 
+  it("phát âm chỉ để luyện thì vẫn có chế độ Phát âm", () => {
+    expect(practiceModesFor(["meaning", "spelling"], true)).toContain("speaking");
+  });
+
   it("đủ kỹ năng thì có mọi chế độ", () => {
     expect(practiceModesFor(["meaning", "spelling", "speaking"])).toHaveLength(6);
   });

@@ -5,7 +5,7 @@
  */
 import { z } from "zod";
 
-export const PronunciationLocaleSchema = z.enum(["en-US", "en-GB"]);
+export const PronunciationLocaleSchema = z.enum(["en-US", "en-GB", "zh-CN"]);
 export type PronunciationLocale = z.infer<typeof PronunciationLocaleSchema>;
 
 /** WAV 16 kHz 16 bit mono 5 giây ≈ 160 KB → base64 ≈ 214 KB; chừa thêm. */

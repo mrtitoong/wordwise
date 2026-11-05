@@ -24,13 +24,17 @@ function isWav(bytes) {
 }
 
 // src/lib/pronunciation/scorer.ts
+var PHONEME_ALPHABET = {
+  "en-US": "IPA",
+  "zh-CN": "SAPI"
+};
 function assessmentParams(text, locale) {
   return {
     ReferenceText: text,
     GradingSystem: "HundredMark",
     Granularity: "Phoneme",
     Dimension: "Comprehensive",
-    ...locale === "en-US" ? { PhonemeAlphabet: "IPA" } : {}
+    ...PHONEME_ALPHABET[locale] ? { PhonemeAlphabet: PHONEME_ALPHABET[locale] } : {}
   };
 }
 function assessmentHeader(text, locale) {
@@ -97,7 +101,7 @@ import { z as z2 } from "npm:zod@4.6.5";
 
 // src/lib/pronunciation/api.ts
 import { z } from "npm:zod@4.6.5";
-var PronunciationLocaleSchema = z.enum(["en-US", "en-GB"]);
+var PronunciationLocaleSchema = z.enum(["en-US", "en-GB", "zh-CN"]);
 var MAX_PRONUNCIATION_AUDIO_BASE64 = 3e5;
 var MAX_REFERENCE_CHARS = 60;
 var AssessRequestSchema = z.object({
@@ -171,6 +175,9 @@ function createAssessHandler(deps) {
       const userId = await deps.getUserId(request.headers.get("authorization"));
       if (!userId) return json({ status: "login_required" });
       if (!deps.scorer) return json({ status: "unavailable" });
+      if (body.locale === "zh-CN" && !await deps.canUseChinese(userId)) {
+        return json({ status: "unavailable" });
+      }
       const quota = await deps.consumeUsage(userId);
       if (!quota.allowed) return json({ status: "limit_reached", dailyLimit: quota.dailyLimit });
       const outcome = await deps.scorer.assess(wav, body.text, body.locale);
@@ -205,6 +212,11 @@ Deno.serve(
       if (!token) return null;
       const { data, error } = await supabase.auth.getUser(token);
       return error || !data.user ? null : data.user.id;
+    },
+    async canUseChinese(userId) {
+      const { data, error } = await supabase.from("profiles").select("feature_zh").eq("user_id", userId).maybeSingle();
+      if (error) throw new Error(`profiles: ${error.message}`);
+      return data?.feature_zh ?? false;
     },
     async consumeUsage(userId) {
       const { data, error } = await supabase.rpc("consume_usage", {

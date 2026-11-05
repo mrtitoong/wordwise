@@ -32,6 +32,7 @@ function plainPack(code: Language): LanguagePack {
     hasReview: false,
     reviewSkills: ["meaning"],
     hideReadingFromLevel: null,
+    speakingPracticeOnly: false,
     writesStrokes: false,
     spellingSetting: "practice_spelling",
     newSpellingPerDay: null,

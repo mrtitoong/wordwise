@@ -19,6 +19,7 @@ export const en: LanguagePack = {
   hasReview: true,
   reviewSkills: ["meaning", "spelling", "speaking"],
   hideReadingFromLevel: null,
+  speakingPracticeOnly: false,
   writesStrokes: false,
   spellingSetting: "practice_spelling",
   newSpellingPerDay: null,

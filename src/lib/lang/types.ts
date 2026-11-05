@@ -36,6 +36,8 @@ export interface LanguagePack {
    * phải nhận mặt chữ. null = luôn hiện (chữ cái đã cho biết cách đọc).
    */
   hideReadingFromLevel: number | null;
+  /** Tập phát âm chỉ để luyện: không có thẻ, không ghi lượt ôn (chưa chấm được thanh điệu). */
+  speakingPracticeOnly: boolean;
   /** Thẻ Chính tả là viết chữ theo nét (không gõ, không nghe → gõ). */
   writesStrokes: boolean;
   /** Công tắc trong Cài đặt của thẻ Chính tả. */

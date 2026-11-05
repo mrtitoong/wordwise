@@ -16,6 +16,7 @@ export const zh: LanguagePack = {
   hasReview: true,
   reviewSkills: ["meaning", "spelling"],
   hideReadingFromLevel: 2,
+  speakingPracticeOnly: true,
   writesStrokes: true,
   spellingSetting: "practice_hanzi",
   // Viết tay lâu hơn gõ nhiều: mở bằng nửa số từ mới mặc định để tải ôn không quá nặng.

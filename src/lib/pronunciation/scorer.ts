@@ -19,6 +19,12 @@ export interface PronunciationScorer {
   assess(wav: Uint8Array, text: string, locale: PronunciationLocale): Promise<ScoreOutcome>;
 }
 
+/** Bảng tên âm vị Azure có: IPA chỉ cho en-US, SAPI cho zh-CN (mỗi "âm vị" là cả âm tiết). */
+const PHONEME_ALPHABET: Partial<Record<PronunciationLocale, string>> = {
+  "en-US": "IPA",
+  "zh-CN": "SAPI",
+};
+
 /** Tham số chấm gửi trong header Pronunciation-Assessment (JSON → base64). */
 export function assessmentParams(text: string, locale: PronunciationLocale) {
   return {
@@ -26,7 +32,7 @@ export function assessmentParams(text: string, locale: PronunciationLocale) {
     GradingSystem: "HundredMark",
     Granularity: "Phoneme",
     Dimension: "Comprehensive",
-    ...(locale === "en-US" ? { PhonemeAlphabet: "IPA" } : {}),
+    ...(PHONEME_ALPHABET[locale] ? { PhonemeAlphabet: PHONEME_ALPHABET[locale] } : {}),
   };
 }
 

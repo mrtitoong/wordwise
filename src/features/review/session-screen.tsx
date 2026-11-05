@@ -99,9 +99,19 @@ export type SessionOptions = {
 const loadNewWord = () => import("./modes/new-word");
 const loadSpeaking = () => import("./modes/speaking");
 const loadHanzi = () => import("./modes/hanzi-writing");
+const loadSpeakPractice = () => import("./modes/speak-practice");
 const NewWordIntro = dynamic(() => loadNewWord().then((m) => m.NewWordIntro), { ssr: false });
 const Speaking = dynamic(() => loadSpeaking().then((m) => m.Speaking), { ssr: false });
 const HanziWriting = dynamic(() => loadHanzi().then((m) => m.HanziWriting), { ssr: false });
+const SpeakPractice = dynamic(() => loadSpeakPractice().then((m) => m.SpeakPractice), {
+  ssr: false,
+});
+
+/** Câu tập phát âm không ghi lượt ôn. */
+const practicesSpeaking = (cards: Map<string, PreparedCard>) => (item: SessionItem) => {
+  const language = cards.get(item.cardId)?.word.content.language;
+  return item.mode === "speaking" && !!language && languagePack(language).speakingPracticeOnly;
+};
 
 function preloadModes(queue: readonly SessionItem[], cards: Map<string, PreparedCard>) {
   if (queue.some((i) => i.isNew)) void loadNewWord();
@@ -113,6 +123,7 @@ function preloadModes(queue: readonly SessionItem[], cards: Map<string, Prepared
     );
   };
   if (queue.some(writesHanzi)) void loadHanzi();
+  if (queue.some(practicesSpeaking(cards))) void loadSpeakPractice();
 }
 
 type Kind = "full" | "short" | "single" | "retry" | "practice";
@@ -135,6 +146,7 @@ type Ask =
   | { step: "mcq"; mcq: Mcq; listen: boolean; voice: Voice }
   | { step: "writing"; task: WritingTask; listen: boolean; voice: Voice }
   | { step: "hanzi"; level: MasteryLevel; voice: Voice }
+  | { step: "speakPractice"; voice: Voice; locale: PronunciationLocale }
   | { step: "speaking"; voice: Voice; locale: PronunciationLocale };
 
 const MUTE_KEY = "ww_review_muted";
@@ -216,6 +228,15 @@ export function SessionScreen({ options }: { options: SessionOptions }) {
         word: !!prep.word.media.audio[voice] || canSpeak(),
         sentence: !!clozeOfItem(prep) && (!!getSupabaseEnv() || canSpeak()),
       };
+      if (practicesSpeaking(cards)(item)) {
+        return {
+          step: "speakPractice",
+          voice,
+          locale: languagePack(prep.word.content.language).speechLocale(
+            voice,
+          ) as PronunciationLocale,
+        };
+      }
       // Phát âm chấm theo giọng trong Cài đặt (không đổi giọng ngẫu nhiên như tập nghe).
       if (prep.card.skill === "speaking") {
         const preferred = voices.current.preferred;
@@ -383,6 +404,7 @@ export function SessionScreen({ options }: { options: SessionOptions }) {
             entries: input.entries,
             practiceSpelling: spellingEnabled(fresh.settings, language),
             typedSpelling: !languagePack(language).writesStrokes,
+            speakingPracticeOnly: languagePack(language).speakingPracticeOnly,
             dayEnd: studyDayEnd(now, fresh.settings.timezone),
           },
           options.practice,
@@ -596,6 +618,11 @@ export function SessionScreen({ options }: { options: SessionOptions }) {
    */
   async function goTo(next: Run, cards: Map<string, PreparedCard>) {
     if (next.position >= next.queue.length) {
+      // Buổi tập phát âm không ghi lượt ôn nên không có gì để tổng kết.
+      if (next.answers.length === 0 && next.queue.every(practicesSpeaking(cards))) {
+        router.push("/practice");
+        return;
+      }
       setPrepared(cards);
       setRun(next);
       await finish(next);
@@ -742,6 +769,14 @@ export function SessionScreen({ options }: { options: SessionOptions }) {
             muted={muted}
             onAnswer={(a) => void handleAnswer(a)}
             onSkip={skip}
+          />
+        ) : ask.step === "speakPractice" ? (
+          <SpeakPractice
+            item={prep}
+            voice={ask.voice}
+            locale={ask.locale}
+            muted={muted}
+            onNext={skip}
           />
         ) : ask.step === "hanzi" ? (
           <HanziWriting

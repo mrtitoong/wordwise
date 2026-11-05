@@ -43,6 +43,15 @@ Deno.serve(
       const { data, error } = await supabase.auth.getUser(token);
       return error || !data.user ? null : data.user.id;
     },
+    async canUseChinese(userId) {
+      const { data, error } = await supabase
+        .from("profiles")
+        .select("feature_zh")
+        .eq("user_id", userId)
+        .maybeSingle();
+      if (error) throw new Error(`profiles: ${error.message}`);
+      return data?.feature_zh ?? false;
+    },
     async consumeUsage(userId) {
       const { data, error } = await supabase.rpc("consume_usage", {
         p_user_id: userId,

@@ -19,6 +19,8 @@ export interface AssessDeps {
   /** null khi chưa cấu hình Azure. */
   scorer: PronunciationScorer | null;
   getUserId(authorization: string | null): Promise<string | null>;
+  /** Tài khoản được dùng tiếng Trung (cờ feature_zh), để người ngoài không gọi thẳng tốn tiền. */
+  canUseChinese(userId: string): Promise<boolean>;
   /** Trừ một lượt nếu còn. */
   consumeUsage(userId: string): Promise<{ allowed: boolean; dailyLimit: number }>;
 }
@@ -60,6 +62,9 @@ export function createAssessHandler(deps: AssessDeps) {
       const userId = await deps.getUserId(request.headers.get("authorization"));
       if (!userId) return json({ status: "login_required" });
       if (!deps.scorer) return json({ status: "unavailable" });
+      if (body.locale === "zh-CN" && !(await deps.canUseChinese(userId))) {
+        return json({ status: "unavailable" });
+      }
       const quota = await deps.consumeUsage(userId);
       if (!quota.allowed) return json({ status: "limit_reached", dailyLimit: quota.dailyLimit });
 

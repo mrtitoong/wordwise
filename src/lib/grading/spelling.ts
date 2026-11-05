@@ -74,7 +74,7 @@ export function normalizeAnswer(text: string): string {
 }
 
 /** Số chữ cái tính ngưỡng lỗi gõ (bỏ khoảng trắng, nháy, gạch nối). */
-function letterCount(text: string): number {
+export function letterCount(text: string): number {
   return Array.from(text.replace(/[\s'-]/gu, "")).length;
 }
 

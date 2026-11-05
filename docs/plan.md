@@ -134,7 +134,7 @@ Các chế độ tự chấm không hỏi người dùng, mà quy đổi từ d�
 | Kết quả | Điểm |
 | --- | --- |
 | Sai, hoặc đúng sau khi xem đáp án | Again (Quên) |
-| Đúng nhưng dùng gợi ý, sai 1 ký tự, hoặc chậm hơn 2× trung vị của người dùng | Hard (Khó) |
+| Đúng nhưng dùng gợi ý, sai 1 ký tự, hoặc chậm hơn 2× trung vị của người dùng (thẻ đã qua bước học; câu gõ chữ phải chậm cả theo từng chữ cái) | Hard (Khó) |
 | Đúng, tốc độ bình thường | Good (Nhớ) |
 | Đúng, nhanh hơn 0,5× trung vị, chế độ khó hơn mức hiện tại | Easy (Dễ) |
 | Phát âm: < 60 / 60–79 / 80–89 / ≥ 90 điểm | Again / Hard / Good / Easy |

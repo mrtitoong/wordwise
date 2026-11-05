@@ -1,10 +1,10 @@
 "use client";
 
-import { useCallback, useEffect, useRef, useState } from "react";
+import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import dynamic from "next/dynamic";
 import { useRouter } from "next/navigation";
 import { MicOff, Volume2, VolumeX, X } from "lucide-react";
-import { Rating, type FSRS, type Grade } from "ts-fsrs";
+import { Rating, State, type FSRS, type Grade } from "ts-fsrs";
 import { useTranslations } from "next-intl";
 import { Button } from "@/components/ui/button";
 import { Sheet } from "@/components/ui/sheet";
@@ -38,10 +38,11 @@ import { nextDueByRating } from "@/lib/srs/cards";
 import {
   INTRO_RATING,
   gradeFromOutcome,
-  medianResponseMs,
   modesForSkill,
   pickMode,
+  timingBaseline,
   type ReviewMode,
+  type TimingCard,
 } from "@/lib/srs/grade";
 import { listeningTaskKind, listeningVoice, spellingTaskKind } from "@/lib/review/listening";
 import { buildPractice, type PracticeRequest } from "@/lib/review/practice";
@@ -73,7 +74,7 @@ import {
 } from "./session-content";
 import { SessionLoading } from "./session-loading";
 import { SessionResult } from "./session-result";
-import { loadReviewData, toTodayInput, type ReviewData } from "./use-review-data";
+import { loadReviewData, timingCards, toTodayInput, type ReviewData } from "./use-review-data";
 
 export type SessionOptions = {
   /** Phiên ngắn 5 phút. */
@@ -158,6 +159,7 @@ export function SessionScreen({ options }: { options: SessionOptions }) {
   const router = useRouter();
   const owner = useOwner();
   const [data, setData] = useState<ReviewData | null>(null);
+  const timing = useMemo(() => (data ? timingCards(data) : new Map<string, TimingCard>()), [data]);
   const [run, setRun] = useState<Run | null>(null);
   const [prepared, setPrepared] = useState<Map<string, PreparedCard>>(new Map());
   const [pool, setPool] = useState<ChoiceSense[]>([]);
@@ -495,7 +497,9 @@ export function SessionScreen({ options }: { options: SessionOptions }) {
             mode,
             ...answer,
             cardLevel: levelBefore,
-            userMedianMs: medianResponseMs(data.logs, mode),
+            learning: prep.card.state !== State.Review,
+            letters: timing.get(item.cardId)?.letters,
+            ...timingBaseline(data.logs, mode, prep.card.skill, (id) => timing.get(id)),
           });
       const extra = extraIds.current.has(item.cardId);
       const input: ReviewInput = {

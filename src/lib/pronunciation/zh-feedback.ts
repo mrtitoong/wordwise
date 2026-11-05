@@ -25,7 +25,10 @@ export function zhSyllables(
   lemma: string,
   pinyin: string,
 ): ZhSyllable[] | null {
-  const scores = result.words.flatMap((word) => word.phonemes.map((phoneme) => phoneme.score));
+  // Azure tách âm cuốn (一点儿) thành "âm" r riêng, còn pinyin ghép vào âm trước (diǎnr).
+  const scores = result.words.flatMap((word) =>
+    word.phonemes.flatMap((phoneme) => (phoneme.ipa === "r" ? [] : [phoneme.score])),
+  );
   const readings = pinyin.split(" ").filter(Boolean);
   if (scores.length === 0 || scores.length !== readings.length) return null;
   const chars = Array.from(lemma);

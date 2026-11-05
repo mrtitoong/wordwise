@@ -42,6 +42,12 @@ describe("zhSyllables", () => {
     ]);
   });
 
+  it("Azure tách âm cuốn thành âm r riêng", () => {
+    const erhua = result([90, 80, 100]);
+    erhua.words[0]!.phonemes[2]!.ipa = "r";
+    expect(zhSyllables(erhua, "一点儿", "yì diǎnr")?.map((s) => s.score)).toEqual([90, 80]);
+  });
+
   it("số âm không khớp thì không hiện từng chữ", () => {
     expect(zhSyllables(result([90]), "学校", "xué xiào")).toBeNull();
     expect(zhSyllables(result([]), "学校", "xué xiào")).toBeNull();

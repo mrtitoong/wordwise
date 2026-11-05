@@ -51,7 +51,7 @@ async function main() {
   let chrome = await launchChrome();
 
   /** Một lượt đo; hỏng thì mở lại Chrome rồi đo lại, báo lý do lên trang Actions. */
-  async function measure(path: string, cookie: string | undefined) {
+  async function measure(path: string, cookie: string | null) {
     for (let attempt = 0; ; attempt++) {
       try {
         const result = await lighthouse(`${BASE}${path}`, {
@@ -65,9 +65,9 @@ async function main() {
         return result;
       } catch (error) {
         const message = error instanceof Error ? error.message : String(error);
+        const firstLine = message.trim().split(/\s{2,}/)[0];
         const level = attempt < CRASH_RETRIES ? "warning" : "error";
-        console.log(`::${level} title=Lighthouse hỏng ở ${path}::${message.split(/?
-/)[0]}`);
+        console.log(`::${level} title=Lighthouse hỏng ở ${path}::${firstLine}`);
         if (attempt >= CRASH_RETRIES) throw error;
         chrome.kill();
         chrome = await launchChrome();

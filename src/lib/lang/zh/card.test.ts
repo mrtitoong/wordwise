@@ -1,3 +1,4 @@
+import { readFileSync } from "node:fs";
 import { describe, expect, it } from "vitest";
 import { splitHighlight } from "@/lib/words/highlight";
 import { wordsByLanguage } from "../filter";
@@ -40,6 +41,57 @@ describe("hanVietRule", () => {
   it("chỉ nhờ AI chọn khi có chữ nhiều âm", () => {
     expect(hanVietRule("银行", table)).toContain("行: hành, hạnh, hàng");
     expect(hanVietRule("学", table)).toBe("han_viet = [] (máy tự điền).");
+  });
+});
+
+describe("sentencePinyin: âm đọc thật", () => {
+  const full = parseLexicon(readFileSync("data/zh/lexicon.tsv", "utf8"));
+
+  it("一 và 不 ghi đúng âm đọc, không phụ thuộc nguồn âm", () => {
+    expect(sentencePinyin("我有一个姐姐。", full)).toContain("yíge");
+    expect(sentencePinyin("这里有一张床。", full)).toContain("yì zhāng");
+    expect(sentencePinyin("我们一起去。", full)).toContain("yìqǐ");
+    expect(sentencePinyin("这个不对。", full)).toContain("búduì");
+    expect(sentencePinyin("我不好。", full)).toContain("bùhǎo");
+  });
+
+  it("từ đang học có 一 cũng đổi âm", () => {
+    expect(sentencePinyin("我们一起去。", full, { lemma: "一起", pinyin: "yī qǐ" })).toContain(
+      "yìqǐ",
+    );
+  });
+
+  it("chỗ không đổi âm thì giữ nguyên", () => {
+    expect(sentencePinyin("他是第一。", full)).toContain("yī");
+    expect(sentencePinyin("今天星期一。", full)).toContain("yī");
+    expect(sentencePinyin("你看一看。", full)).toContain("yi");
+    expect(sentencePinyin("对不起。", full)).toContain("bu");
+  });
+
+  it("了 sau động từ là trợ từ le, 了解 vẫn là liǎo", () => {
+    expect(sentencePinyin("我们到了。", full)).not.toContain("liǎo");
+    expect(sentencePinyin("我了解他。", full)).toContain("liǎo");
+  });
+
+  it("giữ thanh nhẹ của từ đứng sau", () => {
+    expect(sentencePinyin("我哥哥在家。", full)).toContain("gēge");
+    expect(sentencePinyin("我哥哥在家。", full, { lemma: "哥", pinyin: "gē" })).toContain("gēge");
+    expect(sentencePinyin("我听清楚了。", full)).toContain("qīngchu");
+    expect(sentencePinyin("他穿衣服。", full)).toContain("yīfu");
+  });
+
+  it("không ghép nhầm với trợ từ, 不是 giữ thanh 4", () => {
+    expect(sentencePinyin("这个国家的人。", full)).toContain("guójiā");
+    expect(sentencePinyin("这不是我的。", full)).toContain("búshì");
+    expect(sentencePinyin("我们趁早上车。", full)).toContain("chènzǎo");
+    expect(sentencePinyin("请把手洗干净。", full)).not.toContain("shou ");
+    expect(sentencePinyin("我不会说法语。", full)).not.toContain("shuōfa");
+    expect(sentencePinyin("写一下作业。", full)).toContain("zuòyè");
+  });
+
+  it("东西, 地方 đọc thanh nhẹ", () => {
+    expect(sentencePinyin("这个东西很好。", full)).toContain("dōngxi");
+    expect(sentencePinyin("这个地方很好。", full)).toContain("dìfang");
   });
 });
 

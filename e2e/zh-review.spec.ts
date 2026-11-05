@@ -79,7 +79,7 @@ test.describe("Ôn tiếng Trung", () => {
   test.skip(!hasSupabase, "cần Supabase cục bộ (chạy trong CI)");
   test.setTimeout(120_000);
 
-  test("học từ mới, đáp án nhiễu cùng ngôn ngữ, Luyện tập không có chế độ chưa làm", async ({
+  test("học từ mới, đáp án nhiễu cùng ngôn ngữ, Luyện tập có đúng các chế độ", async ({
     page,
   }) => {
     const words = MEANINGS.map(uniqueWord);
@@ -147,6 +147,7 @@ test.describe("Ôn tiếng Trung", () => {
     await page.goto("/practice");
     await expect(page.getByRole("radio", { name: "Trắc nghiệm" })).toBeVisible();
     await expect(page.getByRole("radio", { name: "Tập viết" })).toHaveCount(0);
-    await expect(page.getByRole("radio", { name: "Phát âm" })).toHaveCount(0);
+    await expect(page.getByRole("radio", { name: "Viết chữ" })).toBeVisible();
+    await expect(page.getByRole("radio", { name: "Phát âm" })).toBeVisible();
   });
 });

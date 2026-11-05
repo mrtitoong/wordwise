@@ -4,8 +4,10 @@
  */
 import type { LanguageExtra } from "@/lib/schema/word";
 import { wordChars } from "./han-viet";
+import { spokenPinyin } from "./pinyin";
 
 export type ZhCardInfo = {
+  /** Pinyin để hiển thị, đã đổi thanh của 一 và 不 cho khớp audio. */
   pinyin: string;
   /** Âm Hán Việt của từng chữ; chữ không có âm thì `am` là null. */
   hanViet: { char: string; am: string | null }[];
@@ -30,13 +32,14 @@ export function zhCardInfo({ lemma, language_extra: extra }: Content): ZhCardInf
   const hanViet = extra.han_viet ?? [];
   const sensePinyin = extra.sense_pinyin ?? [];
   return {
-    pinyin: extra.pinyin,
+    pinyin: spokenPinyin(lemma, extra.pinyin),
     hanViet: hanViet.length
       ? wordChars(lemma).map((char, index) => ({ char, am: hanViet[index] ?? null }))
       : [],
     traditional: extra.traditional && extra.traditional !== lemma ? extra.traditional : null,
     hsk: extra.hsk,
-    sensePinyin: new Set(sensePinyin).size > 1 ? sensePinyin : null,
+    sensePinyin:
+      new Set(sensePinyin).size > 1 ? sensePinyin.map((p) => spokenPinyin(lemma, p)) : null,
     examplePinyin: extra.example_pinyin ?? [],
   };
 }

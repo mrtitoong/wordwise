@@ -111,13 +111,11 @@ test.describe("Ôn tiếng Trung", () => {
 
     await page.goto("/review/session");
     const seen: Step[] = [];
+    const labels: string[] = [];
     for (let i = 0; i < 40; i++) {
       const options = page.getByRole("list", { name: "Các đáp án" });
       if (await options.isVisible()) {
-        // Đáp án nhiễu lấy trong kho tiếng Trung, không lẫn nghĩa của từ tiếng Anh.
-        for (const label of await options.getByRole("button").allTextContents()) {
-          expect(MEANINGS.some((meaning) => label.endsWith(meaning))).toBe(true);
-        }
+        labels.push(...(await options.getByRole("button").allTextContents()));
         await expect(page.getByText(/^zq[a-f]+ ·/)).toBeVisible();
         await noHorizontalScroll(page);
       }
@@ -127,6 +125,18 @@ test.describe("Ôn tiếng Trung", () => {
     }
     expect(seen.filter((step) => step === "intro")).toHaveLength(words.length);
     expect(seen.some((step) => step === "mcq" || step === "listening")).toBe(true);
+
+    // Đáp án nhiễu lấy trong kho tiếng Trung, không lẫn nghĩa của từ tiếng Anh. Test chạy song song
+    // nên kho có cả từ của test khác.
+    const zhSenses = await serverAdmin()!
+      .from("word_senses")
+      .select("meaning_vi, words!inner(language)")
+      .eq("words.language", "zh");
+    if (zhSenses.error) throw new Error(zhSenses.error.message);
+    const zhMeanings = zhSenses.data.map((sense) => sense.meaning_vi);
+    for (const label of labels) {
+      expect(zhMeanings.some((meaning) => label.endsWith(meaning))).toBe(true);
+    }
 
     await page.goto("/practice");
     await expect(page.getByRole("radio", { name: "Trắc nghiệm" })).toBeVisible();

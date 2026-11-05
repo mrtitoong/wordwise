@@ -103,7 +103,7 @@ test.describe("Ôn tiếng Trung", () => {
 
     await page.goto("/add");
     for (const word of words) {
-      await page.getByLabel("Từ cần thêm").fill(word.key);
+      await page.getByLabel("Từ cần thêm").fill(word.lemma);
       await page.getByRole("button", { name: new RegExp(word.lemma) }).click();
       await page.getByRole("button", { name: /^Thêm/ }).click();
       await expect(page.getByText(new RegExp(`${word.lemma}.*Sổ của tôi`))).toBeVisible();
@@ -116,7 +116,10 @@ test.describe("Ôn tiếng Trung", () => {
       const options = page.getByRole("list", { name: "Các đáp án" });
       if (await options.isVisible()) {
         labels.push(...(await options.getByRole("button").allTextContents()));
-        await expect(page.getByText(/^zq[a-f]+ ·/)).toBeVisible();
+        // Dạng nghe không hiện chữ; từ mới (mức 0–1) thì hiện pinyin cạnh chữ.
+        if (!(await page.getByText("Nghe rồi chọn nghĩa đúng").isVisible())) {
+          await expect(page.getByText(/^zq[a-f]+ ·/)).toBeVisible();
+        }
         await noHorizontalScroll(page);
       }
       const step = await answerQuestion(page);

@@ -82,6 +82,20 @@ describe("lọc theo ngôn ngữ đang học", () => {
     expect(out.notebooks).toEqual([{ language: "zh" }]);
   });
 
+  it("từ vừa thêm chưa có nội dung: lấy ngôn ngữ của sổ chứa nó", () => {
+    const out = forLanguage(
+      {
+        userWords: [{ id: "u-new", sense_id: "s-new" }],
+        cards: [],
+        entries: [{ user_word_id: "u-new", notebook_id: "n-zh" }],
+        notebooks: [{ id: "n-zh", language: "zh" }],
+      },
+      "zh",
+      () => undefined,
+    );
+    expect(out.userWords.map((u) => u.id)).toEqual(["u-new"]);
+  });
+
   it("ngôn ngữ đang học: thiếu hoặc lạ thì dùng mặc định", () => {
     expect(learningLanguage("zh")).toBe("zh");
     expect(learningLanguage(undefined)).toBe(DEFAULT_LANGUAGE);

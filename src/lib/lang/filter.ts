@@ -52,20 +52,25 @@ type Scoped<UserWord, Card, Entry, Notebook> = {
 /**
  * Chỉ giữ dữ liệu học của một ngôn ngữ, để thẻ các ngôn ngữ không trộn vào nhau; thẻ của kỹ năng
  * ngôn ngữ đó chưa ôn được cũng bị bỏ. `languageOf`: ngôn ngữ của một nghĩa; máy chưa có nội dung
- * thì trả undefined, coi như ngôn ngữ mặc định.
+ * thì trả undefined, lấy theo sổ chứa từ, không có sổ thì coi như ngôn ngữ mặc định.
  */
 export function forLanguage<
   UserWord extends { id: string; sense_id: string },
   Card extends { user_word_id: string; skill: string },
-  Entry extends { user_word_id: string },
-  Notebook extends { language: string },
+  Entry extends { user_word_id: string; notebook_id?: string },
+  Notebook extends { language: string; id?: string },
 >(
   data: Scoped<UserWord, Card, Entry, Notebook>,
   language: Language,
   languageOf: (senseId: string) => string | undefined,
 ): { userWords: UserWord[]; cards: Card[]; entries: Entry[]; notebooks: Notebook[] } {
+  // Từ vừa thêm có thể chưa tải xong nội dung: lấy theo sổ chứa nó.
+  const notebookLanguage = new Map(data.notebooks.map((n) => [n.id, n.language]));
+  const entryLanguage = new Map(
+    data.entries.map((e) => [e.user_word_id, notebookLanguage.get(e.notebook_id)]),
+  );
   const userWords = data.userWords.filter(
-    (uw) => (languageOf(uw.sense_id) ?? DEFAULT_LANGUAGE) === language,
+    (uw) => (languageOf(uw.sense_id) ?? entryLanguage.get(uw.id) ?? DEFAULT_LANGUAGE) === language,
   );
   const kept = new Set(userWords.map((uw) => uw.id));
   const skills: readonly string[] = languagePack(language).reviewSkills;

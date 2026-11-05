@@ -309,7 +309,7 @@ export function ReviewPanel({
                   <p className="text-sm text-muted-foreground">{t("sharedWarning")}</p>
                   <WordEditor
                     key={draft ? "draft" : "saved"}
-                    initial={draft ?? word.content}
+                    initial={draft ?? (word.content as WordContent)}
                     initialTab={tab}
                     saving={pending}
                     onCancel={() => {

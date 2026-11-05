@@ -3,7 +3,8 @@
  */
 import { z } from "zod";
 import { DEFAULT_LANGUAGE } from "@/lib/lang";
-import { LanguageSchema, PosSchema, WordContentSchema } from "@/lib/schema/word";
+import { StoredContentSchema } from "@/lib/lang/zh/content-schema";
+import { LanguageSchema, PosSchema, StoredPosSchema } from "@/lib/schema/word";
 import { ReverseRequestSchema } from "./reverse";
 
 export const InputMethodSchema = z.enum(["typed", "voice", "photo", "csv", "list", "url"]);
@@ -76,7 +77,7 @@ export const StoredWordSchema = z.object({
   id: z.string(),
   /** id các nghĩa theo đúng thứ tự `content.senses` (để tạo user_words). */
   senseIds: z.array(z.string()),
-  content: WordContentSchema,
+  content: StoredContentSchema,
   media: WordMediaSchema,
 });
 
@@ -116,7 +117,7 @@ export type WordResponse = z.infer<typeof WordResponseSchema>;
 export const WordSummarySchema = z.object({
   id: z.string(),
   lemma: z.string(),
-  pos: PosSchema,
+  pos: StoredPosSchema,
   cefr: z.string().nullable(),
   senses: z.array(z.object({ id: z.string(), meaning_vi: z.string() })).min(1),
 });

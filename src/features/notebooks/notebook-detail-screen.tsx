@@ -117,7 +117,7 @@ export function NotebookDetailScreen({ notebookId }: { notebookId: string }) {
   }
 
   const db = getLocalDb();
-  const isDefault = notebook.id === defaultNotebookId(owner);
+  const isDefault = notebook.id === defaultNotebookId(owner, notebook.language);
   const selectedRows = rows.filter((r) => selected.has(r.entry.id));
   const otherNotebooks = data.notebooks.filter(
     (n) => !n.deleted_at && !n.is_archived && n.id !== notebook.id,

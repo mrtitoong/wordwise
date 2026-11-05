@@ -48,7 +48,14 @@
     "short": "Phiên ngắn 5 phút",
     "queued": "Sắp học: {count} từ đang chờ",
     "see": "Xem",
-    "recent": "Thêm gần đây"
+    "recent": "Thêm gần đây",
+    "language": {
+      "label": "Ngôn ngữ đang học",
+      "en": "Tiếng Anh",
+      "zh": "Tiếng Trung"
+    },
+    "reviewSoonTitle": "Ôn tập tiếng Trung sắp có",
+    "reviewSoonBody": "{count, plural, =0 {Thêm từ tiếng Trung vào sổ để sẵn sàng ôn sau.} other {# từ đang nằm ở Sắp học, chờ phiên ôn tiếng Trung.}}"
   },
   "words": {
     "title": "Từ của tôi",
@@ -682,7 +689,8 @@
     "play": "Nghe ({voice})",
     "voiceUs": "giọng Mỹ",
     "voiceUk": "giọng Anh",
-    "rate": "Tốc độ {rate}x, bấm để đổi"
+    "rate": "Tốc độ {rate}x, bấm để đổi",
+    "voiceZh": "giọng phổ thông"
   },
   "wordCard": {
     "title": "Thẻ từ",
@@ -708,7 +716,10 @@
       "determiner": "từ hạn định",
       "interjection": "thán từ",
       "phrasal_verb": "cụm động từ",
-      "phrase": "cụm từ"
+      "phrase": "cụm từ",
+      "classifier": "lượng từ",
+      "particle": "trợ từ",
+      "numeral": "số từ"
     },
     "posShort": {
       "noun": "n",
@@ -721,7 +732,10 @@
       "determiner": "det",
       "interjection": "interj",
       "phrasal_verb": "phr v",
-      "phrase": "phr"
+      "phrase": "phr",
+      "classifier": "lượng",
+      "particle": "trợ",
+      "numeral": "số"
     },
     "register": {
       "formal": "trang trọng",
@@ -874,7 +888,13 @@
       "signIn": "Đăng nhập",
       "back": "Quay lại"
     },
-    "reviewThis": "Ôn từ này"
+    "reviewThis": "Ôn từ này",
+    "zh": {
+      "hanViet": "Hán Việt:",
+      "traditional": "Phồn thể:",
+      "showPinyin": "Hiện pinyin",
+      "hidePinyin": "Ẩn pinyin"
+    }
   },
   "notebooks": {
     "newNotebook": "Sổ tay mới",

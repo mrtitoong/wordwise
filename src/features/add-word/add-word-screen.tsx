@@ -69,12 +69,6 @@ export function AddWordScreen({ initialNotebookId }: { initialNotebookId: string
   const [tab, setTab] = useState<(typeof TABS)[number]>("typed");
   const [limit, setLimit] = useState<{ plan: "free" | "premium"; limit: number } | null>(null);
 
-  // Người dùng bỏ qua 5 từ khởi đầu thì chưa có "Sổ của tôi".
-  useEffect(() => {
-    if (owner)
-      void getOrCreateDefaultNotebook(getLocalDb(), owner, t("onboarding.defaultNotebook"));
-  }, [owner, t]);
-
   const data = useLiveQuery(async () => {
     if (!owner) return undefined;
     const db = getLocalDb();
@@ -87,6 +81,7 @@ export function AddWordScreen({ initialNotebookId }: { initialNotebookId: string
     ]);
     const language = learningLanguage(settings?.target_language);
     return {
+      language,
       notebooks: notebooks.filter((n) => n.language === language),
       userWords,
       entries,
@@ -97,6 +92,20 @@ export function AddWordScreen({ initialNotebookId }: { initialNotebookId: string
     };
   }, [owner]);
 
+  const language = data?.language;
+
+  // Người dùng bỏ qua 5 từ khởi đầu thì chưa có "Sổ của tôi".
+  useEffect(() => {
+    if (owner && language) {
+      void getOrCreateDefaultNotebook(
+        getLocalDb(),
+        owner,
+        t("onboarding.defaultNotebook"),
+        language,
+      );
+    }
+  }, [owner, t, language]);
+
   const notebooks = useMemo(
     () => (data?.notebooks ?? []).filter((n) => !n.deleted_at && !n.is_archived),
     [data],
@@ -104,7 +113,7 @@ export function AddWordScreen({ initialNotebookId }: { initialNotebookId: string
   const preferred = chosen ?? readLastNotebookSafe();
   const notebook =
     notebooks.find((n) => n.id === preferred) ??
-    notebooks.find((n) => owner && n.id === defaultNotebookId(owner)) ??
+    notebooks.find((n) => owner && n.id === defaultNotebookId(owner, data?.language)) ??
     notebooks[0];
 
   const context = useMemo<EntryContext | null>(() => {

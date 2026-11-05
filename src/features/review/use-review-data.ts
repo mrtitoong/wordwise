@@ -97,17 +97,18 @@ export function timingCards(data: ReviewData): Map<string, TimingCard> {
   );
 }
 
-export function toTodayInput(data: ReviewData, relatedOf?: TodayInput["relatedOf"]): TodayInput {
-  const scoped = forLanguage(
-    data,
-    learningLanguage(data.settings.target_language),
-    (senseId) => data.senses.get(senseId)?.word.language,
-  );
+/** Dữ liệu học của ngôn ngữ đang học; chuỗi ngày chung thì đọc thẳng `data.logs`. */
+export function learningScope(data: ReviewData) {
+  const language = learningLanguage(data.settings.target_language);
+  const scoped = forLanguage(data, language, (senseId) => data.senses.get(senseId)?.word.language);
   const cardIds = new Set(scoped.cards.map((c) => c.id));
+  return { ...scoped, language, logs: data.logs.filter((l) => cardIds.has(l.card_id)) };
+}
+
+export function toTodayInput(data: ReviewData, relatedOf?: TodayInput["relatedOf"]): TodayInput {
   return {
-    ...scoped,
     // Số từ mới và giới hạn ôn riêng từng ngôn ngữ; chuỗi ngày chung đọc thẳng data.logs.
-    logs: data.logs.filter((l) => cardIds.has(l.card_id)),
+    ...learningScope(data),
     freeLogIds: data.freeLogs,
     settings: {
       dailyNewLimit: data.settings.daily_new_limit,

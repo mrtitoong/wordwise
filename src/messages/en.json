@@ -48,7 +48,14 @@
     "short": "Quick 5-minute session",
     "queued": "Up next: {count, plural, one {# word} other {# words}} waiting",
     "see": "View",
-    "recent": "Recently added"
+    "recent": "Recently added",
+    "language": {
+      "label": "Learning language",
+      "en": "English",
+      "zh": "Chinese"
+    },
+    "reviewSoonTitle": "Chinese review is coming soon",
+    "reviewSoonBody": "{count, plural, =0 {Add Chinese words to your notebook to be ready.} other {# words are waiting in Up next for Chinese review.}}"
   },
   "words": {
     "title": "My words",
@@ -682,7 +689,8 @@
     "play": "Listen ({voice})",
     "voiceUs": "US voice",
     "voiceUk": "UK voice",
-    "rate": "Speed {rate}x, tap to change"
+    "rate": "Speed {rate}x, tap to change",
+    "voiceZh": "Mandarin voice"
   },
   "wordCard": {
     "title": "Word card",
@@ -708,7 +716,10 @@
       "determiner": "determiner",
       "interjection": "interjection",
       "phrasal_verb": "phrasal verb",
-      "phrase": "phrase"
+      "phrase": "phrase",
+      "classifier": "measure word",
+      "particle": "particle",
+      "numeral": "numeral"
     },
     "posShort": {
       "noun": "n",
@@ -721,7 +732,10 @@
       "determiner": "det",
       "interjection": "interj",
       "phrasal_verb": "phr v",
-      "phrase": "phr"
+      "phrase": "phr",
+      "classifier": "mw",
+      "particle": "part",
+      "numeral": "num"
     },
     "register": {
       "formal": "formal",
@@ -874,7 +888,13 @@
       "signIn": "Sign in",
       "back": "Back"
     },
-    "reviewThis": "Review this word"
+    "reviewThis": "Review this word",
+    "zh": {
+      "hanViet": "Sino-Vietnamese:",
+      "traditional": "Traditional:",
+      "showPinyin": "Show pinyin",
+      "hidePinyin": "Hide pinyin"
+    }
   },
   "notebooks": {
     "newNotebook": "New notebook",

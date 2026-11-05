@@ -68,7 +68,12 @@ export function NotebooksScreen() {
   const summaries = useMemo(() => {
     if (!data || !owner) return [];
     const now = new Date();
-    return summarizeNotebooks(data, now, defaultNotebookId(owner), studyDayEnd(now, data.timeZone));
+    return summarizeNotebooks(
+      data,
+      now,
+      defaultNotebookId(owner, data.language),
+      studyDayEnd(now, data.timeZone),
+    );
   }, [data, owner]);
   const ownedCount = useMemo(() => (data ? countOwnedWords(data) : 0), [data]);
 
@@ -98,7 +103,7 @@ export function NotebooksScreen() {
   const onlyEmptyDefault =
     active.length <= 1 &&
     ownedCount === 0 &&
-    (active[0]?.notebook.id ?? "") === defaultNotebookId(owner);
+    (active[0]?.notebook.id ?? "") === defaultNotebookId(owner, data?.language);
 
   return (
     <div className="flex flex-col gap-4 pb-6">

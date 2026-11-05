@@ -78,6 +78,7 @@ async function runOne(key: ModelKey, word: ZhCompareWord): Promise<ZhRecord> {
     pos: word.pos,
     hsk: word.hsk,
     readings: allowedReadings(readings).map((r) => r.pinyin),
+    hanVietRule: "han_viet = [].",
   });
   const stats = () => ({
     lemma: word.lemma,

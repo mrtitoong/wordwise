@@ -15,7 +15,7 @@ import { parsePromptTemplate } from "@/lib/llm/prompt-template";
 import { createClaudeProvider } from "@/lib/llm/providers/claude";
 import { createLlmRouter } from "@/lib/llm/router";
 import { buildWordContentPrompt } from "@/lib/llm/tasks/word-content";
-import { WordContentSchema } from "@/lib/schema/word";
+import { WordContentSchema, type WordContent } from "@/lib/schema/word";
 import { stripIpaSlashes } from "@/lib/words/pipeline";
 import { toStoredWord, WORD_SELECT, type WordWithSenses } from "@/lib/words/supabase-store";
 import wordContentPrompt from "@/prompts/word-content.md?raw";
@@ -75,7 +75,8 @@ Deno.serve(
         .eq("id", wordId)
         .maybeSingle();
       if (error) throw new Error(`words: ${error.message}`);
-      return data ? toStoredWord(data as unknown as WordWithSenses).content : null;
+      // Admin hiện chỉ duyệt danh sách tiếng Anh.
+      return data ? (toStoredWord(data as unknown as WordWithSenses).content as WordContent) : null;
     },
     generate: llm
       ? async (current) => {

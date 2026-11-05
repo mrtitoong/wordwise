@@ -12,7 +12,7 @@ import { removeUserImage, uploadUserImage } from "@/features/media/user-images";
 import { GUEST_OWNER } from "@/lib/db/ids";
 import { getLocalDb } from "@/lib/db/local";
 import { addSensesToDefaultNotebook } from "@/lib/db/repo";
-import type { Pos } from "@/lib/schema/word";
+import type { Language, Pos } from "@/lib/schema/word";
 import { createClient } from "@/lib/supabase/client";
 import { useOnlineStatus } from "@/lib/sync/hooks";
 import { cn } from "@/lib/utils";
@@ -327,10 +327,12 @@ export function ReportSheet({
 export function ChipSheet({
   word,
   pos,
+  language,
   onClose,
 }: {
   word: string;
   pos: Pos | null;
+  language: Language;
   onClose: () => void;
 }) {
   const t = useTranslations("wordCard");
@@ -338,10 +340,10 @@ export function ChipSheet({
     <Sheet open onOpenChange={(open) => !open && onClose()} title={t("chip.title", { word })}>
       <div className="flex flex-col gap-2">
         <Button asChild className="min-h-11">
-          <Link href={lookupHref(word, pos)}>{t("chip.open")}</Link>
+          <Link href={lookupHref(word, pos, false, language)}>{t("chip.open")}</Link>
         </Button>
         <Button asChild variant="outline" className="min-h-11">
-          <Link href={lookupHref(word, pos, true)}>{t("chip.add")}</Link>
+          <Link href={lookupHref(word, pos, true, language)}>{t("chip.add")}</Link>
         </Button>
       </div>
     </Sheet>

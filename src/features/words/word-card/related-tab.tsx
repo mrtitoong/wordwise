@@ -38,7 +38,7 @@ export function RelatedTab() {
                     userWordId={sense.userWordId!}
                     itemId={item.id}
                   >
-                    <p className="font-medium" lang="en">
+                    <p className="font-medium" lang={view.content.language}>
                       {item.word}
                     </p>
                     {item.note && <p className="text-sm text-muted-foreground">{item.note}</p>}

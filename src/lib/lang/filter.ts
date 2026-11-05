@@ -1,10 +1,26 @@
 import type { Language } from "@/lib/schema/word";
 
-import { DEFAULT_LANGUAGE, LANGUAGES } from ".";
+import { DEFAULT_LANGUAGE, LANGUAGES, languagePack } from ".";
 
 /** Ngôn ngữ đang học trong Cài đặt; giá trị lạ thì dùng ngôn ngữ mặc định. */
 export function learningLanguage(target: string | null | undefined): Language {
   return LANGUAGES.find((code) => code === target) ?? DEFAULT_LANGUAGE;
+}
+
+/** Bỏ từ nằm trong sổ của ngôn ngữ chưa có phiên ôn: các từ này chưa được mở từ Sắp học. */
+export function withoutHeldWords<UserWord extends { id: string }>(
+  userWords: readonly UserWord[],
+  notebooks: readonly { id: string; language: string }[],
+  entries: readonly { notebook_id: string; user_word_id: string }[],
+): UserWord[] {
+  const held = new Set(
+    notebooks.filter((n) => !languagePack(learningLanguage(n.language)).hasReview).map((n) => n.id),
+  );
+  if (held.size === 0) return [...userWords];
+  const heldWords = new Set(
+    entries.filter((e) => held.has(e.notebook_id)).map((e) => e.user_word_id),
+  );
+  return userWords.filter((uw) => !heldWords.has(uw.id));
 }
 
 type Scoped<UserWord, Card, Entry, Notebook> = {

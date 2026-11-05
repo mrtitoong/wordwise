@@ -3,7 +3,7 @@
  * tạm ngưng. Mỗi thao tác ghi Dexie + outbox trong một transaction như repo.ts. Thao tác xóa
  * trả về bản chụp để Hoàn tác trong vài giây.
  */
-import { DEFAULT_LANGUAGE } from "@/lib/lang";
+import { DEFAULT_LANGUAGE, LANGUAGES } from "@/lib/lang";
 import { planRemoval, NotebookInputSchema, type NotebookInput } from "@/lib/notebooks/notebooks";
 import { defaultNotebookId, notebookEntryId, randomId } from "./ids";
 import type { LocalDb } from "./local";
@@ -146,7 +146,9 @@ export async function removeEntries(
 
 /** Xóa sổ (không xóa được "Sổ của tôi"); từ chỉ có ở sổ này bị xóa cùng lịch ôn. */
 export async function deleteNotebook(db: LocalDb, owner: string, id: string): Promise<Snapshot> {
-  if (id === defaultNotebookId(owner)) throw new Error("Không xóa được sổ mặc định");
+  if (LANGUAGES.some((language) => id === defaultNotebookId(owner, language))) {
+    throw new Error("Không xóa được sổ mặc định");
+  }
   const snapshot = emptySnapshot();
   await db.transaction("rw", personalTables(db), async () => {
     const notebook = await ownedNotebook(db, owner, id);

@@ -4,6 +4,7 @@
  * Hàm thuần, dùng cho seed, Edge Function tạo nội dung và lớp cache Dexie.
  */
 import { z } from "zod";
+import { StoredContentSchema, type StoredContent } from "@/lib/lang/zh/content-schema";
 import {
   AntonymSchema,
   CollocationSchema,
@@ -17,7 +18,6 @@ import {
   LanguageExtraSchema,
   MnemonicSchema,
   SynonymSchema,
-  WordContentSchema,
   WordFamilyMemberSchema,
   type Cefr,
   type StoredPos,
@@ -155,7 +155,7 @@ export function fromWordRows(rows: {
   >[];
   /** Cột JSONB đọc từ database có kiểu unknown; schema kiểm tra khi ghép. */
   details: ({ sense_id: string } & Record<Exclude<keyof WordDetailRow, "sense_id">, unknown>)[];
-}): WordContent {
+}): StoredContent {
   const wordDetails = WordDetailsColumnSchema.parse(rows.word.details);
   const detailBySense = new Map(rows.details.map((d) => [d.sense_id, d]));
   const senses = [...rows.senses]
@@ -176,7 +176,7 @@ export function fromWordRows(rows: {
       };
     });
 
-  return WordContentSchema.parse({
+  return StoredContentSchema.parse({
     schema_version: rows.word.schema_version,
     language: rows.word.language,
     lemma: rows.word.lemma,

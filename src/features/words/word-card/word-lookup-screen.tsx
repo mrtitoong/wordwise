@@ -7,7 +7,7 @@ import { useTranslations } from "next-intl";
 import { Button } from "@/components/ui/button";
 import { getLocalDb } from "@/lib/db/local";
 import { addSensesToDefaultNotebook } from "@/lib/db/repo";
-import type { Pos } from "@/lib/schema/word";
+import type { Language, Pos } from "@/lib/schema/word";
 import { useOnlineStatus } from "@/lib/sync/hooks";
 import { useOwner } from "@/lib/sync/owner";
 import { wordHref } from "@/lib/words/links";
@@ -27,10 +27,12 @@ export function WordLookupScreen({
   lemma,
   pos,
   add,
+  language,
 }: {
   lemma: string;
   pos: Pos | null;
   add: boolean;
+  language: Language;
 }) {
   const t = useTranslations();
   const router = useRouter();
@@ -46,7 +48,7 @@ export function WordLookupScreen({
     let timer: ReturnType<typeof setTimeout> | undefined;
 
     async function run() {
-      const found = await lookupWord(getLocalDb(), lemma, pos);
+      const found = await lookupWord(getLocalDb(), lemma, pos, language);
       if (cancelled) return;
       if (found.status === "found") {
         if (add) {
@@ -58,6 +60,7 @@ export function WordLookupScreen({
             notebook,
             "typed",
             "word_card",
+            language,
           );
         }
         router.replace(wordHref(found.wordId));
@@ -76,7 +79,7 @@ export function WordLookupScreen({
       cancelled = true;
       clearTimeout(timer);
     };
-  }, [owner, online, lemma, pos, add, attempt, router, t]);
+  }, [owner, online, lemma, pos, add, language, attempt, router, t]);
 
   const status = !online && result?.status !== "preparing" ? "offline" : result?.status;
   const login = `/login?next=${encodeURIComponent(`/words/lookup?lemma=${encodeURIComponent(lemma)}`)}`;
@@ -95,7 +98,7 @@ export function WordLookupScreen({
         />
       ) : (
         <section className="flex flex-col items-center gap-4 py-12 text-center">
-          <h1 className="text-3xl font-semibold break-words" lang="en">
+          <h1 className="text-3xl font-semibold break-words" lang={language}>
             {lemma}
           </h1>
           <p className="max-w-xs text-muted-foreground" role="alert">

@@ -1,13 +1,13 @@
 ---
 task: word-content-zh
-version: 2
+version: 3
 schema: src/lib/lang/zh/content-schema.ts (ZhWordContentSchema, SCHEMA_VERSION 1)
 ---
 
 <!--
 Prompt tạo nội dung thẻ từ tiếng Trung giản thể, 5 tab như tiếng Anh. Nội dung dùng chung nên KHÔNG
 có dữ liệu người dùng. Không đưa định nghĩa CC-CEDICT vào đây (rủi ro ShareAlike); chỉ đưa âm đọc.
-Không viết âm Hán Việt: phần đó lấy từ bảng đã duyệt. Sửa prompt → tăng version.
+Âm Hán Việt lấy từ bảng đã duyệt, AI chỉ chọn trong danh sách. Sửa prompt → tăng version.
 -->
 
 === SYSTEM ===
@@ -31,6 +31,8 @@ Tạo nội dung học cho từ "{{lemma}}". Người học ở trình độ {{l
   thì ghi lại chữ đó), hsk = {{hsk}}, pinyin là âm của nghĩa đầu tiên, tones là thanh từng âm tiết
   (1–4, 5 là thanh nhẹ), sense_pinyin có đúng một âm cho mỗi nghĩa, cùng thứ tự với senses.
 - {{readings_rule}}
+- {{han_viet_rule}}
+- Không ghi example_pinyin: máy tự tính.
 
 Tab Nghĩa (senses):
 
@@ -67,7 +69,8 @@ Tab Từ liên quan:
 Tab Ghi nhớ (cấp từ):
 
 - mnemonics: tối đa 2 mẹo ngắn cho người Việt, dựa vào bộ thủ, thành phần chữ hoặc hình ảnh (type:
-  sound, etymology, image, story). KHÔNG viết âm Hán Việt, không chế âm đọc tiếng Việt thay pinyin.
+  sound, etymology, image, story). Trong mẹo KHÔNG viết âm Hán Việt, không chế âm đọc tiếng Việt
+  thay pinyin.
 - confusables: từ hay bị nhầm với từ này + difference_vi chỉ ra cách phân biệt.
 - etymology_vi: 1 câu về cấu tạo chữ nếu chắc chắn và giúp dễ nhớ, không thì null. Không bịa nguồn gốc.
 

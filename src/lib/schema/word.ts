@@ -204,6 +204,10 @@ export const ChineseExtraSchema = z.object({
   sense_pinyin: z.array(text).min(1).max(5).optional(),
   /** "ai": từ điển không có từ này hoặc âm AI chọn ngoài danh sách, cần người duyệt. */
   reading_source: z.enum(["dictionary", "ai"]).optional(),
+  /** Âm Hán Việt của từng chữ theo thứ tự chữ; null: chữ không có âm trong bảng. */
+  han_viet: z.array(text.nullable()).max(16).optional(),
+  /** Pinyin câu ví dụ theo [nghĩa][câu], máy chủ tính sau khi tạo từ. */
+  example_pinyin: z.array(z.array(text).max(5)).max(5).optional(),
 });
 
 export const LanguageExtraSchema = z.discriminatedUnion("kind", [

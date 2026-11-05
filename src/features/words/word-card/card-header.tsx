@@ -7,12 +7,15 @@ import { AudioButton } from "@/components/audio-button";
 import { Button } from "@/components/ui/button";
 import { useUserImageUrl } from "@/features/media/user-images";
 import { cardId } from "@/lib/db/ids";
+import { languagePack } from "@/lib/lang";
 import { MineBadge, useCard } from "./parts";
+import { ZhReading } from "./zh-reading";
 
 export function CardHeader() {
   const t = useTranslations("wordCard");
   const { view, owner, open, addSense, readOnly, inSession, autoPlay } = useCard();
   const { content } = view;
+  const zhVoice = languagePack(content.language).wordAudioVoices[0] ?? "us";
 
   const customRef = view.image?.kind === "custom" ? view.image.path : null;
   const customUrl = useUserImageUrl(customRef, owner);
@@ -28,6 +31,7 @@ export function CardHeader() {
   const meta = [
     t(`pos.${content.pos}`),
     content.cefr,
+    view.zh?.hsk ? `HSK ${view.zh.hsk}` : null,
     content.register !== "neutral" ? t(`register.${content.register}`) : null,
   ].filter(Boolean);
 
@@ -85,6 +89,16 @@ export function CardHeader() {
             </figcaption>
           )}
         </figure>
+      )}
+
+      {view.zh && (
+        <ZhReading
+          info={view.zh}
+          lemma={content.lemma}
+          voice={zhVoice}
+          url={view.audio[zhVoice]}
+          autoPlay={!!autoPlay}
+        />
       )}
 
       <div className="flex flex-wrap items-center gap-x-4 gap-y-1">

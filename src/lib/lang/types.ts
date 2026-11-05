@@ -23,4 +23,6 @@ export interface LanguagePack {
   usesDictionaryApi: boolean;
   /** Nội dung từ bắt buộc có IPA. */
   requiresIpa: boolean;
+  /** Đã có phiên ôn; chưa có thì từ nằm yên ở Sắp học. */
+  hasReview: boolean;
 }

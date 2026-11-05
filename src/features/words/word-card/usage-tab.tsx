@@ -41,7 +41,7 @@ export function UsageTab() {
                       userWordId={sense.userWordId!}
                       itemId={item.id}
                     >
-                      <p className="font-medium" lang="en">
+                      <p className="font-medium" lang={view.content.language}>
                         {item.phrase}
                       </p>
                       {item.note && <p className="text-sm text-muted-foreground">{item.note}</p>}
@@ -49,14 +49,14 @@ export function UsageTab() {
                   ))}
                   {sense.collocations.map((c, i) => (
                     <li key={i} className="flex flex-col gap-0.5 rounded-xl border p-3">
-                      <p className="font-medium" lang="en">
+                      <p className="font-medium" lang={view.content.language}>
                         {c.phrase}
                       </p>
-                      <p className="text-xs text-muted-foreground" lang="en">
+                      <p className="text-xs text-muted-foreground" lang={view.content.language}>
                         {c.pattern}
                       </p>
                       {c.example && (
-                        <p className="text-sm" lang="en">
+                        <p className="text-sm" lang={view.content.language}>
                           <Highlighted
                             text={c.example}
                             terms={[c.phrase, ...view.highlightTerms]}
@@ -76,7 +76,7 @@ export function UsageTab() {
                   {sense.idioms.map((idiom, i) => (
                     <li key={i} className="flex flex-col gap-0.5 rounded-xl border p-3">
                       <p className="flex flex-wrap items-center gap-2">
-                        <span className="font-medium" lang="en">
+                        <span className="font-medium" lang={view.content.language}>
                           {idiom.phrase}
                         </span>
                         <span className="rounded-full bg-muted px-2 py-0.5 text-[11px] text-muted-foreground">
@@ -85,7 +85,7 @@ export function UsageTab() {
                       </p>
                       <p className="text-sm">{idiom.meaning_vi}</p>
                       {idiom.example && (
-                        <p className="text-sm text-muted-foreground" lang="en">
+                        <p className="text-sm text-muted-foreground" lang={view.content.language}>
                           {idiom.example}
                         </p>
                       )}
@@ -101,7 +101,7 @@ export function UsageTab() {
                 <ul className="flex flex-col gap-2">
                   {sense.common_mistakes.map((m, i) => (
                     <li key={i} className="flex flex-col gap-1 rounded-xl border p-3">
-                      <p className="text-sm" lang="en">
+                      <p className="text-sm" lang={view.content.language}>
                         <span
                           className="font-semibold text-destructive"
                           aria-label={t("usage.wrong")}
@@ -110,7 +110,7 @@ export function UsageTab() {
                         </span>{" "}
                         <span className="line-through decoration-destructive/60">{m.wrong}</span>
                       </p>
-                      <p className="text-sm" lang="en">
+                      <p className="text-sm" lang={view.content.language}>
                         <span
                           className="font-semibold text-emerald-700 dark:text-emerald-400"
                           aria-label={t("usage.correct")}

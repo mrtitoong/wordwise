@@ -11,6 +11,8 @@ function emptyStore(): WordStore {
     findWordId: vi.fn(async () => null),
     canUseFlaggedLanguage: vi.fn(async () => false),
     zhReadings: vi.fn(async () => []),
+    zhLexicon: vi.fn(async () => new Map()),
+    zhHanViet: vi.fn(async () => new Map()),
     requestJob: vi.fn(async () => ({
       limitReached: false as const,
       jobId: "job-1",

@@ -28,6 +28,7 @@ function plainPack(code: Language): LanguagePack {
     lemmatizes: false,
     usesDictionaryApi: false,
     requiresIpa: false,
+    hasReview: false,
   };
 }
 

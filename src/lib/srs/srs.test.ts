@@ -16,6 +16,7 @@ import {
   MEDIAN_MIN_SAMPLES,
   gradeFromOutcome,
   medianResponseMs,
+  timingBaseline,
   modesForSkill,
   pickMode,
   type Outcome,
@@ -105,6 +106,98 @@ describe("gradeFromOutcome (plan.md §3.3)", () => {
       Rating.Good,
       Rating.Easy,
     ]);
+  });
+});
+
+describe("gradeFromOutcome: trả lời đúng mà chậm", () => {
+  const writing: Outcome = {
+    mode: "writing",
+    correct: true,
+    cardLevel: 2,
+    responseMs: 30_000,
+    userMedianMs: 10_000,
+  };
+
+  it("ở bước học vẫn là Nhớ; thẻ đã qua bước học thì Khó", () => {
+    expect(gradeFromOutcome({ ...writing, learning: true })).toBe(Rating.Good);
+    expect(gradeFromOutcome({ ...writing, learning: false })).toBe(Rating.Hard);
+  });
+
+  it("ở bước học, gợi ý, lỗi gõ và trả lời sai vẫn tính như cũ", () => {
+    const learning = { ...writing, learning: true };
+    expect(gradeFromOutcome({ ...learning, hintLevel: 1 })).toBe(Rating.Hard);
+    expect(gradeFromOutcome({ ...learning, typoCount: 1 })).toBe(Rating.Hard);
+    expect(gradeFromOutcome({ ...learning, correct: false })).toBe(Rating.Again);
+  });
+
+  it("từ dài gõ lâu không bị Khó khi tốc độ mỗi chữ vẫn bình thường", () => {
+    const paced = { ...writing, userMedianPerLetterMs: 1500 };
+    expect(gradeFromOutcome({ ...paced, letters: 12 })).toBe(Rating.Good); // 2,5 giây/chữ
+    expect(gradeFromOutcome({ ...paced, letters: 8 })).toBe(Rating.Hard); // 3,75 giây/chữ
+  });
+
+  it("mốc theo chữ không làm từ ngắn bị Khó khi tổng thời gian chưa vượt mốc", () => {
+    expect(
+      gradeFromOutcome({
+        ...writing,
+        responseMs: 15_000,
+        letters: 3,
+        userMedianPerLetterMs: 1500,
+      }),
+    ).toBe(Rating.Good);
+  });
+
+  it("thiếu mốc theo chữ thì so tổng thời gian", () => {
+    expect(gradeFromOutcome({ ...writing, letters: 12, userMedianPerLetterMs: null })).toBe(
+      Rating.Hard,
+    );
+  });
+});
+
+describe("timingBaseline", () => {
+  const cards = new Map([
+    ["word4", { skill: "spelling" as const, letters: 4 }],
+    ["choice", { skill: "meaning" as const, letters: 4 }],
+    ["empty", { skill: "spelling" as const, letters: 0 }],
+  ]);
+  const cardOf = (id: string) => cards.get(id);
+  const logs = (mode: ReviewMode, cardId: string, ms: number) =>
+    Array.from({ length: MEDIAN_MIN_SAMPLES }, (_, i) => ({
+      mode,
+      card_id: cardId,
+      correct: true,
+      response_ms: ms,
+      reviewed_at: new Date(NOW.getTime() + i).toISOString(),
+    }));
+
+  it("nghe → gõ và nghe → chọn nghĩa có mốc riêng", () => {
+    const all = [...logs("listening", "choice", 3000), ...logs("listening", "word4", 12_000)];
+    expect(timingBaseline(all, "listening", "meaning", cardOf)).toEqual({
+      userMedianMs: 3000,
+      userMedianPerLetterMs: null,
+    });
+    expect(timingBaseline(all, "listening", "spelling", cardOf)).toEqual({
+      userMedianMs: 12_000,
+      userMedianPerLetterMs: 3000,
+    });
+  });
+
+  it("tập viết có mốc theo chữ, bỏ lượt không biết độ dài từ; trắc nghiệm thì không", () => {
+    const all = [...logs("writing", "word4", 8000), ...logs("writing", "empty", 8000)];
+    expect(timingBaseline(all, "writing", "spelling", cardOf)).toEqual({
+      userMedianMs: 8000,
+      userMedianPerLetterMs: 2000,
+    });
+    expect(timingBaseline(logs("mcq", "choice", 3000), "mcq", "meaning", cardOf)).toEqual({
+      userMedianMs: 3000,
+      userMedianPerLetterMs: null,
+    });
+  });
+
+  it("thẻ đã mất: không tính vào mốc của chế độ nghe", () => {
+    expect(timingBaseline(logs("listening", "gone", 3000), "listening", "meaning", cardOf)).toEqual(
+      { userMedianMs: null, userMedianPerLetterMs: null },
+    );
   });
 });
 

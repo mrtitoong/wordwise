@@ -3,7 +3,7 @@
  * thuộc (§3.2). Hàm thuần; ngẫu nhiên truyền vào để test được.
  */
 import { Rating, type Grade } from "ts-fsrs";
-import type { ReviewLogRow } from "@/lib/db/types";
+import type { CardRow, ReviewLogRow } from "@/lib/db/types";
 import type { MasteryLevel } from "./mastery";
 
 /** Các chế độ ôn (khớp ràng buộc review_logs.mode). */
@@ -91,6 +91,11 @@ export type Outcome = {
   responseMs?: number | null;
   /** Trung vị thời gian trả lời đúng của chính người này ở chế độ đó (null khi chưa đủ dữ liệu). */
   userMedianMs?: number | null;
+  /** Câu gõ chữ: số chữ cái của từ và trung vị thời gian mỗi chữ (xem `timingBaseline`). */
+  letters?: number;
+  userMedianPerLetterMs?: number | null;
+  /** Thẻ đang ở bước học/học lại: trả lời đúng mà chậm vẫn là Nhớ (chốt 2026-11-05). */
+  learning?: boolean;
   /** Tập phát âm: điểm 0–100. */
   pronunciationScore?: number | null;
   /** Mức thuộc của thẻ trước câu hỏi. */
@@ -106,6 +111,16 @@ export const FAST_FACTOR = 0.5;
 export function gradeFromOutcome(outcome: Outcome): Grade {
   const grade = rawGrade(outcome);
   return outcome.maxRating !== undefined && grade > outcome.maxRating ? outcome.maxRating : grade;
+}
+
+/**
+ * Chậm hơn SLOW_FACTOR lần trung vị. Câu gõ chữ phải chậm cả tính theo từng chữ cái: từ dài gõ lâu
+ * là bình thường. Mốc theo chữ chỉ nới ra; dùng riêng nó thì từ ngắn lại bị Khó nhiều hơn.
+ */
+function isSlow({ responseMs, userMedianMs, letters, userMedianPerLetterMs }: Outcome): boolean {
+  if (responseMs! <= SLOW_FACTOR * userMedianMs!) return false;
+  if (!letters || !userMedianPerLetterMs) return true;
+  return responseMs! / letters > SLOW_FACTOR * userMedianPerLetterMs;
 }
 
 function rawGrade(outcome: Outcome): Grade {
@@ -124,7 +139,7 @@ function rawGrade(outcome: Outcome): Grade {
   const { responseMs, userMedianMs } = outcome;
   const timed =
     typeof responseMs === "number" && typeof userMedianMs === "number" && userMedianMs > 0;
-  const slow = timed && responseMs! > SLOW_FACTOR * userMedianMs!;
+  const slow = timed && !outcome.learning && isSlow(outcome);
   const fast = timed && responseMs! < FAST_FACTOR * userMedianMs!;
   if (outcome.usedHint || (outcome.hintLevel ?? 0) > 0 || outcome.typoCount === 1 || slow) {
     return Rating.Hard;
@@ -149,18 +164,53 @@ export function isIntroLog(log: Partial<Pick<ReviewLogRow, "correct">>): boolean
   return log.correct === null;
 }
 
-/** Trung vị thời gian trả lời đúng gần đây của người học ở một chế độ. */
-export function medianResponseMs(
-  logs: readonly Pick<ReviewLogRow, "mode" | "correct" | "response_ms" | "reviewed_at">[],
+type TimedLog = Pick<ReviewLogRow, "mode" | "correct" | "response_ms" | "reviewed_at">;
+
+/**
+ * Trung vị thời gian trả lời đúng gần đây của người học ở một chế độ. `measure`: đổi một lượt thành
+ * số cần lấy trung vị (mặc định là thời gian trả lời).
+ */
+export function medianResponseMs<L extends TimedLog>(
+  logs: readonly L[],
   mode: ReviewMode,
+  measure: (log: L) => number = (l) => l.response_ms!,
 ): number | null {
   const times = logs
     .filter((l) => l.mode === mode && l.correct === true && typeof l.response_ms === "number")
     .sort((a, b) => b.reviewed_at.localeCompare(a.reviewed_at))
     .slice(0, MEDIAN_WINDOW)
-    .map((l) => l.response_ms!)
+    .map(measure)
     .sort((a, b) => a - b);
   if (times.length < MEDIAN_MIN_SAMPLES) return null;
   const mid = Math.floor(times.length / 2);
   return times.length % 2 ? times[mid]! : (times[mid - 1]! + times[mid]!) / 2;
+}
+
+export type TimingCard = { skill: CardRow["skill"]; letters: number };
+
+/**
+ * Mốc thời gian để so một câu. Chế độ nghe gồm hai dạng rất khác nhau (nghe → chọn nghĩa ở thẻ
+ * Nghĩa, nghe → gõ ở thẻ Chính tả) nên mỗi dạng có mốc riêng. Câu gõ chữ có thêm mốc theo từng chữ.
+ */
+export function timingBaseline(
+  logs: readonly (TimedLog & Pick<ReviewLogRow, "card_id">)[],
+  mode: ReviewMode,
+  skill: CardRow["skill"],
+  cardOf: (cardId: string) => TimingCard | undefined,
+): { userMedianMs: number | null; userMedianPerLetterMs: number | null } {
+  const typed = mode === "writing" || (mode === "listening" && skill === "spelling");
+  const same =
+    mode === "listening"
+      ? logs.filter((l) => {
+          const card = cardOf(l.card_id);
+          return !!card && (card.skill === "spelling") === typed;
+        })
+      : logs;
+  const spelled = same.filter((l) => (cardOf(l.card_id)?.letters ?? 0) > 0);
+  return {
+    userMedianMs: medianResponseMs(same, mode),
+    userMedianPerLetterMs: typed
+      ? medianResponseMs(spelled, mode, (l) => l.response_ms! / cardOf(l.card_id)!.letters)
+      : null,
+  };
 }

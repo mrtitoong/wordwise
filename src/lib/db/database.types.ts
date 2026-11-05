@@ -1511,11 +1511,11 @@ export type Database = {
         Args: { p_language?: string; p_limit?: number; p_query: string };
         Returns: Json;
       };
-      search_zh_pinyin: { Args: { p_key: string; p_limit?: number }; Returns: Json };
       search_words: {
         Args: { p_language?: string; p_limit?: number; p_prefix: string };
         Returns: Json;
       };
+      search_zh_pinyin: { Args: { p_key: string; p_limit?: number }; Returns: Json };
       sentence_audio_quota: { Args: { p_user_id: string }; Returns: Json };
       start_list_analysis: { Args: { p_list_id: string; p_options?: Json }; Returns: string };
       suggest_spellings: { Args: { p_language?: string; p_terms: string[] }; Returns: Json };

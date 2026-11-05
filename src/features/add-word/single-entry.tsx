@@ -4,6 +4,7 @@ import { useEffect, useState, type ClipboardEvent, type FormEvent } from "react"
 import Link from "next/link";
 import { Plus } from "lucide-react";
 import { useTranslations } from "next-intl";
+import { spokenPinyin } from "@/lib/lang/zh/pinyin";
 import { Button } from "@/components/ui/button";
 import { showToast } from "@/components/ui/toast";
 import { getLocalDb } from "@/lib/db/local";
@@ -255,7 +256,7 @@ export function SingleEntry({
                   {candidate.lemma}
                 </span>
                 <span className="min-w-0 flex-1 truncate text-sm text-muted-foreground">
-                  {candidate.pinyin}
+                  {spokenPinyin(candidate.lemma, candidate.pinyin)}
                 </span>
                 <Plus className="size-4 shrink-0 text-primary" aria-hidden />
               </button>

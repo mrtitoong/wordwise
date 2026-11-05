@@ -56,6 +56,49 @@ export function tonesOf(numbered: string): number[] {
   return syllables(numbered).map((s) => s.tone);
 }
 
+const TONE_MARKS: Record<string, number> = { "\u0304": 1, "\u0301": 2, "\u030C": 3, "\u0300": 4 };
+
+/** Thanh của một âm có dấu; không có dấu là thanh nhẹ (5). */
+function toneOfMarked(syllable: string): number {
+  for (const char of syllable.normalize("NFD")) {
+    const tone = TONE_MARKS[char];
+    if (tone) return tone;
+  }
+  return 5;
+}
+
+/** 一 đứng sau các chữ này đọc yī: số đếm, thứ tự (第一次, 十一月) và từ gốc 统一, 唯一, 单一. */
+const YI_KEPT_AFTER = "第十百千万二三四五六七八九零〇统唯单";
+/** 一 đứng trước các chữ này đọc yī: số, ngày tháng, thứ hạng (一月, 一号, 一楼, 一二三, 一等, 一级). */
+const YI_KEPT_BEFORE = "月号楼等级一二三四五六七八九十零〇";
+
+/**
+ * Pinyin để hiển thị, khớp với audio: 一 và 不 đổi thanh theo âm đứng sau (yī qǐ → yì qǐ, bù duì →
+ * bú duì). Dữ liệu vẫn giữ âm gốc như từ điển, để tìm kiếm và tra cứu. Biến điệu thanh 3 (你好 đọc
+ * ní hǎo) không đổi vì mọi giáo trình đều viết nguyên dấu gốc.
+ */
+export function spokenPinyin(lemma: string, pinyin: string): string {
+  const chars = Array.from(lemma);
+  const parts = pinyin.split(" ");
+  return parts
+    .map((syllable, index) => {
+      const next = parts[index + 1];
+      if (!next) return syllable;
+      const tone = toneOfMarked(next);
+      if (chars[index] === "不" && syllable === "bù") return tone === 4 ? "bú" : syllable;
+      if (chars[index] !== "一" || syllable !== "yī") return syllable;
+      const before = chars[index - 1];
+      const after = chars[index + 1];
+      // Động từ láy: 等一等 đọc yi nhẹ.
+      if (before && before === after) return "yi";
+      if ((before && YI_KEPT_AFTER.includes(before)) || (after && YI_KEPT_BEFORE.includes(after))) {
+        return syllable;
+      }
+      return tone === 4 || tone === 5 ? "yí" : "yì";
+    })
+    .join(" ");
+}
+
 /** Để so hai cách viết pinyin của cùng một âm: bỏ hoa thường, dấu cách, nháy. */
 export function pinyinKey(pinyin: string): string {
   return pinyin.toLowerCase().replace(/[\s'’-]/g, "");

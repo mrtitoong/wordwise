@@ -3,6 +3,7 @@ import { describe, expect, it } from "vitest";
 import { splitHighlight } from "@/lib/words/highlight";
 import { wordsByLanguage } from "../filter";
 import { pinyinOfSense, zhCardInfo } from "./card";
+import { spokenPinyin } from "./pinyin";
 import { applyHanViet, hanVietRule } from "./han-viet";
 import { parseLexicon } from "./lexicon";
 import { sentencePinyin, sentenceWords } from "./sentence-pinyin";
@@ -207,6 +208,53 @@ describe("wordsByLanguage", () => {
     const groups = wordsByLanguage(words, [{ id: "zh-book", language: "ja" }], entries);
     expect(groups.get("en")).toEqual([{ id: "en-word" }]);
     expect(groups.has("ja")).toBe(false);
+  });
+});
+
+describe("spokenPinyin", () => {
+  it("一 đổi thanh theo âm đứng sau", () => {
+    expect(spokenPinyin("一起", "yī qǐ")).toBe("yì qǐ");
+    expect(spokenPinyin("一些", "yī xiē")).toBe("yì xiē");
+    expect(spokenPinyin("一样", "yī yàng")).toBe("yí yàng");
+    expect(spokenPinyin("一点儿", "yī diǎnr")).toBe("yì diǎnr");
+    expect(spokenPinyin("一个", "yī ge")).toBe("yí ge");
+    expect(spokenPinyin("有一些", "yǒu yī xiē")).toBe("yǒu yì xiē");
+  });
+
+  it("不 chỉ đổi trước thanh 4", () => {
+    expect(spokenPinyin("不对", "bù duì")).toBe("bú duì");
+    expect(spokenPinyin("不客气", "bù kè qi")).toBe("bú kè qi");
+    expect(spokenPinyin("不好", "bù hǎo")).toBe("bù hǎo");
+  });
+
+  it("giữ nguyên khi không đổi thanh", () => {
+    expect(spokenPinyin("一", "yī")).toBe("yī");
+    expect(spokenPinyin("不", "bù")).toBe("bù");
+    expect(spokenPinyin("第一", "dì yī")).toBe("dì yī");
+    expect(spokenPinyin("第一次", "dì yī cì")).toBe("dì yī cì");
+    expect(spokenPinyin("星期一", "xīng qī yī")).toBe("xīng qī yī");
+    expect(spokenPinyin("统一", "tǒng yī")).toBe("tǒng yī");
+    expect(spokenPinyin("一月", "yī yuè")).toBe("yī yuè");
+    expect(spokenPinyin("十一月", "shí yī yuè")).toBe("shí yī yuè");
+    expect(spokenPinyin("对不起", "duì bu qǐ")).toBe("duì bu qǐ");
+    expect(spokenPinyin("一等奖", "yī děng jiǎng")).toBe("yī děng jiǎng");
+    expect(spokenPinyin("统一性", "tǒng yī xìng")).toBe("tǒng yī xìng");
+    expect(spokenPinyin("等一等", "děng yī děng")).toBe("děng yi děng");
+    expect(spokenPinyin("学校", "xué xiào")).toBe("xué xiào");
+  });
+
+  it("thẻ từ hiện âm đọc, dữ liệu gốc không đổi", () => {
+    const extra = {
+      kind: "zh" as const,
+      simplified: "一起",
+      traditional: "一起",
+      pinyin: "yī qǐ",
+      tones: [1, 3],
+      hsk: 1,
+      sense_pinyin: ["yī qǐ"],
+    };
+    expect(zhCardInfo({ lemma: "一起", language_extra: extra })!.pinyin).toBe("yì qǐ");
+    expect(extra.pinyin).toBe("yī qǐ");
   });
 });
 

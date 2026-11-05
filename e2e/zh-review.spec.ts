@@ -79,9 +79,7 @@ test.describe("Ôn tiếng Trung", () => {
   test.skip(!hasSupabase, "cần Supabase cục bộ (chạy trong CI)");
   test.setTimeout(120_000);
 
-  test("học từ mới, đáp án nhiễu cùng ngôn ngữ, Luyện tập có đúng các chế độ", async ({
-    page,
-  }) => {
+  test("học từ mới, đáp án nhiễu cùng ngôn ngữ, Luyện tập có đúng các chế độ", async ({ page }) => {
     const words = MEANINGS.map(uniqueWord);
     for (const word of words) await seedStoreWord(word);
 

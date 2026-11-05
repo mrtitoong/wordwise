@@ -8,6 +8,7 @@ import { EmptyState } from "@/components/empty-state";
 import { Button } from "@/components/ui/button";
 import { weightsOf } from "@/lib/db/repo";
 import { GUEST_OWNER } from "@/lib/db/ids";
+import { computeStreak } from "@/lib/review/streak";
 import { createScheduler } from "@/lib/srs/scheduler";
 import {
   computeStats,
@@ -19,7 +20,7 @@ import {
 } from "@/lib/stats/stats";
 import { forgottenList, sumDays } from "@/lib/stats/view";
 import { useOwner } from "@/lib/sync/owner";
-import { useReviewData } from "@/features/review/use-review-data";
+import { learningScope, useReviewData } from "@/features/review/use-review-data";
 import { Heatmap } from "./heatmap";
 
 const chartBox = <div className="h-[268px] animate-pulse rounded-xl bg-muted" aria-hidden />;
@@ -52,16 +53,26 @@ export function StatsScreen() {
     if ((data.settings.practice_speaking ?? false) && data.owner !== GUEST_OWNER) {
       skills.push("speaking");
     }
-    const stats = computeStats({
-      userWords: data.userWords,
-      cards: data.cards,
-      logs: data.logs,
-      completedDays: data.completedDays,
-      now,
-      timeZone: data.settings.timezone,
-      skills,
-    });
-    const wordOf = new Map(data.userWords.map((uw) => [uw.id, uw]));
+    const scope = learningScope(data);
+    const stats = {
+      ...computeStats({
+        userWords: scope.userWords,
+        cards: scope.cards,
+        logs: scope.logs,
+        completedDays: data.completedDays,
+        now,
+        timeZone: data.settings.timezone,
+        skills,
+      }),
+      // Chuỗi ngày dùng chung mọi ngôn ngữ.
+      streak: computeStreak({
+        answers: data.logs.map((l) => l.reviewed_at),
+        completedDays: data.completedDays,
+        now,
+        timeZone: data.settings.timezone,
+      }),
+    };
+    const wordOf = new Map(scope.userWords.map((uw) => [uw.id, uw]));
     const forgotten = forgottenList(stats.mostForgotten, stats.leeches).flatMap((item) => {
       const uw = wordOf.get(item.userWordId);
       const info = uw && data.senses.get(uw.sense_id);
@@ -70,12 +81,12 @@ export function StatsScreen() {
     // "Ôn ngay": thẻ Nghĩa của các từ đang học trong danh sách.
     const reviewIds = forgotten.flatMap((item) => {
       if (item.status !== "learning") return [];
-      const card = data.cards.find(
+      const card = scope.cards.find(
         (c) => c.user_word_id === item.userWordId && c.skill === "meaning" && !c.deleted_at,
       );
       return card ? [card.id] : [];
     });
-    return { stats, forgotten, reviewIds, hasLogs: data.logs.length > 0 };
+    return { stats, forgotten, reviewIds, hasLogs: scope.logs.length > 0 };
   }, [data, now]);
 
   // Dựng lại lịch sử bằng FSRS tốn thời gian nhất: tính sau khi các số khác đã hiện.

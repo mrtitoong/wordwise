@@ -27,7 +27,9 @@ import { estimateCostUsd } from "@/lib/llm/cost";
 import { buildWordContentPrompt } from "@/lib/llm/tasks/word-content";
 import { buildZhWordContentPrompt } from "@/lib/llm/tasks/word-content-zh";
 import { ZhWordContentSchema } from "@/lib/lang/zh/content-schema";
-import { allowedReadings, applyLexicon, type Reading } from "@/lib/lang/zh/lexicon";
+import { applyHanViet, hanVietRule, wordChars, type HanVietTable } from "@/lib/lang/zh/han-viet";
+import { allowedReadings, applyLexicon, type Lexicon, type Reading } from "@/lib/lang/zh/lexicon";
+import { sentencePinyin, sentenceWords } from "@/lib/lang/zh/sentence-pinyin";
 import {
   WordContentSchema,
   type Language,
@@ -87,6 +89,10 @@ export interface WordStore {
   canUseFlaggedLanguage(userId: string): Promise<boolean>;
   /** Các âm của một từ tiếng Trung trong từ điển. */
   zhReadings(lemma: string): Promise<Reading[]>;
+  /** Âm từ điển của nhiều từ một lượt (đọc câu ví dụ). */
+  zhLexicon(words: readonly string[]): Promise<Lexicon>;
+  /** Âm Hán Việt của các chữ. */
+  zhHanViet(chars: readonly string[]): Promise<HanVietTable>;
   requestJob(
     userId: string,
     language: Language,
@@ -301,12 +307,16 @@ async function generateEnglish(job: WordJob, deps: WorkerDeps): Promise<Generate
 /** Âm đọc lấy từ từ điển; AI chỉ chọn âm cho từng nghĩa (xem applyLexicon). */
 async function generateChinese(job: WordJob, deps: WorkerDeps): Promise<Generated> {
   if (!deps.zhTemplate) throw new Error("Thiếu prompt word-content-zh");
-  const readings = await deps.store.zhReadings(job.lemma);
+  const [readings, hanVietTable] = await Promise.all([
+    deps.store.zhReadings(job.lemma),
+    deps.store.zhHanViet(wordChars(job.lemma)),
+  ]);
   const { system, prompt, promptVersion } = buildZhWordContentPrompt(deps.zhTemplate, {
     lemma: job.lemma,
     pos: job.pos,
     hsk: null,
     readings: allowedReadings(readings).map((r) => r.pinyin),
+    hanVietRule: hanVietRule(job.lemma, hanVietTable),
   });
   const result = await deps.llm.generateJSON("word-content-zh", {
     system,
@@ -317,7 +327,25 @@ async function generateChinese(job: WordJob, deps: WorkerDeps): Promise<Generate
     ),
   });
   const { content } = applyLexicon(result.data, readings);
-  return { content, usage: result.usage, model: result.model, promptVersion };
+  const extra = content.language_extra;
+  const sentences = content.senses.flatMap((s) => s.examples.map((e) => e.sentence));
+  const lexicon = await deps.store.zhLexicon(sentenceWords(sentences));
+  const finished = {
+    ...content,
+    language_extra: {
+      ...extra,
+      han_viet: applyHanViet(extra.han_viet, job.lemma, hanVietTable).hanViet,
+      example_pinyin: content.senses.map((sense, index) =>
+        sense.examples.map((example) =>
+          sentencePinyin(example.sentence, lexicon, {
+            lemma: job.lemma,
+            pinyin: extra.sense_pinyin[index] ?? extra.pinyin,
+          }),
+        ),
+      ),
+    },
+  };
+  return { content: finished, usage: result.usage, model: result.model, promptVersion };
 }
 
 const GENERATORS = { "word-content": generateEnglish, "word-content-zh": generateChinese };

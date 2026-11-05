@@ -5,7 +5,8 @@
 
 export type Segment = { text: string; hit: boolean };
 
-const WORD_CHAR = /[\p{L}\p{N}'’-]/u;
+/** Chữ Hán đứng sát nhau không có dấu cách nên không tính là cùng một từ. */
+const WORD_CHAR = /(?!\p{Script=Han})[\p{L}\p{N}'’-]/u;
 
 function escapeRegExp(s: string): string {
   return s.replace(/[.*+?^${}()|[\]\\]/g, "\\$&");

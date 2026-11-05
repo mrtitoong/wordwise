@@ -1,5 +1,6 @@
 import type { Grade } from "ts-fsrs";
 import { DEFAULT_LANGUAGE } from "@/lib/lang";
+import { withoutHeldWords } from "@/lib/lang/filter";
 import { missingSkillCards, placedCardFields, type Skill } from "@/lib/srs/cards";
 import { applyReview, createScheduler, newCardFields } from "@/lib/srs/scheduler";
 import { introducedToday } from "@/lib/notebooks/introductions";
@@ -173,14 +174,20 @@ export function placementIntroducedAt(now: Date): string {
 }
 
 /** Tạo "Sổ của tôi" nếu chưa có (trong transaction đang chạy). */
-async function ensureDefaultNotebook(db: LocalDb, owner: string, name: string, iso: string) {
-  const notebookId = defaultNotebookId(owner);
+async function ensureDefaultNotebook(
+  db: LocalDb,
+  owner: string,
+  name: string,
+  iso: string,
+  language: string = DEFAULT_LANGUAGE,
+) {
+  const notebookId = defaultNotebookId(owner, language);
   if (!(await db.notebooks.get(notebookId))) {
     await db.notebooks.put({
       id: notebookId,
       user_id: owner,
       name,
-      language: DEFAULT_LANGUAGE,
+      language,
       description: null,
       cover_url: null,
       tags: [],
@@ -345,12 +352,13 @@ export async function getOrCreateDefaultNotebook(
   db: LocalDb,
   owner: string,
   name: string,
+  language: string = DEFAULT_LANGUAGE,
 ): Promise<string> {
-  const notebookId = defaultNotebookId(owner);
+  const notebookId = defaultNotebookId(owner, language);
   const existing = await db.notebooks.get(notebookId);
   if (existing && !existing.deleted_at) return notebookId;
   await db.transaction("rw", db.notebooks, db.outbox, () =>
-    ensureDefaultNotebook(db, owner, name, new Date().toISOString()),
+    ensureDefaultNotebook(db, owner, name, new Date().toISOString(), language),
   );
   notifyWrite();
   return notebookId;
@@ -364,10 +372,11 @@ export async function addSensesToDefaultNotebook(
   notebookName: string,
   inputMethod: InputMethod = "list",
   source: string | null = "starter",
+  language: string = DEFAULT_LANGUAGE,
 ): Promise<AddResult> {
   const iso = new Date().toISOString();
   const notebookId = await db.transaction("rw", db.notebooks, db.outbox, () =>
-    ensureDefaultNotebook(db, owner, notebookName, iso),
+    ensureDefaultNotebook(db, owner, notebookName, iso, language),
   );
   return addSensesToNotebook(
     db,
@@ -391,7 +400,7 @@ async function introduce(db: LocalDb, owner: string, now: Date): Promise<number>
   const ids = planDailyIntroductions({
     notebooks,
     entries,
-    userWords,
+    userWords: withoutHeldWords(userWords, notebooks, entries),
     dailyLimit: settings.daily_new_limit,
     now,
     timeZone: settings.timezone,
@@ -470,8 +479,14 @@ export async function openExtraWords(
   count: number,
   now = new Date(),
 ): Promise<string[]> {
-  const opened = await db.transaction("rw", db.user_words, db.outbox, async () => {
-    const queued = (await db.user_words.where("user_id").equals(owner).toArray())
+  const tables = [db.user_words, db.notebooks, db.notebook_entries, db.outbox];
+  const opened = await db.transaction("rw", tables, async () => {
+    const [userWords, notebooks, entries] = await Promise.all([
+      db.user_words.where("user_id").equals(owner).toArray(),
+      db.notebooks.where("user_id").equals(owner).toArray(),
+      db.notebook_entries.where("user_id").equals(owner).toArray(),
+    ]);
+    const queued = withoutHeldWords(userWords, notebooks, entries)
       .filter((uw) => !uw.deleted_at && uw.status === "queued")
       .sort((a, b) => a.added_at.localeCompare(b.added_at) || a.id.localeCompare(b.id))
       .slice(0, Math.max(0, count));

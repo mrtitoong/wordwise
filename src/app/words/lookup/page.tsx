@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import { notFound } from "next/navigation";
 import { getTranslations } from "next-intl/server";
+import { learningLanguage } from "@/lib/lang/filter";
 import { PosSchema } from "@/lib/schema/word";
 import { WordLookupScreen } from "@/features/words/word-card/word-lookup-screen";
 
@@ -22,6 +23,7 @@ export default async function WordLookupPage({ searchParams }: { searchParams: S
         lemma={lemma}
         pos={pos.success ? pos.data : null}
         add={params.add === "1"}
+        language={learningLanguage(typeof params.language === "string" ? params.language : null)}
       />
     </main>
   );

@@ -22,6 +22,11 @@ export function MeaningTab() {
               {t("senseN", { number: sense.number })}
             </p>
           )}
+          {sense.pinyin && (
+            <p className="text-sm" lang="zh-Latn">
+              {sense.pinyin}
+            </p>
+          )}
           {sense.customMeaning ? (
             <div className="flex flex-col gap-1">
               <p className="flex flex-wrap items-center gap-2 text-lg font-medium">

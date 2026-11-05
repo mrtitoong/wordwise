@@ -4,7 +4,7 @@
  * nó kéo Zod vào các trang chính.
  */
 import { z } from "zod";
-import { ChineseExtraSchema, WordContentBaseSchema } from "@/lib/schema/word";
+import { ChineseExtraSchema, WordContentBaseSchema, WordContentSchema } from "@/lib/schema/word";
 
 export const ZhPosSchema = z.enum([
   "noun",
@@ -49,3 +49,8 @@ export const ZhWordContentSchema = WordContentBaseSchema.extend({
 });
 
 export type ZhWordContent = z.infer<typeof ZhWordContentSchema>;
+
+/** Nội dung đọc từ kho: từ tiếng Anh như cũ, từ tiếng Trung theo schema riêng. */
+export const StoredContentSchema = z.union([WordContentSchema, ZhWordContentSchema]);
+
+export type StoredContent = z.infer<typeof StoredContentSchema>;

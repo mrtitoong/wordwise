@@ -1,4 +1,5 @@
 import { v5 as uuidv5 } from "uuid";
+import { DEFAULT_LANGUAGE } from "@/lib/lang";
 
 /**
  * ID cố định (UUID v5) cho các dòng có khóa tự nhiên: hai máy cùng thêm một từ
@@ -20,8 +21,10 @@ export function cardId(userWordIdValue: string, skill: Skill): string {
   return uuidv5(`card:${userWordIdValue}:${skill}`, NAMESPACE);
 }
 
-export function defaultNotebookId(owner: string): string {
-  return uuidv5(`notebook:default:${owner}`, NAMESPACE);
+/** Mỗi ngôn ngữ có một "Sổ của tôi"; sổ tiếng Anh giữ mã cũ. */
+export function defaultNotebookId(owner: string, language: string = DEFAULT_LANGUAGE): string {
+  const key = language === DEFAULT_LANGUAGE ? owner : `${language}:${owner}`;
+  return uuidv5(`notebook:default:${key}`, NAMESPACE);
 }
 
 export function notebookEntryId(notebookId: string, userWordIdValue: string): string {

@@ -5,6 +5,7 @@
  */
 import { DEFAULT_LANGUAGE, languagePack } from "@/lib/lang";
 import type { Voice } from "@/lib/media/tts-azure";
+import type { Language } from "@/lib/schema/word";
 
 export type PlaybackRate = 1 | 0.75;
 
@@ -39,6 +40,8 @@ export interface PlayRequest {
   resolveUrl?: () => Promise<string | null>;
   /** Văn bản để trình duyệt đọc khi không có file. */
   text: string;
+  /** Ngôn ngữ của văn bản; bỏ trống là tiếng Anh. */
+  language?: Language | undefined;
   voice: Voice;
   rate: PlaybackRate;
   onEnd?: () => void;
@@ -58,7 +61,7 @@ export function createPlayer(env: PlayerEnv) {
   function speak(request: PlayRequest): PlayResult {
     if (!env.speech || !env.createUtterance) return "none";
     const utterance = env.createUtterance(request.text);
-    utterance.lang = languagePack(DEFAULT_LANGUAGE).speechLocale(request.voice);
+    utterance.lang = languagePack(request.language ?? DEFAULT_LANGUAGE).speechLocale(request.voice);
     utterance.rate = request.rate;
     utterance.addEventListener("end", () => request.onEnd?.());
     env.speech.speak(utterance);

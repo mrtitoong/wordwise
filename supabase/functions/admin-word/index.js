@@ -603,7 +603,8 @@ var en = {
   speechLocale: (voice) => EN_TTS_VOICES[voice].locale,
   lemmatizes: true,
   usesDictionaryApi: true,
-  requiresIpa: true
+  requiresIpa: true,
+  hasReview: true
 };
 
 // src/lib/lang/zh/index.ts
@@ -617,7 +618,8 @@ var zh = {
   speechLocale: () => ZH_TTS_VOICE.locale,
   lemmatizes: false,
   usesDictionaryApi: false,
-  requiresIpa: false
+  requiresIpa: false,
+  hasReview: false
 };
 
 // src/lib/lang/index.ts
@@ -635,7 +637,8 @@ function plainPack(code) {
     speechLocale: () => code,
     lemmatizes: false,
     usesDictionaryApi: false,
-    requiresIpa: false
+    requiresIpa: false,
+    hasReview: false
   };
 }
 function languagePack(code) {
@@ -769,7 +772,11 @@ var ChineseExtraSchema = z2.object({
   /** Âm của từng nghĩa, cùng thứ tự với senses; `pinyin` là âm của nghĩa đầu. */
   sense_pinyin: z2.array(text).min(1).max(5).optional(),
   /** "ai": từ điển không có từ này hoặc âm AI chọn ngoài danh sách, cần người duyệt. */
-  reading_source: z2.enum(["dictionary", "ai"]).optional()
+  reading_source: z2.enum(["dictionary", "ai"]).optional(),
+  /** Âm Hán Việt của từng chữ theo thứ tự chữ; null: chữ không có âm trong bảng. */
+  han_viet: z2.array(text.nullable()).max(16).optional(),
+  /** Pinyin câu ví dụ theo [nghĩa][câu], máy chủ tính sau khi tạo từ. */
+  example_pinyin: z2.array(z2.array(text).max(5)).max(5).optional()
 });
 var LanguageExtraSchema = z2.discriminatedUnion("kind", [
   JapaneseExtraSchema,
@@ -884,6 +891,10 @@ var ZhWordContentSchema = WordContentBaseSchema.extend({
     });
   }
 });
+var StoredContentSchema = z4.union([WordContentSchema, ZhWordContentSchema]);
+
+// src/lib/lang/zh/sentence-pinyin.ts
+import { pinyin } from "npm:pinyin-pro@3.29.5";
 
 // src/lib/schema/word-rows.ts
 import { z as z5 } from "npm:zod@4.6.5";
@@ -914,7 +925,7 @@ function fromWordRows(rows) {
       common_mistakes: d.common_mistakes
     };
   });
-  return WordContentSchema.parse({
+  return StoredContentSchema.parse({
     schema_version: rows.word.schema_version,
     language: rows.word.language,
     lemma: rows.word.lemma,
@@ -1007,7 +1018,7 @@ var StoredWordSchema = z7.object({
   id: z7.string(),
   /** id các nghĩa theo đúng thứ tự `content.senses` (để tạo user_words). */
   senseIds: z7.array(z7.string()),
-  content: WordContentSchema,
+  content: StoredContentSchema,
   media: WordMediaSchema
 });
 var base = {
@@ -1037,7 +1048,7 @@ var WordResponseSchema = z7.discriminatedUnion("status", [
 var WordSummarySchema = z7.object({
   id: z7.string(),
   lemma: z7.string(),
-  pos: PosSchema,
+  pos: StoredPosSchema,
   cefr: z7.string().nullable(),
   senses: z7.array(z7.object({ id: z7.string(), meaning_vi: z7.string() })).min(1)
 });

@@ -3,6 +3,7 @@ import { describe, expect, it, vi } from "vitest";
 import { englishLemmatizer } from "@/lib/entry/lemmatizer-en";
 import { toReading } from "@/lib/lang/zh/lexicon";
 import { parsePromptTemplate } from "@/lib/llm/prompt-template";
+import { fromWordRows } from "@/lib/schema/word-rows";
 import { createLlmRouter } from "@/lib/llm/router";
 import type { LLMProvider, ModelSpec, ProviderRequest } from "@/lib/llm/types";
 import type { WordRows } from "@/lib/schema/word-rows";
@@ -74,6 +75,8 @@ function setup(response: unknown, readings: { pinyin: string; common: boolean }[
     zhReadings: vi.fn(async () =>
       readings.map((r) => toReading({ traditional: "看", pinyin: r.pinyin, common: r.common })),
     ),
+    zhLexicon: vi.fn(async () => new Map()),
+    zhHanViet: vi.fn(async () => new Map()),
     saveWord: vi.fn(async (_job: string, rows: WordRows) => {
       saved.push(rows);
       return rows.word.id;
@@ -132,7 +135,7 @@ describe("tạo thẻ từ tiếng Trung", () => {
     expect(deps.fetchDictionary).not.toHaveBeenCalled();
     expect(calls[0]!.prompt).toContain("kàn | kān");
     const row = saved[0]!.word;
-    expect(row.generated_by).toBe("claude/claude-haiku-5-5 word-content-zh@v2");
+    expect(row.generated_by).toBe("claude/claude-haiku-5-5 word-content-zh@v3");
     expect(row.cefr).toBeNull();
     expect(row.details.language_extra).toMatchObject({
       pinyin: "kàn",
@@ -140,6 +143,21 @@ describe("tạo thẻ từ tiếng Trung", () => {
       sense_pinyin: ["kàn", "kān"],
       reading_source: "dictionary",
     });
+  });
+
+  it("điền âm Hán Việt, pinyin câu ví dụ; đọc lại được từ các dòng đã lưu", async () => {
+    const { deps, saved, calls } = setup(draft(), KAN);
+    deps.store.zhHanViet = vi.fn(async () => new Map([["看", ["khán", "khan"]]]));
+    await processJob(job(), deps);
+    expect(calls[0]!.prompt).toContain("看: khán, khan");
+    const { word, senses, details } = saved[0]!;
+    expect(word.details.language_extra).toMatchObject({
+      han_viet: ["khán"],
+      example_pinyin: [["wǒ kàn shū."], ["wǒ kān shū."]],
+    });
+    const content = fromWordRows({ word, senses, details });
+    expect(content.language).toBe("zh");
+    expect(content.language_extra).toMatchObject({ han_viet: ["khán"] });
   });
 
   it("lượng từ lưu được; âm AI viết ngoài từ điển thì đánh dấu cần duyệt", async () => {

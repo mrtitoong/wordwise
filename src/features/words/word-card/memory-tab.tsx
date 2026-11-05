@@ -45,7 +45,7 @@ export function MemoryTab() {
           <ul className="flex flex-col gap-2">
             {content.confusables.map((c, i) => (
               <li key={i} className="flex flex-col gap-1 rounded-xl border p-3">
-                <p className="font-medium" lang="en">
+                <p className="font-medium" lang={view.content.language}>
                   {t("memory.versus", { a: content.lemma, b: c.word })}
                 </p>
                 <p className="text-sm text-muted-foreground">{c.difference_vi}</p>

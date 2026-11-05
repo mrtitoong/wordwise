@@ -14,7 +14,9 @@ import { planToday } from "@/lib/review/today";
 import { createScheduler } from "@/lib/srs/scheduler";
 import { useOwner } from "@/lib/sync/owner";
 import { weightsOf } from "@/lib/db/repo";
-import { toTodayInput, useReviewData } from "./use-review-data";
+import { languagePack } from "@/lib/lang";
+import { LanguageSwitch } from "./language-switch";
+import { learningScope, toTodayInput, useReviewData } from "./use-review-data";
 
 const DAY_MS = 86_400_000;
 /** "Học thêm 5 từ mới". */
@@ -44,8 +46,9 @@ export function TodayScreen() {
       now,
       timeZone: data.settings.timezone,
     });
-    const live = data.userWords.filter((uw) => !uw.deleted_at);
-    const recent = data.entries
+    const scope = learningScope(data);
+    const live = scope.userWords.filter((uw) => !uw.deleted_at);
+    const recent = scope.entries
       .filter((e) => !e.deleted_at)
       .sort((a, b) => b.added_at.localeCompare(a.added_at))
       .flatMap((e) => {
@@ -57,6 +60,7 @@ export function TodayScreen() {
       .slice(0, 3);
     const day = studyDay(now, data.settings.timezone);
     return {
+      language: scope.language,
       plan,
       tomorrowReviews: tomorrow.reviews,
       streak,
@@ -69,16 +73,33 @@ export function TodayScreen() {
 
   if (!view) return <div className="h-48 animate-pulse rounded-2xl bg-muted" aria-hidden />;
 
+  const languageSwitch = owner && <LanguageSwitch owner={owner} current={view.language} />;
+
+  if (!languagePack(view.language).hasReview) {
+    return (
+      <div className="flex flex-col gap-4 pb-4">
+        {languageSwitch}
+        <EmptyState
+          title={t("reviewSoonTitle")}
+          body={t("reviewSoonBody", { count: view.words })}
+        />
+      </div>
+    );
+  }
+
   if (view.words === 0) {
     return (
-      <EmptyState title={t("emptyTitle")} body={t("emptyBody")}>
-        <Button asChild size="lg">
-          <Link href="/add">{t("addFirst")}</Link>
-        </Button>
-        <Button asChild size="lg" variant="outline">
-          <Link href="/library">{t("browseLibrary")}</Link>
-        </Button>
-      </EmptyState>
+      <div className="flex flex-col gap-4 pb-4">
+        {languageSwitch}
+        <EmptyState title={t("emptyTitle")} body={t("emptyBody")}>
+          <Button asChild size="lg">
+            <Link href="/add">{t("addFirst")}</Link>
+          </Button>
+          <Button asChild size="lg" variant="outline">
+            <Link href="/library">{t("browseLibrary")}</Link>
+          </Button>
+        </EmptyState>
+      </div>
     );
   }
 
@@ -87,6 +108,7 @@ export function TodayScreen() {
 
   return (
     <div className="flex flex-col gap-4 pb-4">
+      {languageSwitch}
       <section className="flex items-center gap-3" aria-label={t("streakLabel")}>
         <span
           className={`flex size-12 items-center justify-center rounded-full ${streak.today ? "bg-orange-100 text-orange-600 dark:bg-orange-950" : "bg-muted text-muted-foreground"}`}

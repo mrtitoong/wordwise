@@ -4,6 +4,7 @@
  * Hàm thuần; màn hình chỉ hiển thị.
  */
 import type { NotebookEntryRow, NotebookRow, UserWordRow } from "@/lib/db/types";
+import { zhCardInfo, type ZhCardInfo } from "@/lib/lang/zh/card";
 import type { WordContent } from "@/lib/schema/word";
 import type { ImageCredit, StoredWord } from "./api";
 import { wordForms } from "./highlight";
@@ -27,6 +28,10 @@ export type SenseView = Sense & {
   customMeaning: string | null;
   additions: UserAdditions;
   stockImage: { url: string; credit: ImageCredit } | null;
+  /** Âm của nghĩa này, chỉ có khi các nghĩa của từ đọc khác nhau. */
+  pinyin: string | null;
+  /** Pinyin từng câu ví dụ (tiếng Trung). */
+  examplePinyin: string[];
 };
 
 export type ContextSentenceView = {
@@ -51,7 +56,9 @@ export function sourceLabel(source: string | null | undefined): string | null {
 
 export type WordCardView = {
   wordId: string;
-  content: WordContent;
+  content: StoredWord["content"];
+  /** Phần riêng tiếng Trung; null với ngôn ngữ khác. */
+  zh: ZhCardInfo | null;
   audio: StoredWord["media"]["audio"];
   senses: SenseView[];
   /** Dạng từ hiển thị ở đầu thẻ (more resilient, ran…). */
@@ -84,7 +91,10 @@ function hasAdditions(senses: SenseView[], layer: AdditionLayer): boolean {
 
 /** Tab nào hiện: tab rỗng thì ẩn, trừ khi người dùng đã thêm nội dung riêng vào tab đó. */
 export function visibleTabs(
-  content: WordContent,
+  content: Pick<
+    StoredWord["content"],
+    "senses" | "homonyms" | "word_family" | "mnemonics" | "confusables" | "etymology_vi"
+  >,
   senses: SenseView[],
   contextSentences: number,
 ): WordCardTab[] {
@@ -113,6 +123,7 @@ export function visibleTabs(
 }
 
 export function buildWordCard(word: StoredWord, personal: PersonalRows): WordCardView {
+  const zh = zhCardInfo(word.content);
   const senseIds = new Set(word.senseIds);
   const userWordBySense = new Map(
     personal.userWords
@@ -134,6 +145,8 @@ export function buildWordCard(word: StoredWord, personal: PersonalRows): WordCar
       customMeaning: uw?.custom_meaning?.trim() || null,
       additions: parseUserAdditions(uw?.user_additions),
       stockImage: image ? { url: image.url, credit: image.credit } : null,
+      pinyin: zh?.sensePinyin?.[index] ?? null,
+      examplePinyin: zh?.examplePinyin[index] ?? [],
     };
   });
 
@@ -190,6 +203,7 @@ export function buildWordCard(word: StoredWord, personal: PersonalRows): WordCar
   return {
     wordId: word.id,
     content: word.content,
+    zh,
     audio: word.media.audio,
     senses,
     inflections,

@@ -5,12 +5,15 @@ import { useTranslations } from "next-intl";
 import { useEffect, useMemo, useState } from "react";
 import { browserPlayerEnv, createPlayer, type PlaybackRate } from "@/lib/audio/player";
 import type { Voice } from "@/lib/media/tts-azure";
+import type { Language } from "@/lib/schema/word";
 import { cn } from "@/lib/utils";
 
 export interface AudioButtonProps {
   /** Văn bản được đọc (từ hoặc câu); dùng khi phải đọc bằng giọng trình duyệt. */
   text: string;
   voice: Voice;
+  /** Ngôn ngữ của văn bản; bỏ trống là tiếng Anh. */
+  language?: Language;
   /** URL MP3 đã có (audio của từ). */
   url?: string | null;
   /** Lấy URL khi bấm (audio câu ví dụ). */
@@ -26,6 +29,7 @@ export interface AudioButtonProps {
 export function AudioButton({
   text,
   voice,
+  language,
   url,
   resolveUrl,
   showRate,
@@ -41,7 +45,7 @@ export function AudioButton({
 
   useEffect(() => {
     if (!autoPlay) return;
-    void player.play({ url, resolveUrl, text, voice, rate: 1, onEnd: () => {} });
+    void player.play({ url, resolveUrl, text, voice, language, rate: 1, onEnd: () => {} });
     // Chỉ phát khi thẻ hiện ra (đổi từ), không phát lại khi đổi tốc độ.
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [autoPlay, text, voice, url]);
@@ -53,13 +57,14 @@ export function AudioButton({
       resolveUrl,
       text,
       voice,
+      language,
       rate,
       onEnd: () => setPlaying(false),
     });
     if (result === "none") setPlaying(false);
   }
 
-  const voiceLabel = t(voice === "us" ? "voiceUs" : "voiceUk");
+  const voiceLabel = t(language === "zh" ? "voiceZh" : voice === "us" ? "voiceUs" : "voiceUk");
 
   return (
     <span className={cn("inline-flex items-center gap-1", className)}>

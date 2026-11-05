@@ -4,13 +4,16 @@
  */
 import type { SupabaseClient } from "@supabase/supabase-js";
 import type { Database, Json } from "@/lib/db/database.types";
-import { toReading } from "@/lib/lang/zh/lexicon";
+import { toReading, type Reading } from "@/lib/lang/zh/lexicon";
 import { LanguageSchema, StoredPosSchema, type Language, type Pos } from "@/lib/schema/word";
 import { fromWordRows } from "@/lib/schema/word-rows";
 import { ImageCreditSchema, type StoredWord } from "./api";
 import type { RequestJobResult, WordJob, WordStore } from "./pipeline";
 
 type Client = SupabaseClient<Database>;
+
+/** Số từ mỗi lượt tra: danh sách nằm trên URL nên không để quá dài. */
+const LEXICON_CHUNK = 100;
 
 export const WORD_SELECT =
   "id, language, lemma, pos, ipa_us, ipa_uk, cefr, register, schema_version, forms, details, " +
@@ -111,6 +114,33 @@ export function createSupabaseWordStore(client: Client): WordStore {
         .eq("simplified", lemma);
       if (error) throw new Error(`zh_lexicon: ${error.message}`);
       return (data ?? []).map(toReading);
+    },
+    async zhLexicon(words) {
+      const lexicon = new Map<string, Reading[]>();
+      for (let i = 0; i < words.length; i += LEXICON_CHUNK) {
+        const { data, error } = await client
+          .from("zh_lexicon")
+          .select("simplified, traditional, pinyin, common")
+          .in("simplified", words.slice(i, i + LEXICON_CHUNK));
+        if (error) throw new Error(`zh_lexicon: ${error.message}`);
+        for (const row of data ?? []) {
+          lexicon.set(row.simplified, [...(lexicon.get(row.simplified) ?? []), toReading(row)]);
+        }
+      }
+      return lexicon;
+    },
+    async zhHanViet(chars) {
+      const { data, error } = await client
+        .from("zh_han_viet")
+        .select("char, readings")
+        .in("char", [...chars]);
+      if (error) throw new Error(`zh_han_viet: ${error.message}`);
+      return new Map(
+        (data ?? []).map((row) => [
+          row.char,
+          (row.readings as { am: string }[]).map((reading) => reading.am),
+        ]),
+      );
     },
     async findWords(language, lemma, pos) {
       let query = client

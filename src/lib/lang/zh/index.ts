@@ -12,4 +12,5 @@ export const zh: LanguagePack = {
   lemmatizes: false,
   usesDictionaryApi: false,
   requiresIpa: false,
+  hasReview: false,
 };

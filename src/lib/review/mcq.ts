@@ -2,14 +2,14 @@
  * Câu trắc nghiệm 4 đáp án (Prompt 3.3): đáp án nhiễu cùng loại từ, ưu tiên từ dễ nhầm, không
  * trùng nghĩa với đáp án đúng. Hàm thuần; ngẫu nhiên truyền vào.
  */
-import type { Pos } from "@/lib/schema/word";
+import type { StoredPos } from "@/lib/schema/word";
 
 /** Một nghĩa có thể làm đáp án. */
 export type ChoiceSense = {
   senseId: string;
   wordId: string;
   lemma: string;
-  pos: Pos;
+  pos: StoredPos;
   meaning: string;
 };
 

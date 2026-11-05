@@ -16,6 +16,8 @@ export type SenseInfo = {
 };
 
 export type PersonalView = PersonalData & {
+  /** Ngôn ngữ đang học: sổ và từ trong bản này chỉ thuộc ngôn ngữ đó. */
+  language: string;
   /** Nội dung chung của các nghĩa người dùng có (chưa tải về máy thì không có). */
   senses: Map<string, SenseInfo>;
   /** Múi giờ trong Cài đặt (đếm từ đến hạn theo ngày học). */
@@ -54,12 +56,14 @@ export function usePersonalData(owner: string | null): PersonalView | undefined 
       }
     }
     const sense = new Map(senseRows.map((s) => [s.id, s]));
+    const language = learningLanguage(settings?.target_language);
     const scoped = forLanguage(
       { notebooks, entries, userWords, cards },
-      learningLanguage(settings?.target_language),
+      language,
       (senseId) => wordById.get(sense.get(senseId)?.word_id ?? "")?.language,
     );
     return {
+      language,
       // Dòng cũ trong máy (trước khi có cột tags) coi như không có tag.
       notebooks: scoped.notebooks,
       entries: scoped.entries.map((e) => ({ ...e, tags: e.tags ?? [] })),

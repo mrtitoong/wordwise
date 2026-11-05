@@ -9,21 +9,62 @@ import { sentenceAudioUrl } from "@/features/media/sentence-audio";
 import type { SenseView } from "@/lib/words/word-card";
 import { Highlighted, LayerFooter, MineItem, SectionTitle, useCard } from "./parts";
 
-function ExampleItem({ sense, index, voice }: { sense: SenseView; index: number; voice: Voice }) {
+const PINYIN_KEY = "ww_hide_example_pinyin";
+
+/** Pinyin dưới câu ví dụ mặc định hiện; người học ẩn thì nhớ trong máy. */
+function useExamplePinyin(): [boolean, (show: boolean) => void] {
+  const [show, setShow] = useState(() => {
+    try {
+      return localStorage.getItem(PINYIN_KEY) !== "1";
+    } catch {
+      return true;
+    }
+  });
+  return [
+    show,
+    (next) => {
+      setShow(next);
+      try {
+        if (next) localStorage.removeItem(PINYIN_KEY);
+        else localStorage.setItem(PINYIN_KEY, "1");
+      } catch {
+        // Không lưu được thì lần sau lại hiện.
+      }
+    },
+  ];
+}
+
+function ExampleItem({
+  sense,
+  index,
+  voice,
+  showPinyin,
+}: {
+  sense: SenseView;
+  index: number;
+  voice: Voice;
+  showPinyin: boolean;
+}) {
   const t = useTranslations("wordCard");
   const { view } = useCard();
   const [shown, setShown] = useState(false);
   const example = sense.examples[index]!;
   return (
     <li className="flex flex-col gap-1 rounded-xl border p-3">
-      <p lang="en">
+      <p lang={view.content.language}>
         <Highlighted text={example.sentence} terms={[example.highlight, ...view.highlightTerms]} />
       </p>
+      {showPinyin && sense.examplePinyin[index] && (
+        <p className="text-sm text-muted-foreground" lang="zh-Latn">
+          {sense.examplePinyin[index]}
+        </p>
+      )}
       {shown && <p className="text-sm text-muted-foreground">{example.translation_vi}</p>}
       <div className="flex items-center gap-1">
         <AudioButton
           text={example.sentence}
           voice={voice}
+          language={view.content.language}
           className="-ml-2"
           resolveUrl={() => sentenceAudioUrl(sense.senseId, index, voice, example.sentence)}
         />
@@ -65,9 +106,20 @@ export function ExamplesTab({ voice }: { voice: Voice }) {
   const t = useTranslations("wordCard");
   const { view } = useCard();
   const multiple = view.senses.length > 1;
+  const [showPinyin, setShowPinyin] = useExamplePinyin();
 
   return (
     <div className="flex flex-col gap-5">
+      {view.zh && view.zh.examplePinyin.length > 0 && (
+        <button
+          type="button"
+          aria-pressed={showPinyin}
+          onClick={() => setShowPinyin(!showPinyin)}
+          className="inline-flex min-h-11 items-center self-end px-1 text-sm text-primary focus-visible:outline-2 focus-visible:outline-ring"
+        >
+          {t(showPinyin ? "zh.hidePinyin" : "zh.showPinyin")}
+        </button>
+      )}
       {view.contextSentences.length > 0 && (
         <section className="flex flex-col gap-2">
           <SectionTitle>{t("examples.context")}</SectionTitle>
@@ -96,7 +148,7 @@ export function ExamplesTab({ voice }: { voice: Voice }) {
                   </p>
                 )}
                 {c.imageUrl && <ContextImage src={c.imageUrl} />}
-                <p lang="en">
+                <p lang={view.content.language}>
                   <Highlighted text={c.sentence} terms={view.highlightTerms} />
                 </p>
               </li>
@@ -126,7 +178,7 @@ export function ExamplesTab({ voice }: { voice: Voice }) {
                   userWordId={sense.userWordId!}
                   itemId={item.id}
                 >
-                  <p lang="en">
+                  <p lang={view.content.language}>
                     <Highlighted text={item.sentence} terms={view.highlightTerms} />
                   </p>
                   {item.translation_vi && (
@@ -135,7 +187,13 @@ export function ExamplesTab({ voice }: { voice: Voice }) {
                 </MineItem>
               ))}
               {sense.examples.map((_, index) => (
-                <ExampleItem key={index} sense={sense} index={index} voice={voice} />
+                <ExampleItem
+                  key={index}
+                  sense={sense}
+                  index={index}
+                  voice={voice}
+                  showPinyin={showPinyin}
+                />
               ))}
             </ul>
             <LayerFooter layer="examples" senseId={sense.senseId} canAdd={!!sense.userWordId} />

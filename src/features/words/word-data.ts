@@ -9,7 +9,7 @@ import { DEFAULT_LANGUAGE } from "@/lib/lang";
 import type { LocalDb } from "@/lib/db/local";
 import { cacheWordContent } from "@/lib/db/repo";
 import type { WordDetailsRow, WordRow, WordSenseRow } from "@/lib/db/types";
-import type { Pos } from "@/lib/schema/word";
+import type { Language, Pos } from "@/lib/schema/word";
 import { createClient } from "@/lib/supabase/client";
 import { getSupabaseEnv } from "@/lib/supabase/env";
 import { createSupabaseRemote } from "@/lib/sync/remote";
@@ -98,12 +98,16 @@ const normalize = (lemma: string) => lemma.trim().toLowerCase();
 
 /** Từ trong máy khớp chữ (và loại từ nếu có). */
 /** Từ có sẵn trong máy theo chữ (loại từ nếu có), ưu tiên từ thông dụng hơn. */
-export async function findLocal(db: LocalDb, lemma: string, pos: Pos | null) {
+export async function findLocal(
+  db: LocalDb,
+  lemma: string,
+  pos: Pos | null,
+  language: Language = DEFAULT_LANGUAGE,
+) {
   const key = normalize(lemma);
   const words = await db.words
     .filter(
-      (w) =>
-        w.language === DEFAULT_LANGUAGE && w.lemma.toLowerCase() === key && (!pos || w.pos === pos),
+      (w) => w.language === language && w.lemma.toLowerCase() === key && (!pos || w.pos === pos),
     )
     .toArray();
   for (const word of words.sort((a, b) => (a.frequency_rank ?? 1e9) - (b.frequency_rank ?? 1e9))) {
@@ -121,12 +125,17 @@ export async function lookupWord(
   db: LocalDb,
   lemma: string,
   pos: Pos | null = null,
+  language: Language = DEFAULT_LANGUAGE,
 ): Promise<LookupResult> {
-  const local = await findLocal(db, lemma, pos);
+  const local = await findLocal(db, lemma, pos, language);
   if (local) return { status: "found", ...local };
   if (!getSupabaseEnv()) return { status: "unavailable" };
   try {
-    const response = await requestWord(createClient(), { lemma: normalize(lemma), pos });
+    const response = await requestWord(createClient(), {
+      lemma: normalize(lemma),
+      pos,
+      language,
+    });
     if (response.status === "premium_required") return { status: "unavailable" };
     if (response.status !== "ready") return { status: response.status };
     const word = (pos && response.words.find((w) => w.content.pos === pos)) || response.words[0]!;

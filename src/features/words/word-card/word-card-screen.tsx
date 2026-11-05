@@ -8,6 +8,7 @@ import { useTranslations } from "next-intl";
 import { Tabs } from "radix-ui";
 import { showToast } from "@/components/ui/toast";
 import { getLocalDb } from "@/lib/db/local";
+import { DEFAULT_LANGUAGE, languagePack } from "@/lib/lang";
 import { addSensesToDefaultNotebook, updateUserWord } from "@/lib/db/repo";
 import { useOnlineStatus } from "@/lib/sync/hooks";
 import { useOwner } from "@/lib/sync/owner";
@@ -178,6 +179,11 @@ export function WordCardBody({
     [word, personal],
   );
 
+  const language = view?.content.language ?? DEFAULT_LANGUAGE;
+  // Ngôn ngữ một giọng thì luôn đọc giọng đó, không theo giọng Mỹ/Anh trong Cài đặt.
+  const voices = languagePack(language).wordAudioVoices;
+  const exampleVoice = voices.find((v) => v === accent) ?? voices[0] ?? "us";
+
   const addSense = useCallback(
     (senseId: string) => {
       if (!owner) return;
@@ -189,9 +195,10 @@ export function WordCardBody({
         notebook,
         "typed",
         "word_card",
+        language,
       ).then(() => showToast({ text: t("wordCard.added", { notebook }) }));
     },
-    [owner, t],
+    [owner, t, language],
   );
 
   if (!view) {
@@ -264,7 +271,7 @@ export function WordCardBody({
                 <MeaningTab />
               </Tabs.Content>
               <Tabs.Content value="examples">
-                <ExamplesTab voice={accent === "uk" ? "uk" : "us"} />
+                <ExamplesTab voice={exampleVoice} />
               </Tabs.Content>
               <Tabs.Content value="usage">
                 <UsageTab />
@@ -318,7 +325,7 @@ export function WordCardBody({
         (inSession ? (
           <SessionChipSheet word={sheet.word} pos={sheet.pos} owner={owner} onClose={close} />
         ) : (
-          <ChipSheet word={sheet.word} pos={sheet.pos} onClose={close} />
+          <ChipSheet word={sheet.word} pos={sheet.pos} language={language} onClose={close} />
         ))}
     </CardProvider>
   );

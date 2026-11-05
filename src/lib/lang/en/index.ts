@@ -16,4 +16,5 @@ export const en: LanguagePack = {
   lemmatizes: true,
   usesDictionaryApi: true,
   requiresIpa: true,
+  hasReview: true,
 };

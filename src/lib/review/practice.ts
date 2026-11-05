@@ -53,6 +53,8 @@ export type PracticeInput = {
   practiceSpelling: boolean;
   /** Thẻ Chính tả có dạng gõ (tiếng Trung viết theo nét nên Tập nghe chỉ có nghe → chọn nghĩa). */
   typedSpelling?: boolean;
+  /** Phát âm chỉ để luyện, không có thẻ riêng: mọi từ đã học đều luyện được. */
+  speakingPracticeOnly?: boolean;
   /** Hết ngày học hôm nay: thẻ đến hạn trước lúc này là lượt ôn thật như "Ôn hôm nay". */
   dayEnd?: Date;
 };
@@ -111,11 +113,14 @@ export function practiceWords(
 }
 
 /** Chế độ chọn được với các kỹ năng của ngôn ngữ đang học. */
-export function practiceModesFor(skills: readonly Skill[]): PracticeMode[] {
+export function practiceModesFor(
+  skills: readonly Skill[],
+  speakingPracticeOnly = false,
+): PracticeMode[] {
   return PRACTICE_MODES.filter(
     (mode) =>
       (mode !== "writing" || skills.includes("spelling")) &&
-      (mode !== "speaking" || skills.includes("speaking")),
+      (mode !== "speaking" || speakingPracticeOnly || skills.includes("speaking")),
   );
 }
 
@@ -125,6 +130,7 @@ function cardFor(
   mode: PracticeMode,
   practiceSpelling: boolean,
   typedSpelling: boolean,
+  speakingPracticeOnly: boolean,
   random: () => number,
 ): CardRow | null {
   switch (mode) {
@@ -141,7 +147,7 @@ function cardFor(
         : word.meaning;
     // Tập phát âm cần thẻ Phát âm (thẻ Nghĩa đạt mức 2).
     case "speaking":
-      return word.speaking;
+      return speakingPracticeOnly ? word.meaning : word.speaking;
     case "auto":
       return word.spelling && practiceSpelling && random() < 0.5 ? word.spelling : word.meaning;
   }
@@ -164,6 +170,7 @@ export function buildPractice(
       request.mode,
       input.practiceSpelling,
       input.typedSpelling ?? true,
+      input.speakingPracticeOnly ?? false,
       random,
     );
     return card ? [{ card, r: retrievability(scheduler, card, now), tie: random() }] : [];

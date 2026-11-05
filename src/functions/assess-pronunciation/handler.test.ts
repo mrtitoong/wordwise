@@ -21,6 +21,7 @@ function setup(overrides: Partial<AssessDeps> = {}) {
   const deps: AssessDeps = {
     scorer,
     getUserId: vi.fn(async (auth) => (auth === "Bearer user-jwt" ? "u1" : null)),
+    canUseChinese: vi.fn(async () => true),
     consumeUsage: vi.fn(async () => ({ allowed: true, dailyLimit: 100 })),
     ...overrides,
   };
@@ -38,6 +39,31 @@ const post = (body: unknown, auth = true) =>
   });
 
 const parse = async (response: Response) => AssessResponseSchema.parse(await response.json());
+
+describe("tiếng Trung", () => {
+  const body = { text: "学校", locale: "zh-CN", audio: wav };
+
+  it("có cờ thì chấm", async () => {
+    const { handle, scorer } = setup();
+    expect((await parse(await handle(post(body)))).status).toBe("ok");
+    expect(scorer.assess).toHaveBeenCalledWith(expect.anything(), "学校", "zh-CN");
+  });
+
+  it("không có cờ thì không chấm, không trừ lượt", async () => {
+    const { handle, deps, scorer } = setup({ canUseChinese: vi.fn(async () => false) });
+    expect((await parse(await handle(post(body)))).status).toBe("unavailable");
+    expect(scorer.assess).not.toHaveBeenCalled();
+    expect(deps.consumeUsage).not.toHaveBeenCalled();
+  });
+
+  it("tiếng Anh không cần cờ", async () => {
+    const canUseChinese = vi.fn(async () => false);
+    const { handle } = setup({ canUseChinese });
+    const response = await handle(post({ text: "hello", locale: "en-US", audio: wav }));
+    expect((await parse(response)).status).toBe("ok");
+    expect(canUseChinese).not.toHaveBeenCalled();
+  });
+});
 const valid = { text: "resilient", locale: "en-US", audio: wav };
 
 describe("assess-pronunciation handler", () => {

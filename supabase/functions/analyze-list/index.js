@@ -207,6 +207,7 @@ var en = {
   hasReview: true,
   reviewSkills: ["meaning", "spelling", "speaking"],
   hideReadingFromLevel: null,
+  speakingPracticeOnly: false,
   writesStrokes: false,
   spellingSetting: "practice_spelling",
   newSpellingPerDay: null,
@@ -238,6 +239,7 @@ var zh = {
   hasReview: true,
   reviewSkills: ["meaning", "spelling"],
   hideReadingFromLevel: 2,
+  speakingPracticeOnly: true,
   writesStrokes: true,
   spellingSetting: "practice_hanzi",
   // Viết tay lâu hơn gõ nhiều: mở bằng nửa số từ mới mặc định để tải ôn không quá nặng.
@@ -267,6 +269,7 @@ function plainPack(code) {
     hasReview: false,
     reviewSkills: ["meaning"],
     hideReadingFromLevel: null,
+    speakingPracticeOnly: false,
     writesStrokes: false,
     spellingSetting: "practice_spelling",
     newSpellingPerDay: null,

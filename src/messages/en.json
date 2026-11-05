@@ -1597,7 +1597,27 @@
       "hintAgain": "More help",
       "giveUp": "I don't remember"
     },
-    "flipHintPaper": "Write the characters on paper, then tap to check"
+    "flipHintPaper": "Write the characters on paper, then tap to check",
+    "speakZh": {
+      "noTones": "Tones are not scored yet. Listen and compare with the sample yourself.",
+      "bandHint": "Consonants and vowels only, not tones.",
+      "syllables": "Result for each character",
+      "band": {
+        "good": "Clear",
+        "fair": "Getting there",
+        "poor": "Needs practice"
+      },
+      "tips": {
+        "retroflex": "zh, ch, sh: curl the tongue tip up to the roof of the mouth. ch has a stronger puff of air than zh.",
+        "r": "r: curl the tongue as for sh, with the voice on. Do not roll it.",
+        "palatal": "j, q, x: raise the middle of the tongue, lips flat, tongue not curled. q has a stronger puff of air than j.",
+        "dental": "z, c, s: keep the tongue tip behind the teeth, not curled. c has a stronger puff of air than z.",
+        "aspirated": "p, t, k: release a strong puff of air you can feel on your hand.",
+        "unaspirated": "b, d, g: no puff of air and no voicing, closer to a soft p, t, k.",
+        "umlaut": "ü: hold the tongue as for i and round the lips. After j, q, x, y it is written u but still read ü.",
+        "ng": "-ng: finish at the back of the tongue, mouth slightly open. Do not mix it with -n."
+      }
+    }
   },
   "mic": {
     "explainTitle": "Allow the microphone",

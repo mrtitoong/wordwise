@@ -53,6 +53,7 @@ export function PracticeScreen() {
       entries: data.entries,
       practiceSpelling: spellingEnabled(settings ?? {}, language),
       typedSpelling: !languagePack(language).writesStrokes,
+      speakingPracticeOnly: languagePack(language).speakingPracticeOnly,
     };
     const scheduler = createScheduler({
       desiredRetention: settings?.desired_retention,
@@ -138,7 +139,10 @@ export function PracticeScreen() {
       </Group>
 
       <Group label={t("mode")}>
-        {practiceModesFor(languagePack(view.language).reviewSkills).map((mode) => (
+        {practiceModesFor(
+          languagePack(view.language).reviewSkills,
+          languagePack(view.language).speakingPracticeOnly,
+        ).map((mode) => (
           <Chip key={mode} selected={request.mode === mode} onClick={() => set({ mode })}>
             {t(
               mode === "writing" && languagePack(view.language).writesStrokes

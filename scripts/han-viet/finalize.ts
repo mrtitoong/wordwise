@@ -14,6 +14,8 @@ export type HanVietRow = {
   char: string;
   readings: { am: string; meaning_vi: string | null }[];
   reviewed: boolean;
+  /** Cấp của chữ, chỉ để xếp gợi ý khi tìm bằng pinyin. */
+  level: number;
 };
 
 /** Âm lặp gộp nghĩa; âm người duyệt thêm mới thì chưa có nghĩa. */
@@ -34,6 +36,7 @@ export function finalizeReadings(
       char: s.char,
       readings: sounds.map((am) => ({ am, meaning_vi: meanings.get(am) ?? null })),
       reviewed: !!decision,
+      level: s.level,
     };
   });
 }
@@ -41,10 +44,11 @@ export function finalizeReadings(
 /** Câu lệnh ghi đè theo chữ. Chuỗi SQL thoát dấu nháy đơn nên nội dung nào cũng an toàn. */
 export function toSql(rows: readonly HanVietRow[]): string {
   const json = JSON.stringify(rows).replaceAll("'", "''");
-  return `insert into public.zh_han_viet (char, readings, reviewed)
-select r.char, r.readings, r.reviewed
-from jsonb_to_recordset('${json}'::jsonb) as r (char text, readings jsonb, reviewed boolean)
-on conflict (char) do update set readings = excluded.readings, reviewed = excluded.reviewed;
+  return `insert into public.zh_han_viet (char, readings, reviewed, level)
+select r.char, r.readings, r.reviewed, r.level
+from jsonb_to_recordset('${json}'::jsonb) as r (char text, readings jsonb, reviewed boolean, level smallint)
+on conflict (char) do update
+  set readings = excluded.readings, reviewed = excluded.reviewed, level = excluded.level;
 `;
 }
 

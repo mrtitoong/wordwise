@@ -1339,16 +1339,19 @@ export type Database = {
       zh_han_viet: {
         Row: {
           char: string;
+          level: number | null;
           readings: NonNullable<Json>;
           reviewed: boolean;
         };
         Insert: {
           char: string;
+          level?: number | null;
           readings: NonNullable<Json>;
           reviewed?: boolean;
         };
         Update: {
           char?: string;
+          level?: number | null;
           readings?: NonNullable<Json>;
           reviewed?: boolean;
         };

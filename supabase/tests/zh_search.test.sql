@@ -2,13 +2,16 @@
 begin;
 create extension if not exists pgtap with schema extensions;
 
-select plan(6);
+select plan(7);
 
 insert into public.zh_lexicon (simplified, traditional, pinyin, common) values
   ('学校', '學校', 'xue2 xiao4', true),
   ('学效', '學效', 'xue2 xiao4', false),
-  ('绿', '綠', 'lu:4', true);
-insert into public.zh_han_viet (char, readings) values ('学', '[]'), ('校', '[]');
+  ('绿', '綠', 'lu:4', true),
+  ('世', '世', 'shi4', true),
+  ('是', '是', 'shi4', true);
+insert into public.zh_han_viet (char, readings, level)
+  values ('学', '[]', 1), ('校', '[]', 1), ('世', '[]', 3), ('是', '[]', 1);
 insert into public.words (id, language, lemma, pos)
   values ('00000000-0000-4000-8000-0000000000a1', 'zh', '学效', 'noun');
 insert into public.word_senses (word_id, sense_order, definition_en, meaning_vi)
@@ -31,6 +34,9 @@ select is(
 select is(
   jsonb_array_length(public.search_zh_pinyin('xuexiao') -> 1 -> 'words'),
   0, 'Từ ngoài kho không có nội dung');
+select is(
+  public.search_zh_pinyin('shi') -> 0 ->> 'lemma',
+  '是', 'Chữ cấp thấp xếp trước');
 select is(public.search_zh_pinyin('123'), '[]'::jsonb, 'Không có chữ Latin thì không tìm');
 reset role;
 

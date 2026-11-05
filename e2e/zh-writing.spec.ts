@@ -140,12 +140,22 @@ test.describe("Viết chữ tiếng Trung", () => {
       (p) => (window as unknown as Hooks).__wordwiseE2E.patchCards("meaning", p),
       patch,
     );
+    // Mở phiên một lần để tạo thẻ Viết chữ, rồi cho thẻ đến hạn.
+    await page.goto("/review/session");
+    await waitForTestHooks(page);
+    await expect(async () => {
+      const count = await page.evaluate(() =>
+        (window as unknown as Hooks).__wordwiseE2E.patchCards("spelling"),
+      );
+      expect(count).toBe(1);
+    }).toPass({ timeout: 15_000 });
     await page.goto("/review/session");
     await expect(page.getByText("Viết chữ của từ này")).toBeVisible();
     await expect(page.getByRole("group", { name: "Ô viết chữ" }).locator("svg")).toBeVisible();
     await noHorizontalScroll(page);
     await drawCharacter(page, lemma);
     await expect(page.getByText("Chính xác!")).toBeVisible();
+    await expect(page.getByText("Chính xác!")).toBeHidden();
 
     // Thiếu dữ liệu nét: flashcard viết ra giấy.
     await page.route("**/hanzi/**", (route) => route.abort());

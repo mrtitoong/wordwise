@@ -103,8 +103,11 @@ test.describe("Ôn tiếng Trung", () => {
 
     await page.goto("/add");
     for (const word of words) {
-      await page.getByLabel("Từ cần thêm").fill(word.lemma);
-      await page.getByRole("button", { name: new RegExp(word.lemma) }).click();
+      // Sau khi thêm, ô nhập tự xóa: gõ ngay có thể bị xóa mất nên gõ lại tới khi thấy gợi ý.
+      await expect(async () => {
+        await page.getByLabel("Từ cần thêm").fill(word.key);
+        await page.getByRole("button", { name: new RegExp(word.lemma) }).click({ timeout: 2_000 });
+      }).toPass({ timeout: 20_000 });
       await page.getByRole("button", { name: /^Thêm/ }).click();
       await expect(page.getByText(new RegExp(`${word.lemma}.*Sổ của tôi`))).toBeVisible();
     }

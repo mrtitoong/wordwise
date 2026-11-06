@@ -187,6 +187,7 @@ function toSource(row: { id: string; kind: string; content: unknown }): SourceRe
       kind: "rows",
       rows: (row.content as Record<string, unknown>[]).map((r) => ({
         word: String(r.word ?? ""),
+        pos: posOrNull(r.pos),
         meaning: typeof r.meaning === "string" ? r.meaning : null,
         example: typeof r.example === "string" ? r.example : null,
         note: typeof r.note === "string" ? r.note : null,

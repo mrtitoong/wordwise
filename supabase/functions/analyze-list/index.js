@@ -691,6 +691,7 @@ function toSource(row) {
       kind: "rows",
       rows: row.content.map((r) => ({
         word: String(r.word ?? ""),
+        pos: posOrNull(r.pos),
         meaning: typeof r.meaning === "string" ? r.meaning : null,
         example: typeof r.example === "string" ? r.example : null,
         note: typeof r.note === "string" ? r.note : null,
@@ -1420,6 +1421,7 @@ function rawFromRows(source, start, newId) {
     const candidate = blankCandidate(newId(), start + index, row.word);
     if (source.kind === "rows") {
       const r = row;
+      candidate.pos = r.pos ?? null;
       candidate.meaningHint = clip(r.meaning, 500);
       candidate.contextSentence = clipContext(r.example, r.word);
       candidate.note = clip(r.note, 1e3);

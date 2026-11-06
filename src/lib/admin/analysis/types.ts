@@ -70,6 +70,8 @@ export type SourceRecord =
       kind: "rows";
       rows: {
         word: string;
+        /** Danh sách có ghi loại từ (HSK: cùng chữ, khác loại từ là hai mục). */
+        pos?: Pos | null;
         meaning: string | null;
         example: string | null;
         note: string | null;

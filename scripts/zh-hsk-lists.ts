@@ -39,3 +39,30 @@ from public.curated_lists where language = 'zh' and title = 'Từ vựng theo c�
   );
 }
 writeFileSync(outPath, statements.join("\n\n") + "\n");
+
+/**
+ * Gắn cấp HSK vào từ trong kho (chạy sau khi tạo xong nội dung): đúng chữ + loại từ trước, không có
+ * thì cấp thấp nhất của chữ đó (mục "分（名、量）" chỉ giữ loại từ đầu). Từ ngoài danh sách về null:
+ * cấp chỉ lấy từ danh sách, không giữ số do AI tự ghi. Chạy lại nhiều lần được.
+ */
+const levels = entries.map(
+  ({ word, pos, level }) => `(${quote(word)}, ${pos ? quote(pos) : "null"}, ${level})`,
+);
+writeFileSync(
+  outPath.replace(/\.sql$/, "-levels.sql"),
+  `with hsk(lemma, pos, level) as (values\n${levels.join(",\n")}\n),
+matched as (
+  select w.id, coalesce(
+    (select min(h.level) from hsk h where h.lemma = w.lemma and h.pos = w.pos),
+    (select min(h.level) from hsk h where h.lemma = w.lemma)
+  ) as level
+  from public.words w
+  where w.language = 'zh'
+)
+update public.words w
+set details = jsonb_set(w.details, '{language_extra,hsk}', coalesce(to_jsonb(m.level), 'null'::jsonb)),
+    content_updated_at = now()
+from matched m
+where m.id = w.id
+  and w.details -> 'language_extra' ->> 'hsk' is distinct from m.level::text;\n`,
+);

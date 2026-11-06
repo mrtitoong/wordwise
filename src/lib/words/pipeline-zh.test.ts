@@ -162,6 +162,16 @@ describe("tạo thẻ từ tiếng Trung", () => {
     expect(content.language_extra).toMatchObject({ han_viet: ["khán"] });
   });
 
+  it("bỏ cấp HSK do AI tự điền: cấp chỉ lấy từ danh sách", async () => {
+    const response = draft();
+    const { deps, saved } = setup(
+      { ...response, language_extra: { ...response.language_extra, hsk: 3 } },
+      KAN,
+    );
+    await processJob(job(), deps);
+    expect(saved[0]!.word.details.language_extra).toMatchObject({ hsk: null });
+  });
+
   it("lượng từ lưu được; âm AI viết ngoài từ điển thì đánh dấu cần duyệt", async () => {
     const lemma = "个";
     const content = draft({ lemma, pos: "classifier", sense_pinyin: ["gě"] });

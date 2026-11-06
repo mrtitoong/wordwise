@@ -17,8 +17,8 @@ Một người thử, Safari iPhone (Safari 26), bản chính, khoảng 14 phút
 
 Chưa rõ:
 
-- Lượt Quên của 爱: người thử bấm "Không nhớ", hay sai quá 2/10 nét. Nhật ký không ghi số nét sai, nên không biết iPhone có
-  từ chối nét đúng nhiều hơn Android (63/63) hay không. Mới có 2 lượt Viết chữ, đều là ôn ngoài lịch, đều ở mức có nét mờ.
+- Lượt Quên của 爱: chủ sản phẩm xác nhận một số nét viết hơi lệch nên app từ chối, không phải quên chữ. Mới có 2 lượt Viết
+  chữ, đều là ôn ngoài lịch, đều ở mức có nét mờ.
 
 Chưa thử trên iPhone:
 
@@ -26,6 +26,20 @@ Chưa thử trên iPhone:
 - Viết chữ không có nét mờ (mức 3–4).
 - Tập phát âm tiếng Trung và đường cao độ (tài khoản này không có lượt chấm nào).
 - Cài app vào Màn hình chính.
+
+## Lần thử 2026-11-06
+
+Cùng tài khoản và iPhone, 08:51–08:59 giờ VN. Kết quả đọc từ log, chưa có nhận xét của người thử.
+
+| Việc | Kết quả | Căn cứ |
+|---|---|---|
+| Tập phát âm tiếng Trung | Máy chủ chấm được | 6/6 lượt `assess-pronunciation` trả 200, 1–2,6 giây; chưa biết mức hiện ra và đường cao độ |
+| Viết chữ | 3/4 từ đạt | 爱, 博士 Nhớ; 承诺 Khó; 脸 Quên (chưa rõ lý do) |
+| Đồng bộ | Đủ 10/10 lượt | 5 lượt trễ 6–30 giây thay vì 2–4 giây |
+| Tải trước audio | Không lỗi | 7 câu chưa có file trả 400 (`NoSuchKey`), app bỏ qua như thiết kế |
+
+Lượt trễ khớp với lúc máy mất mạng hoặc app bị ẩn (bộ đồng bộ bỏ qua cả hai), nhưng log không phân biệt được. Lúc
+08:55:42 máy vẫn gửi được request. **Cần người thử xác nhận có bật Chế độ máy bay không.**
 
 ## Offline trên CI
 

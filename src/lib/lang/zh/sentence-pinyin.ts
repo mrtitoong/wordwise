@@ -59,7 +59,35 @@ function readsParticleAsLiao(word: string, reading: Reading): boolean {
 }
 
 /** Có trong từ điển nhưng trong câu gần như luôn là hai từ (这不是 là 这 + 不是). */
-const NOT_WORDS = new Set(["这不", "那不"]);
+const NOT_WORDS = new Set(["这不", "那不", "你等", "我等", "他等"]);
+
+/** Tên riêng hay gặp trong câu ví dụ: data/zh/lexicon.tsv đã bỏ tên riêng nên phải ghi ở đây. */
+const PROPER_NAMES: Record<string, string> = {
+  北京: "Běijīng",
+  上海: "Shànghǎi",
+  广州: "Guǎngzhōu",
+  深圳: "Shēnzhèn",
+  南京: "Nánjīng",
+  杭州: "Hángzhōu",
+  成都: "Chéngdū",
+  西安: "Xī'ān",
+  香港: "Xiānggǎng",
+  台湾: "Táiwān",
+  长城: "Chángchéng",
+  天安门: "Tiān'ānmén",
+  中国: "Zhōngguó",
+  美国: "Měiguó",
+  英国: "Yīngguó",
+  法国: "Fǎguó",
+  德国: "Déguó",
+  韩国: "Hánguó",
+  俄罗斯: "Éluósī",
+  日本: "Rìběn",
+  越南: "Yuènán",
+  河内: "Hénèi",
+  亚洲: "Yàzhōu",
+  欧洲: "Ōuzhōu",
+};
 
 /** Từ thông dụng có thanh nhẹ, hay bị từ đứng trước lấy mất chữ đầu. */
 const COMMON_NEUTRAL_WORDS = new Set([
@@ -151,6 +179,8 @@ export function sentencePinyin(
     for (let size = Math.min(MAX_WORD_CHARS, rest.length); size >= 2; size--) {
       const part = rest.slice(0, size);
       const word = part.join("");
+      const name = PROPER_NAMES[word];
+      if (name) return { size, reading: name };
       const allowed = allowedReadings(lexicon.get(word));
       if (allowed.length === 0 || NOT_WORDS.has(word)) continue;
       if (allowed.some((r) => readsParticleAsLiao(word, r))) continue;

@@ -127,6 +127,17 @@ export default async function SettingsPage() {
         </h2>
         <ThemeSwitcher initial={parseTheme((await cookies()).get(THEME_COOKIE)?.value)} />
       </section>
+      <section className="pt-6">
+        <Link
+          href="/about"
+          className="flex min-h-12 items-center justify-between rounded-xl border px-4 focus-visible:outline-2 focus-visible:outline-ring"
+        >
+          {t("about")}
+          <span aria-hidden className="text-muted-foreground">
+            ›
+          </span>
+        </Link>
+      </section>
     </main>
   );
 }

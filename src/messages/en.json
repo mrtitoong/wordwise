@@ -248,7 +248,8 @@
       "menuStep2": "Choose “Install app” or “Add to Home screen”."
     },
     "practiceHanzi": "Practise writing",
-    "practiceHanziHint": "Write Chinese characters in stroke order once you know the meaning. It takes longer than typing, so turn it off if you only need to read."
+    "practiceHanziHint": "Write Chinese characters in stroke order once you know the meaning. It takes longer than typing, so turn it off if you only need to read.",
+    "about": "About"
   },
   "languages": {
     "vi": "Tiếng Việt",
@@ -1674,5 +1675,52 @@
     "body": "WordWise needs Safari 16.4 (iOS 16.4) or later, or a recent Chrome, Edge or Firefox. This browser can't display the app.",
     "iphone": "On iPhone/iPad every browser (Chrome included) runs on Safari inside, so iOS needs updating: Settings → General → Software Update.",
     "other": "If this device can't be updated any more (e.g. iPhone 6 or older), open WordWise on another phone or a computer. Your synced data will be there when you sign in."
+  },
+  "about": {
+    "title": "About",
+    "intro": "WordWise helps Vietnamese learners study foreign vocabulary with notebooks, word cards and spaced review.",
+    "aiContent": "Word cards, examples and Sino-Vietnamese readings are written by AI (Claude) and may contain mistakes. If you find one, use the report button on the word card.",
+    "sourcesTitle": "Data sources",
+    "source": "Source",
+    "license": "License",
+    "data": "Modified data",
+    "hskNotice": "WordWise is not affiliated with or certified by the organizers of the HSK exam. HSK levels only describe vocabulary level.",
+    "sources": {
+      "ngsl": {
+        "name": "New General Service List, New Academic Word List",
+        "use": "Common English word lists and frequencies. By Browne, Culligan and Phillips (2013).",
+        "license": "CC BY-SA 4.0."
+      },
+      "wiktionary": {
+        "name": "Wiktionary (via Free Dictionary API)",
+        "use": "English dictionary definitions, used as a reference when writing word cards.",
+        "license": "CC BY-SA 4.0."
+      },
+      "cedict": {
+        "name": "CC-CEDICT",
+        "use": "Pinyin, simplified and traditional forms of Chinese words (MDBG). Modified by WordWise: definitions and proper nouns removed, common-reading flag added.",
+        "license": "CC BY-SA 4.0. The modified data stays under this license."
+      },
+      "unihan": {
+        "name": "Unicode Han Database (Unihan)",
+        "use": "Used to cross-check readings of Chinese characters. Copyright © 1991–2026 Unicode, Inc.",
+        "license": "Unicode License V3."
+      },
+      "strokes": {
+        "name": "Make Me A Hanzi, hanzi-writer-data",
+        "use": "Chinese character stroke data, derived from fonts by Arphic Technology.",
+        "license": "Arphic Public License. The data is used unmodified."
+      },
+      "hanziWriter": {
+        "name": "Hanzi Writer",
+        "use": "Library that draws and checks Chinese character strokes.",
+        "license": "MIT."
+      },
+      "hsk": {
+        "name": "Word list by HSK 3.0 level",
+        "use": "Word levels from the GF 0025-2021 standard, taken from the hsk30 transcription (Pleco). Only words and levels are used.",
+        "license": "Rights belong to the issuing body."
+      }
+    }
   }
 }

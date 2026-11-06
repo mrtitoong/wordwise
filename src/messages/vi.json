@@ -248,7 +248,8 @@
       "menuStep2": "Chọn “Cài đặt ứng dụng” hoặc “Thêm vào Màn hình chính”."
     },
     "practiceHanzi": "Luyện viết chữ",
-    "practiceHanziHint": "Viết chữ Hán đúng thứ tự nét sau khi đã nhớ nghĩa. Viết tay tốn thời gian hơn gõ, tắt nếu bạn chỉ cần đọc hiểu."
+    "practiceHanziHint": "Viết chữ Hán đúng thứ tự nét sau khi đã nhớ nghĩa. Viết tay tốn thời gian hơn gõ, tắt nếu bạn chỉ cần đọc hiểu.",
+    "about": "Giới thiệu"
   },
   "languages": {
     "vi": "Tiếng Việt",
@@ -1674,5 +1675,52 @@
     "body": "WordWise cần Safari 16.4 (iOS 16.4) trở lên, hoặc Chrome, Edge, Firefox bản mới. Trình duyệt này không hiển thị được giao diện của app.",
     "iphone": "Trên iPhone/iPad, mọi trình duyệt (kể cả Chrome) đều dùng Safari bên trong, nên cần cập nhật iOS: Cài đặt → Cài đặt chung → Cập nhật phần mềm.",
     "other": "Nếu máy không cập nhật được nữa (vd iPhone 6 trở về trước), hãy mở WordWise trên điện thoại khác hoặc máy tính. Dữ liệu đã đồng bộ sẽ có ở đó khi bạn đăng nhập."
+  },
+  "about": {
+    "title": "Giới thiệu",
+    "intro": "WordWise giúp người Việt học từ vựng ngoại ngữ bằng sổ tay, thẻ từ và lịch ôn cách quãng.",
+    "aiContent": "Nội dung thẻ từ, ví dụ và âm Hán Việt do AI (Claude) viết, có thể còn sai sót. Thấy lỗi, hãy dùng nút báo lỗi trên thẻ từ.",
+    "sourcesTitle": "Nguồn dữ liệu",
+    "source": "Nguồn",
+    "license": "Giấy phép",
+    "data": "Dữ liệu đã sửa",
+    "hskNotice": "WordWise không liên kết và không được chứng nhận bởi đơn vị tổ chức kỳ thi HSK. Cấp HSK chỉ dùng để mô tả mức độ từ vựng.",
+    "sources": {
+      "ngsl": {
+        "name": "New General Service List, New Academic Word List",
+        "use": "Danh sách từ tiếng Anh thông dụng và tần suất. Tác giả: Browne, Culligan và Phillips (2013).",
+        "license": "CC BY-SA 4.0."
+      },
+      "wiktionary": {
+        "name": "Wiktionary (qua Free Dictionary API)",
+        "use": "Nghĩa từ điển tiếng Anh, dùng làm tham khảo khi viết thẻ từ.",
+        "license": "CC BY-SA 4.0."
+      },
+      "cedict": {
+        "name": "CC-CEDICT",
+        "use": "Pinyin, dạng giản thể và phồn thể của từ tiếng Trung (MDBG). WordWise đã sửa đổi: bỏ phần định nghĩa và tên riêng, thêm cờ âm thông dụng.",
+        "license": "CC BY-SA 4.0. Phần dữ liệu đã sửa đổi giữ nguyên giấy phép này."
+      },
+      "unihan": {
+        "name": "Unicode Han Database (Unihan)",
+        "use": "Đối chiếu âm đọc của chữ Hán. Copyright © 1991–2026 Unicode, Inc.",
+        "license": "Unicode License V3."
+      },
+      "strokes": {
+        "name": "Make Me A Hanzi, hanzi-writer-data",
+        "use": "Dữ liệu nét chữ Hán, dẫn xuất từ font của Arphic Technology.",
+        "license": "Arphic Public License. Dữ liệu dùng nguyên bản."
+      },
+      "hanziWriter": {
+        "name": "Hanzi Writer",
+        "use": "Thư viện vẽ và chấm nét chữ Hán.",
+        "license": "MIT."
+      },
+      "hsk": {
+        "name": "Danh sách từ theo cấp HSK 3.0",
+        "use": "Cấp từ theo tiêu chuẩn GF 0025-2021, lấy qua bản chép hsk30 (Pleco). Chỉ dùng chữ và cấp.",
+        "license": "Bản quyền thuộc đơn vị ban hành."
+      }
+    }
   }
 }

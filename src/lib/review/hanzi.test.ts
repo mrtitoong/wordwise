@@ -1,7 +1,14 @@
 import { describe, expect, it } from "vitest";
 import { Rating } from "ts-fsrs";
 import { gradeFromOutcome } from "@/lib/srs/grade";
-import { allowedMistakes, hanziParts, hanziResult, showsOutline, strokeDataUrl } from "./hanzi";
+import {
+  allowedMistakes,
+  hanziParts,
+  hanziResult,
+  missedStrokes,
+  showsOutline,
+  strokeDataUrl,
+} from "./hanzi";
 
 describe("hanziParts", () => {
   it("chỉ chữ Hán phải viết", () => {
@@ -27,6 +34,28 @@ describe("showsOutline", () => {
       false,
       false,
     ]);
+  });
+});
+
+describe("missedStrokes", () => {
+  it("thử lại một nét nhiều lần chỉ tính một nét sai", () => {
+    const sameStroke = { part: 0, stroke: 4 };
+    expect(missedStrokes([sameStroke, sameStroke, sameStroke])).toBe(1);
+  });
+
+  it("cùng số nét ở hai chữ khác nhau là hai nét sai", () => {
+    expect(
+      missedStrokes([
+        { part: 0, stroke: 1 },
+        { part: 1, stroke: 1 },
+      ]),
+    ).toBe(2);
+  });
+
+  it("một nét khó thử nhiều lần không làm hỏng cả chữ 10 nét", () => {
+    const stroke = { part: 0, stroke: 7 };
+    const mistakes = missedStrokes([stroke, stroke, stroke, stroke]);
+    expect(hanziResult({ strokes: 10, mistakes, hints: 0 }).correct).toBe(true);
   });
 });
 

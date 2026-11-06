@@ -13,8 +13,10 @@ import {
   STROKE_LENIENCY,
   hanziParts,
   hanziResult,
+  missedStrokes,
   showsOutline,
   strokeDataUrl,
+  type StrokeMiss,
 } from "@/lib/review/hanzi";
 import { MAX_HINT_LEVEL } from "@/lib/review/writing";
 import type { MasteryLevel } from "@/lib/srs/mastery";
@@ -83,7 +85,7 @@ export function HanziWriting({
   const pad = useRef<HTMLDivElement>(null);
   const writer = useRef<HanziWriter | null>(null);
   const nextStroke = useRef(0);
-  const mistakes = useRef(0);
+  const misses = useRef<StrokeMiss[]>([]);
   const hintCount = useRef(0);
 
   useEffect(() => {
@@ -126,8 +128,8 @@ export function HanziWriting({
     });
     writer.current = instance;
     void instance.quiz({
-      onMistake: () => {
-        mistakes.current++;
+      onMistake: (stroke) => {
+        misses.current.push({ part: index, stroke: stroke.strokeNum });
       },
       onCorrectStroke: (stroke) => {
         nextStroke.current = stroke.strokeNum + 1;
@@ -141,7 +143,13 @@ export function HanziWriting({
           (sum, part) => sum + (strokeData.get(part)?.strokes.length ?? 0),
           0,
         );
-        setResult(hanziResult({ strokes, mistakes: mistakes.current, hints: hintCount.current }));
+        setResult(
+          hanziResult({
+            strokes,
+            mistakes: missedStrokes(misses.current),
+            hints: hintCount.current,
+          }),
+        );
         setPhase("finished");
       },
     });

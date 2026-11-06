@@ -38,8 +38,8 @@ Người thử xác nhận (qua chủ sản phẩm): có bật Chế độ máy 
 trễ là lượt ôn lúc tắt mạng, có mạng lại thì gửi đủ. 脸 ra Quên do một ít nét bị từ chối. Mức phát âm, đường cao độ và
 dòng "chưa chấm thanh điệu" hiện hợp lý.
 
-**Kết luận: đạt tiêu chí Z3 và Z4.** Còn lại: viết không có nét mờ (mức 3–4) chưa thử; chấm nét còn chặt, 2/6 lượt Viết
-chữ ra Quên vì nét lệch.
+**Kết luận: đạt tiêu chí Z3 và Z4.** Còn lại: viết không có nét mờ (mức 3–4) chưa thử. 2/6 lượt Viết chữ ra Quên vì nét
+lệch: đã nới mức nhận nét lên 1,5 và đếm lỗi theo nét, chưa thử lại trên iPhone.
 
 ## Offline trên CI
 

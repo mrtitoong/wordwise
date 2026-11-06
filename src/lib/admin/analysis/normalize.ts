@@ -6,6 +6,7 @@
 import { MAX_ENTRY_LENGTH } from "@/lib/entry/normalize";
 import { cleanSurface, toLemma, type Lemmatizer } from "@/lib/entry/lemma";
 import type { Triage } from "@/lib/llm/tasks/list-analysis";
+import { languagePack } from "@/lib/lang";
 import { CefrSchema, type Cefr, type Language } from "@/lib/schema/word";
 import type { Candidate, LibraryWord } from "./types";
 
@@ -26,6 +27,7 @@ export function lemmatize(
     !surface ||
     surface.length > MAX_ENTRY_LENGTH ||
     !/\p{L}/u.test(surface) ||
+    !languagePack(language).isWordText(surface) ||
     surface.split(" ").length > 6
   ) {
     return {

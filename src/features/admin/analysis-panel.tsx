@@ -241,6 +241,7 @@ const WARNING_CODES = [
   "rare",
   "above_level",
   "many_senses",
+  "multi_reading",
   "no_context",
   "low_confidence",
 ] as const;

@@ -126,9 +126,11 @@ export type SensePickInput = {
 export function buildSensePickerPrompt(
   template: PromptTemplate,
   items: readonly SensePickInput[],
+  languageName: string,
 ): { system: string; prompt: string } {
   expectTask(template, "sense-picker");
   const vars = {
+    language_name: languageName,
     items_json: safeText(
       JSON.stringify(
         items.map((i) => ({
@@ -165,6 +167,7 @@ export type Subtopics = z.infer<typeof SubtopicsSchema>;
 export function buildSubtopicsPrompt(
   template: PromptTemplate,
   input: {
+    language: string;
     title: string;
     topic: string | null;
     groupCount: number;
@@ -174,6 +177,7 @@ export function buildSubtopicsPrompt(
 ): { system: string; prompt: string } {
   expectTask(template, "list-subtopics");
   const vars = {
+    language_name: input.language,
     title: input.title.replaceAll('"', "'"),
     topic: input.topic?.trim() || "không ghi",
     group_count: String(input.groupCount),

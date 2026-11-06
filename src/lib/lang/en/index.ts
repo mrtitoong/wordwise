@@ -28,4 +28,10 @@ export const en: LanguagePack = {
   hasTraditional: false,
   searchesPinyin: false,
   reverseTask: "reverse-lookup",
+  promptName: "tiếng Anh",
+  listTriage: true,
+  listDocuments: true,
+  adminRegenerate: true,
+  placementTest: true,
+  multiReadings: false,
 };

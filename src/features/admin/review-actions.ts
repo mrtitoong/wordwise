@@ -8,7 +8,7 @@ import { revalidatePath } from "next/cache";
 import { z } from "zod";
 import { adminSavePayload } from "@/lib/admin/review";
 import { requireAdmin } from "@/lib/auth/admin";
-import { WordContentSchema } from "@/lib/schema/word";
+import { StoredContentSchema } from "@/lib/lang/zh/content-schema";
 import { createClient } from "@/lib/supabase/server";
 import type { StoredWord } from "@/lib/words/api";
 import { toStoredWord, WORD_SELECT, type WordWithSenses } from "@/lib/words/supabase-store";
@@ -164,7 +164,7 @@ export async function saveWordContent(
 ): Promise<ActionResult<{ word: StoredWord }>> {
   await requireAdmin();
   if (!Id.safeParse(wordId).success) return { ok: false, error: "invalid" };
-  const parsed = WordContentSchema.safeParse(input);
+  const parsed = StoredContentSchema.safeParse(input);
   if (!parsed.success) return { ok: false, error: "invalid" };
   const current = await loadStoredWord(wordId);
   if (!current) return { ok: false, error: "not_found" };

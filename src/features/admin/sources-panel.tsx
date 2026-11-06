@@ -39,10 +39,13 @@ export function SourcesPanel({
   listId,
   sources,
   locked,
+  documents,
 }: {
   listId: string;
   sources: SourceSummary[];
   locked: boolean;
+  /** Nhận bài đọc (ngôn ngữ có AI trích từ). */
+  documents: boolean;
 }) {
   const t = useTranslations("admin.sources");
   const router = useRouter();
@@ -108,7 +111,10 @@ export function SourcesPanel({
       ) : (
         <div className="flex flex-col gap-3 rounded-xl border p-3">
           <div role="tablist" className="flex flex-wrap gap-2">
-            {(["table", "lines", "document"] as const).map((k) => (
+            {(documents
+              ? (["table", "lines", "document"] as const)
+              : (["table", "lines"] as const)
+            ).map((k) => (
               <button
                 key={k}
                 type="button"

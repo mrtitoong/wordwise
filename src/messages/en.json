@@ -521,7 +521,8 @@
           "above_level": "Above level",
           "many_senses": "Many senses",
           "no_context": "No context",
-          "low_confidence": "AI unsure"
+          "low_confidence": "AI unsure",
+          "multi_reading": "Multiple readings"
         },
         "dropped": {
           "invalid": "invalid text",
@@ -644,7 +645,8 @@
         "type": "Tip type",
         "text_vi": "Text",
         "difference_vi": "How they differ",
-        "etymology_vi": "Origin"
+        "etymology_vi": "Origin",
+        "sense_pinyin": "Reading of sense {number}"
       },
       "sections": {
         "examples": "Examples",

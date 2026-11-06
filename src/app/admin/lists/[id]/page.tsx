@@ -6,6 +6,8 @@ import { Button } from "@/components/ui/button";
 import { AnalysisPanel } from "@/features/admin/analysis-panel";
 import { ListForm } from "@/features/admin/list-form";
 import { SourcesPanel } from "@/features/admin/sources-panel";
+import { languagePack } from "@/lib/lang";
+import type { Language } from "@/lib/schema/word";
 import { StatusBadge } from "@/features/admin/status-badge";
 import { JOB_COLUMNS, type ListForm as ListValues } from "@/lib/admin/lists";
 import { createClient } from "@/lib/supabase/server";
@@ -83,7 +85,12 @@ export default async function AdminListPage({ params }: { params: Params }) {
         </h2>
         <ListForm id={id} initial={initial} />
       </section>
-      <SourcesPanel listId={id} sources={sources ?? []} locked={list.status === "processing"} />
+      <SourcesPanel
+        listId={id}
+        sources={sources ?? []}
+        locked={list.status === "processing"}
+        documents={languagePack(list.language as Language).listDocuments}
+      />
       <AnalysisPanel
         key={jobs?.[0]?.id ?? "none"}
         listId={id}

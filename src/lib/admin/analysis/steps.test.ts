@@ -446,6 +446,22 @@ describe("sắp xếp", () => {
 
 /* ---------- Cảnh báo ---------- */
 
+describe("tiếng Trung", () => {
+  it("bỏ dòng không có chữ Hán", () => {
+    const row = lemmatize(cand("pinyin"), "zh", englishLemmatizer);
+    expect(row.dropped).toBe("invalid");
+    expect(lemmatize(cand("学校"), "zh", englishLemmatizer).lemma).toBe("学校");
+  });
+
+  it("từ nhiều âm có cảnh báo cần người duyệt", () => {
+    const codes = (readings?: number) =>
+      warningsFor(cand("当"), undefined, { targetCefr: null }, readings).map((w) => w.code);
+    expect(codes(2)).toContain("multi_reading");
+    expect(codes(1)).not.toContain("multi_reading");
+    expect(codes()).not.toContain("multi_reading");
+  });
+});
+
 describe("cảnh báo", () => {
   it("đủ các loại cảnh báo", () => {
     const w = word("bank", {

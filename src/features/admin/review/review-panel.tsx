@@ -15,6 +15,8 @@ import { RelatedTab } from "@/features/words/word-card/related-tab";
 import { UsageTab } from "@/features/words/word-card/usage-tab";
 import { requestRegenerate } from "@/lib/admin/request-regenerate";
 import { REGENERATE_TABS, type RegenerateTab, type ReviewItem } from "@/lib/admin/review";
+import { languagePack } from "@/lib/lang";
+import type { StoredContent } from "@/lib/lang/zh/content-schema";
 import type { Pos, WordContent } from "@/lib/schema/word";
 import { createClient } from "@/lib/supabase/client";
 import type { StoredWord } from "@/lib/words/api";
@@ -111,7 +113,7 @@ export function ReviewPanel({
       setMode("edit");
     });
 
-  const save = (content: WordContent) =>
+  const save = (content: StoredContent) =>
     startTransition(async () => {
       const result = await saveWordContent(listId, item.wordId, content);
       if (!result.ok) return fail(result.error);
@@ -271,16 +273,18 @@ export function ReviewPanel({
                       ))}
                     </Tabs.List>
                     <div className="flex flex-col gap-3 pt-4">
-                      <Button
-                        type="button"
-                        variant="outline"
-                        className="min-h-11 self-start"
-                        disabled={pending}
-                        onClick={regenerate}
-                      >
-                        <RefreshCw className={pending ? "animate-spin" : undefined} aria-hidden />
-                        {t("regenerate", { tab: tc(`tabs.${tab}`) })}
-                      </Button>
+                      {languagePack(word.content.language).adminRegenerate && (
+                        <Button
+                          type="button"
+                          variant="outline"
+                          className="min-h-11 self-start"
+                          disabled={pending}
+                          onClick={regenerate}
+                        >
+                          <RefreshCw className={pending ? "animate-spin" : undefined} aria-hidden />
+                          {t("regenerate", { tab: tc(`tabs.${tab}`) })}
+                        </Button>
+                      )}
                       <Tabs.Content value="meaning">
                         <MeaningTab />
                       </Tabs.Content>

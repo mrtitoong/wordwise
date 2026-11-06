@@ -70,11 +70,17 @@ describe("lọc Thư viện", () => {
 
 describe("sổ theo danh sách", () => {
   const notebooks = [
-    { id: "default", source_list_id: null, deleted_at: null, is_archived: false },
-    { id: "a", source_list_id: "L1", deleted_at: null, is_archived: false },
-    { id: "old", source_list_id: "L2", deleted_at: "2026-10-01", is_archived: false },
-    { id: "free", source_list_id: null, deleted_at: null, is_archived: false },
-    { id: "archived", source_list_id: null, deleted_at: null, is_archived: true },
+    { id: "default", language: "en", source_list_id: null, deleted_at: null, is_archived: false },
+    { id: "a", language: "en", source_list_id: "L1", deleted_at: null, is_archived: false },
+    {
+      id: "old",
+      language: "en",
+      source_list_id: "L2",
+      deleted_at: "2026-10-01",
+      is_archived: false,
+    },
+    { id: "free", language: "en", source_list_id: null, deleted_at: null, is_archived: false },
+    { id: "archived", language: "en", source_list_id: null, deleted_at: null, is_archived: true },
   ];
 
   it("tìm sổ đã thêm danh sách (bỏ sổ đã xóa)", () => {
@@ -83,7 +89,11 @@ describe("sổ theo danh sách", () => {
   });
 
   it("sổ đích: chưa gắn danh sách, không phải Sổ của tôi, chưa lưu trữ", () => {
-    expect(targetNotebooks(notebooks, "default").map((n) => n.id)).toEqual(["free"]);
+    expect(targetNotebooks(notebooks, "default", "en").map((n) => n.id)).toEqual(["free"]);
+  });
+
+  it("sổ đích: chỉ sổ cùng ngôn ngữ với danh sách", () => {
+    expect(targetNotebooks(notebooks, "default", "zh")).toEqual([]);
   });
 });
 

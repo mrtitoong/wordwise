@@ -49,20 +49,26 @@ describe("prompt phân tích danh sách", () => {
     expect(triage.prompt).toContain('{"key":"a","word":"recieve","hint":null}');
     expect(triage.prompt).toContain('"hint":"bờ sông"');
 
-    const senses = buildSensePickerPrompt(parsePromptTemplate(sensePickerPrompt), [
-      {
-        key: "k",
-        word: "bank",
-        sentence: "We sat on the bank.",
-        senses: [
-          { definitionEn: "money", meaningVi: "ngân hàng" },
-          { definitionEn: "river side", meaningVi: "bờ sông" },
-        ],
-      },
-    ]);
+    const senses = buildSensePickerPrompt(
+      parsePromptTemplate(sensePickerPrompt),
+      [
+        {
+          key: "k",
+          word: "bank",
+          sentence: "We sat on the bank.",
+          senses: [
+            { definitionEn: "money", meaningVi: "ngân hàng" },
+            { definitionEn: "river side", meaningVi: "bờ sông" },
+          ],
+        },
+      ],
+      "tiếng Trung",
+    );
     expect(senses.prompt).toContain('"n":2,"definition_en":"river side"');
+    expect(senses.system).toContain("giáo viên tiếng Trung");
 
     const topics = buildSubtopicsPrompt(parsePromptTemplate(listSubtopicsPrompt), {
+      language: "tiếng Anh",
       title: "T",
       topic: null,
       groupCount: 4,

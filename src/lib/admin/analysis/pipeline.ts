@@ -15,6 +15,7 @@
  */
 import type { z } from "zod";
 import type { Lemmatizer } from "@/lib/entry/lemma";
+import { languagePack } from "@/lib/lang";
 import { estimateCostUsd } from "@/lib/llm/cost";
 import type { PromptTemplate } from "@/lib/llm/prompt-template";
 import type { LlmRouter } from "@/lib/llm/router";
@@ -124,6 +125,8 @@ export interface AnalysisStore {
   /** Mọi từ trong kho (mọi loại từ) có lemma thuộc danh sách. */
   findWords(language: Language, lemmas: readonly string[]): Promise<LibraryWord[]>;
   getWords(ids: readonly string[]): Promise<LibraryWord[]>;
+  /** Số âm đọc khác nhau của từng từ trong từ điển. */
+  readingCounts(lemmas: readonly string[]): Promise<Map<string, number>>;
   enqueueWords(
     language: Language,
     items: readonly { key: string; lemma: string; pos: Pos | null }[],
@@ -318,6 +321,12 @@ async function normalize(ctx: Ctx): Promise<StepResult> {
 
   // 2b. Từ chưa có trong kho: LLM xem trước chính tả, CEFR, độ hiếm (theo lô).
   const pending = rows.filter((c) => c.stage === "merged" && isKept(c));
+  if (pending.length > 0 && !languagePack(language).listTriage) {
+    const accepted = pending.map((c) => ({ ...c, stage: "triaged" as const }));
+    await deps.store.saveCandidates(job.id, accepted);
+    const ids = new Map(accepted.map((c) => [c.id, c]));
+    return { step: "normalize", ...progress(rows.map((c) => ids.get(c.id) ?? c)) };
+  }
   if (pending.length > 0) {
     const batches = chunks(pending, TRIAGE_BATCH).slice(
       0,
@@ -406,6 +415,7 @@ async function pickSenses(ctx: Ctx, todo: readonly Candidate[]): Promise<Candida
             buildSensePickerPrompt(
               template,
               batch.map((b) => b.input),
+              languagePack(job.list.language).promptName,
             ),
           SensePicksSchema,
         ),
@@ -549,6 +559,7 @@ async function order(ctx: Ctx): Promise<StepResult> {
           "list-subtopics",
           (template) =>
             buildSubtopicsPrompt(template, {
+              language: languagePack(job.list.language).promptName,
               title: job.list.title,
               topic: job.list.topic,
               groupCount: Math.max(2, Math.round((groupCount * batch.length) / kept.length)),
@@ -600,9 +611,12 @@ async function warn(ctx: Ctx): Promise<StepResult> {
   const words = new Map(
     (await deps.store.getWords(kept.map((c) => c.wordId!))).map((w) => [w.id, w]),
   );
+  const readings = languagePack(job.list.language).multiReadings
+    ? await deps.store.readingCounts([...new Set(kept.map((c) => c.lemma!))])
+    : new Map<string, number>();
   const warned = kept.map((c) => ({
     ...c,
-    warnings: warningsFor(c, words.get(c.wordId!), job.list),
+    warnings: warningsFor(c, words.get(c.wordId!), job.list, readings.get(c.lemma!)),
   }));
   await deps.store.saveCandidates(job.id, warned);
   const ids = new Map(warned.map((c) => [c.id, c]));

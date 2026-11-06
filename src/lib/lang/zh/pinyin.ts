@@ -67,6 +67,18 @@ function toneOfMarked(syllable: string): number {
   return 5;
 }
 
+/** Admin sửa âm của một nghĩa: nghĩa đầu kéo theo pinyin và thanh điệu của từ. */
+export function withSensePinyin<
+  T extends { pinyin: string; tones: number[]; sense_pinyin?: string[] | undefined },
+>(extra: T, sense: number, pinyin: string): T {
+  const sensePinyin = [...(extra.sense_pinyin ?? [])];
+  sensePinyin[sense] = pinyin;
+  const updated = { ...extra, sense_pinyin: sensePinyin };
+  if (sense !== 0) return updated;
+  const tones = pinyin.trim().split(/\s+/).map(toneOfMarked);
+  return { ...updated, pinyin, tones };
+}
+
 /** 一 đứng sau các chữ này đọc yī: số đếm, thứ tự (第一次, 十一月) và từ gốc 统一, 唯一, 单一. */
 const YI_KEPT_AFTER = "第十百千万二三四五六七八九零〇统唯单";
 /** 一 đứng trước các chữ này đọc yī: số, ngày tháng, thứ hạng (一月, 一号, 一楼, 一二三, 一等, 一级). */

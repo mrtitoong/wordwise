@@ -121,7 +121,13 @@ var en = {
   isWordText: () => true,
   hasTraditional: false,
   searchesPinyin: false,
-  reverseTask: "reverse-lookup"
+  reverseTask: "reverse-lookup",
+  promptName: "tiếng Anh",
+  listTriage: true,
+  listDocuments: true,
+  adminRegenerate: true,
+  placementTest: true,
+  multiReadings: false
 };
 
 // src/lib/lang/zh/query.ts
@@ -154,7 +160,13 @@ var zh = {
   isWordText: hasHan,
   hasTraditional: true,
   searchesPinyin: true,
-  reverseTask: "reverse-lookup-zh"
+  reverseTask: "reverse-lookup-zh",
+  promptName: "tiếng Trung",
+  listTriage: false,
+  listDocuments: false,
+  adminRegenerate: false,
+  placementTest: false,
+  multiReadings: true
 };
 
 // src/lib/lang/index.ts
@@ -184,7 +196,13 @@ function plainPack(code) {
     isWordText: () => true,
     hasTraditional: false,
     searchesPinyin: false,
-    reverseTask: "reverse-lookup"
+    reverseTask: "reverse-lookup",
+    promptName: code,
+    listTriage: false,
+    listDocuments: false,
+    adminRegenerate: false,
+    placementTest: false,
+    multiReadings: false
   };
 }
 function languagePack(code) {

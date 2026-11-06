@@ -38,12 +38,27 @@ const opened = async () =>
     .map((uw) => uw.sense_id)
     .sort();
 
+describe("addListToNotebook (ngôn ngữ)", () => {
+  it("sổ mới mang ngôn ngữ của danh sách", async () => {
+    const { notebook } = await addListToNotebook(db, USER, {
+      language: "zh",
+      listId: "list-zh",
+      version: 1,
+      target: { kind: "new", name: "HSK", coverUrl: null },
+      targetDate: null,
+      items: [],
+    });
+    expect(notebook.language).toBe("zh");
+  });
+});
+
 describe("addListToNotebook", () => {
   it("tạo sổ mới gắn danh sách, phiên bản, ngày mục tiêu; giữ thứ tự, tag, câu gốc", async () => {
     const { notebook, result } = await addListToNotebook(
       db,
       USER,
       {
+        language: "en",
         listId: LIST,
         version: 2,
         target: { kind: "new", name: "IELTS Environment", coverUrl: null },
@@ -86,6 +101,7 @@ describe("addListToNotebook", () => {
     const before = await db.cards.get(cardId(userWordId(USER, sense(1)), "meaning"));
     const target = await createNotebook(db, USER, { name: "Ôn thi" });
     const { notebook, result } = await addListToNotebook(db, USER, {
+      language: "en",
       listId: LIST,
       version: 1,
       target: { kind: "existing", notebookId: target.id },
@@ -102,6 +118,7 @@ describe("addListToNotebook", () => {
   it("lỗi thì không còn sổ rỗng", async () => {
     await expect(
       addListToNotebook(db, USER, {
+        language: "en",
         listId: LIST,
         version: 1,
         target: { kind: "new", name: "  ", coverUrl: null },
@@ -116,6 +133,7 @@ describe("addListToNotebook", () => {
 describe("bản cập nhật của danh sách", () => {
   async function seed() {
     const { notebook } = await addListToNotebook(db, USER, {
+      language: "en",
       listId: LIST,
       version: 1,
       target: { kind: "new", name: "TOEIC", coverUrl: null },
@@ -176,6 +194,7 @@ describe("tỉ lệ nhớ 14 ngày cuối", () => {
         local,
         USER,
         {
+          language: "en",
           listId: LIST,
           version: 1,
           target: { kind: "new", name: "Thi", coverUrl: null },
@@ -221,6 +240,7 @@ describe("kiểm tra đầu vào", () => {
       db,
       USER,
       {
+        language: "en",
         listId: LIST,
         version: 1,
         target: { kind: "new", name: "IELTS", coverUrl: null },
@@ -278,6 +298,7 @@ describe("kiểm tra đầu vào", () => {
     await recordReview(db, USER, id, { rating: 3, mode: "flashcard" });
     const before = await db.cards.get(id);
     const { result } = await addListToNotebook(db, USER, {
+      language: "en",
       listId: LIST,
       version: 1,
       target: { kind: "new", name: "IELTS", coverUrl: null },
@@ -293,6 +314,7 @@ describe("kiểm tra đầu vào", () => {
       db,
       USER,
       {
+        language: "en",
         listId: LIST,
         version: 1,
         target: { kind: "new", name: "IELTS", coverUrl: null },

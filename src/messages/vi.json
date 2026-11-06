@@ -521,7 +521,8 @@
           "above_level": "Vượt trình độ",
           "many_senses": "Nhiều nghĩa",
           "no_context": "Không có ngữ cảnh",
-          "low_confidence": "AI chưa chắc"
+          "low_confidence": "AI chưa chắc",
+          "multi_reading": "Nhiều âm đọc"
         },
         "dropped": {
           "invalid": "chữ không hợp lệ",
@@ -644,7 +645,8 @@
         "type": "Kiểu mẹo",
         "text_vi": "Nội dung",
         "difference_vi": "Khác nhau thế nào",
-        "etymology_vi": "Nguồn gốc"
+        "etymology_vi": "Nguồn gốc",
+        "sense_pinyin": "Âm của nghĩa {number}"
       },
       "sections": {
         "examples": "Câu ví dụ",

@@ -6,11 +6,12 @@ import { useTranslations } from "next-intl";
 import { Tabs } from "radix-ui";
 import { Button } from "@/components/ui/button";
 import type { RegenerateTab } from "@/lib/admin/review";
+import { StoredContentSchema, type StoredContent } from "@/lib/lang/zh/content-schema";
+import { withSensePinyin } from "@/lib/lang/zh/pinyin";
 import {
   CefrSchema,
   PosSchema,
   RegisterSchema,
-  WordContentSchema,
   type Pos,
   type Register,
   type WordContent,
@@ -81,7 +82,8 @@ function pathLabel(path: readonly PropertyKey[], senseLabel: (n: number) => stri
 
 /**
  * Form sửa nội dung từ dùng chung (5 tab như thẻ từ). Giữ nguyên chữ, loại từ, số nghĩa và dạng
- * từ; kiểm tra bằng WordContentSchema trước khi gửi (server kiểm tra lại).
+ * từ; kiểm tra bằng StoredContentSchema trước khi gửi (server kiểm tra lại). Tiếng Trung sửa âm
+ * của từng nghĩa thay cho IPA, CEFR; pinyin câu ví dụ không tự đổi theo.
  */
 export function WordEditor({
   initial,
@@ -90,15 +92,15 @@ export function WordEditor({
   onCancel,
   onSave,
 }: {
-  initial: WordContent;
+  initial: StoredContent;
   initialTab: RegenerateTab;
   saving: boolean;
   onCancel: () => void;
-  onSave: (content: WordContent) => void;
+  onSave: (content: StoredContent) => void;
 }) {
   const t = useTranslations("admin.review");
   const tc = useTranslations("wordCard");
-  const [content, setContent] = useState<WordContent>(initial);
+  const [content, setContent] = useState<WordContent>(initial as WordContent);
   const [tab, setTab] = useState<RegenerateTab>(initialTab);
   const [error, setError] = useState<string | null>(null);
 
@@ -109,8 +111,10 @@ export function WordEditor({
       return next;
     });
 
+  const zhExtra = content.language_extra?.kind === "zh" ? content.language_extra : null;
+
   const submit = () => {
-    const parsed = WordContentSchema.safeParse(content);
+    const parsed = StoredContentSchema.safeParse(content);
     if (!parsed.success) {
       const issue = parsed.error.issues[0]!;
       setError(`${pathLabel(issue.path, (n) => tc("senseN", { number: n }))}: ${issue.message}`);
@@ -286,22 +290,45 @@ export function WordEditor({
         </Tabs.List>
 
         <Tabs.Content value="meaning" className="flex flex-col gap-3 pt-4">
+          {zhExtra && (
+            <div className="grid gap-2 sm:grid-cols-2">
+              {content.senses.map((_, index) => (
+                <label key={index} className="flex flex-col gap-1 text-sm">
+                  {t("fields.sense_pinyin", { number: index + 1 })}
+                  <input
+                    className={input}
+                    lang="zh-Latn"
+                    value={zhExtra.sense_pinyin?.[index] ?? ""}
+                    onChange={(e) =>
+                      update((d) => {
+                        if (d.language_extra?.kind !== "zh") return;
+                        d.language_extra = withSensePinyin(d.language_extra, index, e.target.value);
+                      })
+                    }
+                  />
+                </label>
+              ))}
+            </div>
+          )}
           <div className="grid gap-2 sm:grid-cols-2">
-            {renderField(text("ipa_us", true), content.ipa.us, (v) =>
-              update((d) => {
-                d.ipa.us = v;
-              }),
-            )}
-            {renderField(text("ipa_uk", true), content.ipa.uk, (v) =>
-              update((d) => {
-                d.ipa.uk = v;
-              }),
-            )}
-            {renderField(select("cefr", CefrSchema.options), content.cefr, (v) =>
-              update((d) => {
-                d.cefr = v as WordContent["cefr"];
-              }),
-            )}
+            {!zhExtra &&
+              renderField(text("ipa_us", true), content.ipa.us, (v) =>
+                update((d) => {
+                  d.ipa.us = v;
+                }),
+              )}
+            {!zhExtra &&
+              renderField(text("ipa_uk", true), content.ipa.uk, (v) =>
+                update((d) => {
+                  d.ipa.uk = v;
+                }),
+              )}
+            {!zhExtra &&
+              renderField(select("cefr", CefrSchema.options), content.cefr, (v) =>
+                update((d) => {
+                  d.cefr = v as WordContent["cefr"];
+                }),
+              )}
             {renderField(select("register", REGISTERS), content.register, (v) =>
               update((d) => {
                 d.register = v as WordContent["register"];

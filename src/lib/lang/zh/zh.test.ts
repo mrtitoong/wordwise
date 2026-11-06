@@ -1,9 +1,29 @@
+import { withSensePinyin } from "./pinyin";
 import { readFileSync } from "node:fs";
 import { describe, expect, it } from "vitest";
 import { toLexiconRows } from "../../../../scripts/build-zh-lexicon";
 import { ZhWordContentSchema, type ZhWordContent } from "./content-schema";
 import { allowedReadings, applyLexicon, parseLexicon } from "./lexicon";
 import { numberedToMarked, pinyinKey, tonesOf } from "./pinyin";
+
+describe("withSensePinyin", () => {
+  const extra = { pinyin: "dāng", tones: [1], sense_pinyin: ["dāng", "dàng"] };
+
+  it("sửa nghĩa đầu kéo theo pinyin và thanh điệu của từ", () => {
+    expect(withSensePinyin(extra, 0, "dàng")).toEqual({
+      pinyin: "dàng",
+      tones: [4],
+      sense_pinyin: ["dàng", "dàng"],
+    });
+  });
+
+  it("sửa nghĩa sau không đổi pinyin của từ", () => {
+    expect(withSensePinyin(extra, 1, "dāng")).toEqual({
+      ...extra,
+      sense_pinyin: ["dāng", "dāng"],
+    });
+  });
+});
 
 describe("pinyin", () => {
   it("đặt dấu đúng nguyên âm", () => {

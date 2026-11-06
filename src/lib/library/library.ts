@@ -5,6 +5,7 @@
 import { z } from "zod";
 import { LIST_CEFR, LIST_PURPOSES, type ListPurpose } from "@/lib/admin/lists";
 import type { NotebookRow } from "@/lib/db/types";
+import type { Language } from "@/lib/schema/word";
 
 export const LibraryListSchema = z.object({
   id: z.uuid(),
@@ -83,12 +84,16 @@ export function notebookForList<T extends NotebookLike>(
 }
 
 /** Sổ chọn được làm sổ đích: chưa gắn danh sách nào, không phải "Sổ của tôi", chưa lưu trữ. */
-export function targetNotebooks<T extends NotebookLike & Pick<NotebookRow, "is_archived">>(
-  notebooks: readonly T[],
-  defaultNotebookId: string,
-): T[] {
+export function targetNotebooks<
+  T extends NotebookLike & Pick<NotebookRow, "is_archived" | "language">,
+>(notebooks: readonly T[], defaultNotebookId: string, language: Language): T[] {
   return notebooks.filter(
-    (n) => !n.deleted_at && !n.is_archived && !n.source_list_id && n.id !== defaultNotebookId,
+    (n) =>
+      !n.deleted_at &&
+      !n.is_archived &&
+      !n.source_list_id &&
+      n.id !== defaultNotebookId &&
+      n.language === language,
   );
 }
 

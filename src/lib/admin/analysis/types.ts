@@ -14,6 +14,7 @@ export type Warning =
   | { code: "rare" }
   | { code: "above_level"; cefr: Cefr; target: Cefr }
   | { code: "many_senses"; count: number }
+  | { code: "multi_reading"; count: number }
   /** Nhiều nghĩa nhưng không có câu ngữ cảnh: đã lấy nghĩa phổ biến nhất. */
   | { code: "no_context" }
   | { code: "low_confidence"; source: "sense" | "content"; value: number };
@@ -69,6 +70,8 @@ export type SourceRecord =
       kind: "rows";
       rows: {
         word: string;
+        /** Danh sách có ghi loại từ (HSK: cùng chữ, khác loại từ là hai mục). */
+        pos?: Pos | null;
         meaning: string | null;
         example: string | null;
         note: string | null;

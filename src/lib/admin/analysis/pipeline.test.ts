@@ -154,6 +154,9 @@ function fakeStore(options: {
     async findWords(language, lemmas) {
       return library.filter((w) => lemmas.includes(w.lemma));
     },
+    async readingCounts() {
+      return new Map();
+    },
     async getWords(ids) {
       return library.filter((w) => ids.includes(w.id));
     },
@@ -550,6 +553,31 @@ describe("pipeline phân tích danh sách", () => {
     expect(result.more).toBe(true);
     expect(db.job.lockedUntil).toBeNull();
     expect(db.job.status).toBe("running");
+  });
+
+  it("tiếng Trung: không gọi AI xem trước, từ nhiều âm có cảnh báo", async () => {
+    const clock = { now: Date.parse("2026-11-06T03:00:00Z") };
+    const db = fakeStore({
+      clock,
+      sources: [
+        { id: "src", kind: "lines", rows: [{ word: "学校" }, { word: "pinyin" }] },
+      ] as never,
+      library: [libWord("学校", "noun", { frequencyRank: null })],
+    });
+    db.job.list.language = "zh";
+    db.store.readingCounts = async () => new Map([["学校", 2]]);
+    const { llm, calls } = fakeLlm(clock, ANSWERS);
+
+    await runUntilDone(deps(db.store, llm, clock), db.job, clock);
+
+    expect(db.job.status).toBe("succeeded");
+    expect(calls).not.toContain("list-triage");
+    const rows = [...db.candidates.values()];
+    expect(rows.find((c) => c.surface === "pinyin")?.dropped).toBe("invalid");
+    expect(rows.find((c) => c.lemma === "学校")?.warnings).toContainEqual({
+      code: "multi_reading",
+      count: 2,
+    });
   });
 
   it("không có việc → không làm gì", async () => {

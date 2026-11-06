@@ -12,6 +12,7 @@ function detail(w: Warning): string | null {
     case "above_level":
       return `${w.cefr} > ${w.target}`;
     case "many_senses":
+    case "multi_reading":
       return String(w.count);
     case "low_confidence":
       return w.value.toFixed(2);

@@ -114,6 +114,12 @@ describe("sentencePinyin", () => {
     );
   });
 
+  it("tên riêng viết hoa, liền; cụm cổ không dính hai từ", () => {
+    const words = parseLexicon("你等\t你等\tni3 deng3\t1");
+    expect(sentencePinyin("我去北京。", words)).toBe("wǒ qù Běijīng.");
+    expect(sentencePinyin("你等一下。", words)).toBe("nǐ děng yí xià.");
+  });
+
   it("giữ chữ số và chữ Latin", () => {
     expect(sentencePinyin("我买3个iPhone。", lexicon)).toBe("wǒ mǎi 3 gè iPhone.");
   });

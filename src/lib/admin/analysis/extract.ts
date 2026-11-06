@@ -68,6 +68,7 @@ export function rawFromRows(
     const candidate = blankCandidate(newId(), start + index, row.word);
     if (source.kind === "rows") {
       const r = row as Extract<SourceRecord, { kind: "rows" }>["rows"][number];
+      candidate.pos = r.pos ?? null;
       candidate.meaningHint = clip(r.meaning, 500);
       candidate.contextSentence = clipContext(r.example, r.word);
       candidate.note = clip(r.note, 1000);

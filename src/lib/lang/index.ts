@@ -41,6 +41,12 @@ function plainPack(code: Language): LanguagePack {
     hasTraditional: false,
     searchesPinyin: false,
     reverseTask: "reverse-lookup",
+    promptName: code,
+    listTriage: false,
+    listDocuments: false,
+    adminRegenerate: false,
+    placementTest: false,
+    multiReadings: false,
   };
 }
 

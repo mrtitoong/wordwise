@@ -4,6 +4,7 @@
  * admin-word và giao diện.
  */
 import { z } from "zod";
+import { StoredContentSchema, type StoredContent } from "@/lib/lang/zh/content-schema";
 import { toWordRows } from "@/lib/schema/word-rows";
 import { WordContentSchema, type Sense, type WordContent } from "@/lib/schema/word";
 import { WORD_CARD_TABS, type WordCardTab } from "@/lib/words/word-card";
@@ -33,6 +34,7 @@ const WarningSchema = z.union([
   z.object({ code: z.literal("rare") }),
   z.object({ code: z.literal("above_level"), cefr: z.string(), target: z.string() }),
   z.object({ code: z.literal("many_senses"), count: z.number() }),
+  z.object({ code: z.literal("multi_reading"), count: z.number() }),
   z.object({ code: z.literal("no_context") }),
   z.object({
     code: z.literal("low_confidence"),
@@ -126,8 +128,8 @@ export function moveById<T extends { id: string }>(
 /* ---------- Lưu nội dung từ do Admin sửa ---------- */
 
 /** Dữ liệu gửi hàm SQL admin_save_word (giữ id nghĩa; không đổi chữ, loại từ, audio, ảnh). */
-export function adminSavePayload(content: WordContent, senseIds: readonly string[]) {
-  const parsed = WordContentSchema.parse(content);
+export function adminSavePayload(content: StoredContent, senseIds: readonly string[]) {
+  const parsed = StoredContentSchema.parse(content);
   if (parsed.senses.length !== senseIds.length) {
     throw new Error(`Cần ${senseIds.length} nghĩa, có ${parsed.senses.length}`);
   }

@@ -26,4 +26,10 @@ export const zh: LanguagePack = {
   hasTraditional: true,
   searchesPinyin: true,
   reverseTask: "reverse-lookup-zh",
+  promptName: "tiếng Trung",
+  listTriage: false,
+  listDocuments: false,
+  adminRegenerate: false,
+  placementTest: false,
+  multiReadings: true,
 };

@@ -54,4 +54,16 @@ export interface LanguagePack {
   searchesPinyin: boolean;
   /** Tác vụ AI gợi ý từ theo nghĩa tiếng Việt. */
   reverseTask: "reverse-lookup" | "reverse-lookup-zh";
+  /** Tên ngôn ngữ trong prompt của luồng Admin. */
+  promptName: string;
+  /** Danh sách Admin: AI xem trước chính tả, CEFR, độ hiếm của từ chưa có trong kho. */
+  listTriage: boolean;
+  /** Danh sách Admin nhận bài đọc (AI trích từ). */
+  listDocuments: boolean;
+  /** Admin tạo lại được từng tab của thẻ từ. */
+  adminRegenerate: boolean;
+  /** Kiểm tra đầu vào khi thêm danh sách (cần số liệu độ khó của từ). */
+  placementTest: boolean;
+  /** Từ có nhiều âm đọc phải có người duyệt: danh sách Admin gắn cảnh báo. */
+  multiReadings: boolean;
 }

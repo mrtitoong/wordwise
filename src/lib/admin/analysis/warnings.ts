@@ -23,6 +23,8 @@ export function warningsFor(
   c: Candidate,
   word: LibraryWord | undefined,
   list: Pick<ListInfo, "targetCefr">,
+  /** Số âm đọc của từ trong từ điển (ngôn ngữ cần người duyệt âm). */
+  readings = 1,
 ): Warning[] {
   const warnings: Warning[] = [];
   if (c.spellingFrom && c.lemma && c.spellingFrom !== c.lemma) {
@@ -35,6 +37,7 @@ export function warningsFor(
   }
   const senses = word?.senses.length ?? 0;
   if (senses >= MANY_SENSES) warnings.push({ code: "many_senses", count: senses });
+  if (readings > 1) warnings.push({ code: "multi_reading", count: readings });
   if (c.senseMethod === "default" && senses > 1) warnings.push({ code: "no_context" });
   if (c.senseConfidence !== null && c.senseConfidence < LOW_SENSE_CONFIDENCE) {
     warnings.push({ code: "low_confidence", source: "sense", value: c.senseConfidence });

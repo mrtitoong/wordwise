@@ -760,7 +760,13 @@ var en = {
   isWordText: () => true,
   hasTraditional: false,
   searchesPinyin: false,
-  reverseTask: "reverse-lookup"
+  reverseTask: "reverse-lookup",
+  promptName: "tiếng Anh",
+  listTriage: true,
+  listDocuments: true,
+  adminRegenerate: true,
+  placementTest: true,
+  multiReadings: false
 };
 
 // src/lib/lang/zh/query.ts
@@ -793,7 +799,13 @@ var zh = {
   isWordText: hasHan,
   hasTraditional: true,
   searchesPinyin: true,
-  reverseTask: "reverse-lookup-zh"
+  reverseTask: "reverse-lookup-zh",
+  promptName: "tiếng Trung",
+  listTriage: false,
+  listDocuments: false,
+  adminRegenerate: false,
+  placementTest: false,
+  multiReadings: true
 };
 
 // src/lib/lang/index.ts
@@ -823,7 +835,13 @@ function plainPack(code) {
     isWordText: () => true,
     hasTraditional: false,
     searchesPinyin: false,
-    reverseTask: "reverse-lookup"
+    reverseTask: "reverse-lookup",
+    promptName: code,
+    listTriage: false,
+    listDocuments: false,
+    adminRegenerate: false,
+    placementTest: false,
+    multiReadings: false
   };
 }
 function languagePack(code) {
@@ -1818,7 +1836,33 @@ var LIAO_WORDS = /* @__PURE__ */ new Set(["了解", "了不起", "了不得", "�
 function readsParticleAsLiao(word, reading) {
   return word.includes("了") && reading.pinyin.includes("liǎo") && !LIAO_WORDS.has(word);
 }
-var NOT_WORDS = /* @__PURE__ */ new Set(["这不", "那不"]);
+var NOT_WORDS = /* @__PURE__ */ new Set(["这不", "那不", "你等", "我等", "他等"]);
+var PROPER_NAMES = {
+  北京: "Běijīng",
+  上海: "Shànghǎi",
+  广州: "Guǎngzhōu",
+  深圳: "Shēnzhèn",
+  南京: "Nánjīng",
+  杭州: "Hángzhōu",
+  成都: "Chéngdū",
+  西安: "Xī'ān",
+  香港: "Xiānggǎng",
+  台湾: "Táiwān",
+  长城: "Chángchéng",
+  天安门: "Tiān'ānmén",
+  中国: "Zhōngguó",
+  美国: "Měiguó",
+  英国: "Yīngguó",
+  法国: "Fǎguó",
+  德国: "Déguó",
+  韩国: "Hánguó",
+  俄罗斯: "Éluósī",
+  日本: "Rìběn",
+  越南: "Yuènán",
+  河内: "Hénèi",
+  亚洲: "Yàzhōu",
+  欧洲: "Ōuzhōu"
+};
 var COMMON_NEUTRAL_WORDS = /* @__PURE__ */ new Set([
   "衣服",
   "清楚",
@@ -1875,6 +1919,8 @@ function sentencePinyin(sentence, lexicon, target) {
     for (let size = Math.min(MAX_WORD_CHARS, rest.length); size >= 2; size--) {
       const part = rest.slice(0, size);
       const word = part.join("");
+      const name = PROPER_NAMES[word];
+      if (name) return { size, reading: name };
       const allowed = allowedReadings(lexicon.get(word));
       if (allowed.length === 0 || NOT_WORDS.has(word)) continue;
       if (allowed.some((r) => readsParticleAsLiao(word, r))) continue;

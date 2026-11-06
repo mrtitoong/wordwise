@@ -2,9 +2,16 @@
  * AnalysisStore trên Supabase (service role, chỉ dùng trong Edge Function analyze-list).
  * Logic hàng đợi nằm trong các hàm SQL (supabase/migrations/*_list_pipeline.sql).
  */
+import { allowedReadings, toReading, type Reading } from "@/lib/lang/zh/lexicon";
 import type { SupabaseClient } from "@supabase/supabase-js";
 import type { Database, Json } from "@/lib/db/database.types";
-import { CefrSchema, LanguageSchema, PosSchema, type Cefr, type Pos } from "@/lib/schema/word";
+import {
+  CefrSchema,
+  LanguageSchema,
+  StoredPosSchema,
+  type Cefr,
+  type Pos,
+} from "@/lib/schema/word";
 import type { AnalysisStore, WordJobStatus } from "./pipeline";
 import type {
   AnalysisJob,
@@ -34,7 +41,9 @@ function chunks<T>(items: readonly T[], size: number): T[][] {
 }
 
 const cefrOrNull = (value: unknown): Cefr | null => CefrSchema.safeParse(value).data ?? null;
-const posOrNull = (value: unknown): Pos | null => PosSchema.safeParse(value).data ?? null;
+/** Loại từ đã lưu, kể cả của tiếng Trung (lượng từ, trợ từ…): PosSchema sẽ bỏ các từ đó. */
+const posOrNull = (value: unknown): Pos | null =>
+  (StoredPosSchema.safeParse(value).data as Pos | undefined) ?? null;
 
 export function fromCandidateRow(row: CandidateRow): Candidate {
   return {
@@ -95,6 +104,8 @@ export function toCandidateRow(c: Candidate) {
     warnings: c.warnings,
   };
 }
+
+const READING_CHUNK = 200;
 
 type WordRow = {
   id: string;
@@ -176,6 +187,7 @@ function toSource(row: { id: string; kind: string; content: unknown }): SourceRe
       kind: "rows",
       rows: (row.content as Record<string, unknown>[]).map((r) => ({
         word: String(r.word ?? ""),
+        pos: posOrNull(r.pos),
         meaning: typeof r.meaning === "string" ? r.meaning : null,
         example: typeof r.example === "string" ? r.example : null,
         note: typeof r.note === "string" ? r.note : null,
@@ -289,6 +301,24 @@ export function createSupabaseAnalysisStore(client: Client): AnalysisStore {
       return selectWords("lemma", lemmas, language);
     },
 
+    async readingCounts(lemmas) {
+      const counts = new Map<string, number>();
+      for (let i = 0; i < lemmas.length; i += READING_CHUNK) {
+        const { data, error } = await client
+          .from("zh_lexicon")
+          .select("simplified, traditional, pinyin, common")
+          .in("simplified", lemmas.slice(i, i + READING_CHUNK));
+        if (error) throw new Error(`zh_lexicon: ${error.message}`);
+        const readings = new Map<string, Reading[]>();
+        for (const row of data ?? []) {
+          readings.set(row.simplified, [...(readings.get(row.simplified) ?? []), toReading(row)]);
+        }
+        for (const [lemma, list] of readings) {
+          counts.set(lemma, allowedReadings(list).length);
+        }
+      }
+      return counts;
+    },
     getWords(ids) {
       return selectWords("id", ids);
     },

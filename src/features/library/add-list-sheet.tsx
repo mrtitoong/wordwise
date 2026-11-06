@@ -8,6 +8,8 @@ import { useLocale, useTranslations } from "next-intl";
 import { Button } from "@/components/ui/button";
 import { Sheet } from "@/components/ui/sheet";
 import { defaultNotebookId, userWordId } from "@/lib/db/ids";
+import { languagePack } from "@/lib/lang";
+import type { Language } from "@/lib/schema/word";
 import { addListToNotebook, type ListTarget } from "@/lib/db/library-repo";
 import { getLocalDb } from "@/lib/db/local";
 import type { NotebookRow } from "@/lib/db/types";
@@ -73,6 +75,7 @@ export function AddListSheet({
   const tp = useTranslations("library.placement");
   const locale = useLocale();
   const online = useOnlineStatus();
+  const language = list.language as Language;
   const [step, setStep] = useState<Step>("notebook");
   const [notebookId, setNotebookId] = useState<string>(NEW);
   const [usePlan, setUsePlan] = useState(true);
@@ -131,11 +134,12 @@ export function AddListSheet({
     setStep("result");
   }
 
-  const choices = targetNotebooks(notebooks, defaultNotebookId(owner));
+  const choices = targetNotebooks(notebooks, defaultNotebookId(owner, language), language);
   const min = minTargetDate(today);
   const tooClose = usePlan && targetDate < min;
   const plan = usePlan && !tooClose ? previewPlan(remaining, targetDate, today) : null;
-  const canPlace = !!eligible && eligible.length >= MIN_PLACEMENT_WORDS;
+  const canPlace =
+    languagePack(language).placementTest && !!eligible && eligible.length >= MIN_PLACEMENT_WORDS;
   const saving = step === "saving";
 
   async function submit() {
@@ -166,6 +170,7 @@ export function AddListSheet({
             }
           : { kind: "existing", notebookId };
       const { notebook, result } = await addListToNotebook(db, owner, {
+        language,
         listId: list.id,
         version: list.version,
         target,

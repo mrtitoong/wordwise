@@ -123,6 +123,8 @@ async function findWordOfSense(senseId: string): Promise<string | null> {
 
 /** Nguồn đáp án nhiễu tối thiểu; ít hơn thì lấy thêm từ thông dụng trên máy chủ. */
 const POOL_TARGET = 40;
+/** Phiên ôn chờ bước này mới hiện câu đầu: quá hạn thì dùng đáp án trong máy. */
+const MORE_CHOICES_TIMEOUT_MS = 3000;
 
 /** Các nghĩa trong máy có thể làm đáp án trắc nghiệm (không gọi mạng). */
 export async function loadLocalChoices(db: LocalDb, language: Language): Promise<ChoiceSense[]> {
@@ -135,13 +137,14 @@ export async function loadLocalChoices(db: LocalDb, language: Language): Promise
 
 /**
  * Trong máy ít đáp án (người mới): lấy thêm từ thông dụng trong kho. Trả về nguồn mới, hoặc chính
- * `local` khi đã đủ (không gọi mạng) hoặc không lấy được.
+ * `local` khi đã đủ, đang mất mạng (không gọi mạng) hoặc không lấy được. Không thử lại: mặc định
+ * thư viện thử 3 lần, làm phiên ôn mở chậm ~7 giây khi mất mạng.
  */
 export async function moreChoices(
   local: ChoiceSense[],
   language: Language,
 ): Promise<ChoiceSense[]> {
-  if (local.length >= POOL_TARGET || !getSupabaseEnv()) return local;
+  if (local.length >= POOL_TARGET || !getSupabaseEnv() || !navigator.onLine) return local;
   const pool = [...local];
   try {
     const { data } = await (
@@ -152,7 +155,9 @@ export async function moreChoices(
       .eq("language", language)
       .eq("is_hidden", false)
       .order("frequency_rank", { ascending: true, nullsFirst: false })
-      .limit(120);
+      .limit(120)
+      .retry(false)
+      .abortSignal(AbortSignal.timeout(MORE_CHOICES_TIMEOUT_MS));
     for (const w of data ?? []) {
       const first = [...(w.word_senses ?? [])].sort((a, b) => a.sense_order - b.sense_order)[0];
       if (first && !pool.some((p) => p.senseId === first.id)) {

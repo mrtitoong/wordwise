@@ -76,7 +76,7 @@ Cần thêm hoặc đổi:
 | Chất lượng nội dung LLM với tiếng Trung chưa được đo (số liệu Haiku là của tiếng Anh). | So sánh 50 từ ở Z1 trước khi tạo hàng loạt; cần người biết tiếng Trung xem mẫu. |
 | Pinyin của từ ngoài CC-CEDICT, biến điệu (一, 不), thanh nhẹ. | Thẻ từ hiện pinyin từ điển; không có thì dùng thư viện và đánh dấu để duyệt. |
 | Trang Giới thiệu chưa có (Prompt 8.3 đang hoãn). | Làm phần ghi nguồn ở Z5, trước khi mở cho người ngoài. |
-| Hanzi Writer mới thử với một người trên Android và 2 lượt trên Safari iPhone (`docs/qa/zh-iphone.md`), đều có nét mờ. | Thử iPhone khi mất mạng, thử người mới học và chế độ ẩn nét mờ trước khi bật mức 3–4. |
+| Hanzi Writer đã thử trên Android và Safari iPhone (`docs/qa/zh-iphone.md`), đều có nét mờ; người mới học bị từ chối nét đúng. | Nới cách chấm nét; thử chế độ ẩn nét mờ trước khi bật mức 3–4. |
 
 ## 7. Chi phí ước tính
 

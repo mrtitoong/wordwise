@@ -10,7 +10,7 @@ code chính. Dữ liệu tải về để ở `spikes/.cache/` và kết quả s
 |---|---|---|---|
 | 1 | Azure chấm phát âm zh-CN, có bắt sai thanh không | **Xong với giọng máy** (48 mẫu); bản thu người thật chưa có | **Hầu như không bắt sai thanh.** Sai thanh: điểm chính xác chỉ giảm trung vị **1 điểm** (trung bình 3,4), 1/20 mẫu bị đánh "Mispronunciation". Sai phụ âm: giảm trung vị **49 điểm**, 3/4 bị đánh dấu. Không có mức âm tiết; "âm vị" zh-CN là cả âm tiết kèm thanh *của câu mẫu*, không cho biết người đọc thanh nào. |
 | 1b | Tự đo cao độ (F0) trong trình duyệt để nhận thanh | **Xong với giọng máy**; giọng thật mới có 10 bản thu của 1 người | Nhanh (5–10 ms/bản thu) và **bắt được sai thanh tốt hơn Azure nhiều** (19/20 so với 1/20). Nhưng nhận đúng thanh trên giọng chưa gặp chỉ **~54% âm tiết** (giọng nữ ~65%, giọng nam ~43%) và **báo nhầm 8/28** bản đọc đúng. **Chưa đủ để chấm điểm**, chỉ đủ làm biểu đồ cao độ để người học tự so. Giọng thật: báo nhầm 2/6 từ đọc đúng, cùng hướng với kết luận này. |
-| 2 | Hanzi Writer quiz trên điện thoại | **Xong trên Android**; iPhone mới có 2 lượt thật (`docs/qa/zh-iphone.md`) | Dữ liệu nét nhỏ (900 chữ HSK 1–3: ~818 KB gzip, trung vị 1 KB/chữ). Chấm một nét < 5 ms kể cả CPU chậm 4×. Lệch ≤ 9 px: được nhận ~100%; lệch 17 px: 89% (leniency 1) / 95% (1.5). Nét ngược chiều/sai thứ tự gần như luôn bị bắt. Máy thật (Chrome Android, leniency 1): **63/63 nét viết đúng được nhận**, chấm trung vị 6 ms, không giật khung hình. |
+| 2 | Hanzi Writer quiz trên điện thoại | **Xong trên Android và iPhone** (`docs/qa/zh-iphone.md`) | Dữ liệu nét nhỏ (900 chữ HSK 1–3: ~818 KB gzip, trung vị 1 KB/chữ). Chấm một nét < 5 ms kể cả CPU chậm 4×. Lệch ≤ 9 px: được nhận ~100%; lệch 17 px: 89% (leniency 1) / 95% (1.5). Nét ngược chiều/sai thứ tự gần như luôn bị bắt. Máy thật (Chrome Android, leniency 1): **63/63 nét viết đúng được nhận**, chấm trung vị 6 ms, không giật khung hình. |
 | 3 | Âm Hán Việt từ Unihan cho HSK 1–3 | **Xong** | Có âm cho 86% số chữ (cần tra qua chữ phồn thể), thiếu 123 chữ, trong đó có chữ rất thường gặp (爱 这 很 就 她). **Nhiều âm là âm Nôm, không phải âm Hán Việt** (們 → "món", 嗎 → "mửa"). Không dùng thẳng được. |
 | 4 | Giấy phép | **Xong** (tóm tắt, không phải ý kiến pháp lý) | Rủi ro lớn nhất là **ShareAlike của CC-CEDICT** và **điều kiện công bố bản sửa của Arphic PL**. Unihan dễ. Danh sách HSK chưa rõ quyền tác giả. |
 
@@ -291,7 +291,7 @@ Kết quả 2026-11-04 (chủ sản phẩm, Chrome Android, màn hình 393×873,
   trên. Trang cũng dừng chữ sau khi đủ số lần viết, nên lượt này không chữ nào hoàn thành.
 - Vẽ chữ chưa tính thời gian tải qua mạng, vì dữ liệu nét nằm sẵn trong trang.
 - **Hạn chế:** một người viết cẩn thận, một máy, có hiện nét mờ của chữ. Người mới học hoặc viết không có nét mờ có
-  thể bị từ chối nhiều hơn. Safari iPhone: 2026-11-05 viết xong một từ 2 chữ, chưa đo tỉ lệ nhận nét.
+  thể bị từ chối nhiều hơn. Safari iPhone (05–06/11): chạy được, cả khi mất mạng; người mới học có nét viết lệch bị từ chối, chưa đo tỉ lệ.
 
 ---
 

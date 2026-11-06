@@ -20,12 +20,8 @@ Chưa rõ:
 - Lượt Quên của 爱: chủ sản phẩm xác nhận một số nét viết hơi lệch nên app từ chối, không phải quên chữ. Mới có 2 lượt Viết
   chữ, đều là ôn ngoài lịch, đều ở mức có nét mờ.
 
-Chưa thử trên iPhone:
-
-- Mất mạng (mọi lượt đồng bộ ngay nên máy luôn có mạng).
-- Viết chữ không có nét mờ (mức 3–4).
-- Tập phát âm tiếng Trung và đường cao độ (tài khoản này không có lượt chấm nào).
-- Cài app vào Màn hình chính.
+Lần này chưa thử: mất mạng, phát âm (đã thử ngày 06/11, xem dưới); viết không có nét mờ (mức 3–4); cài app vào Màn hình
+chính.
 
 ## Lần thử 2026-11-06
 
@@ -38,8 +34,12 @@ Cùng tài khoản và iPhone, 08:51–08:59 giờ VN. Kết quả đọc từ l
 | Đồng bộ | Đủ 10/10 lượt | 3 lượt trễ 22–30 giây, các lượt khác 4–7 giây (thường 2–4 giây) |
 | Tải trước audio | Không lỗi | 7 câu chưa có file trả 400 (`NoSuchKey`), app bỏ qua như thiết kế |
 
-Lượt trễ khớp với lúc máy mất mạng hoặc app bị ẩn (bộ đồng bộ bỏ qua cả hai), nhưng log không phân biệt được. Lúc
-08:55:42 máy vẫn gửi được request. **Cần người thử xác nhận có bật Chế độ máy bay không.**
+Người thử xác nhận (qua chủ sản phẩm): có bật Chế độ máy bay, tải lại trang khi tắt mạng vẫn mở được phiên ôn; lượt
+trễ là lượt ôn lúc tắt mạng, có mạng lại thì gửi đủ. 脸 ra Quên do một ít nét bị từ chối. Mức phát âm, đường cao độ và
+dòng "chưa chấm thanh điệu" hiện hợp lý.
+
+**Kết luận: đạt tiêu chí Z3 và Z4.** Còn lại: viết không có nét mờ (mức 3–4) chưa thử; chấm nét còn chặt, 2/6 lượt Viết
+chữ ra Quên vì nét lệch.
 
 ## Offline trên CI
 
@@ -60,4 +60,4 @@ Cần 5–10 phút, trên iPhone đã đăng nhập, sau khi đã ôn ít nhất
 
 | Thiết bị | 1–2 | 3 | 4 | 5 | 6 | Ghi chú |
 |---|---|---|---|---|---|---|
-| Safari iPhone | | | | | | |
+| Safari iPhone (06/11) | ✅ | ✅ | ✅ | ❌ có nét đúng bị từ chối | ✅ | Một người thử, nhờ chủ sản phẩm báo lại |

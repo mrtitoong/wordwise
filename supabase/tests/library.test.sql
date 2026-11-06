@@ -2,7 +2,7 @@
 begin;
 create extension if not exists pgtap with schema extensions;
 
-select plan(12);
+select plan(16);
 
 insert into auth.users (id, email) values
   ('ffff0000-0000-4000-8000-000000000001', 'library-a@test.local'),
@@ -29,6 +29,14 @@ insert into public.curated_list_release_items (list_id, version, sense_id, item_
   ('ffff0000-0000-4000-8000-0000000000a1', 2, 'ffff0000-0000-4000-8000-0000000000e2', 0, 'Energy'),
   ('ffff0000-0000-4000-8000-0000000000a1', 2, 'ffff0000-0000-4000-8000-0000000000e1', 1, 'Climate');
 
+-- a3: danh sách tiếng Trung đã xuất bản, chỉ tài khoản có cờ thấy.
+insert into public.curated_lists (id, title, language, status, version, published_at) values
+  ('ffff0000-0000-4000-8000-0000000000a3', 'Tiếng Trung test', 'zh', 'published', 1, now());
+insert into public.curated_list_releases (list_id, version, word_count, added_sense_ids) values
+  ('ffff0000-0000-4000-8000-0000000000a3', 1, 0, '{}'::uuid[]);
+update public.profiles set feature_zh = true
+where user_id = 'ffff0000-0000-4000-8000-000000000002';
+
 /* ---------- Khách đọc Thư viện ---------- */
 
 set local role anon;
@@ -54,12 +62,22 @@ select is((select count(*)::integer from public.curated_list_release_items
   where list_id = 'ffff0000-0000-4000-8000-0000000000a1' and version = 2), 2,
   'Khách đọc được từ của bản phát hành');
 
+select ok(not exists (
+  select 1 from jsonb_array_elements(public.library_lists()) x
+  where x ->> 'id' = 'ffff0000-0000-4000-8000-0000000000a3'),
+  'Khách không thấy danh sách tiếng Trung');
+select is(public.library_lists('ffff0000-0000-4000-8000-0000000000a3'), '[]'::jsonb,
+  'Khách tra theo id cũng không thấy');
+
 /* ---------- Người học thêm danh sách vào sổ ---------- */
 
 reset role;
 set local role authenticated;
 select set_config('request.jwt.claims',
   '{"sub": "ffff0000-0000-4000-8000-000000000001", "role": "authenticated"}', true);
+
+select is(public.library_lists('ffff0000-0000-4000-8000-0000000000a3'), '[]'::jsonb,
+  'Tài khoản không có cờ không thấy danh sách tiếng Trung');
 
 select lives_ok($$
   insert into public.notebooks (id, user_id, name, source_list_id, source_list_version, target_date)
@@ -79,6 +97,8 @@ select set_config('request.jwt.claims',
 select is((select count(*)::integer from public.notebooks
   where source_list_id = 'ffff0000-0000-4000-8000-0000000000a1'), 0,
   'Người khác không đọc được sổ (chỉ thấy số tổng hợp)');
+select is(public.library_lists('ffff0000-0000-4000-8000-0000000000a3') -> 0 ->> 'language', 'zh',
+  'Tài khoản có cờ thấy danh sách tiếng Trung');
 
 select * from finish();
 rollback;

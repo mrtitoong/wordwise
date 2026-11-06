@@ -35,7 +35,7 @@ Cùng tài khoản và iPhone, 08:51–08:59 giờ VN. Kết quả đọc từ l
 |---|---|---|
 | Tập phát âm tiếng Trung | Máy chủ chấm được | 6/6 lượt `assess-pronunciation` trả 200, 1–2,6 giây; chưa biết mức hiện ra và đường cao độ |
 | Viết chữ | 3/4 từ đạt | 爱, 博士 Nhớ; 承诺 Khó; 脸 Quên (chưa rõ lý do) |
-| Đồng bộ | Đủ 10/10 lượt | 5 lượt trễ 6–30 giây thay vì 2–4 giây |
+| Đồng bộ | Đủ 10/10 lượt | 3 lượt trễ 22–30 giây, các lượt khác 4–7 giây (thường 2–4 giây) |
 | Tải trước audio | Không lỗi | 7 câu chưa có file trả 400 (`NoSuchKey`), app bỏ qua như thiết kế |
 
 Lượt trễ khớp với lúc máy mất mạng hoặc app bị ẩn (bộ đồng bộ bỏ qua cả hai), nhưng log không phân biệt được. Lúc

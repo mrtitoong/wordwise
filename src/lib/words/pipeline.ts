@@ -350,6 +350,8 @@ async function generateChinese(job: WordJob, deps: WorkerDeps): Promise<Generate
     ...content,
     language_extra: {
       ...extra,
+      // Cấp chỉ lấy từ danh sách HSK (scripts/zh-hsk-lists.ts); AI hay tự ghi 3 theo trình độ trong prompt.
+      hsk: null,
       han_viet: applyHanViet(extra.han_viet, job.lemma, hanVietTable).hanViet,
       example_pinyin: content.senses.map((sense, index) =>
         sense.examples.map((example) =>

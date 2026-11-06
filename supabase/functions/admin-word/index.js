@@ -958,6 +958,14 @@ var StoredContentSchema = z4.union([WordContentSchema, ZhWordContentSchema]);
 
 // src/lib/lang/zh/sentence-pinyin.ts
 import { pinyin } from "npm:pinyin-pro@3.29.5";
+var COMMON_WORDS = new Set(
+  "公司 知道 手机 手表 办法 好好 医生 教室 作业 作文 作品 作家 作用 公园 国家 大学 时间 地铁 地图 地区 读书 规定 外面 外国 外地 外语 房租 中文 中学 中国 变化 见面 关系 开会 开始 班长 解决 参加 城市 容易 火车 水果 力量 合适 学习 意见 干净 记者 下雨 下午 电话 电影 工作 中医 保险 公平 前进 前面 后面 功夫 音乐 头发 子女 方便 方面 目的 意外 建议 名字 武术 网球 高兴 花园 词语 生活 负责 重复 说话 分钟 身边 校园 门口 旁边 同意 家里 好吃 好听 好看 机会 起床 准备 名单 字典 喜欢 通过 明天 法语".split(" ")
+);
+var KEPT_WORDS = new Set(
+  "学生 老师 今天 昨天 每天 这个 那个 一个 第一 同一 现在 大家 我们 你们 他们 人们 小时 一起 一定 以前 举手".split(
+    " "
+  )
+);
 
 // src/lib/schema/word-rows.ts
 import { z as z5 } from "npm:zod@4.6.5";

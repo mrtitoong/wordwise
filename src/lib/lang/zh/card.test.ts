@@ -96,6 +96,38 @@ describe("sentencePinyin: âm đọc thật", () => {
   });
 });
 
+describe("sentencePinyin: từ thông dụng không bị từ trước lấy mất chữ đầu", () => {
+  const dictionary = parseLexicon(readFileSync("data/zh/lexicon.tsv", "utf8"));
+
+  it.each([
+    ["这家公司很大。", "jiā gōngsī"],
+    ["我不知道。", "bù zhīdào"],
+    ["我会说中文。", "shuō Zhōngwén"],
+    ["他会说法语。", "shuō Fǎyǔ"],
+    ["他在教室。", "zài jiàoshì"],
+    ["请在前面的站下车。", "zài qiánmiàn de"],
+    ["他想通过关系找工作。", "xiǎng tōngguò guānxi"],
+    ["他说明天下午开会。", "shuō míngtiān xiàwǔ"],
+    ["请等一下。", "děng yíxià"],
+  ])("%s", (sentence, expected) => {
+    expect(sentencePinyin(sentence, dictionary)).toContain(expected);
+  });
+
+  it.each([
+    ["学生活动很多。", "xuésheng huódòng"],
+    ["他比以前进步了。", "yǐqián jìnbù"],
+    ["大海展现在眼前。", "zhǎnxiàn zài"],
+    ["小羊在草地上吃草。", "cǎodì shàng"],
+    ["这是第一个。", "dìyī gè"],
+    ["大家举手表决。", "jǔshǒu biǎojué"],
+    ["我们商量一下周末去哪儿。", "yíxià zhōumò"],
+    ["这个人很好。", "zhège rén"],
+    ["他考了九十分。", "jiǔshí fēn"],
+  ])("giữ nguyên %s", (sentence, expected) => {
+    expect(sentencePinyin(sentence, dictionary)).toContain(expected);
+  });
+});
+
 describe("sentencePinyin", () => {
   const lexicon = parseLexicon(
     ["朋友\t朋友\tpeng2 you5\t1", "晚上\t晚上\twan3 shang5\t1", "电视\t電視\tdian4 shi4\t1"].join(

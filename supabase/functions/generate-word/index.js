@@ -1836,7 +1836,19 @@ var LIAO_WORDS = /* @__PURE__ */ new Set(["了解", "了不起", "了不得", "�
 function readsParticleAsLiao(word, reading) {
   return word.includes("了") && reading.pinyin.includes("liǎo") && !LIAO_WORDS.has(word);
 }
-var NOT_WORDS = /* @__PURE__ */ new Set(["这不", "那不", "你等", "我等", "他等"]);
+var NOT_WORDS = /* @__PURE__ */ new Set([
+  "这不",
+  "那不",
+  "你等",
+  "我等",
+  "他等",
+  "在地",
+  "在下",
+  "等一下",
+  "等一下儿",
+  "等一会",
+  "等一会儿"
+]);
 var PROPER_NAMES = {
   北京: "Běijīng",
   上海: "Shànghǎi",
@@ -1861,7 +1873,17 @@ var PROPER_NAMES = {
   越南: "Yuènán",
   河内: "Hénèi",
   亚洲: "Yàzhōu",
-  欧洲: "Ōuzhōu"
+  欧洲: "Ōuzhōu",
+  中文: "Zhōngwén",
+  汉语: "Hànyǔ",
+  汉字: "Hànzì",
+  英语: "Yīngyǔ",
+  英文: "Yīngwén",
+  法语: "Fǎyǔ",
+  德语: "Déyǔ",
+  日语: "Rìyǔ",
+  韩语: "Hányǔ",
+  春节: "Chūnjié"
 };
 var COMMON_NEUTRAL_WORDS = /* @__PURE__ */ new Set([
   "衣服",
@@ -1884,13 +1906,23 @@ var COMMON_NEUTRAL_WORDS = /* @__PURE__ */ new Set([
   "多少",
   "起来"
 ]);
+var COMMON_WORDS = new Set(
+  "公司 知道 手机 手表 办法 好好 医生 教室 作业 作文 作品 作家 作用 公园 国家 大学 时间 地铁 地图 地区 读书 规定 外面 外国 外地 外语 房租 中文 中学 中国 变化 见面 关系 开会 开始 班长 解决 参加 城市 容易 火车 水果 力量 合适 学习 意见 干净 记者 下雨 下午 电话 电影 工作 中医 保险 公平 前进 前面 后面 功夫 音乐 头发 子女 方便 方面 目的 意外 建议 名字 武术 网球 高兴 花园 词语 生活 负责 重复 说话 分钟 身边 校园 门口 旁边 同意 家里 好吃 好听 好看 机会 起床 准备 名单 字典 喜欢 通过 明天 法语".split(" ")
+);
+var KEPT_WORDS = new Set(
+  "学生 老师 今天 昨天 每天 这个 那个 一个 第一 同一 现在 大家 我们 你们 他们 人们 小时 一起 一定 以前 举手".split(
+    " "
+  )
+);
 function isKnownNeutralWord(word) {
   return word[0] === word[1] || word.endsWith("子") || COMMON_NEUTRAL_WORDS.has(word);
 }
 function yieldsToNextWord(lexicon, word, next) {
   if (word.length !== 2 || !next) return false;
-  if (PARTICLES.includes(next)) return false;
   const pair = word[1] + next;
+  const whole = word.join("");
+  if (COMMON_WORDS.has(pair) && !COMMON_WORDS.has(whole) && !KEPT_WORDS.has(whole)) return true;
+  if (PARTICLES.includes(next)) return false;
   if (!isKnownNeutralWord(pair)) return false;
   const following = allowedReadings(lexicon.get(pair));
   const current = allowedReadings(lexicon.get(word.join("")));

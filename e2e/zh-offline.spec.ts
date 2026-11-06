@@ -63,8 +63,33 @@ test.describe("Tiếng Trung khi mất mạng", () => {
     await expect(pad).toBeVisible();
     const medians = await strokeMedians(page, lemma);
 
+    const seen: string[] = [];
+    page.on("console", (m) => {
+      if (m.type() === "error" || m.type() === "warning") seen.push(`console: ${m.text()}`);
+    });
+    page.on("pageerror", (e) => seen.push(`pageerror: ${e.message}`));
+    page.on("requestfailed", (r) => seen.push(`failed: ${r.url()} ${r.failure()?.errorText}`));
     await context.setOffline(true);
     await page.reload();
+    await page.waitForTimeout(6000);
+    if (!(await page.getByText("Viết chữ của từ này").isVisible())) {
+      const state = await page.evaluate(async () => {
+        const names = await caches.keys();
+        const counts: string[] = [];
+        for (const name of names) {
+          const keys = await (await caches.open(name)).keys();
+          const hanzi = keys.filter((k) => k.url.includes("/hanzi/")).map((k) => k.url);
+          counts.push(`${name}:${keys.length} hanzi=${hanzi.join(",")}`);
+        }
+        return {
+          url: location.href,
+          sw: !!navigator.serviceWorker?.controller,
+          body: document.body.innerText.slice(0, 500),
+          counts,
+        };
+      });
+      throw new Error(`DIAG ${JSON.stringify(state)} EVENTS ${seen.slice(0, 15).join(" | ")}`);
+    }
     await expect(page.getByText("Viết chữ của từ này")).toBeVisible();
     await expect(pad).toBeVisible();
     await drawCharacter(page, medians);

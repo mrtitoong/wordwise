@@ -188,6 +188,10 @@ test.describe("Phiên ôn", () => {
       await writeCorrectly(page, { hint: written === 0 });
       await expect(page.getByText("Chính xác!")).toBeVisible();
       await expect(page.getByText("Chính xác!")).toBeHidden();
+      // Đúng nhưng có gợi ý thì số câu tăng: phải nói rõ lý do, câu sau không còn thông báo.
+      const added = page.getByText(/^Thêm 1 câu: bạn dùng gợi ý/);
+      if (written === 0) await expect(added).toBeVisible();
+      if (written === 1) await expect(added).toBeHidden();
     }
     expect(written).toBeGreaterThanOrEqual(5);
 

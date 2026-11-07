@@ -51,6 +51,7 @@ import type { PronunciationLocale } from "@/lib/pronunciation/api";
 import { masteryLevel, type MasteryLevel } from "@/lib/srs/mastery";
 import { getSupabaseEnv } from "@/lib/supabase/env";
 import { remainingItems, requeue, wordKeyOf, type SessionItem } from "@/lib/srs/queue";
+import { addedQuestionReason, type AddedReason } from "@/lib/review/added-question";
 import { createScheduler } from "@/lib/srs/scheduler";
 import { useOwner } from "@/lib/sync/owner";
 import { Flashcard } from "./modes/flashcard";
@@ -197,6 +198,9 @@ export function SessionScreen({ options }: { options: SessionOptions }) {
   const [busy, setBusy] = useState(false);
   /** Số câu của phiên (đã làm + còn lại nếu trả lời đúng hết), tính lại mỗi khi sang câu mới. */
   const [total, setTotal] = useState(0);
+  const totalRef = useRef(0);
+  /** Câu vừa trả lời làm phiên thêm câu: giải thích tới khi trả lời xong câu kế tiếp. */
+  const [added, setAdded] = useState<{ reason: AddedReason; count: number } | null>(null);
   const started = useRef(false);
   /** Hàng ghi lượt ôn chạy nền (xem saveReview). */
   const writes = useRef<Promise<void>>(Promise.resolve());
@@ -311,26 +315,29 @@ export function SessionScreen({ options }: { options: SessionOptions }) {
    * vẽ – không bao giờ có lúc chữ/tiếng của câu mới đi với đáp án của câu cũ.
    */
   const showQuestion = useCallback(
-    (r: Run, cards: Map<string, PreparedCard>, choices: ChoiceSense[]) => {
+    (r: Run, cards: Map<string, PreparedCard>, choices: ChoiceSense[], reason?: AddedReason) => {
       const now = new Date();
       setPrepared(cards);
       setRun(r);
       // Đếm đủ số lần từ đang học còn quay lại: trả lời đúng thì số câu không tăng.
-      setTotal(
+      const nextTotal =
         r.position +
-          remainingItems(
-            r.queue,
-            r.position,
-            (id) => cards.get(id)?.card,
-            scheduler.current!,
-            now,
-            extraIds.current,
-            {
-              keyOf: (i) => wordKeyOf(cards.get(i.cardId)?.word.content.lemma ?? i.cardId),
-              asked: (key) => wordAsks.current.get(key) ?? 0,
-            },
-          ),
-      );
+        remainingItems(
+          r.queue,
+          r.position,
+          (id) => cards.get(id)?.card,
+          scheduler.current!,
+          now,
+          extraIds.current,
+          {
+            keyOf: (i) => wordKeyOf(cards.get(i.cardId)?.word.content.lemma ?? i.cardId),
+            asked: (key) => wordAsks.current.get(key) ?? 0,
+          },
+        );
+      const count = nextTotal - totalRef.current;
+      setAdded(reason && count > 0 ? { reason, count } : null);
+      totalRef.current = nextTotal;
+      setTotal(nextTotal);
       setAsk(buildAsk(r, cards, choices));
     },
     [buildAsk],
@@ -606,7 +613,7 @@ export function SessionScreen({ options }: { options: SessionOptions }) {
       const next = { ...run, queue, position: run.position + 1, answers };
       if (next.position < next.queue.length)
         recordSlow("answer", answeredAt, Date.now() - answeredAt);
-      await goTo(next, cards);
+      await goTo(next, cards, intro ? undefined : addedQuestionReason({ mode, rating, ...answer }));
     } finally {
       setBusy(false);
     }
@@ -616,7 +623,7 @@ export function SessionScreen({ options }: { options: SessionOptions }) {
    * Sang câu ở vị trí `next.position` (hết hàng thì kết thúc). Phiên dở lưu chạy nền: câu sau hiện
    * ngay, không chờ IndexedDB (máy bận có lúc chờ rất lâu); lưu lỗi thì chỉ mất chỗ tiếp tục.
    */
-  async function goTo(next: Run, cards: Map<string, PreparedCard>) {
+  async function goTo(next: Run, cards: Map<string, PreparedCard>, reason?: AddedReason) {
     if (next.position >= next.queue.length) {
       // Buổi tập phát âm không ghi lượt ôn nên không có gì để tổng kết.
       if (next.answers.length === 0 && next.queue.every(practicesSpeaking(cards))) {
@@ -628,7 +635,7 @@ export function SessionScreen({ options }: { options: SessionOptions }) {
       await finish(next);
       return;
     }
-    showQuestion(next, cards, pool);
+    showQuestion(next, cards, pool, reason);
     if (next.kind === "full" || next.kind === "short") {
       const saved: SavedSession = {
         owner: owner!,
@@ -752,6 +759,14 @@ export function SessionScreen({ options }: { options: SessionOptions }) {
           )}
         </button>
       </header>
+
+      <div role="status">
+        {added && (
+          <p className="rounded-lg bg-accent px-3 py-2 text-sm text-accent-foreground">
+            {t(`added.${added.reason}`, { count: added.count })}
+          </p>
+        )}
+      </div>
 
       <div key={`${run.position}:${item.cardId}:${ask.step}`} className="flex flex-1 flex-col">
         {ask.step === "intro" ? (

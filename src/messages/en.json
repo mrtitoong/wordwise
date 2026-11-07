@@ -1438,6 +1438,15 @@
   },
   "review": {
     "title": "Review session",
+    "added": {
+      "wrong": "{count, plural, one {# more question} other {# more questions}}: that answer wasn't right, so the last word will come back.",
+      "hint": "{count, plural, one {# more question} other {# more questions}}: you used a hint, so the last word will come back to help it stick.",
+      "listenHint": "{count, plural, one {# more question} other {# more questions}}: you used a hint or replayed it many times, so the last word will come back.",
+      "typo": "{count, plural, one {# more question} other {# more questions}}: one letter was off, so the last word will come back to help it stick.",
+      "speaking": "{count, plural, one {# more question} other {# more questions}}: the pronunciation needs more work, so you'll practise the last word again.",
+      "self": "{count, plural, one {# more question} other {# more questions}}: based on your rating, the last word will come back.",
+      "hard": "{count, plural, one {# more question} other {# more questions}}: the last word is still hard, so it will come back."
+    },
     "loadingTips": {
       "0": "Saying a word out loud while reviewing helps it stick.",
       "1": "A little every day beats one long cram session.",

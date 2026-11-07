@@ -1438,6 +1438,15 @@
   },
   "review": {
     "title": "Phiên ôn",
+    "added": {
+      "wrong": "Thêm {count} câu: trả lời chưa đúng nên từ vừa rồi sẽ được hỏi lại.",
+      "hint": "Thêm {count} câu: bạn dùng gợi ý nên từ vừa rồi sẽ được hỏi lại để nhớ chắc hơn.",
+      "listenHint": "Thêm {count} câu: bạn dùng gợi ý hoặc nghe lại nhiều lần nên từ vừa rồi sẽ được hỏi lại.",
+      "typo": "Thêm {count} câu: sai 1 chữ nên từ vừa rồi sẽ được hỏi lại để nhớ chắc hơn.",
+      "speaking": "Thêm {count} câu: phát âm chưa đạt nên từ vừa rồi sẽ được luyện lại.",
+      "self": "Thêm {count} câu: theo mức bạn vừa chấm, từ vừa rồi sẽ được hỏi lại.",
+      "hard": "Thêm {count} câu: từ vừa rồi còn khó nên sẽ được hỏi lại."
+    },
     "loadingTips": {
       "0": "Nói to từ khi ôn giúp nhớ lâu hơn.",
       "1": "Ôn một chút mỗi ngày hiệu quả hơn ôn dồn một lần.",

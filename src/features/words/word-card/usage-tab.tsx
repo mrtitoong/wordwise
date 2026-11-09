@@ -48,7 +48,7 @@ export function UsageTab() {
                     </MineItem>
                   ))}
                   {sense.collocations.map((c, i) => (
-                    <li key={i} className="flex flex-col gap-0.5 rounded-xl border p-3">
+                    <li key={i} className="flex flex-col gap-0.5 rounded-2xl bg-card p-4 lift">
                       <p className="font-medium" lang={view.content.language}>
                         {c.phrase}
                       </p>
@@ -74,7 +74,7 @@ export function UsageTab() {
                 <SectionTitle>{t("usage.idioms")}</SectionTitle>
                 <ul className="flex flex-col gap-2">
                   {sense.idioms.map((idiom, i) => (
-                    <li key={i} className="flex flex-col gap-0.5 rounded-xl border p-3">
+                    <li key={i} className="flex flex-col gap-0.5 rounded-2xl bg-card p-4 lift">
                       <p className="flex flex-wrap items-center gap-2">
                         <span className="font-medium" lang={view.content.language}>
                           {idiom.phrase}
@@ -100,7 +100,7 @@ export function UsageTab() {
                 <SectionTitle>{t("usage.mistakes")}</SectionTitle>
                 <ul className="flex flex-col gap-2">
                   {sense.common_mistakes.map((m, i) => (
-                    <li key={i} className="flex flex-col gap-1 rounded-xl border p-3">
+                    <li key={i} className="flex flex-col gap-1 rounded-2xl bg-card p-4 lift">
                       <p className="text-sm" lang={view.content.language}>
                         <span
                           className="font-semibold text-destructive"

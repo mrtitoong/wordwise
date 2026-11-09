@@ -249,10 +249,8 @@ export function WordCardBody({
             <Tabs.List
               aria-label={t("wordCard.tabsLabel")}
               className={cn(
-                "grid border-b bg-background px-1",
-                inSession
-                  ? "-mx-1"
-                  : "sticky top-[calc(3.5rem+env(safe-area-inset-top,0px))] z-[5] -mx-4",
+                "grid gap-1 rounded-2xl bg-secondary p-1",
+                !inSession && "sticky top-[calc(3.5rem+env(safe-area-inset-top,0px))] z-[5]",
               )}
               style={{ gridTemplateColumns: `repeat(${view.tabs.length}, minmax(0, 1fr))` }}
             >
@@ -260,7 +258,7 @@ export function WordCardBody({
                 <Tabs.Trigger
                   key={id}
                   value={id}
-                  className="flex min-h-12 items-center justify-center border-b-2 border-transparent px-0.5 text-center text-[13px] leading-tight text-muted-foreground focus-visible:outline-2 focus-visible:outline-ring data-[state=active]:border-primary data-[state=active]:font-semibold data-[state=active]:text-accent-foreground"
+                  className="flex min-h-11 items-center justify-center rounded-xl px-0.5 text-center text-[13px] leading-tight font-medium text-muted-foreground transition-colors focus-visible:outline-2 focus-visible:outline-ring data-[state=active]:bg-card data-[state=active]:font-bold data-[state=active]:text-primary data-[state=active]:shadow-[0_2px_0_var(--lift)]"
                 >
                   {t(`wordCard.tabs.${id}`)}
                 </Tabs.Trigger>

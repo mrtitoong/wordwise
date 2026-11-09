@@ -249,7 +249,7 @@ export function NotebookPlan({
     <>
       {update && (
         <section
-          className="flex flex-col gap-2 rounded-xl border border-primary/40 bg-accent/40 p-3"
+          className="flex flex-col gap-2 rounded-2xl border-2 border-primary/30 bg-accent/60 p-4"
           aria-label={t("update.title", { count: update.items.length })}
         >
           <h2 className="font-semibold">{t("update.title", { count: update.items.length })}</h2>
@@ -286,7 +286,7 @@ export function NotebookPlan({
 
       {progress && notebook.target_date && (
         <section
-          className="flex flex-col gap-2 rounded-xl border p-3"
+          className="flex flex-col gap-2 rounded-2xl bg-card p-4 lift"
           aria-label={t("plan.title")}
           data-testid="notebook-plan"
         >
@@ -322,7 +322,7 @@ export function NotebookPlan({
             aria-valuemin={0}
             aria-valuemax={progress.total}
             aria-valuenow={progress.studied}
-            className="h-2 overflow-hidden rounded-full bg-muted"
+            className="h-2.5 overflow-hidden rounded-full bg-accent"
           >
             <div
               className="h-full rounded-full bg-primary"

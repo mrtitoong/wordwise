@@ -921,7 +921,6 @@
     "searchLabel": "Search your words",
     "noResults": "No words found.",
     "listLabel": "Notebooks",
-    "stats": "{words} words · {due} due",
     "libraryTitle": "Library",
     "libraryBody": "Ready-made lists: IELTS, TOEIC, work…",
     "archived": "Archived ({count})",
@@ -1015,7 +1014,11 @@
       "notFound": "Notebook not found.",
       "export": "Export CSV",
       "exported": "Downloaded {file}"
-    }
+    },
+    "dueBadge": "{count} due",
+    "knownProgress": "{known} of {words} words known",
+    "noWordsYet": "No words yet",
+    "knownShort": "{known}/{words} known"
   },
   "library": {
     "title": "Library",

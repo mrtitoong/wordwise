@@ -921,7 +921,6 @@
     "searchLabel": "Tìm từ trong kho",
     "noResults": "Không tìm thấy từ nào.",
     "listLabel": "Các sổ tay",
-    "stats": "{words} từ · {due} đến hạn",
     "libraryTitle": "Thư viện",
     "libraryBody": "Bộ từ có sẵn: IELTS, TOEIC, công việc…",
     "archived": "Đã lưu trữ ({count})",
@@ -1015,7 +1014,11 @@
       "notFound": "Không tìm thấy sổ này.",
       "export": "Xuất CSV",
       "exported": "Đã tải file {file}"
-    }
+    },
+    "dueBadge": "{count} đến hạn",
+    "knownProgress": "Đã thuộc {known}/{words} từ",
+    "noWordsYet": "Chưa có từ nào",
+    "knownShort": "{known}/{words} đã thuộc"
   },
   "library": {
     "title": "Thư viện",

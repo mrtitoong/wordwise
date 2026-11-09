@@ -62,6 +62,16 @@ const LONG_PRESS_MS = 500;
 
 type SheetKind = "menu" | "edit" | "filter" | "move" | "copy" | "remove" | "delete" | null;
 
+/** Màu theo trạng thái học (chấm ở chip lọc và ở từng từ). */
+const STATUS_DOT: Record<string, string> = {
+  all: "bg-foreground/40",
+  queued: "bg-muted-foreground/50",
+  learning: "bg-streak",
+  known: "bg-grade-good",
+  mastered: "bg-primary",
+  suspended: "bg-border",
+};
+
 function LevelDots({ level }: { level: number }) {
   const t = useTranslations("notebooks.detail");
   return (
@@ -69,7 +79,7 @@ function LevelDots({ level }: { level: number }) {
       {[1, 2, 3, 4].map((i) => (
         <span
           key={i}
-          className={cn("size-1.5 rounded-full", i <= level ? "bg-primary" : "bg-border")}
+          className={cn("h-1.5 w-2.5 rounded-full", i <= level ? "bg-primary" : "bg-accent")}
         />
       ))}
     </span>
@@ -235,11 +245,11 @@ export function NotebookDetailScreen({ notebookId }: { notebookId: string }) {
           notebookId={notebook.id}
           coverUrl={notebook.cover_url}
           owner={owner}
-          className="-mx-4 h-28"
+          className="h-28 rounded-3xl"
         />
         <div className="flex items-start gap-2">
           <div className="flex min-w-0 flex-1 flex-col gap-1">
-            <h1 className="text-2xl font-semibold break-words">{notebook.name}</h1>
+            <h1 className="text-2xl font-extrabold break-words">{notebook.name}</h1>
             <p className="text-sm text-muted-foreground">
               {t("wordCount", { count: rows.length })}
               {notebook.is_archived && ` · ${t("archivedBadge")}`}
@@ -311,14 +321,23 @@ export function NotebookDetailScreen({ notebookId }: { notebookId: string }) {
                     aria-checked={filter.status === status}
                     onClick={() => setFilter({ ...filter, status })}
                     className={cn(
-                      "flex min-h-11 shrink-0 items-center gap-1 rounded-full border px-3 text-sm whitespace-nowrap focus-visible:outline-2 focus-visible:outline-ring",
+                      "flex min-h-11 shrink-0 items-center gap-1.5 rounded-full px-3 text-sm whitespace-nowrap transition-colors focus-visible:outline-2 focus-visible:outline-ring",
                       filter.status === status
-                        ? "border-primary bg-accent font-medium text-accent-foreground"
-                        : "text-muted-foreground",
+                        ? "bg-primary font-semibold text-primary-foreground"
+                        : "bg-card text-foreground lift",
                     )}
                   >
+                    {status !== "all" && (
+                      <span
+                        aria-hidden
+                        className={cn(
+                          "size-2 rounded-full",
+                          filter.status === status ? "bg-primary-foreground" : STATUS_DOT[status],
+                        )}
+                      />
+                    )}
                     {t(`status.${status}`)}
-                    <span className="tabular-nums">{counts[status]}</span>
+                    <span className="tabular-nums opacity-75">{counts[status]}</span>
                   </button>
                 ))}
             </div>
@@ -366,7 +385,10 @@ export function NotebookDetailScreen({ notebookId }: { notebookId: string }) {
               </Button>
             </div>
           ) : (
-            <ul className="flex flex-col divide-y" aria-label={notebook.name}>
+            <ul
+              className="flex flex-col divide-y overflow-hidden rounded-2xl bg-card lift"
+              aria-label={notebook.name}
+            >
               {visible.slice(0, limit).map((row) => {
                 const label = rowLabel(row, data);
                 const isSelected = selected.has(row.entry.id);
@@ -382,9 +404,13 @@ export function NotebookDetailScreen({ notebookId }: { notebookId: string }) {
                         className="size-5 shrink-0 accent-primary"
                       />
                     )}
+                    <span
+                      aria-hidden
+                      className={cn("size-2.5 shrink-0 rounded-full", STATUS_DOT[row.status])}
+                    />
                     <span className="flex min-w-0 flex-1 flex-col">
                       <span className="flex items-baseline gap-1.5">
-                        <span className="font-medium" lang="en">
+                        <span className="font-semibold" lang="en">
                           {label.lemma ?? "…"}
                         </span>
                         {label.pos && (
@@ -399,7 +425,7 @@ export function NotebookDetailScreen({ notebookId }: { notebookId: string }) {
                     </span>
                     <span className="flex shrink-0 flex-col items-end gap-1">
                       {row.status === "queued" || row.status === "suspended" ? (
-                        <span className="rounded-full bg-muted px-2 py-0.5 text-[11px] text-muted-foreground">
+                        <span className="rounded-full bg-muted px-2 py-0.5 text-[11px] font-medium text-muted-foreground">
                           {t(`status.${row.status}`)}
                         </span>
                       ) : (
@@ -418,7 +444,7 @@ export function NotebookDetailScreen({ notebookId }: { notebookId: string }) {
                   onContextMenu: (e: React.MouseEvent) => e.preventDefault(),
                 };
                 const rowClass =
-                  "flex min-h-14 w-full items-center gap-3 py-2 text-left select-none focus-visible:outline-2 focus-visible:outline-ring";
+                  "flex min-h-14 w-full items-center gap-3 px-4 py-2 text-left select-none hover:bg-muted/50 focus-visible:outline-2 focus-visible:-outline-offset-2 focus-visible:outline-ring";
                 return (
                   <li key={row.entry.id} className={cn(isSelected && "bg-accent/50")}>
                     {selecting ? (

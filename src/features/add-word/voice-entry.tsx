@@ -218,7 +218,7 @@ export function VoiceEntry({
           onKeyDown={onKeyDown}
           onContextMenu={(e) => e.preventDefault()}
           className={cn(
-            "relative flex size-24 touch-none items-center justify-center press-3d rounded-full bg-primary text-primary-foreground [--press:var(--primary-shadow)] select-none focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-ring disabled:opacity-50",
+            "relative flex size-24 press-3d touch-none items-center justify-center rounded-full bg-primary text-primary-foreground select-none [--press:var(--primary-shadow)] focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-ring disabled:opacity-50",
             phase === "listening" && "scale-110 bg-destructive shadow-destructive/30",
           )}
         >

@@ -110,6 +110,8 @@ export type NotebookSummary = {
   notebook: NotebookRow;
   wordCount: number;
   dueCount: number;
+  /** Từ đã thuộc hoặc thành thạo (thanh tiến độ ở danh sách sổ). */
+  knownCount: number;
 };
 
 /** Số từ và số từ đến hạn của từng sổ chưa xóa; sổ mặc định đứng cuối như wireframe. */
@@ -120,12 +122,15 @@ export function summarizeNotebooks(
   dayEnd?: Date,
 ): NotebookSummary[] {
   const { userWords, cards, entries } = liveIndex(data);
-  const byNotebook = new Map<string, { words: number; due: number }>();
+  const byNotebook = new Map<string, { words: number; due: number; known: number }>();
   for (const entry of entries) {
-    const stat = byNotebook.get(entry.notebook_id) ?? { words: 0, due: 0 };
+    const stat = byNotebook.get(entry.notebook_id) ?? { words: 0, due: 0, known: 0 };
     stat.words++;
     const uw = userWords.get(entry.user_word_id)!;
-    if (isDue(uw, cards.get(uw.id), now, dayEnd)) stat.due++;
+    const card = cards.get(uw.id);
+    if (isDue(uw, card, now, dayEnd)) stat.due++;
+    const status = learningStatus(uw, card);
+    if (status === "known" || status === "mastered") stat.known++;
     byNotebook.set(entry.notebook_id, stat);
   }
   return data.notebooks
@@ -134,6 +139,7 @@ export function summarizeNotebooks(
       notebook,
       wordCount: byNotebook.get(notebook.id)?.words ?? 0,
       dueCount: byNotebook.get(notebook.id)?.due ?? 0,
+      knownCount: byNotebook.get(notebook.id)?.known ?? 0,
     }))
     .sort(
       (a, b) =>

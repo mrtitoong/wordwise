@@ -66,7 +66,7 @@ export function MeaningLookup({
       )}
       {problem && <p className="text-sm text-muted-foreground">{t(problem)}</p>}
       {items && items.length > 0 && (
-        <ul className="flex flex-col divide-y rounded-xl border">
+        <ul className="flex flex-col divide-y overflow-hidden rounded-2xl bg-card lift">
           {items.map((item) => (
             <li key={item.word}>
               <button

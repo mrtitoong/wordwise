@@ -33,15 +33,32 @@ export function CardHeader() {
     content.cefr,
     view.zh?.hsk ? `HSK ${view.zh.hsk}` : null,
     content.register !== "neutral" ? t(`register.${content.register}`) : null,
-  ].filter(Boolean);
+  ].filter((m): m is string => !!m);
 
   return (
     <section className="flex flex-col gap-3 pt-2" aria-labelledby="word-lemma">
       <div className="flex flex-col gap-1">
-        <h1 id="word-lemma" className="text-3xl font-semibold break-words" lang={content.language}>
+        <h1
+          id="word-lemma"
+          className="text-4xl font-extrabold tracking-tight break-words"
+          lang={content.language}
+        >
           {content.lemma}
         </h1>
-        <p className="text-sm text-muted-foreground">{meta.join(" · ")}</p>
+        <p className="flex flex-wrap gap-1.5 pt-1">
+          {meta.map((m, i) => (
+            <span
+              key={m}
+              className={
+                i === 0
+                  ? "rounded-full bg-accent px-2.5 py-0.5 text-xs font-semibold text-accent-foreground"
+                  : "rounded-full bg-muted px-2.5 py-0.5 text-xs font-semibold text-muted-foreground"
+              }
+            >
+              {m}
+            </span>
+          ))}
+        </p>
         {view.inflections.length > 0 && (
           <p className="text-sm" lang={content.language}>
             {view.inflections.join(" · ")}
@@ -58,7 +75,7 @@ export function CardHeader() {
 
       {imageUrl && (
         <figure className="flex flex-col gap-1">
-          <div className="relative overflow-hidden rounded-xl bg-muted">
+          <div className="relative overflow-hidden rounded-2xl bg-muted">
             {/* Ảnh từ Pexels/Unsplash hoặc signed URL: không qua next/image (ảnh ngoài, URL đổi). */}
             {/* eslint-disable-next-line @next/next/no-img-element */}
             <img
@@ -101,20 +118,17 @@ export function CardHeader() {
         />
       )}
 
-      <div className="flex flex-wrap items-center gap-x-4 gap-y-1">
+      <div className="flex flex-wrap items-center gap-2">
         {(["us", "uk"] as const).map((voice) =>
           content.ipa[voice] ? (
-            <div key={voice} className="flex items-center gap-0.5">
+            <div key={voice} className="flex items-center gap-0.5 rounded-full bg-card pr-3.5 lift">
               <AudioButton
                 text={content.lemma}
                 voice={voice}
                 url={view.audio[voice]}
                 autoPlay={autoPlay === voice}
-                className="-ml-2"
               />
-              <span className="text-xs font-semibold text-muted-foreground">
-                {voice.toUpperCase()}
-              </span>
+              <span className="text-xs font-bold text-primary">{voice.toUpperCase()}</span>
               <span className="ml-1 font-mono text-sm" lang="en-fonipa">
                 /{content.ipa[voice]}/
               </span>
@@ -159,11 +173,13 @@ export function CardHeader() {
           </Button>
         </div>
       ) : (
-        <div className="flex flex-col gap-2 rounded-xl bg-muted p-3">
-          <p className="text-sm">{t("notInNotebook")}</p>
+        <div className="flex flex-col gap-2 rounded-2xl bg-accent p-4">
+          <p className="text-sm text-accent-foreground">{t("notInNotebook")}</p>
           <Button
             type="button"
-            className="min-h-11"
+            variant="cta"
+            size="lg"
+            className="min-h-12"
             disabled={!owner}
             onClick={() => addSense(view.primarySenseId)}
           >

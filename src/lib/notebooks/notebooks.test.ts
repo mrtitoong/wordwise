@@ -203,10 +203,10 @@ describe("sổ tay", () => {
 
   it("số từ và số đến hạn; sổ mặc định đứng cuối; bỏ sổ đã xóa", () => {
     const summaries = summarizeNotebooks(data, NOW, "default");
-    expect(summaries.map((s) => [s.notebook.id, s.wordCount, s.dueCount])).toEqual([
-      ["b", 1, 1],
-      ["a", 3, 1],
-      ["default", 0, 0],
+    expect(summaries.map((s) => [s.notebook.id, s.wordCount, s.dueCount, s.knownCount])).toEqual([
+      ["b", 1, 1, 0],
+      ["a", 3, 1, 1],
+      ["default", 0, 0, 0],
     ]);
     expect(countOwnedWords(data)).toBe(3);
   });

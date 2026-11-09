@@ -52,7 +52,8 @@
     "language": {
       "label": "Ngôn ngữ đang học",
       "en": "Tiếng Anh",
-      "zh": "Tiếng Trung"
+      "zh": "Tiếng Trung",
+      "current": "Ngôn ngữ đang học: {language}"
     },
     "greeting": {
       "morning": "Chào buổi sáng!",
@@ -921,7 +922,6 @@
     "searchLabel": "Tìm từ trong kho",
     "noResults": "Không tìm thấy từ nào.",
     "listLabel": "Các sổ tay",
-    "stats": "{words} từ · {due} đến hạn",
     "libraryTitle": "Thư viện",
     "libraryBody": "Bộ từ có sẵn: IELTS, TOEIC, công việc…",
     "archived": "Đã lưu trữ ({count})",
@@ -976,7 +976,8 @@
         "voice": "nói",
         "photo": "ảnh",
         "csv": "file",
-        "list": "ds"
+        "list": "thư viện",
+        "url": "link"
       },
       "level": "Mức thuộc {level}/4",
       "select": "Chọn",
@@ -1015,7 +1016,11 @@
       "notFound": "Không tìm thấy sổ này.",
       "export": "Xuất CSV",
       "exported": "Đã tải file {file}"
-    }
+    },
+    "dueBadge": "{count} đến hạn",
+    "knownProgress": "Đã thuộc {known}/{words} từ",
+    "wordCount": "{count} từ",
+    "knownCount": "{count} đã thuộc"
   },
   "library": {
     "title": "Thư viện",

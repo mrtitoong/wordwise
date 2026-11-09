@@ -7,6 +7,7 @@ import {
   signInWithCode,
   uniqueEmail,
   userIdByEmail,
+  chooseLearningLanguage,
 } from "./helpers";
 
 /** Chữ và âm riêng cho từng lần chạy, vì các test dùng chung một database. */
@@ -80,11 +81,7 @@ test.describe("Thêm từ tiếng Trung", () => {
       .eq("user_id", await userIdByEmail(email));
     if (flag.error) throw new Error(flag.error.message);
     await page.reload();
-    const chinese = page
-      .getByRole("radiogroup", { name: "Ngôn ngữ đang học" })
-      .getByRole("radio", { name: "Tiếng Trung" });
-    await chinese.click();
-    await expect(chinese).toBeChecked();
+    await chooseLearningLanguage(page, "Tiếng Trung");
 
     await page.goto("/add");
     const tabs = page.getByRole("tablist");

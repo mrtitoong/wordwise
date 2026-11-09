@@ -25,7 +25,7 @@ import { cacheSenses, findExact, useWordSuggestions } from "./word-search";
 type Picked = { word: WordSummary; typed: string; senseId: string };
 
 const inputClass =
-  "w-full rounded-xl border bg-background px-4 text-base focus-visible:outline-2 focus-visible:outline-ring";
+  "lift w-full rounded-2xl border-2 border-transparent bg-card px-4 text-base focus-visible:border-primary focus-visible:outline-none";
 
 /** Tab Gõ, một từ: gợi ý → chọn nghĩa → Thêm. Dán nhiều dòng thì chuyển sang xem trước hàng loạt. */
 export function SingleEntry({
@@ -221,7 +221,10 @@ export function SingleEntry({
       {!context.online && <p className="text-sm text-muted-foreground">{t("offline")}</p>}
 
       {!picked && query.trim() && (
-        <ul aria-label={t("suggestions")} className="flex flex-col divide-y rounded-xl border">
+        <ul
+          aria-label={t("suggestions")}
+          className="flex flex-col divide-y overflow-hidden rounded-2xl bg-card lift"
+        >
           {suggestions.items.map((word) => (
             <li key={word.id}>
               <button
@@ -289,9 +292,9 @@ export function SingleEntry({
       )}
 
       {picked && (
-        <section className="flex flex-col gap-2 rounded-xl border p-3">
+        <section className="flex flex-col gap-2 rounded-2xl bg-card p-4 lift">
           <p className="flex items-baseline gap-2">
-            <span className="text-lg font-semibold" lang={language}>
+            <span className="text-2xl font-extrabold" lang={language}>
               {picked.word.lemma}
             </span>
             <span className="text-sm text-muted-foreground">{tc(`pos.${picked.word.pos}`)}</span>
@@ -354,12 +357,12 @@ export function SingleEntry({
       {!query && <p className="text-sm text-muted-foreground">{t("pasteHint")}</p>}
 
       {picked && (
-        <div className="fixed inset-x-0 bottom-0 z-30 border-t bg-background pb-[env(safe-area-inset-bottom,0px)]">
+        <div className="fixed inset-x-0 bottom-0 z-30 border-t bg-card pb-[env(safe-area-inset-bottom,0px)]">
           <div className="mx-auto flex max-w-md items-center gap-3 px-4 py-3">
             <span className="flex-1 text-sm text-muted-foreground">
               {t("summaryOne", { when })}
             </span>
-            <Button type="submit" className="min-h-11 px-6" disabled={busy}>
+            <Button type="submit" variant="cta" size="lg" className="min-h-12 px-7" disabled={busy}>
               {busy ? t("adding") : t("add")}
             </Button>
           </div>

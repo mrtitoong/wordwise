@@ -119,7 +119,7 @@ export function PickableText({
 }) {
   return (
     <div
-      className="flex flex-col gap-3 rounded-xl border p-3 leading-relaxed"
+      className="flex flex-col gap-3 rounded-2xl bg-card p-4 leading-relaxed lift"
       lang="en"
       aria-label={label}
     >

@@ -50,7 +50,7 @@ function ExampleItem({
   const [shown, setShown] = useState(false);
   const example = sense.examples[index]!;
   return (
-    <li className="flex flex-col gap-1 rounded-xl border p-3">
+    <li className="flex flex-col gap-1 rounded-2xl bg-card p-4 lift">
       <p lang={view.content.language}>
         <Highlighted text={example.sentence} terms={[example.highlight, ...view.highlightTerms]} />
       </p>
@@ -129,7 +129,7 @@ export function ExamplesTab({ voice }: { voice: Voice }) {
             {view.contextSentences.map((c) => (
               <li
                 key={c.entryId}
-                className="flex flex-col gap-2 rounded-xl border-2 border-primary/30 bg-accent/40 p-3"
+                className="flex flex-col gap-2 rounded-2xl border-2 border-primary/30 bg-accent/60 p-4"
               >
                 {c.source && <p className="text-xs text-muted-foreground">{c.source}</p>}
                 {c.article && (

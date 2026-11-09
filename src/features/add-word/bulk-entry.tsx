@@ -138,7 +138,10 @@ export function BulkEntry({
           {t("checking")}
         </p>
       ) : (
-        <ul aria-label={t("listLabel")} className="flex flex-col divide-y rounded-xl border">
+        <ul
+          aria-label={t("listLabel")}
+          className="flex flex-col divide-y overflow-hidden rounded-2xl bg-card lift"
+        >
           {entries.map((entry, i) => {
             const option =
               entry.status === "ready" || entry.status === "choose"

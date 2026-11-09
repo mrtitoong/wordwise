@@ -28,7 +28,7 @@ export function MemoryTab() {
               </MineItem>
             ))}
             {content.mnemonics.map((m, i) => (
-              <li key={i} className="flex flex-col gap-1 rounded-xl border p-3">
+              <li key={i} className="flex flex-col gap-1 rounded-2xl bg-card p-4 lift">
                 <p className="text-xs font-semibold text-muted-foreground">
                   {t(`memory.type.${m.type}`)}
                 </p>
@@ -44,7 +44,7 @@ export function MemoryTab() {
           <SectionTitle>{t("memory.confusables")}</SectionTitle>
           <ul className="flex flex-col gap-2">
             {content.confusables.map((c, i) => (
-              <li key={i} className="flex flex-col gap-1 rounded-xl border p-3">
+              <li key={i} className="flex flex-col gap-1 rounded-2xl bg-card p-4 lift">
                 <p className="font-medium" lang={view.content.language}>
                   {t("memory.versus", { a: content.lemma, b: c.word })}
                 </p>

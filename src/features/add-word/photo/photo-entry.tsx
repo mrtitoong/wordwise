@@ -141,7 +141,7 @@ export function PhotoEntry({ context }: { context: EntryContext }) {
 
   if (!context.signedIn) {
     return (
-      <section className="flex flex-col gap-3 rounded-xl border p-4">
+      <section className="flex flex-col gap-3 rounded-2xl bg-card p-4 lift">
         <p className="text-sm">{t("needAccount")}</p>
         <Button asChild className="min-h-11">
           <Link href="/login?next=%2Fadd">{t("signIn")}</Link>
@@ -151,7 +151,7 @@ export function PhotoEntry({ context }: { context: EntryContext }) {
   }
   if (plan === "free" || (step.kind === "failed" && step.reason === "premium")) {
     return (
-      <section className="flex flex-col gap-3 rounded-xl border p-4">
+      <section className="flex flex-col gap-3 rounded-2xl bg-card p-4 lift">
         <h2 className="flex items-center gap-2 font-semibold">
           <Sparkles className="size-5 text-primary" aria-hidden />
           {t("premiumTitle")}

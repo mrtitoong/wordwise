@@ -154,7 +154,7 @@ export function ArticleEntry({ context }: { context: EntryContext }) {
 
   if (!context.signedIn) {
     return (
-      <section className="flex flex-col gap-3 rounded-xl border p-4">
+      <section className="flex flex-col gap-3 rounded-2xl bg-card p-4 lift">
         <p className="text-sm">{t("needAccount")}</p>
         <Button asChild className="min-h-11">
           <Link href="/login?next=%2Fadd">{t("signIn")}</Link>

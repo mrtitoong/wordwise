@@ -50,3 +50,13 @@ describe("messages", () => {
     }
   });
 });
+
+describe("nhãn cách nhập từ", () => {
+  it("mọi cách nhập (input_method) đều có nhãn ở trang sổ tay", async () => {
+    const { InputMethodSchema } = await import("../lib/words/api");
+    for (const messages of [vi, en]) {
+      const labels = messages.notebooks.detail.method as Record<string, string>;
+      for (const method of InputMethodSchema.options) expect(labels[method], method).toBeTruthy();
+    }
+  });
+});

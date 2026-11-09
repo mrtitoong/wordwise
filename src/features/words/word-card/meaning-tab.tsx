@@ -14,7 +14,7 @@ export function MeaningTab() {
       {view.senses.map((sense) => (
         <article
           key={sense.senseId}
-          className="flex flex-col gap-2 rounded-xl border p-3"
+          className="flex flex-col gap-2 rounded-2xl bg-card p-4 lift"
           aria-label={t("senseN", { number: sense.number })}
         >
           {multiple && (

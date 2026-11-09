@@ -133,7 +133,7 @@ export function MineItem({
   const { open } = useCard();
   return (
     <li
-      className="flex items-start gap-2 rounded-xl border border-amber-200 bg-amber-50/60 p-3 dark:border-amber-900/60 dark:bg-amber-950/20"
+      className="flex items-start gap-2 rounded-2xl border border-amber-200 bg-amber-50/60 p-4 dark:border-amber-900/60 dark:bg-amber-950/20"
       data-mine
     >
       <div className="flex min-w-0 flex-1 flex-col gap-1">
@@ -165,7 +165,7 @@ export function WordChip({
   const { open, readOnly } = useCard();
   if (readOnly) {
     return (
-      <span className="inline-flex min-h-9 items-center gap-1.5 rounded-full border bg-background px-3.5 text-sm font-medium">
+      <span className="inline-flex min-h-9 items-center gap-1.5 rounded-full bg-card px-3.5 text-sm font-semibold lift">
         {word}
         {children}
       </span>
@@ -175,7 +175,7 @@ export function WordChip({
     <button
       type="button"
       onClick={() => open({ kind: "chip", word, pos })}
-      className="inline-flex min-h-11 items-center gap-1.5 rounded-full border bg-background px-3.5 text-sm font-medium hover:bg-muted focus-visible:outline-2 focus-visible:outline-ring"
+      className="inline-flex min-h-11 press-3d items-center gap-1.5 rounded-full bg-card px-3.5 text-sm font-semibold hover:bg-accent focus-visible:outline-2 focus-visible:outline-ring"
     >
       {word}
       {children}

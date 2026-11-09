@@ -708,3 +708,12 @@ Repo: https://github.com/mrtitoong/wordwise
   `motion-safe:`; không thêm thư viện (giữ Lighthouse). **Rung khi trả lời** (Android; iPhone không hỗ trợ), mặc định bật,
   công tắc ở Cài đặt → Giao diện chỉ hiện trên máy rung được, lưu localStorage `ww_haptics`. Đợt 2 (Sổ tay, Thẻ từ, Thêm
   từ, Thống kê, Thư viện, Cài đặt) chưa làm; các màn đó đã đổi màu nền/nút theo token chung nhưng chưa sửa bố cục.
+- 2026-11-09 (giao diện mới đợt 2a, chủ sản phẩm duyệt ảnh ở trang riêng tư
+  https://claude.ai/artifact/AXXy9c7C7cf6c3ByWxjaP2): Sổ tay (thẻ sổ có "N từ · M đã thuộc", thanh tiến độ đã thuộc = Đã
+  thuộc + Thành thạo, nhãn xanh chanh "N đến hạn"; chip lọc và từng từ có chấm màu theo trạng thái: Sắp học xám, Đang học
+  cam, Đã thuộc xanh lá, Thành thạo tím), Thẻ từ (chip loại từ/CEFR, nút nghe dạng viên, 5 tab dạng nút), Thêm từ (5 tab ô
+  vuông có biểu tượng, nút Thêm xanh chanh, thanh chạy cho từ đang tạo). Thẻ sổ phải giữ chữ "N từ" ngay sau tên sổ (E2E tìm
+  sổ theo tên + số từ). **Chọn ngôn ngữ đang học ở Hôm nay là danh sách thả xuống có cờ** (`LanguageFlag`, SVG vì Windows
+  không hiện emoji cờ; **tiếng Anh dùng cờ Mỹ**, chủ sản phẩm chọn), E2E dùng `chooseLearningLanguage()`. Nhãn cách nhập:
+  `url` → "link", `list` → "thư viện" (thay "ds"); test trong `src/i18n/config.test.ts` bắt buộc mọi `InputMethodSchema`
+  có nhãn. Đợt 2b (Thống kê, Luyện tập, Thư viện, Cài đặt, Onboarding) chưa làm.

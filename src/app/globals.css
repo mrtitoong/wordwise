@@ -218,6 +218,16 @@
   --animate-pop: ww-pop 0.32s cubic-bezier(0.34, 1.56, 0.64, 1);
   --animate-reveal: ww-reveal 0.28s ease-out;
   --animate-confetti: ww-confetti 1.8s cubic-bezier(0.2, 0.6, 0.4, 1) forwards;
+  --animate-slide: ww-slide 1.4s ease-in-out infinite;
+
+  @keyframes ww-slide {
+    from {
+      transform: translateX(-100%);
+    }
+    to {
+      transform: translateX(300%);
+    }
+  }
 
   @keyframes ww-pop {
     from {

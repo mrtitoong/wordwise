@@ -52,7 +52,8 @@
     "language": {
       "label": "Learning language",
       "en": "English",
-      "zh": "Chinese"
+      "zh": "Chinese",
+      "current": "Learning language: {language}"
     },
     "greeting": {
       "morning": "Good morning!",
@@ -921,7 +922,6 @@
     "searchLabel": "Search your words",
     "noResults": "No words found.",
     "listLabel": "Notebooks",
-    "stats": "{words} words · {due} due",
     "libraryTitle": "Library",
     "libraryBody": "Ready-made lists: IELTS, TOEIC, work…",
     "archived": "Archived ({count})",
@@ -976,7 +976,8 @@
         "voice": "voice",
         "photo": "photo",
         "csv": "file",
-        "list": "list"
+        "list": "library",
+        "url": "link"
       },
       "level": "Mastery {level}/4",
       "select": "Select",
@@ -1015,7 +1016,11 @@
       "notFound": "Notebook not found.",
       "export": "Export CSV",
       "exported": "Downloaded {file}"
-    }
+    },
+    "dueBadge": "{count} due",
+    "knownProgress": "{known} of {words} words known",
+    "wordCount": "{count, plural, one {# word} other {# words}}",
+    "knownCount": "{count} known"
   },
   "library": {
     "title": "Library",

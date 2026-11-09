@@ -3,7 +3,7 @@
 import { useEffect, useMemo, useState } from "react";
 import { useRouter } from "next/navigation";
 import { useLiveQuery } from "dexie-react-hooks";
-import { X } from "lucide-react";
+import { Camera, FileSpreadsheet, Keyboard, Link2, Mic, X, type LucideIcon } from "lucide-react";
 import { useTranslations } from "next-intl";
 import { GUEST_OWNER, defaultNotebookId } from "@/lib/db/ids";
 import { getLocalDb } from "@/lib/db/local";
@@ -157,11 +157,11 @@ export function AddWordScreen({ initialNotebookId }: { initialNotebookId: string
         >
           <X className="size-5" aria-hidden />
         </button>
-        <h1 className="flex-1 text-xl font-semibold">{t("add.title")}</h1>
+        <h1 className="flex-1 text-xl font-extrabold">{t("add.title")}</h1>
       </header>
 
       {notebook && (
-        <label className="flex items-center gap-2 text-sm">
+        <label className="flex items-center gap-2 rounded-2xl bg-card py-1 pr-1 pl-4 text-sm lift">
           <span className="shrink-0 text-muted-foreground">{t("addWord.notebook")}</span>
           <select
             aria-label={t("addWord.notebookLabel")}
@@ -170,7 +170,7 @@ export function AddWordScreen({ initialNotebookId }: { initialNotebookId: string
               setChosen(e.target.value);
               saveLastNotebook(e.target.value);
             }}
-            className="min-h-11 min-w-0 flex-1 rounded-lg border bg-background px-2 font-medium focus-visible:outline-2 focus-visible:outline-ring"
+            className="min-h-11 min-w-0 flex-1 rounded-xl bg-transparent px-2 font-semibold text-primary focus-visible:outline-2 focus-visible:outline-ring"
           >
             {notebooks.map((n) => (
               <option key={n.id} value={n.id}>
@@ -184,10 +184,11 @@ export function AddWordScreen({ initialNotebookId }: { initialNotebookId: string
       <div
         role="tablist"
         aria-label={t("addWord.tabsLabel")}
-        className="grid auto-cols-fr grid-flow-col gap-1 rounded-xl bg-muted p-1"
+        className="grid auto-cols-fr grid-flow-col gap-2"
       >
         {tabs.map((id) => {
           const active = id === tab;
+          const Icon = TAB_ICONS[id] ?? Keyboard;
           return (
             <button
               key={id}
@@ -196,10 +197,13 @@ export function AddWordScreen({ initialNotebookId }: { initialNotebookId: string
               aria-selected={active}
               onClick={() => setTab(id)}
               className={cn(
-                "flex min-h-11 flex-col items-center justify-center rounded-lg text-sm leading-tight focus-visible:outline-2 focus-visible:outline-ring",
-                active ? "bg-background font-semibold shadow-sm" : "text-foreground",
+                "flex min-h-16 press-3d flex-col items-center justify-center gap-1 rounded-2xl text-xs leading-tight font-semibold focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-ring",
+                active
+                  ? "bg-primary text-primary-foreground [--press:var(--primary-shadow)]"
+                  : "bg-card text-foreground [--press:var(--lift)]",
               )}
             >
+              <Icon className="size-5" aria-hidden />
               {t(`addWord.tabs.${id}`)}
             </button>
           );
@@ -231,6 +235,14 @@ export function AddWordScreen({ initialNotebookId }: { initialNotebookId: string
     </div>
   );
 }
+
+const TAB_ICONS: Record<string, LucideIcon> = {
+  typed: Keyboard,
+  voice: Mic,
+  photo: Camera,
+  url: Link2,
+  file: FileSpreadsheet,
+};
 
 function readLastNotebookSafe(): string | null {
   return typeof window === "undefined" ? null : readLastNotebook();

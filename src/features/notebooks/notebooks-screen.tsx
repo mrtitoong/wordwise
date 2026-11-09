@@ -31,25 +31,47 @@ function fold(text: string): string {
 
 function NotebookItem({ summary, owner }: { summary: NotebookSummary; owner: string }) {
   const t = useTranslations("notebooks");
-  const { notebook } = summary;
+  const { notebook, wordCount, dueCount, knownCount } = summary;
+  const ratio = wordCount === 0 ? 0 : knownCount / wordCount;
   return (
     <li>
       <Link
         href={`/notebooks/${notebook.id}`}
-        className="flex min-h-16 items-center gap-3 rounded-xl border p-2 hover:bg-muted/50 focus-visible:outline-2 focus-visible:outline-ring"
+        className="flex min-h-20 items-center gap-3 rounded-2xl bg-card p-3 lift transition-transform focus-visible:outline-2 focus-visible:outline-ring active:translate-y-0.5"
       >
         <NotebookCover
           notebookId={notebook.id}
           coverUrl={notebook.cover_url}
           owner={owner}
-          className="size-14 shrink-0 rounded-lg"
+          className="size-14 shrink-0 rounded-xl"
         />
-        <span className="flex min-w-0 flex-1 flex-col">
-          <span className="truncate font-medium">{notebook.name}</span>
-          <span className="text-sm text-muted-foreground">
-            {t("stats", { words: summary.wordCount, due: summary.dueCount })}
+        <span className="flex min-w-0 flex-1 flex-col gap-1">
+          <span className="truncate font-semibold">{notebook.name}</span>
+          <span className="text-sm text-muted-foreground tabular-nums">
+            {t("wordCount", { count: wordCount })}
+            {wordCount > 0 && ` · ${t("knownCount", { count: knownCount })}`}
           </span>
+          {wordCount > 0 && (
+            <span
+              className="h-2 overflow-hidden rounded-full bg-accent"
+              role="progressbar"
+              aria-label={t("knownProgress", { known: knownCount, words: wordCount })}
+              aria-valuemin={0}
+              aria-valuemax={wordCount}
+              aria-valuenow={knownCount}
+            >
+              <span
+                className="block h-full rounded-full bg-primary"
+                style={{ width: `${ratio * 100}%` }}
+              />
+            </span>
+          )}
         </span>
+        {dueCount > 0 && (
+          <span className="shrink-0 rounded-full bg-lime px-2 py-0.5 text-xs font-bold text-lime-foreground tabular-nums">
+            {t("dueBadge", { count: dueCount })}
+          </span>
+        )}
         <ChevronRight className="size-4 shrink-0 text-muted-foreground" aria-hidden />
       </Link>
     </li>
@@ -119,7 +141,7 @@ export function NotebooksScreen() {
             value={query}
             onChange={(e) => setQuery(e.target.value)}
             placeholder={t("searchPlaceholder", { count: ownedCount })}
-            className="h-11 w-full rounded-full border bg-background pr-3 pl-9 text-base focus-visible:outline-2 focus-visible:outline-ring"
+            className="h-11 w-full rounded-full border border-transparent bg-card pr-3 pl-9 text-base lift focus-visible:outline-2 focus-visible:outline-ring"
           />
         </label>
         <Button
@@ -138,7 +160,10 @@ export function NotebooksScreen() {
         results.length === 0 ? (
           <p className="py-6 text-center text-muted-foreground">{t("noResults")}</p>
         ) : (
-          <ul aria-label={t("searchLabel")} className="flex flex-col divide-y">
+          <ul
+            aria-label={t("searchLabel")}
+            className="flex flex-col divide-y rounded-2xl bg-card px-4 lift"
+          >
             {results.map((r) => (
               <li key={r.wordId}>
                 <Link
@@ -156,7 +181,7 @@ export function NotebooksScreen() {
         )
       ) : (
         <>
-          <ul aria-label={t("listLabel")} className="flex flex-col gap-2">
+          <ul aria-label={t("listLabel")} className="flex flex-col gap-3">
             {active.map((summary) => (
               <NotebookItem key={summary.notebook.id} summary={summary} owner={owner} />
             ))}
@@ -176,12 +201,14 @@ export function NotebooksScreen() {
 
           <Link
             href="/library"
-            className="flex min-h-16 items-center gap-3 rounded-xl bg-muted p-3 text-muted-foreground hover:bg-muted/70 focus-visible:outline-2 focus-visible:outline-ring"
+            className="flex min-h-20 items-center gap-3 rounded-2xl bg-linear-150 from-hero-from to-hero-to p-4 text-white focus-visible:outline-2 focus-visible:outline-ring"
           >
-            <Library className="size-6 shrink-0" aria-hidden />
+            <span className="flex size-11 shrink-0 items-center justify-center rounded-xl bg-white/15">
+              <Library className="size-6" aria-hidden />
+            </span>
             <span className="flex flex-1 flex-col">
-              <span className="font-medium text-foreground">{t("libraryTitle")}</span>
-              <span className="text-sm">{t("libraryBody")}</span>
+              <span className="font-bold">{t("libraryTitle")}</span>
+              <span className="text-sm opacity-90">{t("libraryBody")}</span>
             </span>
             <ChevronRight className="size-4 shrink-0" aria-hidden />
           </Link>

@@ -24,12 +24,8 @@ export default async function WelcomePage({
     <main className="mx-auto flex min-h-dvh max-w-md flex-col px-4 pt-[env(safe-area-inset-top,0px)] pb-[calc(2rem+env(safe-area-inset-bottom,0px))]">
       <div className="flex flex-1 flex-col items-center justify-center gap-4 text-center">
         <div className="relative flex size-40 items-center justify-center">
-          {/* Vòng tím nhạt và chấm xanh chanh phía sau logo, chỉ trang trí. */}
+          {/* Vòng tím nhạt phía sau logo, chỉ trang trí. */}
           <span aria-hidden className="absolute inset-0 rounded-full bg-accent" />
-          <span
-            aria-hidden
-            className="absolute top-3 right-4 size-7 rounded-full bg-lime motion-safe:animate-bob"
-          />
           <Logo className="relative size-24 drop-shadow-[0_8px_16px_rgb(80_50_200/0.3)]" />
         </div>
         <h1 className="text-4xl font-extrabold tracking-tight">{t("app.name")}</h1>

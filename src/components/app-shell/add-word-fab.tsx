@@ -10,7 +10,7 @@ export async function AddWordFab() {
         <Link
           href="/add"
           aria-label={t("addWord")}
-          className="pointer-events-auto flex size-14 items-center justify-center rounded-full bg-primary text-primary-foreground shadow-lg shadow-primary/30 transition-transform focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-ring active:scale-95"
+          className="pointer-events-auto flex size-14 press-3d items-center justify-center rounded-2xl bg-primary text-primary-foreground [--press:var(--primary-shadow)] focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-ring"
         >
           <Plus className="size-7" aria-hidden />
         </Link>

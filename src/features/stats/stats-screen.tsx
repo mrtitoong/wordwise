@@ -3,6 +3,7 @@
 import { useEffect, useMemo, useState, type ReactNode } from "react";
 import dynamic from "next/dynamic";
 import Link from "next/link";
+import { Flame, Target, Timer, Trophy } from "lucide-react";
 import { useTranslations } from "next-intl";
 import { learningLanguage, spellingEnabled } from "@/lib/lang/filter";
 import { EmptyState } from "@/components/empty-state";
@@ -146,12 +147,22 @@ export function StatsScreen() {
     <div className="flex flex-col gap-6 pb-10">
       <div className="grid grid-cols-2 gap-3">
         <Tile
+          icon={<Flame className="size-5" aria-hidden />}
+          tone="bg-streak text-white"
           label={t("streak")}
           value={t("streakValue", { count: stats.streak.current })}
           hint={t("streakBest", { count: stats.streak.best })}
         />
-        <Tile label={t("known")} value={String(known)} hint={t("knownHint")} />
         <Tile
+          icon={<Trophy className="size-5" aria-hidden />}
+          tone="bg-success-soft text-success-soft-foreground"
+          label={t("known")}
+          value={String(known)}
+          hint={t("knownHint")}
+        />
+        <Tile
+          icon={<Target className="size-5" aria-hidden />}
+          tone="bg-accent text-accent-foreground"
           label={t("retention")}
           value={enoughData ? `${Math.round(retention.rate! * 100)}%` : "—"}
           hint={
@@ -161,6 +172,8 @@ export function StatsScreen() {
           }
         />
         <Tile
+          icon={<Timer className="size-5" aria-hidden />}
+          tone="bg-lime text-lime-foreground"
           label={t("minutes")}
           value={t("minutesValue", { count: thisWeek })}
           hint={
@@ -209,7 +222,7 @@ export function StatsScreen() {
               <li key={group} className="grid grid-cols-[5.5rem_1fr_auto] items-center gap-2">
                 <span className="text-sm">{t(`skill.${group}`)}</span>
                 <span
-                  className="h-3 overflow-hidden rounded-full bg-muted"
+                  className="h-3 overflow-hidden rounded-full bg-accent"
                   role="img"
                   aria-label={
                     percent === null
@@ -243,7 +256,7 @@ export function StatsScreen() {
           <p className="text-sm text-muted-foreground">{t("forgottenNone")}</p>
         ) : (
           <div className="flex flex-col gap-3">
-            <ul className="flex flex-col divide-y rounded-2xl border">
+            <ul className="flex flex-col divide-y overflow-hidden rounded-2xl bg-muted/50">
               {view.forgotten.map((item) => (
                 <li key={item.userWordId} className="flex items-center gap-3 p-3">
                   <div className="min-w-0 flex-1">
@@ -276,7 +289,7 @@ export function StatsScreen() {
               ))}
             </ul>
             {view.reviewIds.length > 0 && (
-              <Button asChild className="min-h-12 text-base">
+              <Button asChild variant="cta" size="lg" className="min-h-12 text-base">
                 <Link href={`/review/session?retry=${view.reviewIds.join(",")}`}>
                   {t("reviewNow")}
                 </Link>
@@ -289,11 +302,26 @@ export function StatsScreen() {
   );
 }
 
-function Tile({ label, value, hint }: { label: string; value: string; hint: string }) {
+function Tile({
+  icon,
+  tone,
+  label,
+  value,
+  hint,
+}: {
+  icon: ReactNode;
+  tone: string;
+  label: string;
+  value: string;
+  hint: string;
+}) {
   return (
-    <section className="flex flex-col gap-1 rounded-2xl border p-4">
-      <h2 className="text-xs text-muted-foreground">{label}</h2>
-      <p className="text-2xl font-semibold tabular-nums">{value}</p>
+    <section className="flex flex-col gap-1 rounded-2xl bg-card p-4 lift">
+      <span className={`mb-1 flex size-9 items-center justify-center rounded-xl ${tone}`}>
+        {icon}
+      </span>
+      <h2 className="text-xs font-medium text-muted-foreground">{label}</h2>
+      <p className="text-2xl font-extrabold tabular-nums">{value}</p>
       <p className="text-xs text-muted-foreground">{hint}</p>
     </section>
   );
@@ -311,9 +339,9 @@ function Section({
   children: ReactNode;
 }) {
   return (
-    <section className="flex flex-col gap-3">
+    <section className="flex min-w-0 flex-col gap-3 rounded-3xl bg-card p-4 lift">
       <div>
-        <h2 className="text-base font-semibold">{title}</h2>
+        <h2 className="text-base font-bold">{title}</h2>
         {hint && <p className="text-sm text-muted-foreground">{hint}</p>}
       </div>
       {children}

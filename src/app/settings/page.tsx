@@ -31,17 +31,17 @@ export default async function SettingsPage() {
       <section aria-labelledby="account-heading" className="flex flex-col gap-3 pt-2">
         <h2
           id="account-heading"
-          className="text-sm font-semibold tracking-wide text-muted-foreground uppercase"
+          className="text-xs font-bold tracking-wider text-muted-foreground uppercase"
         >
           {t("account")}
         </h2>
         {user ? (
-          <div className="flex flex-col gap-3 rounded-xl border p-4">
+          <div className="flex flex-col gap-3 rounded-2xl border border-transparent bg-card p-4 lift">
             <p className="break-all">{t("signedInAs", { email: user.email ?? "" })}</p>
             <SignOutButton />
           </div>
         ) : (
-          <div className="flex flex-col gap-3 rounded-xl border p-4">
+          <div className="flex flex-col gap-3 rounded-2xl border border-transparent bg-card p-4 lift">
             <p className="font-medium">{t("guestTitle")}</p>
             <p className="text-sm text-muted-foreground">{t("guestBody")}</p>
             <Button asChild size="lg">
@@ -53,7 +53,7 @@ export default async function SettingsPage() {
       <section aria-labelledby="app-heading" className="flex flex-col gap-3 pt-6">
         <h2
           id="app-heading"
-          className="text-sm font-semibold tracking-wide text-muted-foreground uppercase"
+          className="text-xs font-bold tracking-wider text-muted-foreground uppercase"
         >
           {t("appSection")}
         </h2>
@@ -62,7 +62,7 @@ export default async function SettingsPage() {
       <section aria-labelledby="daily-heading" className="flex flex-col gap-3 pt-6">
         <h2
           id="daily-heading"
-          className="text-sm font-semibold tracking-wide text-muted-foreground uppercase"
+          className="text-xs font-bold tracking-wider text-muted-foreground uppercase"
         >
           {t("dailyNew")}
         </h2>
@@ -71,7 +71,7 @@ export default async function SettingsPage() {
       <section aria-labelledby="retention-heading" className="flex flex-col gap-3 pt-6">
         <h2
           id="retention-heading"
-          className="text-sm font-semibold tracking-wide text-muted-foreground uppercase"
+          className="text-xs font-bold tracking-wider text-muted-foreground uppercase"
         >
           {t("retentionSection")}
         </h2>
@@ -80,7 +80,7 @@ export default async function SettingsPage() {
       <section aria-labelledby="reminder-heading" className="flex flex-col gap-3 pt-6">
         <h2
           id="reminder-heading"
-          className="text-sm font-semibold tracking-wide text-muted-foreground uppercase"
+          className="text-xs font-bold tracking-wider text-muted-foreground uppercase"
         >
           {t("reminderSection")}
         </h2>
@@ -89,7 +89,7 @@ export default async function SettingsPage() {
       <section aria-labelledby="practice-heading" className="flex flex-col gap-3 pt-6">
         <h2
           id="practice-heading"
-          className="text-sm font-semibold tracking-wide text-muted-foreground uppercase"
+          className="text-xs font-bold tracking-wider text-muted-foreground uppercase"
         >
           {t("reviewSection")}
         </h2>
@@ -102,7 +102,7 @@ export default async function SettingsPage() {
         <SettingSwitch field="multi_accent" label="multiAccent" hint="multiAccentHint" />
         <Link
           href="/settings/microphone"
-          className="flex min-h-12 items-center justify-between rounded-xl border px-4 font-medium focus-visible:outline-2 focus-visible:outline-ring"
+          className="flex min-h-12 items-center justify-between rounded-2xl border border-transparent bg-card px-4 font-medium lift focus-visible:outline-2 focus-visible:outline-ring"
         >
           {t("micTest")}
           <span aria-hidden className="text-muted-foreground">
@@ -113,7 +113,7 @@ export default async function SettingsPage() {
       <section aria-labelledby="language-heading" className="flex flex-col gap-3 pt-6">
         <h2
           id="language-heading"
-          className="text-sm font-semibold tracking-wide text-muted-foreground uppercase"
+          className="text-xs font-bold tracking-wider text-muted-foreground uppercase"
         >
           {t("language")}
         </h2>
@@ -122,7 +122,7 @@ export default async function SettingsPage() {
       <section aria-labelledby="theme-heading" className="flex flex-col gap-3 pt-6">
         <h2
           id="theme-heading"
-          className="text-sm font-semibold tracking-wide text-muted-foreground uppercase"
+          className="text-xs font-bold tracking-wider text-muted-foreground uppercase"
         >
           {t("theme")}
         </h2>
@@ -132,7 +132,7 @@ export default async function SettingsPage() {
       <section className="pt-6">
         <Link
           href="/about"
-          className="flex min-h-12 items-center justify-between rounded-xl border px-4 focus-visible:outline-2 focus-visible:outline-ring"
+          className="flex min-h-12 items-center justify-between rounded-2xl border border-transparent bg-card px-4 lift focus-visible:outline-2 focus-visible:outline-ring"
         >
           {t("about")}
           <span aria-hidden className="text-muted-foreground">

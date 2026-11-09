@@ -73,7 +73,7 @@ export function CardTopBar({
             role="radiogroup"
             onKeyDown={radioGroupKeys}
             aria-label={t("wordCard.viewMode")}
-            className="flex rounded-full bg-muted p-0.5 text-sm"
+            className="flex rounded-full bg-secondary p-1 text-sm"
           >
             {[false, true].map((value) => (
               <button
@@ -84,7 +84,9 @@ export function CardTopBar({
                 onClick={() => onQuickChange(value)}
                 className={cn(
                   "min-h-11 rounded-full px-3 focus-visible:outline-2 focus-visible:outline-ring",
-                  quick === value ? "bg-background font-medium shadow-sm" : "text-muted-foreground",
+                  quick === value
+                    ? "bg-card font-bold text-primary shadow-[0_2px_0_var(--lift)]"
+                    : "font-medium text-muted-foreground",
                 )}
               >
                 {t(value ? "wordCard.quickView" : "wordCard.fullView")}

@@ -207,12 +207,8 @@ export function NotebooksScreen() {
 
           <Link
             href="/library"
-            className="relative isolate flex min-h-20 items-center gap-3 overflow-hidden rounded-2xl bg-linear-150 from-hero-from to-hero-to p-4 text-white focus-visible:outline-2 focus-visible:outline-ring"
+            className="flex min-h-20 items-center gap-3 rounded-2xl bg-linear-150 from-hero-from to-hero-to p-4 text-white focus-visible:outline-2 focus-visible:outline-ring"
           >
-            <span
-              aria-hidden
-              className="absolute -right-8 -bottom-10 -z-10 size-24 rounded-full bg-lime opacity-90"
-            />
             <span className="flex size-11 shrink-0 items-center justify-center rounded-xl bg-white/15">
               <Library className="size-6" aria-hidden />
             </span>

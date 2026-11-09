@@ -110,17 +110,22 @@ export function MultipleChoice({
                 onClick={() => choose(index)}
                 lang={toWord ? language : undefined}
                 className={cn(
-                  "flex min-h-14 w-full items-center gap-3 rounded-xl border-2 px-4 py-2 text-left focus-visible:outline-2 focus-visible:outline-ring",
-                  picked && isAnswer && "border-green-500 bg-green-50 dark:bg-green-950",
-                  isPicked && !isAnswer && "border-red-500 bg-red-50 dark:bg-red-950",
-                  picked && !isAnswer && !isPicked && "opacity-60",
+                  "flex min-h-14 w-full press-3d items-center gap-3 rounded-2xl border-2 border-transparent bg-card px-4 py-2 text-left font-medium [--press:var(--lift)] focus-visible:outline-2 focus-visible:outline-ring",
+                  !picked && "hover:border-primary/40",
+                  picked &&
+                    isAnswer &&
+                    "border-grade-good bg-success-soft text-success-soft-foreground [--press:var(--grade-good)] motion-safe:animate-pop",
+                  isPicked &&
+                    !isAnswer &&
+                    "border-grade-again bg-red-50 [--press:var(--grade-again)] dark:bg-red-950",
+                  picked && !isAnswer && !isPicked && "opacity-50",
                 )}
               >
-                <span className="flex size-7 shrink-0 items-center justify-center rounded-full bg-muted text-xs font-semibold">
+                <span className="flex size-7 shrink-0 items-center justify-center rounded-lg bg-accent text-xs font-bold text-accent-foreground">
                   {picked && isAnswer ? (
-                    <Check className="size-4 text-green-700" aria-label={t("correctAnswer")} />
+                    <Check className="size-4 text-grade-good" aria-label={t("correctAnswer")} />
                   ) : isPicked ? (
-                    <X className="size-4 text-red-700" aria-label={t("yourAnswer")} />
+                    <X className="size-4 text-grade-again" aria-label={t("yourAnswer")} />
                   ) : (
                     index + 1
                   )}
@@ -136,8 +141,10 @@ export function MultipleChoice({
         <p
           role="status"
           className={cn(
-            "text-center font-semibold",
-            correct ? "text-green-700 dark:text-green-300" : "text-red-700 dark:text-red-300",
+            "self-center rounded-xl px-3 py-1.5 text-center font-bold motion-safe:animate-pop",
+            correct
+              ? "bg-success-soft text-success-soft-foreground"
+              : "bg-red-50 text-red-700 dark:bg-red-950 dark:text-red-300",
           )}
         >
           {t(correct ? "right" : "wrong")}

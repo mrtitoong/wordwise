@@ -53,7 +53,20 @@
       "label": "Learning language",
       "en": "English",
       "zh": "Chinese"
-    }
+    },
+    "greeting": {
+      "morning": "Good morning!",
+      "afternoon": "Good afternoon!",
+      "evening": "Good evening!",
+      "night": "It's late, a quick review?"
+    },
+    "leftToday": "{count, plural, one {# question} other {# questions}} left for today",
+    "doneSub": "You're done for today",
+    "ringLabel": "{done}/{total} questions done today",
+    "ringUnit": "/{total} questions",
+    "continue": "Continue",
+    "known": "words known",
+    "knownLabel": "Words known"
   },
   "words": {
     "title": "My words",
@@ -249,7 +262,9 @@
     },
     "practiceHanzi": "Practise writing",
     "practiceHanziHint": "Write Chinese characters in stroke order once you know the meaning. It takes longer than typing, so turn it off if you only need to read.",
-    "about": "About"
+    "about": "About",
+    "haptics": "Vibrate on answer",
+    "hapticsHint": "A short buzz when right, two when wrong. Saved on this device only."
   },
   "languages": {
     "vi": "Tiếng Việt",
@@ -1629,7 +1644,8 @@
         "noSample": "No sample line for this word yet. Listen to the sample and compare yourself.",
         "missing": "Could not measure your pitch. Try reading each syllable clearly somewhere quiet."
       }
-    }
+    },
+    "combo": "{count} in a row!"
   },
   "mic": {
     "explainTitle": "Allow the microphone",

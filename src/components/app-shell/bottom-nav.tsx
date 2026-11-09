@@ -13,7 +13,7 @@ export function BottomNav() {
   return (
     <nav
       aria-label={t("main")}
-      className="fixed inset-x-0 bottom-0 z-20 border-t bg-background/95 pb-[env(safe-area-inset-bottom,0px)] backdrop-blur"
+      className="fixed inset-x-0 bottom-0 z-20 border-t bg-card/95 pb-[env(safe-area-inset-bottom,0px)] backdrop-blur"
     >
       <ul className="mx-auto grid max-w-md grid-cols-4">
         {navItems.map(({ href, labelKey, icon: Icon }) => {
@@ -30,11 +30,11 @@ export function BottomNav() {
               >
                 <span
                   className={cn(
-                    "flex h-7 w-12 items-center justify-center rounded-full",
-                    active && "bg-accent",
+                    "flex h-7 w-12 items-center justify-center rounded-full transition-colors",
+                    active && "bg-accent motion-safe:animate-pop",
                   )}
                 >
-                  <Icon className="size-5" aria-hidden />
+                  <Icon className="size-5" strokeWidth={active ? 2.5 : 2} aria-hidden />
                 </span>
                 {t(labelKey)}
               </Link>

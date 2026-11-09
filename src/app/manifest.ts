@@ -14,9 +14,9 @@ export default async function manifest(): Promise<MetadataRoute.Manifest> {
     scope: "/",
     display: "standalone",
     orientation: "portrait",
-    background_color: "#ffffff",
+    background_color: "#f6f4fe",
     // Thanh trạng thái/màn chờ trung tính (logo tím, giao diện còn xanh – đổi màu giao diện làm riêng).
-    theme_color: "#ffffff",
+    theme_color: "#f6f4fe",
     lang: await getLocale(),
     categories: ["education"],
     icons: [

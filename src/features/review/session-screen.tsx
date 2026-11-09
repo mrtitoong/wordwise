@@ -3,10 +3,11 @@
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import dynamic from "next/dynamic";
 import { useRouter } from "next/navigation";
-import { MicOff, Volume2, VolumeX, X } from "lucide-react";
+import { MicOff, Volume2, VolumeX, X, Zap } from "lucide-react";
 import { Rating, State, type FSRS, type Grade } from "ts-fsrs";
 import { useTranslations } from "next-intl";
 import { Button } from "@/components/ui/button";
+import { buzz } from "./haptics";
 import { Sheet } from "@/components/ui/sheet";
 import { showToast } from "@/components/ui/toast";
 import { DEFAULT_LANGUAGE, languagePack, languageVoice } from "@/lib/lang";
@@ -28,7 +29,9 @@ import { studyDay, studyDayEnd } from "@/lib/review/day";
 import { buildMcq, type ChoiceSense, type Mcq } from "@/lib/review/mcq";
 import {
   canResume,
+  correctStreak,
   intervalLabel,
+  isComboMilestone,
   summarize,
   type Answer,
   type SavedSession,
@@ -551,6 +554,7 @@ export function SessionScreen({ options }: { options: SessionOptions }) {
             letters: timing.get(item.cardId)?.letters,
             ...timingBaseline(data.logs, mode, prep.card.skill, (id) => timing.get(id)),
           });
+      if (!intro) buzz(rating === Rating.Again ? "wrong" : "right");
       const extra = extraIds.current.has(item.cardId);
       const input: ReviewInput = {
         rating,
@@ -699,6 +703,8 @@ export function SessionScreen({ options }: { options: SessionOptions }) {
   const prep = item && prepared.get(item.cardId);
   if (!run || !item || !prep || !ask || !data) return null;
   const voice = preferredVoice(data.settings);
+  const last = run.answers.at(-1);
+  const combo = last && !last.intro ? correctStreak(run.answers) : 0;
 
   return (
     <div className="flex min-h-dvh flex-col gap-4 pt-[env(safe-area-inset-top,0px)] pb-[calc(1rem+env(safe-area-inset-bottom,0px))]">
@@ -712,7 +718,7 @@ export function SessionScreen({ options }: { options: SessionOptions }) {
           <X className="size-5" aria-hidden />
         </button>
         <div
-          className="h-2 flex-1 overflow-hidden rounded-full bg-muted"
+          className="h-3 flex-1 overflow-hidden rounded-full bg-accent"
           role="progressbar"
           aria-label={t("progress")}
           aria-valuemin={0}
@@ -720,11 +726,11 @@ export function SessionScreen({ options }: { options: SessionOptions }) {
           aria-valuenow={run.position}
         >
           <div
-            className="h-full rounded-full bg-primary transition-all"
+            className="h-full rounded-full bg-primary shadow-[inset_0_-3px_0_rgb(0_0_0/0.15)] transition-all duration-500"
             style={{ width: `${(run.position / total) * 100}%` }}
           />
         </div>
-        <span className="text-sm text-muted-foreground tabular-nums">
+        <span className="text-sm font-semibold text-muted-foreground tabular-nums">
           {run.position + 1}/{total}
         </span>
         {run.queue.slice(run.position).some(isSpeaking) && (
@@ -752,6 +758,17 @@ export function SessionScreen({ options }: { options: SessionOptions }) {
           )}
         </button>
       </header>
+
+      {isComboMilestone(combo) && ask.step !== "intro" && (
+        <p
+          key={`combo:${run.position}`}
+          role="status"
+          className="flex items-center gap-2 self-start rounded-xl bg-success-soft px-3 py-1.5 text-sm font-bold text-success-soft-foreground motion-safe:animate-pop"
+        >
+          <Zap className="size-4" aria-hidden />
+          {t("combo", { count: combo })}
+        </p>
+      )}
 
       <div key={`${run.position}:${item.cardId}:${ask.step}`} className="flex flex-1 flex-col">
         {ask.step === "intro" ? (

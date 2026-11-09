@@ -53,11 +53,17 @@ export function NewWordIntro({
       <p className="self-center rounded-full bg-accent px-3 py-1 text-xs font-semibold text-accent-foreground">
         {t("newWord")}
       </p>
-      <div className="rounded-3xl border bg-card px-4 pb-4 shadow-sm">
+      <div className="rounded-3xl bg-card px-4 pb-4 shadow-[0_8px_24px_rgb(80_50_200/0.12)]">
         <WordCardBody wordId={item.word.id} inSession autoPlay={muted ? null : voice} />
       </div>
       <div className="sticky bottom-0 -mx-4 bg-background/95 px-4 pt-2 pb-[max(0.5rem,env(safe-area-inset-bottom))] backdrop-blur">
-        <Button className="min-h-12 w-full" disabled={leaving} onClick={finish}>
+        <Button
+          variant="cta"
+          size="lg"
+          className="min-h-13 w-full text-base"
+          disabled={leaving}
+          onClick={finish}
+        >
           {t("gotIt")}
         </Button>
         <p className="pt-1 text-center text-xs text-muted-foreground">{t("gotItHint")}</p>

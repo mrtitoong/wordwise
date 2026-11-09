@@ -373,10 +373,16 @@ export function Writing({ item, voice, muted, onAnswer, task }: ModeProps & { ta
             onChange={(event) => setText(event.target.value)}
             aria-label={t("answerInput")}
             placeholder={t("typeHere")}
-            className="min-h-12 rounded-xl border-2 bg-background px-4 text-center text-xl focus-visible:border-primary focus-visible:outline-none"
+            className="min-h-12 rounded-2xl border-2 bg-card px-4 text-center text-xl focus-visible:border-primary focus-visible:outline-none"
             {...INPUT_PROPS}
           />
-          <Button type="submit" className="min-h-12" disabled={!text.trim()}>
+          <Button
+            type="submit"
+            variant="cta"
+            size="lg"
+            className="min-h-13 text-base"
+            disabled={!text.trim()}
+          >
             {t("check")}
           </Button>
         </form>
@@ -389,10 +395,10 @@ export function Writing({ item, voice, muted, onAnswer, task }: ModeProps & { ta
           <p
             role="status"
             className={cn(
-              "text-center font-semibold",
+              "self-center rounded-xl px-3 py-1.5 text-center font-bold motion-safe:animate-pop",
               result.correct
-                ? "text-green-700 dark:text-green-300"
-                : "text-red-700 dark:text-red-300",
+                ? "bg-success-soft text-success-soft-foreground"
+                : "bg-red-50 text-red-700 dark:bg-red-950 dark:text-red-300",
             )}
           >
             {t(

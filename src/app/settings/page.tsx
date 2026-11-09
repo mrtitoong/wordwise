@@ -5,6 +5,7 @@ import { cookies } from "next/headers";
 import { TopBar } from "@/components/app-shell/top-bar";
 import { LanguageSwitcher } from "@/components/language-switcher";
 import { ThemeSwitcher } from "@/components/theme-switcher";
+import { HapticsSwitch } from "@/features/settings/haptics-switch";
 import { Button } from "@/components/ui/button";
 import { SignOutButton } from "@/features/auth/sign-out-button";
 import { InstallCard } from "@/features/offline/install-card";
@@ -126,6 +127,7 @@ export default async function SettingsPage() {
           {t("theme")}
         </h2>
         <ThemeSwitcher initial={parseTheme((await cookies()).get(THEME_COOKIE)?.value)} />
+        <HapticsSwitch />
       </section>
       <section className="pt-6">
         <Link

@@ -81,7 +81,7 @@ export function AnswerDisplay({
 }
 
 const keyClass =
-  "flex h-12 min-w-0 flex-1 basis-0 items-center justify-center rounded-lg bg-muted text-lg font-medium shadow-sm active:bg-accent focus-visible:outline-2 focus-visible:outline-ring disabled:opacity-50";
+  "flex h-12 min-w-0 flex-1 basis-0 items-center justify-center press-3d rounded-lg bg-card text-lg font-semibold [--press:var(--lift)] active:bg-accent focus-visible:outline-2 focus-visible:outline-ring disabled:opacity-50";
 
 /**
  * Bàn phím chữ cái QWERTY (chữ thường) + dấu cách, gạch nối, nháy, xóa và nút gửi. Không có thanh
@@ -169,7 +169,7 @@ export function LetterKeyboard({
           disabled={submitDisabled}
           className={cn(
             keyClass,
-            "flex-[3] bg-primary text-base font-semibold text-primary-foreground active:bg-primary/90",
+            "flex-[3] bg-lime text-base font-bold text-lime-foreground [--press:var(--lime-shadow)] active:bg-lime",
           )}
         >
           {submitLabel}

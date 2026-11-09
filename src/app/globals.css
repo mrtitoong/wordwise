@@ -3,11 +3,12 @@
 
 @custom-variant dark (&:is(.dark *));
 
-/* Nền xám lạnh theo wireframe GĐ0; màu nhấn tím theo nền logo (public/brand/logo.svg, 2026-10-27).
-   Chữ trắng trên tím 5,3:1; chữ tím trên nền trắng 5,3:1, trên nền muted 4,7:1. */
+/* Hướng A "Năng động" (2026-11-09): nền trắng ngả tím, màu nhấn tím theo nền logo, xanh chanh (chấm của
+   logo) cho nút chính; nút nổi khối bằng bóng đáy. Chữ trắng trên tím 5,3:1; chữ tím trên nền 4,8:1;
+   chữ tím than trên xanh chanh 13:1; chữ trắng trên 4 màu chấm điểm ≥ 4,5:1. */
 :root {
-  --radius: 0.75rem;
-  --background: #ffffff;
+  --radius: 0.875rem;
+  --background: #f6f4fe;
   --foreground: #1d2830;
   --card: #ffffff;
   --card-foreground: #1d2830;
@@ -15,16 +16,37 @@
   --popover-foreground: #1d2830;
   --primary: #6c4cf5;
   --primary-foreground: #ffffff;
-  --secondary: #eef2f4;
+  --primary-shadow: #4b2fc9;
+  --secondary: #ebe8f8;
   --secondary-foreground: #1d2830;
-  --muted: #eef2f4;
-  --muted-foreground: #5f6f7a;
+  --muted: #efedf8;
+  --muted-foreground: #5c5a72;
   --accent: #ece8fe;
   --accent-foreground: #4b2fc9;
   --destructive: #c62828;
-  --border: #d3dce1;
-  --input: #cfd8de;
+  --border: #dedaf0;
+  --input: #d3cfe6;
   --ring: #6c4cf5;
+  /* Nút chính (Bắt đầu, Ôn tiếp, Kiểm tra) và vòng mục tiêu. */
+  --lime: #c6f432;
+  --lime-foreground: #1d1640;
+  --lime-shadow: #8fb81a;
+  --hero-from: #7558fb;
+  --hero-to: #5a37e8;
+  --streak: #ff7a29;
+  /* Bóng đáy của khối nổi (thẻ, chip). */
+  --lift: #e4defc;
+  /* 4 nút chấm điểm: Quên · Khó · Nhớ · Dễ (chữ trắng). */
+  --grade-again: #d23a3f;
+  --grade-again-shadow: #a52a2e;
+  --grade-hard: #a86400;
+  --grade-hard-shadow: #7d4a00;
+  --grade-good: #15845c;
+  --grade-good-shadow: #0e6144;
+  --grade-easy: #2b6fd6;
+  --grade-easy-shadow: #1d51a3;
+  --success-soft: #e6f8d2;
+  --success-soft-foreground: #2f5a00;
   /* Biểu đồ thống kê (một sắc xanh, đã kiểm tra bằng bộ kiểm tra bảng màu): bậc trạng thái từ Mới tới
      Thành thạo, bậc heatmap phút học, cột một chuỗi. */
   --chart-step-1: #86b6ef;
@@ -39,24 +61,42 @@
 }
 
 .dark {
-  --background: #11181d;
-  --foreground: #e4ecf0;
-  --card: #1a242b;
-  --card-foreground: #e4ecf0;
-  --popover: #1a242b;
-  --popover-foreground: #e4ecf0;
+  --background: #12111c;
+  --foreground: #e8e7f2;
+  --card: #1c1a2b;
+  --card-foreground: #e8e7f2;
+  --popover: #1c1a2b;
+  --popover-foreground: #e8e7f2;
   --primary: #a897ff;
   --primary-foreground: #1b1145;
-  --secondary: #23313a;
-  --secondary-foreground: #e4ecf0;
-  --muted: #23313a;
-  --muted-foreground: #98a8b3;
+  --primary-shadow: #6a55d8;
+  --secondary: #262438;
+  --secondary-foreground: #e8e7f2;
+  --muted: #262438;
+  --muted-foreground: #a3a1bd;
   --accent: #2a2253;
   --accent-foreground: #cfc5ff;
   --destructive: #ef6b6b;
-  --border: #2c3a43;
-  --input: #34444e;
+  --border: #322f48;
+  --input: #3a3752;
   --ring: #a897ff;
+  --lime: #c6f432;
+  --lime-foreground: #1d1640;
+  --lime-shadow: #6f8f12;
+  --hero-from: #5a3fe0;
+  --hero-to: #3d22b8;
+  --streak: #ff8a3d;
+  --lift: #0b0a12;
+  --grade-again: #d23a3f;
+  --grade-again-shadow: #7e2124;
+  --grade-hard: #a86400;
+  --grade-hard-shadow: #5e3800;
+  --grade-good: #15845c;
+  --grade-good-shadow: #0a4a34;
+  --grade-easy: #2b6fd6;
+  --grade-easy-shadow: #173f80;
+  --success-soft: #1f3510;
+  --success-soft-foreground: #c9f08f;
   --chart-step-1: #1c5cab;
   --chart-step-2: #3987e5;
   --chart-step-3: #86b6ef;
@@ -92,6 +132,24 @@
   --color-border: var(--border);
   --color-input: var(--input);
   --color-ring: var(--ring);
+  --color-primary-shadow: var(--primary-shadow);
+  --color-lime: var(--lime);
+  --color-lime-foreground: var(--lime-foreground);
+  --color-lime-shadow: var(--lime-shadow);
+  --color-hero-from: var(--hero-from);
+  --color-hero-to: var(--hero-to);
+  --color-streak: var(--streak);
+  --color-lift: var(--lift);
+  --color-grade-again: var(--grade-again);
+  --color-grade-again-shadow: var(--grade-again-shadow);
+  --color-grade-hard: var(--grade-hard);
+  --color-grade-hard-shadow: var(--grade-hard-shadow);
+  --color-grade-good: var(--grade-good);
+  --color-grade-good-shadow: var(--grade-good-shadow);
+  --color-grade-easy: var(--grade-easy);
+  --color-grade-easy-shadow: var(--grade-easy-shadow);
+  --color-success-soft: var(--success-soft);
+  --color-success-soft-foreground: var(--success-soft-foreground);
 }
 
 @layer base {
@@ -134,6 +192,53 @@
     from {
       opacity: 0;
       transform: translateY(4px);
+    }
+  }
+}
+
+/* Khối nổi (hướng A): bóng đáy đặc, bấm thì lún xuống. Màu bóng đặt bằng biến --press. */
+@utility press-3d {
+  box-shadow: 0 4px 0 var(--press, var(--lift));
+  transition:
+    transform 80ms ease-out,
+    box-shadow 80ms ease-out;
+  &:active:not(:disabled, [aria-disabled="true"]) {
+    transform: translateY(3px);
+    box-shadow: 0 1px 0 var(--press, var(--lift));
+  }
+}
+
+/* Thẻ, chip nổi nhẹ trên nền tím nhạt. */
+@utility lift {
+  box-shadow: 0 2px 0 var(--lift);
+}
+
+/* Lời khen, mặt sau thẻ, pháo giấy ở màn kết quả. Chỉ dùng kèm motion-safe:. */
+@theme {
+  --animate-pop: ww-pop 0.32s cubic-bezier(0.34, 1.56, 0.64, 1);
+  --animate-reveal: ww-reveal 0.28s ease-out;
+  --animate-confetti: ww-confetti 1.8s cubic-bezier(0.2, 0.6, 0.4, 1) forwards;
+
+  @keyframes ww-pop {
+    from {
+      opacity: 0;
+      transform: scale(0.85);
+    }
+  }
+  @keyframes ww-reveal {
+    from {
+      opacity: 0;
+      transform: translateY(8px);
+    }
+  }
+  @keyframes ww-confetti {
+    0% {
+      opacity: 1;
+      transform: translate(0, 0) rotate(0deg);
+    }
+    100% {
+      opacity: 0;
+      transform: translate(var(--dx, 0px), var(--dy, 320px)) rotate(var(--rot, 540deg));
     }
   }
 }

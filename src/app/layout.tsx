@@ -35,8 +35,8 @@ export const viewport: Viewport = {
   viewportFit: "cover",
   // Thanh trạng thái theo nền trang (sáng/tối theo máy; chọn Sáng/Tối trong app thì script đổi lớp).
   themeColor: [
-    { media: "(prefers-color-scheme: light)", color: "#ffffff" },
-    { media: "(prefers-color-scheme: dark)", color: "#11181d" },
+    { media: "(prefers-color-scheme: light)", color: "#f6f4fe" },
+    { media: "(prefers-color-scheme: dark)", color: "#12111c" },
   ],
 };
 

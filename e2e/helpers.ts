@@ -253,3 +253,13 @@ export async function waitForTestHooks(page: Page) {
     { timeout: 15_000 },
   );
 }
+
+/** Đổi ngôn ngữ đang học ở màn Hôm nay (danh sách thả xuống có cờ). */
+export async function chooseLearningLanguage(page: Page, name: string) {
+  await page.getByRole("button", { name: /^Ngôn ngữ đang học:/ }).click();
+  await page
+    .getByRole("listbox", { name: "Ngôn ngữ đang học" })
+    .getByRole("option", { name })
+    .click();
+  await expect(page.getByRole("button", { name: `Ngôn ngữ đang học: ${name}` })).toBeVisible();
+}

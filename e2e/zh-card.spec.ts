@@ -8,6 +8,7 @@ import {
   signInWithCode,
   uniqueEmail,
   userIdByEmail,
+  chooseLearningLanguage,
 } from "./helpers";
 
 /** Ghi một từ tiếng Trung vào kho như worker vẫn lưu; test song song nên chữ mỗi lần một khác. */
@@ -81,16 +82,14 @@ test.describe("Tiếng Trung sau cờ", () => {
   test("không có cờ thì không thấy nút đổi ngôn ngữ", async ({ page }) => {
     await signIn(page, false);
     await expect(page.getByRole("heading", { name: "Hôm nay" }).first()).toBeVisible();
-    await expect(page.getByRole("radiogroup", { name: "Ngôn ngữ đang học" })).toHaveCount(0);
+    await expect(page.getByRole("button", { name: /^Ngôn ngữ đang học:/ })).toHaveCount(0);
   });
 
   test("đổi ngôn ngữ, mở thẻ từ có pinyin và âm Hán Việt ở 360px", async ({ page }) => {
     const wordId = await seedChineseWord();
     await signIn(page, true);
 
-    const languages = page.getByRole("radiogroup", { name: "Ngôn ngữ đang học" });
-    await languages.getByRole("radio", { name: "Tiếng Trung" }).click();
-    await expect(languages.getByRole("radio", { name: "Tiếng Trung" })).toBeChecked();
+    await chooseLearningLanguage(page, "Tiếng Trung");
 
     await page.goto(`/words/${wordId}`);
     await expect(page.getByText("yín háng")).toBeVisible();

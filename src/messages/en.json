@@ -52,7 +52,8 @@
     "language": {
       "label": "Learning language",
       "en": "English",
-      "zh": "Chinese"
+      "zh": "Chinese",
+      "current": "Learning language: {language}"
     },
     "greeting": {
       "morning": "Good morning!",
@@ -975,7 +976,8 @@
         "voice": "voice",
         "photo": "photo",
         "csv": "file",
-        "list": "list"
+        "list": "list",
+        "url": "link"
       },
       "level": "Mastery {level}/4",
       "select": "Select",

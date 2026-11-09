@@ -1017,8 +1017,8 @@
     },
     "dueBadge": "{count} đến hạn",
     "knownProgress": "Đã thuộc {known}/{words} từ",
-    "noWordsYet": "Chưa có từ nào",
-    "knownShort": "{known}/{words} đã thuộc"
+    "wordCount": "{count} từ",
+    "knownCount": "{count} đã thuộc"
   },
   "library": {
     "title": "Thư viện",

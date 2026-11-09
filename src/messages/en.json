@@ -1017,8 +1017,8 @@
     },
     "dueBadge": "{count} due",
     "knownProgress": "{known} of {words} words known",
-    "noWordsYet": "No words yet",
-    "knownShort": "{known}/{words} known"
+    "wordCount": "{count, plural, one {# word} other {# words}}",
+    "knownCount": "{count} known"
   },
   "library": {
     "title": "Library",

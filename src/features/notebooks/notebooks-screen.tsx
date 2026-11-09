@@ -46,38 +46,36 @@ function NotebookItem({ summary, owner }: { summary: NotebookSummary; owner: str
           className="size-14 shrink-0 rounded-xl"
         />
         <span className="flex min-w-0 flex-1 flex-col gap-1">
-          <span className="flex items-center gap-2">
-            <span className="min-w-0 flex-1 truncate font-semibold">{notebook.name}</span>
-            {dueCount > 0 && (
-              <span className="shrink-0 rounded-full bg-lime px-2 py-0.5 text-xs font-bold text-lime-foreground tabular-nums">
-                {t("dueBadge", { count: dueCount })}
-              </span>
+          <span className="truncate font-semibold">{notebook.name}</span>
+          <span className="flex items-center gap-2 text-sm text-muted-foreground">
+            <span className="shrink-0 tabular-nums">{t("wordCount", { count: wordCount })}</span>
+            {wordCount > 0 && (
+              <>
+                <span
+                  className="h-2 min-w-8 flex-1 overflow-hidden rounded-full bg-accent"
+                  role="progressbar"
+                  aria-label={t("knownProgress", { known: knownCount, words: wordCount })}
+                  aria-valuemin={0}
+                  aria-valuemax={wordCount}
+                  aria-valuenow={knownCount}
+                >
+                  <span
+                    className="block h-full rounded-full bg-primary"
+                    style={{ width: `${ratio * 100}%` }}
+                  />
+                </span>
+                <span className="shrink-0 text-xs font-semibold tabular-nums">
+                  {t("knownCount", { count: knownCount })}
+                </span>
+              </>
             )}
           </span>
-          {wordCount === 0 && (
-            <span className="text-sm text-muted-foreground">{t("noWordsYet")}</span>
-          )}
-          {wordCount > 0 && (
-            <span className="flex items-center gap-2">
-              <span
-                className="h-2 flex-1 overflow-hidden rounded-full bg-accent"
-                role="progressbar"
-                aria-label={t("knownProgress", { known: knownCount, words: wordCount })}
-                aria-valuemin={0}
-                aria-valuemax={wordCount}
-                aria-valuenow={knownCount}
-              >
-                <span
-                  className="block h-full rounded-full bg-primary"
-                  style={{ width: `${ratio * 100}%` }}
-                />
-              </span>
-              <span className="text-xs font-semibold text-muted-foreground tabular-nums">
-                {t("knownShort", { known: knownCount, words: wordCount })}
-              </span>
-            </span>
-          )}
         </span>
+        {dueCount > 0 && (
+          <span className="shrink-0 rounded-full bg-lime px-2 py-0.5 text-xs font-bold text-lime-foreground tabular-nums">
+            {t("dueBadge", { count: dueCount })}
+          </span>
+        )}
         <ChevronRight className="size-4 shrink-0 text-muted-foreground" aria-hidden />
       </Link>
     </li>

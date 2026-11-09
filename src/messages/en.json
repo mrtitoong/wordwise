@@ -976,7 +976,7 @@
         "voice": "voice",
         "photo": "photo",
         "csv": "file",
-        "list": "list",
+        "list": "library",
         "url": "link"
       },
       "level": "Mastery {level}/4",

@@ -153,7 +153,7 @@ export function LanguageSwitch({ owner, current }: { owner: string; current: str
           aria-label={t("label")}
           aria-activedescendant={`${listId}-${CHOICES[active]}`}
           onKeyDown={onListKey}
-          className="absolute top-full left-0 z-20 mt-2 flex min-w-48 flex-col gap-1 rounded-2xl bg-popover p-1.5 shadow-[0_8px_24px_rgb(40_20_120/0.18)] focus-visible:outline-2 focus-visible:outline-ring motion-safe:animate-pop"
+          className="absolute top-full left-0 z-20 mt-2 flex min-w-48 flex-col gap-1 rounded-2xl border bg-popover p-1.5 shadow-[0_8px_24px_rgb(40_20_120/0.18)] focus-visible:outline-2 focus-visible:outline-ring motion-safe:animate-pop"
         >
           {CHOICES.map((language, index) => {
             const selected = language === current;

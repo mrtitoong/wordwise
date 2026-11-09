@@ -131,25 +131,25 @@ export function LibraryScreen({ lists }: { lists: LibraryList[] | null }) {
           </Button>
         </div>
       ) : (
-        <ul aria-label={t("title")} className="flex flex-col gap-2">
+        <ul aria-label={t("title")} className="flex flex-col gap-3">
           {visible.map((list) => {
             const added = notebooks ? notebookForList(notebooks, list.id) : null;
             return (
               <li key={list.id}>
                 <Link
                   href={`/library/${list.id}`}
-                  className="flex min-h-20 items-center gap-3 rounded-xl border p-2 hover:bg-muted/50 focus-visible:outline-2 focus-visible:outline-ring"
+                  className="flex min-h-20 items-center gap-3 rounded-2xl bg-card p-3 lift transition-transform focus-visible:outline-2 focus-visible:outline-ring active:translate-y-0.5"
                 >
                   <ListCover
                     listId={list.id}
                     coverUrl={list.cover_url}
-                    className="size-16 shrink-0 rounded-lg"
+                    className="size-16 shrink-0 rounded-xl"
                   />
                   <span className="flex min-w-0 flex-1 flex-col gap-0.5">
                     <span className="flex items-center gap-2">
-                      <span className="truncate font-medium">{list.title}</span>
+                      <span className="truncate font-bold">{list.title}</span>
                       {added && (
-                        <span className="shrink-0 rounded-full bg-accent px-2 py-0.5 text-[11px] text-accent-foreground">
+                        <span className="shrink-0 rounded-full bg-success-soft px-2 py-0.5 text-[11px] font-semibold text-success-soft-foreground">
                           {t("added")}
                         </span>
                       )}

@@ -65,7 +65,7 @@ export function PlacementQuiz({
           {t("progress", { current: index + 1, total: sample.length })}
         </p>
         <div
-          className="h-2 overflow-hidden rounded-full bg-muted"
+          className="h-3 overflow-hidden rounded-full bg-accent"
           role="progressbar"
           aria-label={t("progressLabel")}
           aria-valuemin={0}
@@ -73,14 +73,14 @@ export function PlacementQuiz({
           aria-valuenow={index}
         >
           <div
-            className="h-full bg-primary transition-[width]"
+            className="h-full rounded-full bg-primary transition-[width]"
             style={{ width: `${(index / sample.length) * 100}%` }}
           />
         </div>
       </div>
 
-      <div className="flex flex-col items-center gap-2 rounded-xl bg-muted/60 p-5 text-center">
-        <p className="text-3xl font-bold break-words" lang="en" data-testid="placement-word">
+      <div className="flex flex-col items-center gap-2 rounded-3xl bg-card p-5 text-center shadow-[0_8px_24px_rgb(80_50_200/0.12)]">
+        <p className="text-4xl font-extrabold break-words" lang="en" data-testid="placement-word">
           {word.lemma}
         </p>
         <p className="text-sm text-muted-foreground">{tw(`pos.${word.pos}` as "pos.noun")}</p>

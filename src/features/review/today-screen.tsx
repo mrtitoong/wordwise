@@ -165,7 +165,7 @@ export function TodayScreen() {
           {/* Chấm xanh chanh của logo, chỉ trang trí. */}
           <span
             aria-hidden
-            className="absolute -top-10 -right-10 -z-10 size-32 rounded-full bg-lime opacity-90"
+            className="absolute -top-12 -right-12 -z-10 size-28 rounded-full bg-lime opacity-90"
           />
           <h2 id="today-review-title" className="sr-only">
             {t("reviewTitle")}

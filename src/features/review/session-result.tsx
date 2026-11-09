@@ -21,6 +21,8 @@ import { EXTRA_NEW_WORDS } from "./today-screen";
 import { toTodayInput, useReviewData } from "./use-review-data";
 
 const DAY_MS = 86_400_000;
+/** Pháo giấy ở màn kết quả chỉ khi đúng từ 70% trở lên. */
+const CONFETTI_ACCURACY = 0.7;
 /** Gợi ý khách tạo tài khoản sau chừng này phiên hoặc chừng này từ (ux-flows §5). */
 export const GUEST_PROMPT_SESSIONS = 3;
 export const GUEST_PROMPT_WORDS = 20;
@@ -87,7 +89,7 @@ export function SessionResult({
 
   return (
     <div className="flex min-h-dvh flex-col gap-5 py-8">
-      {summary.answers > 0 && <Confetti />}
+      {summary.answers > 0 && summary.accuracy >= CONFETTI_ACCURACY && <Confetti />}
       {view && (
         <section className="flex flex-col items-center gap-2 text-center">
           <span className="flex size-18 press-3d items-center justify-center rounded-3xl bg-streak text-white [--press:color-mix(in_srgb,var(--streak),black_25%)] motion-safe:animate-pop">

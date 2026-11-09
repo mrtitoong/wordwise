@@ -102,3 +102,20 @@ export function canResume(saved: SavedSession | null | undefined, owner: string,
     !!saved && saved.owner === owner && saved.day === day && saved.position < saved.queue.length
   );
 }
+
+/** Số câu đúng liên tiếp tính từ câu vừa trả lời (lượt xem từ mới bỏ qua, không làm đứt chuỗi). */
+export function correctStreak(answers: readonly Pick<Answer, "rating" | "intro">[]): number {
+  let count = 0;
+  for (let i = answers.length - 1; i >= 0; i--) {
+    const a = answers[i]!;
+    if (a.intro) continue;
+    if (!isCorrectRating(a.rating)) break;
+    count++;
+  }
+  return count;
+}
+
+/** Mốc khen trong phiên: 3, 5, 10 rồi mỗi 5 câu. */
+export function isComboMilestone(count: number): boolean {
+  return count === 3 || (count >= 5 && count % 5 === 0);
+}

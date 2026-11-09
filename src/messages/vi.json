@@ -53,7 +53,20 @@
       "label": "Ngôn ngữ đang học",
       "en": "Tiếng Anh",
       "zh": "Tiếng Trung"
-    }
+    },
+    "greeting": {
+      "morning": "Chào buổi sáng!",
+      "afternoon": "Chào buổi chiều!",
+      "evening": "Chào buổi tối!",
+      "night": "Khuya rồi, ôn nhanh nhé!"
+    },
+    "leftToday": "Còn {count} câu nữa là xong hôm nay",
+    "doneSub": "Hôm nay bạn đã ôn xong",
+    "ringLabel": "Đã làm {done}/{total} câu hôm nay",
+    "ringUnit": "/{total} câu",
+    "continue": "Ôn tiếp",
+    "known": "từ đã thuộc",
+    "knownLabel": "Từ đã thuộc"
   },
   "words": {
     "title": "Từ của tôi",
@@ -249,7 +262,9 @@
     },
     "practiceHanzi": "Luyện viết chữ",
     "practiceHanziHint": "Viết chữ Hán đúng thứ tự nét sau khi đã nhớ nghĩa. Viết tay tốn thời gian hơn gõ, tắt nếu bạn chỉ cần đọc hiểu.",
-    "about": "Giới thiệu"
+    "about": "Giới thiệu",
+    "haptics": "Rung khi trả lời",
+    "hapticsHint": "Rung nhẹ khi trả lời đúng, rung hai nhịp khi sai. Lưu riêng trên máy này."
   },
   "languages": {
     "vi": "Tiếng Việt",
@@ -1629,7 +1644,8 @@
         "noSample": "Chưa có đường mẫu cho từ này. Hãy nghe mẫu rồi tự so.",
         "missing": "Chưa đo được cao độ. Thử đọc to, rõ từng âm ở chỗ yên tĩnh."
       }
-    }
+    },
+    "combo": "{count} câu đúng liên tiếp!"
   },
   "mic": {
     "explainTitle": "Cho phép dùng micro",

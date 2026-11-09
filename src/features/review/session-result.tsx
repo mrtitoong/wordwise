@@ -5,6 +5,7 @@ import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { Flame, Sparkles, UserPlus } from "lucide-react";
 import { useTranslations } from "next-intl";
+import { Confetti } from "@/components/confetti";
 import { Button } from "@/components/ui/button";
 import { GUEST_OWNER } from "@/lib/db/ids";
 import { weightsOf } from "@/lib/db/repo";
@@ -86,32 +87,35 @@ export function SessionResult({
 
   return (
     <div className="flex min-h-dvh flex-col gap-5 py-8">
+      {summary.answers > 0 && <Confetti />}
       {view && (
         <section className="flex flex-col items-center gap-2 text-center">
-          <span className="flex size-16 items-center justify-center rounded-full bg-orange-100 text-orange-600 dark:bg-orange-950">
-            <Flame className="size-8" aria-hidden />
+          <span className="flex size-18 press-3d items-center justify-center rounded-3xl bg-streak text-white [--press:color-mix(in_srgb,var(--streak),black_25%)] motion-safe:animate-pop">
+            <Flame className="size-9" aria-hidden />
           </span>
           <h1 className="text-2xl font-bold">{t("streak", { count: view.streak.current })}</h1>
         </section>
       )}
 
-      <dl className="grid grid-cols-3 gap-2 rounded-2xl bg-muted/60 p-4 text-center">
-        <div>
+      <dl className="grid grid-cols-3 gap-2 text-center">
+        <div className="rounded-2xl bg-card p-3 lift">
           <dt className="text-xs text-muted-foreground">{t("answers")}</dt>
           <dd className="text-2xl font-bold tabular-nums">{summary.answers}</dd>
         </div>
-        <div>
+        <div className="rounded-2xl bg-card p-3 lift">
           <dt className="text-xs text-muted-foreground">{t("accuracy")}</dt>
           <dd className="text-2xl font-bold tabular-nums">{Math.round(summary.accuracy * 100)}%</dd>
         </div>
-        <div>
+        <div className="rounded-2xl bg-card p-3 lift">
           <dt className="text-xs text-muted-foreground">{t("time")}</dt>
           <dd className="text-2xl font-bold tabular-nums">{t("minutes", { count: minutes })}</dd>
         </div>
       </dl>
 
       {summary.levelUps > 0 && (
-        <p className="text-center text-sm">{t("levelUps", { count: summary.levelUps })}</p>
+        <p className="self-center rounded-xl bg-success-soft px-3 py-1.5 text-center text-sm font-semibold text-success-soft-foreground">
+          {t("levelUps", { count: summary.levelUps })}
+        </p>
       )}
 
       <section className="flex flex-col gap-2">
@@ -125,7 +129,7 @@ export function SessionResult({
                 <Link
                   href={`/words/${m.wordId}`}
                   lang={language}
-                  className="flex min-h-11 items-center gap-1 rounded-full border px-4 text-sm focus-visible:outline-2 focus-visible:outline-ring"
+                  className="flex min-h-11 items-center gap-1 rounded-full bg-card px-4 text-sm font-semibold lift focus-visible:outline-2 focus-visible:outline-ring"
                 >
                   {m.lemma}
                   {m.times > 1 && <span className="text-xs text-muted-foreground">×{m.times}</span>}
@@ -173,7 +177,12 @@ export function SessionResult({
       )}
 
       <div className="mt-auto flex flex-col gap-2">
-        <Button className="min-h-12 text-base" onClick={() => router.push("/")}>
+        <Button
+          variant="cta"
+          size="lg"
+          className="min-h-13 text-base"
+          onClick={() => router.push("/")}
+        >
           {t("done")}
         </Button>
         {missedIds.length > 0 && kind !== "retry" && (

@@ -9,10 +9,14 @@ import type { Intervals, ModeProps } from "./types";
 import { WordBack, WordHead } from "./word-face";
 
 const GRADES: { rating: Grade; key: "again" | "hard" | "good" | "easy"; tone: string }[] = [
-  { rating: Rating.Again, key: "again", tone: "border-red-300 text-red-700 dark:text-red-300" },
-  { rating: Rating.Hard, key: "hard", tone: "border-amber-300 text-amber-800 dark:text-amber-200" },
-  { rating: Rating.Good, key: "good", tone: "border-green-300 text-green-800 dark:text-green-200" },
-  { rating: Rating.Easy, key: "easy", tone: "border-sky-300 text-sky-800 dark:text-sky-200" },
+  {
+    rating: Rating.Again,
+    key: "again",
+    tone: "bg-grade-again [--press:var(--grade-again-shadow)]",
+  },
+  { rating: Rating.Hard, key: "hard", tone: "bg-grade-hard [--press:var(--grade-hard-shadow)]" },
+  { rating: Rating.Good, key: "good", tone: "bg-grade-good [--press:var(--grade-good-shadow)]" },
+  { rating: Rating.Easy, key: "easy", tone: "bg-grade-easy [--press:var(--grade-easy-shadow)]" },
 ];
 
 /** Vuốt ngang xa hơn mức này (px) sau khi lật: trái = Quên, phải = Nhớ. */
@@ -85,43 +89,53 @@ export function Flashcard({
 
   return (
     <div className="flex flex-1 flex-col gap-4">
-      <div
-        role="button"
-        tabIndex={0}
-        aria-label={flipped ? t("cardBack") : t("flip")}
-        onClick={() => !flipped && setFlipped(true)}
-        onPointerDown={onPointerDown}
-        onPointerMove={onPointerMove}
-        onPointerUp={onPointerUp}
-        onPointerCancel={() => {
-          start.current = null;
-          setDx(0);
-        }}
-        className={cn(
-          "flex min-h-72 flex-1 touch-pan-y flex-col justify-center gap-4 rounded-3xl border bg-card p-5 shadow-sm select-none focus-visible:outline-2 focus-visible:outline-ring",
-          !flipped && "cursor-pointer",
-          dx <= -SWIPE_PX && "border-red-400",
-          dx >= SWIPE_PX && "border-green-400",
-        )}
-        style={{ transform: dx ? `translateX(${dx / 3}px) rotate(${dx / 40}deg)` : undefined }}
-      >
-        {reverse && !flipped ? (
-          <p className="text-center text-2xl font-semibold">{item.meaning}</p>
-        ) : (
-          <WordHead
-            item={item}
-            voice={voice}
-            autoPlay={!muted && !conceal && (!reverse || flipped)}
-            conceal={conceal}
-          />
-        )}
-        {flipped ? (
-          <WordBack item={item} voice={voice} />
-        ) : (
-          <p className="text-center text-sm text-muted-foreground">
-            {t(paper ? "flipHintPaper" : reverse ? "flipHintReverse" : "flipHint")}
-          </p>
-        )}
+      {/* Hai lớp giấy phía sau: trông như một xấp thẻ. */}
+      <div className="relative flex flex-1 flex-col pb-3">
+        <span aria-hidden className="absolute inset-x-6 top-5 bottom-0 rounded-3xl bg-primary/15" />
+        <span
+          aria-hidden
+          className="absolute inset-x-3 top-2.5 bottom-1.5 rounded-3xl bg-primary/10"
+        />
+        <div
+          role="button"
+          tabIndex={0}
+          aria-label={flipped ? t("cardBack") : t("flip")}
+          onClick={() => !flipped && setFlipped(true)}
+          onPointerDown={onPointerDown}
+          onPointerMove={onPointerMove}
+          onPointerUp={onPointerUp}
+          onPointerCancel={() => {
+            start.current = null;
+            setDx(0);
+          }}
+          className={cn(
+            "relative flex min-h-72 flex-1 touch-pan-y flex-col justify-center gap-4 rounded-3xl border-2 border-transparent bg-card p-5 shadow-[0_8px_24px_rgb(80_50_200/0.12)] select-none focus-visible:outline-2 focus-visible:outline-ring",
+            !flipped && "cursor-pointer",
+            dx <= -SWIPE_PX && "border-grade-again",
+            dx >= SWIPE_PX && "border-grade-good",
+          )}
+          style={{ transform: dx ? `translateX(${dx / 3}px) rotate(${dx / 40}deg)` : undefined }}
+        >
+          {reverse && !flipped ? (
+            <p className="text-center text-2xl font-semibold">{item.meaning}</p>
+          ) : (
+            <WordHead
+              item={item}
+              voice={voice}
+              autoPlay={!muted && !conceal && (!reverse || flipped)}
+              conceal={conceal}
+            />
+          )}
+          {flipped ? (
+            <div className="border-t-2 border-dashed border-accent pt-4 motion-safe:animate-reveal">
+              <WordBack item={item} voice={voice} />
+            </div>
+          ) : (
+            <p className="text-center text-sm text-muted-foreground">
+              {t(paper ? "flipHintPaper" : reverse ? "flipHintReverse" : "flipHint")}
+            </p>
+          )}
+        </div>
       </div>
 
       {flipped ? (
@@ -132,12 +146,12 @@ export function Flashcard({
               type="button"
               onClick={() => answer(rating)}
               className={cn(
-                "flex min-h-14 flex-col items-center justify-center rounded-xl border-2 bg-background px-1 text-sm font-semibold focus-visible:outline-2 focus-visible:outline-ring",
+                "flex min-h-14 press-3d flex-col items-center justify-center rounded-xl px-1 text-sm font-bold text-white focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-ring",
                 tone,
               )}
             >
               {t(`rating.${key}`)}
-              <span className="text-xs font-normal text-muted-foreground">{label(rating)}</span>
+              <span className="text-xs font-medium opacity-90">{label(rating)}</span>
             </button>
           ))}
         </div>
@@ -145,7 +159,7 @@ export function Flashcard({
         <button
           type="button"
           onClick={() => setFlipped(true)}
-          className="min-h-12 rounded-xl bg-primary font-semibold text-primary-foreground focus-visible:outline-2 focus-visible:outline-ring"
+          className="min-h-13 press-3d rounded-2xl bg-lime text-base font-bold text-lime-foreground [--press:var(--lime-shadow)] focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-ring"
         >
           {t("show")}
         </button>

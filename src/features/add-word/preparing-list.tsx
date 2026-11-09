@@ -113,7 +113,7 @@ export function PreparingList({ notebookId }: { notebookId?: string }) {
   return (
     <section
       aria-labelledby="preparing-title"
-      className="flex flex-col gap-1 rounded-xl border p-3"
+      className="flex flex-col gap-1 rounded-2xl bg-card p-4 lift"
     >
       <h2 id="preparing-title" className="text-sm font-semibold">
         {pending > 0 ? t("title", { count: pending }) : t("titleDone")}
@@ -127,10 +127,7 @@ export function PreparingList({ notebookId }: { notebookId?: string }) {
               {item.state === "preparing" ? (
                 <Loader2 className="size-4 shrink-0 animate-spin text-primary" aria-hidden />
               ) : item.state === "done" ? (
-                <CheckCircle2
-                  className="size-4 shrink-0 text-green-700 dark:text-green-300"
-                  aria-hidden
-                />
+                <CheckCircle2 className="size-4 shrink-0 text-grade-good" aria-hidden />
               ) : (
                 <AlertCircle className="size-4 shrink-0 text-destructive" aria-hidden />
               )}
@@ -152,6 +149,14 @@ export function PreparingList({ notebookId }: { notebookId?: string }) {
                   <span className="text-xs text-muted-foreground">
                     {item.state === "preparing" ? t("preparing", { notebook }) : t("failed")}
                   </span>
+                  {item.state === "preparing" && (
+                    <span
+                      aria-hidden
+                      className="relative mt-1 h-1 w-full max-w-40 overflow-hidden rounded-full bg-accent"
+                    >
+                      <span className="absolute inset-y-0 left-0 w-1/3 rounded-full bg-primary/70 motion-safe:animate-slide" />
+                    </span>
+                  )}
                 </span>
               )}
               {item.state === "failed" && (

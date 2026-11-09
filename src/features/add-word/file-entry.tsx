@@ -111,7 +111,7 @@ export function FileEntry({ context }: { context: EntryContext }) {
 
   if (!context.signedIn) {
     return (
-      <section className="flex flex-col gap-3 rounded-xl border p-4">
+      <section className="flex flex-col gap-3 rounded-2xl bg-card p-4 lift">
         <p className="text-sm">{t("needAccount")}</p>
         <Button asChild className="min-h-11">
           <Link href="/login?next=%2Fadd">{t("signIn")}</Link>
@@ -121,7 +121,7 @@ export function FileEntry({ context }: { context: EntryContext }) {
   }
   if (plan === "free") {
     return (
-      <section className="flex flex-col gap-3 rounded-xl border p-4">
+      <section className="flex flex-col gap-3 rounded-2xl bg-card p-4 lift">
         <h2 className="flex items-center gap-2 font-semibold">
           <Sparkles className="size-5 text-primary" aria-hidden />
           {t("premiumTitle")}
@@ -221,7 +221,7 @@ export function FileEntry({ context }: { context: EntryContext }) {
     return (
       <section className="flex flex-col gap-3">
         <p className="text-sm text-muted-foreground">{t("intro")}</p>
-        <label className="flex min-h-24 cursor-pointer flex-col items-center justify-center gap-2 rounded-xl border-2 border-dashed p-4 text-center focus-within:outline-2 focus-within:outline-ring">
+        <label className="flex min-h-24 cursor-pointer flex-col items-center justify-center gap-2 rounded-2xl border-2 border-dashed border-primary/40 bg-card p-4 text-center focus-within:outline-2 focus-within:outline-ring">
           <FileUp className="size-6 text-primary" aria-hidden />
           <span className="font-medium">{t("pick")}</span>
           <span className="text-xs text-muted-foreground">{t("hint")}</span>
@@ -373,7 +373,10 @@ export function FileEntry({ context }: { context: EntryContext }) {
               </button>
             )}
           </div>
-          <ul aria-label={t("previewLabel")} className="flex flex-col divide-y rounded-xl border">
+          <ul
+            aria-label={t("previewLabel")}
+            className="flex flex-col divide-y overflow-hidden rounded-2xl bg-card lift"
+          >
             {listed.map((p) => {
               const index = previews.indexOf(p);
               const bad = !!p.row.error || p.row.duplicateOf !== null;
@@ -504,7 +507,7 @@ function ImportProgressCard({ record }: { record: ImportRecord }) {
   const percent = progress.total ? Math.round((progress.done / progress.total) * 100) : 100;
   const finished = record.status === "done" || record.status === "failed";
   return (
-    <section className="flex flex-col gap-3 rounded-xl border p-4" aria-live="polite">
+    <section className="flex flex-col gap-3 rounded-2xl bg-card p-4 lift" aria-live="polite">
       <h2 className="font-semibold">
         {record.status === "done"
           ? t("doneTitle", { file: record.fileName })

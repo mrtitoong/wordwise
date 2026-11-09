@@ -218,7 +218,7 @@ export function VoiceEntry({
           onKeyDown={onKeyDown}
           onContextMenu={(e) => e.preventDefault()}
           className={cn(
-            "relative flex size-24 touch-none items-center justify-center rounded-full bg-primary text-primary-foreground shadow-lg shadow-primary/30 transition-transform select-none focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-ring disabled:opacity-50",
+            "relative flex size-24 touch-none items-center justify-center press-3d rounded-full bg-primary text-primary-foreground [--press:var(--primary-shadow)] select-none focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-ring disabled:opacity-50",
             phase === "listening" && "scale-110 bg-destructive shadow-destructive/30",
           )}
         >
@@ -311,7 +311,7 @@ export function VoiceEntry({
                   <button
                     type="button"
                     onClick={() => setChosen(item.word)}
-                    className="flex min-h-14 w-full flex-col items-start gap-0.5 rounded-xl border px-4 py-2 text-left hover:bg-muted focus-visible:outline-2 focus-visible:outline-ring"
+                    className="flex min-h-14 w-full press-3d flex-col items-start gap-0.5 rounded-2xl bg-card px-4 py-2 text-left [--press:var(--lift)] hover:bg-accent focus-visible:outline-2 focus-visible:outline-ring"
                   >
                     <span className="flex items-baseline gap-2">
                       <span className="text-lg font-semibold" lang="en">

@@ -161,8 +161,12 @@ export function PracticeScreen() {
         ))}
       </Group>
 
-      <div className="flex flex-col gap-2">
-        <p className="text-sm" role="status">
+      <div className="relative isolate flex flex-col gap-3 overflow-hidden rounded-3xl bg-linear-150 from-hero-from to-hero-to p-5 text-white">
+        <span
+          aria-hidden
+          className="absolute -top-12 -right-12 -z-10 size-28 rounded-full bg-lime opacity-90"
+        />
+        <p className="pr-12 text-sm font-medium" role="status">
           {view.available > 0
             ? t("available", { available: view.available, count })
             : t(
@@ -176,7 +180,9 @@ export function PracticeScreen() {
               )}
         </p>
         <Button
-          className="min-h-12 text-base"
+          variant="cta"
+          size="lg"
+          className="min-h-13 text-base disabled:opacity-60"
           disabled={view.available === 0}
           onClick={() => router.push(`/review/session?${practiceQuery(request)}`)}
         >
@@ -190,9 +196,7 @@ export function PracticeScreen() {
 function Group({ label, children }: { label: string; children: React.ReactNode }) {
   return (
     <section className="flex flex-col gap-2">
-      <h2 className="text-sm font-semibold tracking-wide text-muted-foreground uppercase">
-        {label}
-      </h2>
+      <h2 className="text-xs font-bold tracking-wider text-muted-foreground uppercase">{label}</h2>
       <div
         role="radiogroup"
         onKeyDown={radioGroupKeys}
@@ -221,10 +225,10 @@ function Chip({
       aria-checked={selected}
       onClick={onClick}
       className={cn(
-        "flex min-h-11 max-w-full items-center rounded-full border px-4 text-sm focus-visible:outline-2 focus-visible:outline-ring",
+        "flex min-h-11 max-w-full press-3d items-center rounded-full px-4 text-sm font-semibold focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-ring",
         selected
-          ? "border-primary bg-accent font-medium text-accent-foreground"
-          : "text-muted-foreground",
+          ? "bg-primary text-primary-foreground [--press:var(--primary-shadow)]"
+          : "bg-card text-foreground [--press:var(--lift)]",
       )}
     >
       <span className="truncate">{children}</span>

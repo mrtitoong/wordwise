@@ -69,8 +69,6 @@ export function formatDay(day: string, locale: string): string {
 
 export const chipClass = (active: boolean) =>
   cn(
-    "flex min-h-11 shrink-0 items-center rounded-full border px-3 text-sm whitespace-nowrap focus-visible:outline-2 focus-visible:outline-ring",
-    active
-      ? "border-primary bg-accent font-medium text-accent-foreground"
-      : "text-muted-foreground",
+    "flex min-h-11 shrink-0 items-center rounded-full px-3.5 text-sm font-semibold whitespace-nowrap transition-colors focus-visible:outline-2 focus-visible:outline-ring",
+    active ? "bg-primary text-primary-foreground" : "lift bg-card text-foreground",
   );

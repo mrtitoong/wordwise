@@ -23,15 +23,19 @@ export default async function WelcomePage({
   return (
     <main className="mx-auto flex min-h-dvh max-w-md flex-col px-4 pt-[env(safe-area-inset-top,0px)] pb-[calc(2rem+env(safe-area-inset-bottom,0px))]">
       <div className="flex flex-1 flex-col items-center justify-center gap-4 text-center">
-        <Logo className="size-20" />
-        <h1 className="text-3xl font-bold">{t("app.name")}</h1>
+        <div className="relative flex size-40 items-center justify-center">
+          {/* Vòng tím nhạt phía sau logo, chỉ trang trí. */}
+          <span aria-hidden className="absolute inset-0 rounded-full bg-accent" />
+          <Logo className="relative size-24 drop-shadow-[0_8px_16px_rgb(80_50_200/0.3)]" />
+        </div>
+        <h1 className="text-4xl font-extrabold tracking-tight">{t("app.name")}</h1>
         <p className="max-w-xs text-lg text-balance text-muted-foreground">
           {t("welcome.tagline")}
         </p>
       </div>
       <div className="flex flex-col gap-3">
         <form action={startGuest}>
-          <Button type="submit" size="lg" className="w-full">
+          <Button type="submit" variant="cta" size="lg" className="min-h-13 w-full text-base">
             {t("welcome.tryNow")}
           </Button>
         </form>

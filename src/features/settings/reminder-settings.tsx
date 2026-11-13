@@ -52,7 +52,7 @@ export function ReminderSettings() {
 
   if (owner === GUEST_OWNER) {
     return (
-      <div className="flex flex-col gap-3 rounded-xl border p-4">
+      <div className="flex flex-col gap-3 rounded-2xl border border-transparent bg-card p-4 lift">
         <p className="text-sm">{t("guest")}</p>
         <Button asChild variant="outline" className="min-h-11">
           <Link href="/login?next=%2Fsettings">{t("signIn")}</Link>
@@ -108,7 +108,7 @@ export function ReminderSettings() {
         aria-describedby={hintId}
         disabled={busy || (!on && support !== "ok")}
         onClick={() => void (on ? disable() : enable(value))}
-        className="flex min-h-12 items-center justify-between gap-3 rounded-xl border px-4 text-left focus-visible:outline-2 focus-visible:outline-ring disabled:opacity-60"
+        className="flex min-h-12 items-center justify-between gap-3 rounded-2xl border border-transparent bg-card px-4 text-left lift focus-visible:outline-2 focus-visible:outline-ring disabled:opacity-60"
       >
         <span className="font-medium">{t("toggle")}</span>
         <span
@@ -127,7 +127,7 @@ export function ReminderSettings() {
         </span>
       </button>
       {on && (
-        <label className="flex min-h-12 items-center justify-between gap-3 rounded-xl border px-4">
+        <label className="flex min-h-12 items-center justify-between gap-3 rounded-2xl border border-transparent bg-card px-4 lift">
           {t("at")}
           <input
             type="time"

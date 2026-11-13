@@ -31,7 +31,7 @@ export function HapticsSwitch() {
           setState({ supported: true, on: !on });
           if (!on) navigator.vibrate?.(12);
         }}
-        className="flex min-h-12 items-center justify-between gap-3 rounded-xl border bg-card px-4 text-left focus-visible:outline-2 focus-visible:outline-ring"
+        className="flex min-h-12 items-center justify-between gap-3 rounded-2xl border border-transparent bg-card px-4 text-left lift focus-visible:outline-2 focus-visible:outline-ring"
       >
         <span className="font-medium">{t("haptics")}</span>
         <span

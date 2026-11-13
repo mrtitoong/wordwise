@@ -40,14 +40,14 @@ export function InstallCard() {
 
   if (mode === "installed" || installed) {
     return (
-      <p className="rounded-xl border p-4 text-sm" role="status">
+      <p className="rounded-2xl bg-card p-4 text-sm lift" role="status">
         {installed && !env.standalone ? t("done") : t("installed")}
       </p>
     );
   }
 
   return (
-    <div className="flex flex-col gap-3 rounded-xl border p-4" data-install-mode={mode}>
+    <div className="flex flex-col gap-3 rounded-2xl bg-card p-4 lift" data-install-mode={mode}>
       <div>
         <p className="font-medium">{t("title")}</p>
         <p className="text-sm text-muted-foreground">{t("body")}</p>

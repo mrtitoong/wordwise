@@ -52,7 +52,7 @@ export function SettingSwitch({
         aria-describedby={hintId}
         disabled={owner === null}
         onClick={() => owner && void saveSettings(getLocalDb(), owner, { [field]: !on })}
-        className="flex min-h-12 items-center justify-between gap-3 rounded-xl border px-4 text-left focus-visible:outline-2 focus-visible:outline-ring"
+        className="flex min-h-12 items-center justify-between gap-3 rounded-2xl border border-transparent bg-card px-4 text-left lift focus-visible:outline-2 focus-visible:outline-ring"
       >
         <span className="font-medium">{t(label)}</span>
         <span

@@ -42,7 +42,7 @@ export function LanguageSwitcher() {
             lang={locale}
             onClick={() => choose(locale)}
             className={cn(
-              "flex min-h-12 items-center justify-between rounded-xl border px-4 text-left transition-colors focus-visible:outline-2 focus-visible:outline-ring",
+              "flex min-h-12 items-center justify-between rounded-2xl border border-transparent bg-card px-4 text-left lift transition-colors focus-visible:outline-2 focus-visible:outline-ring",
               selected ? "border-primary bg-accent font-medium" : "hover:bg-muted",
             )}
           >

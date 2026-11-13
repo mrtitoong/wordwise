@@ -118,10 +118,10 @@ export function OnboardingFlow({ candidates }: OnboardingFlowProps) {
             aria-valuemax={SETTING_STEPS}
             aria-valuenow={stepNumber}
             aria-label={t("progressLabel")}
-            className="h-1.5 overflow-hidden rounded-full bg-muted"
+            className="h-3 overflow-hidden rounded-full bg-accent"
           >
             <div
-              className="h-full rounded-full bg-primary transition-all"
+              className="h-full rounded-full bg-primary shadow-[inset_0_-3px_0_rgb(0_0_0/0.15)] transition-all duration-500"
               style={{ width: `${(stepNumber / SETTING_STEPS) * 100}%` }}
             />
           </div>
@@ -193,8 +193,10 @@ export function OnboardingFlow({ candidates }: OnboardingFlowProps) {
                     })
                   }
                   className={cn(
-                    "min-h-11 rounded-full border px-4 text-sm transition-colors focus-visible:outline-2 focus-visible:outline-ring",
-                    selected ? "border-primary bg-accent font-medium" : "hover:bg-muted",
+                    "min-h-11 press-3d rounded-full px-4 text-sm font-semibold transition-colors focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-ring",
+                    selected
+                      ? "bg-primary text-primary-foreground [--press:var(--primary-shadow)]"
+                      : "bg-card [--press:var(--lift)]",
                   )}
                 >
                   {t(`goals.options.${goal}`)}
@@ -236,7 +238,7 @@ export function OnboardingFlow({ candidates }: OnboardingFlowProps) {
               {t("reminder.toggle")}
             </Choice>
             {reminderOn && (
-              <label className="flex min-h-12 items-center justify-between gap-3 rounded-xl border px-4">
+              <label className="flex min-h-12 items-center justify-between gap-3 rounded-2xl bg-card px-4 lift">
                 {t("reminder.at")}
                 <input
                   type="time"
@@ -267,7 +269,7 @@ export function OnboardingFlow({ candidates }: OnboardingFlowProps) {
 
       {step === "starter" && (
         <div className="flex flex-1 flex-col gap-4 pt-8">
-          <h1 className="text-2xl font-bold text-balance">
+          <h1 className="text-2xl font-extrabold text-balance">
             {starters.length > 0 ? t("starter.title") : t("starter.emptyTitle")}
           </h1>
           <p className="text-muted-foreground">
@@ -276,9 +278,9 @@ export function OnboardingFlow({ candidates }: OnboardingFlowProps) {
           {starters.length > 0 && (
             <ul className="flex flex-col gap-2" aria-label={t("starter.listLabel")}>
               {starters.map((word) => (
-                <li key={word.senseId} className="flex flex-col rounded-xl border px-4 py-3">
+                <li key={word.senseId} className="flex flex-col rounded-2xl bg-card px-4 py-3 lift">
                   <span className="flex items-baseline gap-2">
-                    <span lang="en" className="text-lg font-semibold">
+                    <span lang="en" className="text-lg font-bold">
                       {word.lemma}
                     </span>
                     {word.ipa && (
@@ -305,7 +307,13 @@ export function OnboardingFlow({ candidates }: OnboardingFlowProps) {
           )}
           <div className="mt-auto flex flex-col gap-2 pt-4">
             {starters.length > 0 && (
-              <Button size="lg" disabled={saving} onClick={() => void finish(true)}>
+              <Button
+                variant="cta"
+                size="lg"
+                className="text-base"
+                disabled={saving}
+                onClick={() => void finish(true)}
+              >
                 {saving ? t("saving") : t("starter.learn")}
               </Button>
             )}
@@ -346,11 +354,11 @@ function StepLayout({
   const t = useTranslations("onboarding");
   return (
     <div className="flex flex-1 flex-col gap-4 pt-6">
-      <h1 className="text-2xl font-bold text-balance">{title}</h1>
+      <h1 className="text-2xl font-extrabold text-balance">{title}</h1>
       <p className="text-muted-foreground">{body}</p>
       {children}
       <div className="mt-auto flex flex-col gap-2 pt-6">
-        <Button size="lg" onClick={() => void onNext()}>
+        <Button variant="cta" size="lg" className="text-base" onClick={() => void onNext()}>
           {nextLabel ?? t("next")}
         </Button>
         <Button size="lg" variant="ghost" onClick={onSkip}>
@@ -400,8 +408,10 @@ function Choice({
       aria-checked={selected}
       onClick={onClick}
       className={cn(
-        "flex min-h-12 items-center gap-3 rounded-xl border px-4 text-left transition-colors focus-visible:outline-2 focus-visible:outline-ring",
-        selected ? "border-primary bg-accent font-medium" : "hover:bg-muted",
+        "flex min-h-12 press-3d items-center gap-3 rounded-2xl border-2 px-4 text-left transition-colors focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-ring",
+        selected
+          ? "border-primary bg-accent font-semibold [--press:var(--primary-shadow)]"
+          : "border-transparent bg-card [--press:var(--lift)] hover:border-primary/30",
       )}
     >
       <span className="flex flex-1 flex-wrap items-baseline gap-x-2">{children}</span>

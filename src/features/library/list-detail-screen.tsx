@@ -59,9 +59,9 @@ export function ListDetailScreen({ list, preview }: { list: LibraryList; preview
   return (
     <div className="flex flex-col gap-4 pb-6">
       <header className="flex flex-col gap-3">
-        <ListCover listId={list.id} coverUrl={list.cover_url} className="-mx-4 h-32" />
+        <ListCover listId={list.id} coverUrl={list.cover_url} className="h-32 rounded-3xl" />
         <div className="flex flex-col gap-1">
-          <h1 className="text-2xl font-semibold break-words">{list.title}</h1>
+          <h1 className="text-2xl font-extrabold break-words">{list.title}</h1>
           <p className="text-sm text-muted-foreground">{meta}</p>
           <p className="text-xs text-muted-foreground">
             {t("learners", { count: list.learner_count })}
@@ -86,7 +86,10 @@ export function ListDetailScreen({ list, preview }: { list: LibraryList; preview
       </header>
 
       {added ? (
-        <div className="flex flex-col gap-2 rounded-xl bg-accent/50 p-3" role="status">
+        <div
+          className="flex flex-col gap-2 rounded-2xl bg-success-soft p-4 text-success-soft-foreground"
+          role="status"
+        >
           <p className="text-sm">{t("detail.alreadyAdded", { name: added.name })}</p>
           <Button asChild className="min-h-11">
             <Link href={`/notebooks/${added.id}`}>{t("detail.openNotebook")}</Link>
@@ -95,7 +98,9 @@ export function ListDetailScreen({ list, preview }: { list: LibraryList; preview
       ) : (
         <div className="flex flex-col gap-2">
           <Button
+            variant="cta"
             size="lg"
+            className="min-h-13 text-base"
             disabled={!owner || !notebooks || !today || !online}
             onClick={() => setSheet("add")}
           >
@@ -121,8 +126,8 @@ export function ListDetailScreen({ list, preview }: { list: LibraryList; preview
       )}
 
       <section className="flex flex-col gap-2">
-        <h2 className="font-semibold">{t("detail.preview", { count: preview.length })}</h2>
-        <ol className="flex flex-col divide-y">
+        <h2 className="font-bold">{t("detail.preview", { count: preview.length })}</h2>
+        <ol className="flex flex-col divide-y rounded-2xl bg-card px-4 lift">
           {preview.map((word, i) => (
             <li key={word.senseId} className="flex min-h-12 items-center gap-3 py-1.5">
               <span className="w-6 shrink-0 text-right text-xs text-muted-foreground tabular-nums">

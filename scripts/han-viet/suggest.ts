@@ -1,7 +1,8 @@
 /**
- * Gợi ý âm Hán Việt cho chữ HSK 1–3 rồi đối chiếu Unihan (docs/plan-zh.md §3 điểm 2).
+ * Gợi ý âm Hán Việt cho chữ HSK 1–3 (và chữ thêm, vd chữ trong từ HSK cấp 5) rồi đối chiếu Unihan
+ * (docs/plan-zh.md §3 điểm 2).
  *
- *   npx tsx --env-file-if-exists=.env.local scripts/han-viet/suggest.ts <thư mục Unihan> <hsk30-charlist.txt>
+ *   npx tsx --env-file-if-exists=.env.local scripts/han-viet/suggest.ts <thư mục Unihan> <hsk30-charlist.txt> [file chữ thêm]
  *
  * Kết quả ghi vào data/zh/han-viet-suggestions.json. Chạy lại thì chỉ làm chữ còn thiếu.
  * kVietnamese của Unihan lẫn cả âm Nôm nên chỉ để đối chiếu, không dùng thẳng.
@@ -37,19 +38,43 @@ export type Suggestion = Item & {
   check: "khop" | "lech" | "thieu";
 };
 
-/** Chữ theo cấp trong bảng chữ HSK 3.0. */
-export function readCharList(text: string): { char: string; level: number }[] {
+const CHAR_LEVELS: Record<string, number> = { 一: 1, 二: 2, 三: 3, 四: 4, 五: 5, 六: 6, 七: 7 };
+
+/**
+ * Chữ theo cấp trong bảng chữ HSK 3.0 (mặc định cấp 1–3; nhóm 7–9 ghi là 7). Các bảng chữ viết tay ở
+ * cuối file không phải một cấp nên bỏ qua.
+ */
+export function readCharList(text: string, maxLevel = 3): { char: string; level: number }[] {
   const out: { char: string; level: number }[] = [];
   let level = 0;
   for (const line of text.split("\n")) {
-    if (line.startsWith("一级")) level = 1;
-    else if (line.startsWith("二级")) level = 2;
-    else if (line.startsWith("三级")) level = 3;
-    else if (/^[四五六七]/.test(line)) level = 0;
+    if (line.trim().endsWith("字表")) {
+      level = line.trim().endsWith("级汉字表") ? (CHAR_LEVELS[line.trim()[0]!] ?? 0) : 0;
+      continue;
+    }
     const char = line.split("\t")[1]?.trim();
-    if (level > 0 && char && /^\p{Script=Han}$/u.test(char)) out.push({ char, level });
+    if (level > 0 && level <= maxLevel && char && /^\p{Script=Han}$/u.test(char)) {
+      out.push({ char, level });
+    }
   }
   return out;
+}
+
+/**
+ * Chữ cần gợi ý: cấp 1–3 của bảng chữ, cộng các chữ thêm (vd chữ trong từ HSK cấp 5) với cấp theo
+ * bảng chữ; chữ không có trong bảng ghi cấp 7.
+ */
+export function charsToSuggest(
+  charListText: string,
+  extra: string,
+): { char: string; level: number }[] {
+  const base = readCharList(charListText);
+  const levelOf = new Map(readCharList(charListText, 7).map((c) => [c.char, c.level]));
+  const seen = new Set(base.map((c) => c.char));
+  const more = [...new Set(Array.from(extra).filter((c) => /^\p{Script=Han}$/u.test(c)))]
+    .filter((c) => !seen.has(c))
+    .map((char) => ({ char, level: levelOf.get(char) ?? 7 }));
+  return [...base, ...more];
 }
 
 /** Hai cách bỏ dấu (hoà/hòa, thuỷ/thủy) là một âm. */
@@ -96,8 +121,10 @@ function unihanField(dir: string, file: string, field: string): Map<string, stri
 }
 
 if (process.argv[1]?.endsWith("suggest.ts")) {
-  const [unihanDir, charList] = process.argv.slice(2);
-  if (!unihanDir || !charList) throw new Error("Cần <thư mục Unihan> <hsk30-charlist.txt>");
+  const [unihanDir, charList, extraFile] = process.argv.slice(2);
+  if (!unihanDir || !charList) {
+    throw new Error("Cần <thư mục Unihan> <hsk30-charlist.txt> [file chữ thêm]");
+  }
 
   const viet = unihanField(unihanDir, "Unihan_Readings.txt", "kVietnamese");
   const variants = unihanField(unihanDir, "Unihan_Variants.txt", "kTraditionalVariant");
@@ -113,7 +140,10 @@ if (process.argv[1]?.endsWith("suggest.ts")) {
     ),
   ];
 
-  const chars = readCharList(readFileSync(charList, "utf8"));
+  const chars = charsToSuggest(
+    readFileSync(charList, "utf8"),
+    extraFile ? readFileSync(extraFile, "utf8") : "",
+  );
   const done = new Map<string, Suggestion>(
     existsSync(OUT)
       ? (JSON.parse(readFileSync(OUT, "utf8")) as Suggestion[]).map((s) => [s.char, s])

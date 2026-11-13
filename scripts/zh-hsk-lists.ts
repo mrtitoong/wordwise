@@ -1,8 +1,11 @@
 /**
- * Sinh SQL tạo nguồn cho 3 danh sách HSK (Z5c) từ wordlist.txt của elkmovie/hsk30. Danh sách và file SQL
- * không commit: quyền của danh sách chưa rõ (docs/plan-zh.md §3 điểm 4).
+ * Sinh SQL tạo nguồn cho các danh sách HSK (Z5c: cấp 1–3, Z5e: cấp 5) từ wordlist.txt của elkmovie/hsk30.
+ * Danh sách và file SQL không commit.
  *
- *   npx tsx scripts/zh-hsk-lists.ts <wordlist.txt> <thư mục new-1..3.json> <file ra>
+ *   npx tsx scripts/zh-hsk-lists.ts <wordlist.txt> <thư mục new-N.json> <file ra> [cấp, vd "5"; mặc định "1,2,3"]
+ *
+ * File -levels.sql gắn cấp cho mọi từ tiếng Trung trong kho theo cả danh sách (mọi cấp), không chỉ các
+ * cấp vừa tạo nguồn.
  *
  * new-N.json (drkameleon/complete-hsk-vocabulary) chỉ dùng trường q để xếp từ thông dụng trước;
  * không lấy nghĩa (có phần của CC-CEDICT).
@@ -10,11 +13,12 @@
 import { readFileSync, writeFileSync } from "node:fs";
 import { parseHskList } from "@/lib/lang/zh/hsk";
 
-const [listPath, rankDir, outPath] = process.argv.slice(2);
+const [listPath, rankDir, outPath, levelArg = "1,2,3"] = process.argv.slice(2);
 if (!listPath || !rankDir || !outPath) throw new Error("Thiếu tham số");
+const sourceLevels = levelArg.split(",").map(Number);
 
 const rank = new Map<string, number>();
-for (const level of [1, 2, 3]) {
+for (const level of sourceLevels) {
   const items = JSON.parse(readFileSync(`${rankDir}/new-${level}.json`, "utf8")) as {
     s: string;
     q: number;
@@ -26,7 +30,7 @@ const entries = parseHskList(readFileSync(listPath, "utf8"));
 const quote = (text: string) => `'${text.replaceAll("'", "''")}'`;
 const statements: string[] = [];
 
-for (const level of [1, 2, 3]) {
+for (const level of sourceLevels) {
   const rows = entries
     .filter((entry) => entry.level === level)
     .sort((a, b) => (rank.get(a.word) ?? Infinity) - (rank.get(b.word) ?? Infinity))

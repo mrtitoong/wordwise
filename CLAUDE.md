@@ -717,3 +717,7 @@ Repo: https://github.com/mrtitoong/wordwise
   không hiện emoji cờ; **tiếng Anh dùng cờ Mỹ**, chủ sản phẩm chọn), E2E dùng `chooseLearningLanguage()`. Nhãn cách nhập:
   `url` → "link", `list` → "thư viện" (thay "ds"); test trong `src/i18n/config.test.ts` bắt buộc mọi `InputMethodSchema`
   có nhãn. Đợt 2b (Thống kê, Luyện tập, Thư viện, Cài đặt, Onboarding) chưa làm.
+- 2026-11-13 (giải thích câu thêm, chủ sản phẩm duyệt gộp): Khi phiên ôn thêm câu, dưới thanh trên hiện lý do
+  (`addedQuestionReason`, `src/lib/review/added-question.ts`: sai, gợi ý, nghe lại nhiều lần, sai 1 chữ, phát âm, tự
+  chấm, còn khó) tới khi trả lời câu kế tiếp; không hiện ở màn xem từ mới. Cách chấm không đổi. Hiện cùng chỗ với lời
+  khen "N câu đúng liên tiếp".

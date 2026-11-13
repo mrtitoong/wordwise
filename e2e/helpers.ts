@@ -73,8 +73,14 @@ export async function completeOnboarding(
   }: { level?: string; starters?: boolean; stayInSession?: boolean } = {},
 ) {
   await expect(page).toHaveURL(/\/onboarding$/);
-  await page.getByRole("button", { name: "Tiếp tục" }).click();
-  await page.getByRole("radio", { name: new RegExp(`^${level}`) }).click();
+  const levelChoice = page.getByRole("radio", { name: new RegExp(`^${level}`) });
+  // Nút có sẵn trong HTML: bấm trước khi trang chạy xong JS thì không sang bước (test chập chờn
+  // trên CI). Bấm lại tới khi bước chọn trình độ hiện ra.
+  await expect(async () => {
+    await page.getByRole("button", { name: "Tiếp tục" }).click({ timeout: 2_000 });
+    await expect(levelChoice).toBeVisible({ timeout: 2_000 });
+  }).toPass({ timeout: 20_000 });
+  await levelChoice.click();
   await page.getByRole("button", { name: "IELTS" }).click();
   await page.getByRole("button", { name: "Tiếp tục" }).click();
   await page.getByRole("checkbox", { name: "Nhắc tôi học mỗi ngày" }).click();

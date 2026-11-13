@@ -3,28 +3,28 @@
 import { useEffect, useState } from "react";
 import { useTranslations } from "next-intl";
 import { Logo } from "@/components/brand/logo";
+import { LOADING_TIP_COUNT } from "./loading-tips";
 
 /** Mẹo học trong messages (review.loadingTips). */
-const TIPS = ["0", "1", "2", "3", "4", "5", "6", "7"] as const;
+const TIPS = ["0", "1", "2", "3", "4", "5", "6", "7"] as const satisfies {
+  length: typeof LOADING_TIP_COUNT;
+};
 const TIP_COUNT = TIPS.length;
 /** Mỗi mẹo hiện chừng này rồi đổi. */
 const TIP_MS = 3_500;
 
-/** Màn chờ "Đang chuẩn bị phiên ôn…": logo nhún nhẹ, ba chấm nhảy và mẹo học đổi vài giây một lần. */
-export function SessionLoading() {
+/**
+ * Màn chờ "Đang chuẩn bị phiên ôn…": logo nhún nhẹ, ba chấm nhảy và mẹo học đổi vài giây một lần.
+ * Mẹo đầu do máy chủ chọn (`firstTip`) nên có sẵn trong HTML: hiện ngay khi trang mở, không chờ JS
+ * (đây là khối chữ lớn nhất màn hình, vẽ muộn làm Lighthouse tính nội dung chính hiện chậm).
+ */
+export function SessionLoading({ firstTip = 0 }: { firstTip?: number }) {
   const t = useTranslations("review");
-  // Mẹo đầu chọn ngẫu nhiên ngay sau khi hiện (máy chủ không vẽ mẹo, tránh lệch khi hydrate).
-  const [tip, setTip] = useState<number | null>(null);
+  const [tip, setTip] = useState(() => Math.abs(Math.trunc(firstTip)) % TIP_COUNT);
 
   useEffect(() => {
-    const next = () =>
-      setTip((n) => (n === null ? Math.floor(Math.random() * TIP_COUNT) : (n + 1) % TIP_COUNT));
-    const first = setTimeout(next, 0);
-    const timer = setInterval(next, TIP_MS);
-    return () => {
-      clearTimeout(first);
-      clearInterval(timer);
-    };
+    const timer = setInterval(() => setTip((n) => (n + 1) % TIP_COUNT), TIP_MS);
+    return () => clearInterval(timer);
   }, []);
 
   return (
@@ -42,15 +42,13 @@ export function SessionLoading() {
       <p className="font-medium" role="status">
         {t("loading")}
       </p>
-      {tip !== null && (
-        <p
-          key={tip}
-          className="flex max-w-xs gap-2 rounded-xl bg-muted px-4 py-3 text-left text-sm text-muted-foreground motion-safe:animate-fade-in"
-        >
-          <span aria-hidden>💡</span>
-          <span>{t(`loadingTips.${TIPS[tip]!}`)}</span>
-        </p>
-      )}
+      <p
+        key={tip}
+        className="flex max-w-xs gap-2 rounded-xl bg-muted px-4 py-3 text-left text-sm text-muted-foreground motion-safe:animate-fade-in"
+      >
+        <span aria-hidden>💡</span>
+        <span>{t(`loadingTips.${TIPS[tip]!}`)}</span>
+      </p>
     </div>
   );
 }

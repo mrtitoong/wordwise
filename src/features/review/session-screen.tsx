@@ -57,18 +57,15 @@ import { remainingItems, requeue, wordKeyOf, type SessionItem } from "@/lib/srs/
 import { addedQuestionReason, type AddedReason } from "@/lib/review/added-question";
 import { createScheduler } from "@/lib/srs/scheduler";
 import { useOwner } from "@/lib/sync/owner";
-import { Flashcard } from "./modes/flashcard";
-import { MultipleChoice } from "./modes/multiple-choice";
 import type { Intervals, ModeAnswer } from "./modes/types";
 import { e2eOverride } from "./e2e";
 import { canSpeak } from "./modes/listen-player";
 import {
-  Writing,
   buildListeningTask,
   buildWritingTask,
   clozeOfItem,
   type WritingTask,
-} from "./modes/writing";
+} from "./modes/writing-task";
 import {
   loadLocalChoices,
   moreChoices,
@@ -78,7 +75,6 @@ import {
   type PreparedCard,
 } from "./session-content";
 import { SessionLoading } from "./session-loading";
-import { SessionResult } from "./session-result";
 import { loadReviewData, timingCards, toTodayInput, type ReviewData } from "./use-review-data";
 
 export type SessionOptions = {
@@ -104,6 +100,19 @@ const loadNewWord = () => import("./modes/new-word");
 const loadSpeaking = () => import("./modes/speaking");
 const loadHanzi = () => import("./modes/hanzi-writing");
 const loadSpeakPractice = () => import("./modes/speak-practice");
+/**
+ * Màn ôn thường và màn kết quả cũng tải riêng: trang trống (hoặc lúc đang đọc dữ liệu) không cần
+ * chúng, nên trang mở nhanh hơn. Phiên có câu thì tải ngay khi biết hàng câu, chờ xong mới hiện câu
+ * đầu (`preloadModes`), không có lúc màn trống.
+ */
+const loadFlashcard = () => import("./modes/flashcard");
+const loadMcq = () => import("./modes/multiple-choice");
+const loadWriting = () => import("./modes/writing");
+const loadResult = () => import("./session-result");
+const Flashcard = dynamic(() => loadFlashcard().then((m) => m.Flashcard), { ssr: false });
+const MultipleChoice = dynamic(() => loadMcq().then((m) => m.MultipleChoice), { ssr: false });
+const Writing = dynamic(() => loadWriting().then((m) => m.Writing), { ssr: false });
+const SessionResult = dynamic(() => loadResult().then((m) => m.SessionResult), { ssr: false });
 const NewWordIntro = dynamic(() => loadNewWord().then((m) => m.NewWordIntro), { ssr: false });
 const Speaking = dynamic(() => loadSpeaking().then((m) => m.Speaking), { ssr: false });
 const HanziWriting = dynamic(() => loadHanzi().then((m) => m.HanziWriting), { ssr: false });
@@ -117,7 +126,13 @@ const practicesSpeaking = (cards: Map<string, PreparedCard>) => (item: SessionIt
   return item.mode === "speaking" && !!language && languagePack(language).speakingPracticeOnly;
 };
 
-function preloadModes(queue: readonly SessionItem[], cards: Map<string, PreparedCard>) {
+/** Tải trước code các màn phiên này có thể cần; trả về lời hứa của các màn ôn thường (chờ trước câu đầu). */
+function preloadModes(
+  queue: readonly SessionItem[],
+  cards: Map<string, PreparedCard>,
+): Promise<unknown> {
+  const common = queue.length > 0 ? [loadFlashcard(), loadMcq(), loadWriting()] : [];
+  if (queue.length > 0) void loadResult().catch(() => undefined);
   if (queue.some((i) => i.isNew)) void loadNewWord();
   if (queue.some((i) => cards.get(i.cardId)?.card.skill === "speaking")) void loadSpeaking();
   const writesHanzi = (i: SessionItem) => {
@@ -128,6 +143,8 @@ function preloadModes(queue: readonly SessionItem[], cards: Map<string, Prepared
   };
   if (queue.some(writesHanzi)) void loadHanzi();
   if (queue.some(practicesSpeaking(cards))) void loadSpeakPractice();
+  // Tải lỗi (mất mạng, chưa lưu offline) thì vẫn hiện câu; next/dynamic sẽ thử tải lại.
+  return Promise.all(common).catch(() => undefined);
 }
 
 type Kind = "full" | "short" | "single" | "retry" | "practice";
@@ -184,7 +201,14 @@ function intervalsOf(scheduler: FSRS, card: PreparedCard["card"], now: Date): In
   return out;
 }
 
-export function SessionScreen({ options }: { options: SessionOptions }) {
+export function SessionScreen({
+  options,
+  loadingTip,
+}: {
+  options: SessionOptions;
+  /** Mẹo đầu của màn chờ, máy chủ chọn (xem SessionLoading). */
+  loadingTip?: number;
+}) {
   const t = useTranslations("review");
   const router = useRouter();
   const owner = useOwner();
@@ -480,13 +504,14 @@ export function SessionScreen({ options }: { options: SessionOptions }) {
         kept.length,
       );
       next = { ...next, queue: kept, position };
-      preloadModes(next.queue, cards);
+      const modesReady = preloadModes(next.queue, cards);
       const empty = next.position >= next.queue.length;
       // Đáp án nhiễu: trong máy đủ thì không gọi mạng; ít (người mới) thì lấy thêm trong kho. Phiên
       // trống thì không cần.
-      const choices = empty
-        ? []
-        : await moreChoices(await loadLocalChoices(db, language), language);
+      const [choices] = await Promise.all([
+        empty ? [] : moreChoices(await loadLocalChoices(db, language), language),
+        modesReady,
+      ]);
       setData(fresh);
       setPool(choices);
       if (empty) {
@@ -681,7 +706,7 @@ export function SessionScreen({ options }: { options: SessionOptions }) {
     }
   }
 
-  if (phase === "loading") return <SessionLoading />;
+  if (phase === "loading") return <SessionLoading firstTip={loadingTip} />;
 
   if (phase === "empty") {
     return (

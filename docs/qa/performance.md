@@ -42,6 +42,12 @@ chủ. Lighthouse luôn đo như máy mới mở lần đầu; từ lần mở t
   dữ liệu, audio, ảnh không đổi so với Prompt 8.2a. E2E offline (mở Hôm nay/Sổ tay, làm hết phiên ôn
   khi mất mạng) xanh.
 
+## Cập nhật 2026-11-13
+
+Sau giao diện mới (09/11) Phiên ôn còn 84–86 trên CI. Tải sau flashcard, trắc nghiệm, tập viết, màn kết quả (pháo
+giấy): JS trước khi vẽ 265 → 243 KB nén, LCP giả lập 3,9–4,0 → 3,8 s. CI: Chào mừng 94, Hôm nay 87, Phiên ôn 86,
+Thống kê 87. LCP của cả ba trang có dữ liệu ~3,8 s do phần lõi chung; điểm dao động ±3 giữa các lần chạy CI.
+
 ## Chuyển câu trong phiên ôn
 
 Đo từ lúc trả lời tới khung hình có câu sau (gồm ghi lượt ôn vào IndexedDB), mốc `ww:next-question`

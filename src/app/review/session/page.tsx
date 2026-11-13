@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import { getTranslations } from "next-intl/server";
 import { z } from "zod";
+import { randomLoadingTip } from "@/features/review/loading-tips";
 import { SessionScreen, type SessionOptions } from "@/features/review/session-screen";
 import { parsePractice } from "@/lib/review/practice";
 
@@ -39,10 +40,12 @@ export default async function ReviewSessionPage({ searchParams }: { searchParams
         }
       : {}),
   };
+  // Mẹo đầu của màn chờ chọn ở máy chủ: có sẵn trong HTML, trình duyệt dùng đúng số này nên không lệch.
+  const loadingTip = randomLoadingTip();
   return (
     <main className="mx-auto min-h-dvh max-w-md px-4">
       {/* Đổi tham số (vd "Ôn lại từ sai") thì dựng phiên mới. */}
-      <SessionScreen key={JSON.stringify(options)} options={options} />
+      <SessionScreen key={JSON.stringify(options)} options={options} loadingTip={loadingTip} />
     </main>
   );
 }

@@ -732,3 +732,4 @@ Repo: https://github.com/mrtitoong/wordwise
   (`addedQuestionReason`, `src/lib/review/added-question.ts`: sai, gợi ý, nghe lại nhiều lần, sai 1 chữ, phát âm, tự
   chấm, còn khó) tới khi trả lời câu kế tiếp; không hiện ở màn xem từ mới. Cách chấm không đổi. Hiện cùng chỗ với lời
   khen "N câu đúng liên tiếp".
+- 2026-11-13 (Z5e HSK cấp 5): Danh sách "Từ vựng theo cấp HSK 3.0 – Cấp 5" đã phân tích trên cloud (1.071 dòng → 1.067 từ, 4 từ ghi hai loại từ được gộp; 1.065 từ mới, ~$3,6), đủ audio và Hán Việt, **Chờ duyệt, chưa xuất bản**. Cấp HSK đã ghi lên cloud (1.063 từ HSK 5; 称 ghi 2, 应/散/落 ghi 4 vì quy tắc lấy cấp thấp nhất); CLI `db query --linked` bị hết giờ kết nối nên áp bằng MCP, chỉ các dòng của từ cấp 5. 34 từ nhiều âm của cấp 5 đã thêm vào trang duyệt https://claude.ai/artifact/V82uUnWKwXjLmu8DumYDfE (nay 115 từ; 称 đã có từ cấp 2). Xuất bản sau khi người biết tiếng Trung duyệt âm và Admin chấp nhận các mục.

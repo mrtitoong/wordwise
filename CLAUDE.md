@@ -722,6 +722,12 @@ Repo: https://github.com/mrtitoong/wordwise
   (thẻ lựa chọn nổi khối, nhãn mục), Onboarding và Chào mừng (lựa chọn nổi khối, nút Tiếp xanh chanh, một chấm nhấn). Chỉ đổi
   giao diện, không đổi hành vi. Lighthouse trên CI dao động ±3 điểm giữa các lần chạy dù không sửa trang (Phiên ôn 84–89):
   một lần dưới 85 chưa chắc là tụt thật, so với các lần chạy trước trên main trước khi sửa code.
+- 2026-11-13 (Lighthouse Phiên ôn, chủ sản phẩm duyệt): Phiên ôn đã tụt còn 84–85 (main đỏ). Flashcard, trắc nghiệm, tập
+  viết và màn kết quả giờ **tải khi biết hàng câu**, câu đầu chờ chúng (`preloadModes`); hàm dựng câu tập viết tách ra
+  `modes/writing-task.ts`. Mẹo đầu của màn chờ chọn ở máy chủ (`randomLoadingTip`) nên có sẵn trong HTML. CI: Phiên ôn 86,
+  Hôm nay 87, Thống kê 87, Chào mừng 94. Mọi trang chính vẫn sát ngưỡng 85 vì LCP (~3,8 s giả lập) do phần lõi chung
+  (~230 KB nén: React, Next, Dexie, phông) quyết định; muốn có khoảng an toàn phải làm phần lõi. Không thể làm mẹo
+  học thành nội dung chính (LCP) bằng cỡ chữ: dòng chữ trang trống dài hơn mẹo tiếng Anh nên vẫn thắng.
 - 2026-11-13 (giải thích câu thêm, chủ sản phẩm duyệt gộp): Khi phiên ôn thêm câu, dưới thanh trên hiện lý do
   (`addedQuestionReason`, `src/lib/review/added-question.ts`: sai, gợi ý, nghe lại nhiều lần, sai 1 chữ, phát âm, tự
   chấm, còn khó) tới khi trả lời câu kế tiếp; không hiện ở màn xem từ mới. Cách chấm không đổi. Hiện cùng chỗ với lời

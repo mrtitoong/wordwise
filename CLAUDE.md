@@ -716,7 +716,12 @@ Repo: https://github.com/mrtitoong/wordwise
   sổ theo tên + số từ). **Chọn ngôn ngữ đang học ở Hôm nay là danh sách thả xuống có cờ** (`LanguageFlag`, SVG vì Windows
   không hiện emoji cờ; **tiếng Anh dùng cờ Mỹ**, chủ sản phẩm chọn), E2E dùng `chooseLearningLanguage()`. Nhãn cách nhập:
   `url` → "link", `list` → "thư viện" (thay "ds"); test trong `src/i18n/config.test.ts` bắt buộc mọi `InputMethodSchema`
-  có nhãn. Đợt 2b (Thống kê, Luyện tập, Thư viện, Cài đặt, Onboarding) chưa làm.
+  có nhãn. Đợt 2b làm ngày 13/11 (mục dưới).
+- 2026-11-13 (giao diện mới đợt 2b): Thống kê (4 ô số có biểu tượng màu: chuỗi, đã thuộc, tỉ lệ nhớ, phút học), Luyện tập
+  (chip lựa chọn nổi khối, thẻ Bắt đầu), Thư viện (thẻ danh sách nổi khối, chip lọc màu đặc, nút Thêm xanh chanh), Cài đặt
+  (thẻ lựa chọn nổi khối, nhãn mục), Onboarding và Chào mừng (lựa chọn nổi khối, nút Tiếp xanh chanh, một chấm nhấn). Chỉ đổi
+  giao diện, không đổi hành vi. Lighthouse trên CI dao động ±3 điểm giữa các lần chạy dù không sửa trang (Phiên ôn 84–89):
+  một lần dưới 85 chưa chắc là tụt thật, so với các lần chạy trước trên main trước khi sửa code.
 - 2026-11-13 (giải thích câu thêm, chủ sản phẩm duyệt gộp): Khi phiên ôn thêm câu, dưới thanh trên hiện lý do
   (`addedQuestionReason`, `src/lib/review/added-question.ts`: sai, gợi ý, nghe lại nhiều lần, sai 1 chữ, phát âm, tự
   chấm, còn khó) tới khi trả lời câu kế tiếp; không hiện ở màn xem từ mới. Cách chấm không đổi. Hiện cùng chỗ với lời

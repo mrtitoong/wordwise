@@ -16,7 +16,11 @@ export type ModeAnswer = {
   usedHint?: boolean;
   hintLevel?: number;
   typoCount?: number;
+  /** Tập phát âm: điểm lần đọc đầu (xếp lịch). */
   pronunciationScore?: number;
+  /** Điểm cao nhất kể cả lần đọc lại, và số lần được chấm trong câu. */
+  pronunciationBest?: number;
+  pronunciationAttempts?: number;
   /** Điểm cao nhất được chấm (tập viết cấp dễ: tối đa "Nhớ"). */
   maxRating?: Grade;
   /** Không xét nhanh chậm. */

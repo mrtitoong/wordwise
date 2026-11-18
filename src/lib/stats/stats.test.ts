@@ -79,6 +79,8 @@ function log(cardId: string, at: string | number, patch: Partial<ReviewLogRow> =
     correct: true,
     hint_level: 0,
     pronunciation_score: null,
+    pronunciation_best: null,
+    pronunciation_attempts: null,
     reviewed_at: reviewed.toISOString(),
     elapsed_days: 0,
     scheduled_days: 0,

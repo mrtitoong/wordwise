@@ -121,6 +121,8 @@ export function statsFixture(): StatsFixture {
       correct: rating !== 1,
       hint_level: 0,
       pronunciation_score: card.skill === "speaking" ? int(30, 100) : null,
+      pronunciation_best: null,
+      pronunciation_attempts: null,
       reviewed_at: iso(Math.min(at, now)),
       elapsed_days: 0,
       scheduled_days: 0,

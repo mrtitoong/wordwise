@@ -596,6 +596,8 @@ export function SessionScreen({
         correct: intro ? undefined : answer.correct,
         hintLevel: answer.hintLevel,
         pronunciationScore: answer.pronunciationScore,
+        pronunciationBest: answer.pronunciationBest,
+        pronunciationAttempts: answer.pronunciationAttempts,
         extra,
         logId: randomId(),
       };

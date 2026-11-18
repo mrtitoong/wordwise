@@ -848,6 +848,8 @@ export type Database = {
           id: string;
           is_extra: boolean;
           mode: string;
+          pronunciation_attempts: number | null;
+          pronunciation_best: number | null;
           pronunciation_score: number | null;
           rating: number;
           response_ms: number | null;
@@ -865,6 +867,8 @@ export type Database = {
           id?: string;
           is_extra?: boolean;
           mode: string;
+          pronunciation_attempts?: number | null;
+          pronunciation_best?: number | null;
           pronunciation_score?: number | null;
           rating: number;
           response_ms?: number | null;
@@ -882,6 +886,8 @@ export type Database = {
           id?: string;
           is_extra?: boolean;
           mode?: string;
+          pronunciation_attempts?: number | null;
+          pronunciation_best?: number | null;
           pronunciation_score?: number | null;
           rating?: number;
           response_ms?: number | null;

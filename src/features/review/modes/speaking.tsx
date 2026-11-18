@@ -17,6 +17,7 @@ import {
   type ScoreBand,
 } from "@/lib/pronunciation/feedback";
 import { requestAssessment } from "@/lib/pronunciation/request";
+import { PRONUNCIATION_PASS } from "@/lib/srs/grade";
 import { createClient } from "@/lib/supabase/client";
 import { getSupabaseEnv } from "@/lib/supabase/env";
 import { cn } from "@/lib/utils";
@@ -53,7 +54,13 @@ export function Speaking({
   const [scoring, setScoring] = useState(false);
   const [problem, setProblem] = useState<Problem | null>(null);
   const [result, setResult] = useState<PronunciationResult | null>(null);
-  const [first, setFirst] = useState<{ score: number; ms: number } | null>(null);
+  /** Lần chấm đầu (xếp lịch), điểm cao nhất và số lần chấm trong câu. */
+  const [first, setFirst] = useState<{
+    score: number;
+    ms: number;
+    best: number;
+    attempts: number;
+  } | null>(null);
   const scored = useRef<string | null>(null);
   const player = useMemo(() => createPlayer(browserPlayerEnv()), []);
   const lemma = item.word.content.lemma;
@@ -78,7 +85,12 @@ export function Speaking({
         const response = await requestAssessment(createClient(), { text: lemma, locale, audio });
         if (response.status === "ok") {
           setResult(response.result);
-          setFirst((f) => f ?? { score: response.result.overall, ms: Date.now() - shownAt });
+          const score = response.result.overall;
+          setFirst((f) =>
+            f
+              ? { ...f, best: Math.max(f.best, score), attempts: f.attempts + 1 }
+              : { score, ms: Date.now() - shownAt, best: score, attempts: 1 },
+          );
         } else {
           setProblem(
             response.status === "no_speech"
@@ -101,9 +113,12 @@ export function Speaking({
   function next() {
     if (!first) return;
     onAnswer({
-      correct: first.score >= 60,
+      // Đọc lại đạt cũng là đúng (chấm Khó, xem gradeFromOutcome).
+      correct: first.best >= PRONUNCIATION_PASS,
       responseMs: first.ms,
       pronunciationScore: first.score,
+      pronunciationBest: first.best,
+      pronunciationAttempts: first.attempts,
     });
   }
 
@@ -175,7 +190,11 @@ export function Speaking({
             </p>
             <p className="font-medium">{t(`band.${band}`)}</p>
             {first && first.score !== result.overall && (
-              <p className="text-xs">{t("firstScore", { score: Math.round(first.score) })}</p>
+              <p className="text-xs">
+                {first.score < PRONUNCIATION_PASS && first.best >= PRONUNCIATION_PASS
+                  ? t("retryPassed", { score: Math.round(first.score) })
+                  : t("firstScore", { score: Math.round(first.score) })}
+              </p>
             )}
           </div>
 

@@ -1577,6 +1577,7 @@
         "poor": "Cần luyện thêm"
       },
       "firstScore": "Lần đầu: {score} điểm (dùng để xếp lịch ôn)",
+      "retryPassed": "Lần đầu: {score} điểm. Đọc lại đã đạt nên câu này tính là Khó, không phải Quên",
       "phonemes": "Điểm từng âm",
       "noPhonemes": "Giọng Anh: chưa có điểm chi tiết từng âm, chỉ có điểm tổng.",
       "tipsTitle": "Mẹo sửa âm",

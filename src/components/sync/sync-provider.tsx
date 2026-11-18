@@ -154,6 +154,8 @@ export function SyncProvider() {
                   correct: !forgot,
                   hint_level: 0,
                   pronunciation_score: null,
+                  pronunciation_best: null,
+                  pronunciation_attempts: null,
                   reviewed_at: at,
                   elapsed_days: 1,
                   scheduled_days: 1,

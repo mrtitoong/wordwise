@@ -67,6 +67,8 @@ const logs: ReviewLogRow[] = Array.from({ length: 50_000 }, (_, i) => {
     correct: i % 9 !== 0,
     hint_level: 0,
     pronunciation_score: null,
+    pronunciation_best: null,
+    pronunciation_attempts: null,
     reviewed_at: at,
     elapsed_days: 0,
     scheduled_days: 0,

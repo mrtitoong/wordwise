@@ -99,6 +99,9 @@ export type ReviewInput = {
   hintLevel?: number;
   /** Tập phát âm: điểm tổng 0–100. */
   pronunciationScore?: number | null;
+  /** Tập phát âm: điểm cao nhất trong câu (cả lần đọc lại) và số lần được chấm. */
+  pronunciationBest?: number | null;
+  pronunciationAttempts?: number | null;
   responseMs?: number | null;
   correct?: boolean | null;
   /**
@@ -129,6 +132,8 @@ export function applyReview(
       response_ms: input.responseMs ?? null,
       correct: input.correct ?? null,
       pronunciation_score: input.pronunciationScore ?? null,
+      pronunciation_best: input.pronunciationBest ?? null,
+      pronunciation_attempts: input.pronunciationAttempts ?? null,
       is_extra: extra,
       reviewed_at: input.reviewedAt.toISOString(),
       elapsed_days: Math.max(0, result.log.elapsed_days),

@@ -560,6 +560,8 @@ export type ReviewInput = {
   correct?: boolean;
   hintLevel?: number;
   pronunciationScore?: number;
+  pronunciationBest?: number;
+  pronunciationAttempts?: number;
   extra?: boolean;
   /** Mã lượt ôn (phiên ôn tính trước trong bộ nhớ rồi ghi với đúng mã đó). */
   logId?: string;
@@ -602,6 +604,8 @@ export function planReview(
     correct: input.correct ?? null,
     hintLevel: input.hintLevel ?? 0,
     pronunciationScore: input.pronunciationScore ?? null,
+    pronunciationBest: input.pronunciationBest ?? null,
+    pronunciationAttempts: input.pronunciationAttempts ?? null,
     extra: input.extra ?? false,
   });
 }

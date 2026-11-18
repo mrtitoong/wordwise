@@ -42,7 +42,10 @@ test.describe("Luồng 6 – thêm từ bằng ảnh vào sổ tay", () => {
     await page.getByRole("tab", { name: "Ảnh" }).click();
     await page.getByTestId("photo-file").setInputFiles("tests/fixtures/ocr/print-clear.jpg");
     await page.getByRole("button", { name: "Đọc chữ" }).click();
-    await expect(page.getByLabel("Ảnh đã đọc chữ, chạm vào từ để chọn")).toBeVisible();
+    // Thu nhỏ ảnh trong trình duyệt có lúc chậm trên máy CI (giả lập iPhone).
+    await expect(page.getByLabel("Ảnh đã đọc chữ, chạm vào từ để chọn")).toBeVisible({
+      timeout: 15_000,
+    });
     await noHorizontalScroll(page);
 
     await page.getByRole("button", { name: "Tự chọn từ mới" }).click();

@@ -107,6 +107,21 @@ describe("gradeFromOutcome (plan.md §3.3)", () => {
       Rating.Easy,
     ]);
   });
+
+  it("phát âm: lần đầu dưới 60 nhưng đọc lại đạt → Khó; lần đầu đạt thì chỉ tính lần đầu", () => {
+    const speak = (score: number, best: number) =>
+      gradeFromOutcome({
+        mode: "speaking",
+        pronunciationScore: score,
+        pronunciationBest: best,
+        cardLevel: 3,
+      });
+    expect(speak(27, 91)).toBe(Rating.Hard);
+    expect(speak(27, 60)).toBe(Rating.Hard);
+    expect(speak(27, 59)).toBe(Rating.Again);
+    expect(speak(62, 95)).toBe(Rating.Hard);
+    expect(speak(85, 95)).toBe(Rating.Good);
+  });
 });
 
 describe("gradeFromOutcome: trả lời đúng mà chậm", () => {

@@ -1577,6 +1577,7 @@
         "poor": "Needs more practice"
       },
       "firstScore": "First try: {score} points (used for your schedule)",
+      "retryPassed": "First try: {score} points. Your retry passed, so this counts as Hard, not Again",
       "phonemes": "Score per sound",
       "noPhonemes": "British English: no per-sound detail yet, only the overall score.",
       "tipsTitle": "Pronunciation tips",

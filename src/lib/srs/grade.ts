@@ -98,13 +98,18 @@ export type Outcome = {
   learning?: boolean;
   /** Không xét nhanh chậm (viết chữ Hán: viết tay lâu là bình thường). */
   untimed?: boolean;
-  /** Tập phát âm: điểm 0–100. */
+  /** Tập phát âm: điểm 0–100 của lần đọc đầu. */
   pronunciationScore?: number | null;
+  /** Điểm cao nhất kể cả các lần đọc lại trong cùng câu. */
+  pronunciationBest?: number | null;
   /** Mức thuộc của thẻ trước câu hỏi. */
   cardLevel: MasteryLevel;
   /** Điểm cao nhất được chấm (tập viết ở cấp dễ – xếp chữ, điền chữ thiếu – tối đa "Nhớ"). */
   maxRating?: Grade;
 };
+
+/** Điểm phát âm từ mức này trở lên là đọc được (dưới mức này là Quên). */
+export const PRONUNCIATION_PASS = 60;
 
 /** Chậm hơn chừng này lần trung vị → Khó; nhanh hơn chừng này phần → có thể Dễ. */
 export const SLOW_FACTOR = 2;
@@ -130,7 +135,10 @@ function rawGrade(outcome: Outcome): Grade {
 
   if (outcome.mode === "speaking" && typeof outcome.pronunciationScore === "number") {
     const score = outcome.pronunciationScore;
-    if (score < 60) return Rating.Again;
+    // Lần đầu chưa đạt nhưng đọc lại đạt: Khó, như dùng gợi ý (chốt 2026-11-18).
+    if (score < PRONUNCIATION_PASS) {
+      return (outcome.pronunciationBest ?? 0) >= PRONUNCIATION_PASS ? Rating.Hard : Rating.Again;
+    }
     if (score < 80) return Rating.Hard;
     if (score < 90) return Rating.Good;
     return Rating.Easy;

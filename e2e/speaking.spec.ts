@@ -12,7 +12,13 @@ import { learnStarterWords, type Card } from "./review-helpers";
 // Micro giả phát file mẫu; điểm chấm giả lập (CI không có khóa Azure).
 test.use(FAKE_MICROPHONE);
 
-type Log = { mode: string; rating: number; pronunciation_score: number | null };
+type Log = {
+  mode: string;
+  rating: number;
+  pronunciation_score: number | null;
+  pronunciation_best: number | null;
+  pronunciation_attempts: number | null;
+};
 type Hooks = { __wordwiseE2E: { patchCards: (skill: string, patch?: object) => Promise<number> } };
 
 /** Lượt chấm đầu tiên được 45 điểm (có mẹo sửa âm), các lượt sau 86 điểm. */
@@ -92,6 +98,12 @@ test.describe("Tập phát âm", () => {
         await expect(page.getByRole("list", { name: "Điểm từng âm" })).toBeVisible();
         await expect(page.getByRole("list", { name: "Mẹo sửa âm" })).toContainText("hai hàm răng");
         await expect(page.getByText("Điểm do máy chấm, chỉ mang tính tham khảo.")).toBeVisible();
+        // Đọc lại được 86 điểm: câu này tính là Khó thay vì Quên.
+        await page.getByRole("button", { name: "Đọc lại" }).click();
+        await page.getByRole("button", { name: "Bắt đầu đọc" }).click();
+        await expect(page.getByText(/Đọc lại đã đạt nên câu này tính là Khó/)).toBeVisible({
+          timeout: 10_000,
+        });
       }
       await page.getByRole("button", { name: "Tiếp", exact: true }).click();
       // Câu cũ còn hiện trong lúc lưu lượt ôn: chờ nó đi rồi mới xem câu sau hay màn kết quả.
@@ -104,9 +116,13 @@ test.describe("Tập phát âm", () => {
     );
     expect(logs.length).toBeGreaterThanOrEqual(5);
     expect(logs.every((l) => typeof l.pronunciation_score === "number")).toBe(true);
-    // 45 điểm → Quên; 86 điểm → Nhớ.
-    expect(logs.find((l) => l.pronunciation_score === 45)?.rating).toBe(1);
-    expect(logs.find((l) => l.pronunciation_score === 86)?.rating).toBe(3);
+    // 45 điểm rồi đọc lại 86 → Khó (lưu cả điểm cao nhất và số lần chấm); 86 điểm ngay → Nhớ.
+    const retried = logs.find((l) => l.pronunciation_score === 45);
+    expect(retried).toMatchObject({ rating: 2, pronunciation_best: 86, pronunciation_attempts: 2 });
+    expect(logs.find((l) => l.pronunciation_score === 86)).toMatchObject({
+      rating: 3,
+      pronunciation_attempts: 1,
+    });
 
     // Bật Luyện phát âm: thẻ Phát âm đến hạn vào phiên ôn; "Tạm tắt phát âm" bỏ các câu đó.
     await page.goto("/settings");

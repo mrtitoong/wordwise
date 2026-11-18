@@ -57,16 +57,26 @@ export function parseHskEntry(raw: string): HskEntry | null {
   return { word: before + inside, pos: null, example: null };
 }
 
-/** Các dòng "số chữ" của danh sách, theo cấp 1–3. */
+/** Tiêu đề từng cấp; nhóm 7–9 của HSK 3.0 là một bảng, ghi là cấp 7. */
+const HEADINGS: Record<string, number> = {
+  一级词汇表: 1,
+  二级词汇表: 2,
+  三级词汇表: 3,
+  四级词汇表: 4,
+  五级词汇表: 5,
+  六级词汇表: 6,
+  七一九级词汇表: 7,
+};
+
+/** Các dòng "số chữ" của danh sách, theo cấp (1–6, nhóm 7–9 là 7). */
 export function parseHskList(text: string): (HskEntry & { level: number })[] {
-  const headings: Record<string, number> = { 一级词汇表: 1, 二级词汇表: 2, 三级词汇表: 3 };
   const entries: (HskEntry & { level: number })[] = [];
   let level = 0;
   for (const raw of text.split("\n")) {
     const line = raw.trim();
     if (!line || line.startsWith("#")) continue;
     if (line.endsWith("词汇表")) {
-      level = headings[line] ?? 0;
+      level = HEADINGS[line] ?? 0;
       continue;
     }
     const match = /^\d+\s+(.+)$/.exec(line);

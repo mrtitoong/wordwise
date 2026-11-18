@@ -15858,5 +15858,6535 @@
    "tộc"
   ],
   "check": "khop"
+ },
+ {
+  "char": "丑",
+  "readings": [
+   {
+    "am": "sửu",
+    "meaning_vi": "chi Sửu thứ hai"
+   },
+   {
+    "am": "xú",
+    "meaning_vi": "xấu, xấu xa"
+   }
+  ],
+  "confidence": 0.9,
+  "level": 5,
+  "traditional": [
+   "醜"
+  ],
+  "unihan": [
+   "sửu",
+   "xấu"
+  ],
+  "check": "khop"
+ },
+ {
+  "char": "丢",
+  "readings": [
+   {
+    "am": "khâu",
+    "meaning_vi": "mất, vứt bỏ"
+   }
+  ],
+  "confidence": 0.5,
+  "level": 5,
+  "traditional": [
+   "丟"
+  ],
+  "unihan": [
+   "điêu"
+  ],
+  "check": "lech"
+ },
+ {
+  "char": "严",
+  "readings": [
+   {
+    "am": "nghiêm",
+    "meaning_vi": "nghiêm khắc, nghiêm ngặt"
+   }
+  ],
+  "confidence": 0.97,
+  "level": 4,
+  "traditional": [
+   "嚴"
+  ],
+  "unihan": [
+   "nghiêm"
+  ],
+  "check": "khop"
+ },
+ {
+  "char": "之",
+  "readings": [
+   {
+    "am": "chi",
+    "meaning_vi": "trợ từ, của, đi đến"
+   }
+  ],
+  "confidence": 0.97,
+  "level": 4,
+  "traditional": [],
+  "unihan": [
+   "chi"
+  ],
+  "check": "khop"
+ },
+ {
+  "char": "乏",
+  "readings": [
+   {
+    "am": "phạp",
+    "meaning_vi": "thiếu, mệt mỏi"
+   }
+  ],
+  "confidence": 0.97,
+  "level": 5,
+  "traditional": [],
+  "unihan": [
+   "phạp"
+  ],
+  "check": "khop"
+ },
+ {
+  "char": "乘",
+  "readings": [
+   {
+    "am": "thừa",
+    "meaning_vi": "cưỡi, lợi dụng, nhân"
+   },
+   {
+    "am": "thặng",
+    "meaning_vi": "cỗ xe, sử sách"
+   }
+  ],
+  "confidence": 0.9,
+  "level": 5,
+  "traditional": [],
+  "unihan": [
+   "thặng"
+  ],
+  "check": "lech"
+ },
+ {
+  "char": "乙",
+  "readings": [
+   {
+    "am": "ất",
+    "meaning_vi": "can Ất thứ hai"
+   }
+  ],
+  "confidence": 0.97,
+  "level": 5,
+  "traditional": [],
+  "unihan": [
+   "ất"
+  ],
+  "check": "khop"
+ },
+ {
+  "char": "亏",
+  "readings": [
+   {
+    "am": "khuy",
+    "meaning_vi": "thiếu hụt, thua lỗ"
+   }
+  ],
+  "confidence": 0.9,
+  "level": 5,
+  "traditional": [
+   "虧"
+  ],
+  "unihan": [
+   "khuya"
+  ],
+  "check": "lech"
+ },
+ {
+  "char": "亚",
+  "readings": [
+   {
+    "am": "á",
+    "meaning_vi": "thứ nhì, châu Á"
+   }
+  ],
+  "confidence": 0.97,
+  "level": 4,
+  "traditional": [
+   "亞"
+  ],
+  "unihan": [],
+  "check": "thieu"
+ },
+ {
+  "char": "享",
+  "readings": [
+   {
+    "am": "hưởng",
+    "meaning_vi": "hưởng thụ, được hưởng"
+   }
+  ],
+  "confidence": 0.97,
+  "level": 5,
+  "traditional": [],
+  "unihan": [
+   "hưởng"
+  ],
+  "check": "khop"
+ },
+ {
+  "char": "仔",
+  "readings": [
+   {
+    "am": "tể",
+    "meaning_vi": "nhỏ, con (nhỏ)"
+   },
+   {
+    "am": "tử",
+    "meaning_vi": "gánh vác, chịu đựng"
+   }
+  ],
+  "confidence": 0.6,
+  "level": 5,
+  "traditional": [],
+  "unihan": [
+   "tử"
+  ],
+  "check": "lech"
+ },
+ {
+  "char": "令",
+  "readings": [
+   {
+    "am": "lệnh",
+    "meaning_vi": "mệnh lệnh, sai khiến"
+   },
+   {
+    "am": "linh",
+    "meaning_vi": "khiến, tốt đẹp"
+   }
+  ],
+  "confidence": 0.85,
+  "level": 5,
+  "traditional": [],
+  "unihan": [
+   "lệnh"
+  ],
+  "check": "khop"
+ },
+ {
+  "char": "仿",
+  "readings": [
+   {
+    "am": "phảng",
+    "meaning_vi": "bắt chước, phảng phất"
+   }
+  ],
+  "confidence": 0.9,
+  "level": 5,
+  "traditional": [],
+  "unihan": [
+   "phảng"
+  ],
+  "check": "khop"
+ },
+ {
+  "char": "伙",
+  "readings": [
+   {
+    "am": "hỏa",
+    "meaning_vi": "bọn, nhóm, bạn bè"
+   }
+  ],
+  "confidence": 0.85,
+  "level": 4,
+  "traditional": [
+   "夥"
+  ],
+  "unihan": [],
+  "check": "thieu"
+ },
+ {
+  "char": "估",
+  "readings": [
+   {
+    "am": "cổ",
+    "meaning_vi": "ước lượng, đánh giá"
+   }
+  ],
+  "confidence": 0.9,
+  "level": 5,
+  "traditional": [],
+  "unihan": [],
+  "check": "thieu"
+ },
+ {
+  "char": "伸",
+  "readings": [
+   {
+    "am": "thân",
+    "meaning_vi": "duỗi, kéo dài ra"
+   }
+  ],
+  "confidence": 0.97,
+  "level": 5,
+  "traditional": [],
+  "unihan": [],
+  "check": "thieu"
+ },
+ {
+  "char": "依",
+  "readings": [
+   {
+    "am": "y",
+    "meaning_vi": "nương tựa, theo"
+   }
+  ],
+  "confidence": 0.97,
+  "level": 4,
+  "traditional": [],
+  "unihan": [
+   "y"
+  ],
+  "check": "khop"
+ },
+ {
+  "char": "俱",
+  "readings": [
+   {
+    "am": "câu",
+    "meaning_vi": "cùng, đều, tất cả"
+   }
+  ],
+  "confidence": 0.95,
+  "level": 5,
+  "traditional": [],
+  "unihan": [
+   "câu"
+  ],
+  "check": "khop"
+ },
+ {
+  "char": "倡",
+  "readings": [
+   {
+    "am": "xướng",
+    "meaning_vi": "đề xướng, khởi xướng"
+   },
+   {
+    "am": "xương",
+    "meaning_vi": "con hát, phường hát"
+   }
+  ],
+  "confidence": 0.8,
+  "level": 5,
+  "traditional": [],
+  "unihan": [
+   "xướng"
+  ],
+  "check": "khop"
+ },
+ {
+  "char": "偶",
+  "readings": [
+   {
+    "am": "ngẫu",
+    "meaning_vi": "tình cờ, cặp đôi, tượng"
+   }
+  ],
+  "confidence": 0.97,
+  "level": 5,
+  "traditional": [],
+  "unihan": [
+   "ngẫu"
+  ],
+  "check": "khop"
+ },
+ {
+  "char": "偷",
+  "readings": [
+   {
+    "am": "thâu",
+    "meaning_vi": "trộm cắp, lén lút"
+   }
+  ],
+  "confidence": 0.9,
+  "level": 5,
+  "traditional": [],
+  "unihan": [],
+  "check": "thieu"
+ },
+ {
+  "char": "偿",
+  "readings": [
+   {
+    "am": "thường",
+    "meaning_vi": "đền trả, bồi thường"
+   }
+  ],
+  "confidence": 0.97,
+  "level": 5,
+  "traditional": [
+   "償"
+  ],
+  "unihan": [],
+  "check": "thieu"
+ },
+ {
+  "char": "傅",
+  "readings": [
+   {
+    "am": "phó",
+    "meaning_vi": "thầy dạy, giúp đỡ"
+   },
+   {
+    "am": "phụ",
+    "meaning_vi": "bám vào, bôi đắp"
+   }
+  ],
+  "confidence": 0.8,
+  "level": 5,
+  "traditional": [],
+  "unihan": [
+   "phó"
+  ],
+  "check": "khop"
+ },
+ {
+  "char": "傻",
+  "readings": [
+   {
+    "am": "xoa",
+    "meaning_vi": "ngốc, ngây dại"
+   }
+  ],
+  "confidence": 0.4,
+  "level": 5,
+  "traditional": [],
+  "unihan": [],
+  "check": "thieu"
+ },
+ {
+  "char": "免",
+  "readings": [
+   {
+    "am": "miễn",
+    "meaning_vi": "tha, bỏ, tránh khỏi"
+   }
+  ],
+  "confidence": 0.97,
+  "level": 4,
+  "traditional": [],
+  "unihan": [
+   "miễn"
+  ],
+  "check": "khop"
+ },
+ {
+  "char": "兔",
+  "readings": [
+   {
+    "am": "thố",
+    "meaning_vi": "con thỏ"
+   }
+  ],
+  "confidence": 0.97,
+  "level": 5,
+  "traditional": [],
+  "unihan": [
+   "thỏ"
+  ],
+  "check": "lech"
+ },
+ {
+  "char": "册",
+  "readings": [
+   {
+    "am": "sách",
+    "meaning_vi": "quyển sách, sách vở"
+   }
+  ],
+  "confidence": 0.95,
+  "level": 5,
+  "traditional": [
+   "冊"
+  ],
+  "unihan": [
+   "sách"
+  ],
+  "check": "khop"
+ },
+ {
+  "char": "军",
+  "readings": [
+   {
+    "am": "quân",
+    "meaning_vi": "quân đội, binh lính"
+   }
+  ],
+  "confidence": 0.98,
+  "level": 5,
+  "traditional": [
+   "軍"
+  ],
+  "unihan": [
+   "quân"
+  ],
+  "check": "khop"
+ },
+ {
+  "char": "冠",
+  "readings": [
+   {
+    "am": "quan",
+    "meaning_vi": "mũ, vật đội đầu"
+   },
+   {
+    "am": "quán",
+    "meaning_vi": "đứng đầu, quán quân"
+   }
+  ],
+  "confidence": 0.93,
+  "level": 5,
+  "traditional": [],
+  "unihan": [
+   "quán"
+  ],
+  "check": "lech"
+ },
+ {
+  "char": "冲",
+  "readings": [
+   {
+    "am": "xung",
+    "meaning_vi": "xông tới, va chạm, đường xung yếu"
+   },
+   {
+    "am": "trùng",
+    "meaning_vi": "trống rỗng, trẻ nhỏ"
+   }
+  ],
+  "confidence": 0.85,
+  "level": 4,
+  "traditional": [
+   "沖",
+   "衝"
+  ],
+  "unihan": [
+   "trong",
+   "trùng",
+   "xung"
+  ],
+  "check": "khop"
+ },
+ {
+  "char": "冻",
+  "readings": [
+   {
+    "am": "đống",
+    "meaning_vi": "đông lạnh, đóng băng"
+   }
+  ],
+  "confidence": 0.93,
+  "level": 5,
+  "traditional": [
+   "凍"
+  ],
+  "unihan": [
+   "đông"
+  ],
+  "check": "lech"
+ },
+ {
+  "char": "减",
+  "readings": [
+   {
+    "am": "giảm",
+    "meaning_vi": "bớt, giảm đi"
+   }
+  ],
+  "confidence": 0.97,
+  "level": 4,
+  "traditional": [
+   "減"
+  ],
+  "unihan": [
+   "giảm"
+  ],
+  "check": "khop"
+ },
+ {
+  "char": "凭",
+  "readings": [
+   {
+    "am": "bằng",
+    "meaning_vi": "dựa vào, căn cứ"
+   }
+  ],
+  "confidence": 0.93,
+  "level": 5,
+  "traditional": [
+   "憑"
+  ],
+  "unihan": [
+   "bằng"
+  ],
+  "check": "khop"
+ },
+ {
+  "char": "击",
+  "readings": [
+   {
+    "am": "kích",
+    "meaning_vi": "đánh, tấn công"
+   }
+  ],
+  "confidence": 0.97,
+  "level": 5,
+  "traditional": [
+   "擊"
+  ],
+  "unihan": [],
+  "check": "thieu"
+ },
+ {
+  "char": "刷",
+  "readings": [
+   {
+    "am": "loát",
+    "meaning_vi": "chải, quét, in ấn"
+   }
+  ],
+  "confidence": 0.9,
+  "level": 4,
+  "traditional": [],
+  "unihan": [
+   "loát"
+  ],
+  "check": "khop"
+ },
+ {
+  "char": "剩",
+  "readings": [
+   {
+    "am": "thặng",
+    "meaning_vi": "thừa, còn lại"
+   }
+  ],
+  "confidence": 0.85,
+  "level": 5,
+  "traditional": [],
+  "unihan": [],
+  "check": "thieu"
+ },
+ {
+  "char": "剪",
+  "readings": [
+   {
+    "am": "tiễn",
+    "meaning_vi": "cắt, kéo cắt"
+   }
+  ],
+  "confidence": 0.93,
+  "level": 5,
+  "traditional": [],
+  "unihan": [
+   "tiện"
+  ],
+  "check": "lech"
+ },
+ {
+  "char": "劝",
+  "readings": [
+   {
+    "am": "khuyến",
+    "meaning_vi": "khuyên bảo, khuyến khích"
+   }
+  ],
+  "confidence": 0.97,
+  "level": 5,
+  "traditional": [
+   "勸"
+  ],
+  "unihan": [
+   "khuyến"
+  ],
+  "check": "khop"
+ },
+ {
+  "char": "励",
+  "readings": [
+   {
+    "am": "lệ",
+    "meaning_vi": "khuyến khích, gắng sức"
+   }
+  ],
+  "confidence": 0.93,
+  "level": 5,
+  "traditional": [
+   "勵"
+  ],
+  "unihan": [
+   "lệ"
+  ],
+  "check": "khop"
+ },
+ {
+  "char": "劳",
+  "readings": [
+   {
+    "am": "lao",
+    "meaning_vi": "nhọc, làm việc, công lao"
+   }
+  ],
+  "confidence": 0.97,
+  "level": 5,
+  "traditional": [
+   "勞"
+  ],
+  "unihan": [
+   "lao"
+  ],
+  "check": "khop"
+ },
+ {
+  "char": "勤",
+  "readings": [
+   {
+    "am": "cần",
+    "meaning_vi": "siêng năng, chuyên cần"
+   }
+  ],
+  "confidence": 0.97,
+  "level": 5,
+  "traditional": [],
+  "unihan": [
+   "cần"
+  ],
+  "check": "khop"
+ },
+ {
+  "char": "匹",
+  "readings": [
+   {
+    "am": "thất",
+    "meaning_vi": "con ngựa, đơn vị vải, một người"
+   },
+   {
+    "am": "phất",
+    "meaning_vi": "đơn lẻ (ít dùng)"
+   }
+  ],
+  "confidence": 0.8,
+  "level": 5,
+  "traditional": [],
+  "unihan": [
+   "thất"
+  ],
+  "check": "khop"
+ },
+ {
+  "char": "协",
+  "readings": [
+   {
+    "am": "hiệp",
+    "meaning_vi": "hòa hợp, cùng giúp nhau"
+   }
+  ],
+  "confidence": 0.96,
+  "level": 5,
+  "traditional": [
+   "協"
+  ],
+  "unihan": [
+   "hiếp"
+  ],
+  "check": "lech"
+ },
+ {
+  "char": "博",
+  "readings": [
+   {
+    "am": "bác",
+    "meaning_vi": "rộng, uyên bác"
+   }
+  ],
+  "confidence": 0.97,
+  "level": 5,
+  "traditional": [],
+  "unihan": [
+   "bác"
+  ],
+  "check": "khop"
+ },
+ {
+  "char": "卧",
+  "readings": [
+   {
+    "am": "ngọa",
+    "meaning_vi": "nằm"
+   }
+  ],
+  "confidence": 0.96,
+  "level": 5,
+  "traditional": [],
+  "unihan": [],
+  "check": "thieu"
+ },
+ {
+  "char": "即",
+  "readings": [
+   {
+    "am": "tức",
+    "meaning_vi": "liền, ngay, chính là"
+   }
+  ],
+  "confidence": 0.97,
+  "level": 4,
+  "traditional": [],
+  "unihan": [
+   "tức"
+  ],
+  "check": "khop"
+ },
+ {
+  "char": "厅",
+  "readings": [
+   {
+    "am": "sảnh",
+    "meaning_vi": "phòng lớn, đại sảnh"
+   }
+  ],
+  "confidence": 0.93,
+  "level": 5,
+  "traditional": [
+   "廳"
+  ],
+  "unihan": [],
+  "check": "thieu"
+ },
+ {
+  "char": "厉",
+  "readings": [
+   {
+    "am": "lệ",
+    "meaning_vi": "nghiêm khắc, dữ dội"
+   }
+  ],
+  "confidence": 0.93,
+  "level": 5,
+  "traditional": [
+   "厲"
+  ],
+  "unihan": [
+   "lẹ"
+  ],
+  "check": "lech"
+ },
+ {
+  "char": "厌",
+  "readings": [
+   {
+    "am": "yếm",
+    "meaning_vi": "chán ghét"
+   },
+   {
+    "am": "áp",
+    "meaning_vi": "đè nén, ép"
+   }
+  ],
+  "confidence": 0.85,
+  "level": 5,
+  "traditional": [
+   "厭"
+  ],
+  "unihan": [
+   "ướm"
+  ],
+  "check": "lech"
+ },
+ {
+  "char": "厨",
+  "readings": [
+   {
+    "am": "trù",
+    "meaning_vi": "bếp, nhà bếp"
+   }
+  ],
+  "confidence": 0.95,
+  "level": 5,
+  "traditional": [
+   "廚"
+  ],
+  "unihan": [
+   "chù"
+  ],
+  "check": "lech"
+ },
+ {
+  "char": "叉",
+  "readings": [
+   {
+    "am": "xoa",
+    "meaning_vi": "cái nĩa, chĩa, giao nhau"
+   },
+   {
+    "am": "xa",
+    "meaning_vi": "ngã ba, chẽ (ít dùng)"
+   }
+  ],
+  "confidence": 0.7,
+  "level": 5,
+  "traditional": [],
+  "unihan": [],
+  "check": "thieu"
+ },
+ {
+  "char": "召",
+  "readings": [
+   {
+    "am": "triệu",
+    "meaning_vi": "gọi, triệu tập"
+   },
+   {
+    "am": "thiệu",
+    "meaning_vi": "tên đất, họ Thiệu"
+   }
+  ],
+  "confidence": 0.88,
+  "level": 4,
+  "traditional": [],
+  "unihan": [
+   "chịu"
+  ],
+  "check": "lech"
+ },
+ {
+  "char": "吐",
+  "readings": [
+   {
+    "am": "thổ",
+    "meaning_vi": "nhả ra, nói ra"
+   },
+   {
+    "am": "thố",
+    "meaning_vi": "nôn ra"
+   }
+  ],
+  "confidence": 0.88,
+  "level": 5,
+  "traditional": [],
+  "unihan": [
+   "thổ"
+  ],
+  "check": "khop"
+ },
+ {
+  "char": "吓",
+  "readings": [
+   {
+    "am": "hách",
+    "meaning_vi": "dọa nạt, làm sợ"
+   },
+   {
+    "am": "há",
+    "meaning_vi": "tiếng thán"
+   }
+  ],
+  "confidence": 0.7,
+  "level": 5,
+  "traditional": [
+   "嚇"
+  ],
+  "unihan": [
+   "hách"
+  ],
+  "check": "khop"
+ },
+ {
+  "char": "吨",
+  "readings": [
+   {
+    "am": "đốn",
+    "meaning_vi": "tấn, đơn vị khối lượng"
+   }
+  ],
+  "confidence": 0.8,
+  "level": 5,
+  "traditional": [
+   "噸"
+  ],
+  "unihan": [
+   "đồn"
+  ],
+  "check": "lech"
+ },
+ {
+  "char": "启",
+  "readings": [
+   {
+    "am": "khải",
+    "meaning_vi": "mở, bày tỏ, khai mở"
+   }
+  ],
+  "confidence": 0.96,
+  "level": 5,
+  "traditional": [
+   "啓",
+   "啟"
+  ],
+  "unihan": [],
+  "check": "thieu"
+ },
+ {
+  "char": "呆",
+  "readings": [
+   {
+    "am": "ngai",
+    "meaning_vi": "ngây ngô, đần"
+   },
+   {
+    "am": "bảo",
+    "meaning_vi": "ngốc (âm khác)"
+   }
+  ],
+  "confidence": 0.65,
+  "level": 5,
+  "traditional": [],
+  "unihan": [
+   "ngốc"
+  ],
+  "check": "lech"
+ },
+ {
+  "char": "咬",
+  "readings": [
+   {
+    "am": "giảo",
+    "meaning_vi": "cắn"
+   },
+   {
+    "am": "yểu",
+    "meaning_vi": "tiếng chim hót"
+   }
+  ],
+  "confidence": 0.8,
+  "level": 5,
+  "traditional": [],
+  "unihan": [
+   "rao"
+  ],
+  "check": "lech"
+ },
+ {
+  "char": "咳",
+  "readings": [
+   {
+    "am": "khái",
+    "meaning_vi": "ho"
+   },
+   {
+    "am": "hài",
+    "meaning_vi": "trẻ con cười"
+   }
+  ],
+  "confidence": 0.88,
+  "level": 5,
+  "traditional": [],
+  "unihan": [
+   "cay"
+  ],
+  "check": "lech"
+ },
+ {
+  "char": "唯",
+  "readings": [
+   {
+    "am": "duy",
+    "meaning_vi": "chỉ, chỉ có"
+   },
+   {
+    "am": "dụy",
+    "meaning_vi": "vâng dạ"
+   }
+  ],
+  "confidence": 0.88,
+  "level": 5,
+  "traditional": [],
+  "unihan": [
+   "dõi"
+  ],
+  "check": "lech"
+ },
+ {
+  "char": "喷",
+  "readings": [
+   {
+    "am": "phún",
+    "meaning_vi": "phun, xì ra"
+   },
+   {
+    "am": "phấn",
+    "meaning_vi": "hắt hơi (phấn đế)"
+   }
+  ],
+  "confidence": 0.8,
+  "level": 5,
+  "traditional": [
+   "噴"
+  ],
+  "unihan": [
+   "phún"
+  ],
+  "check": "khop"
+ },
+ {
+  "char": "坦",
+  "readings": [
+   {
+    "am": "thản",
+    "meaning_vi": "bằng phẳng, thẳng thắn"
+   }
+  ],
+  "confidence": 0.95,
+  "level": 5,
+  "traditional": [],
+  "unihan": [
+   "đất"
+  ],
+  "check": "lech"
+ },
+ {
+  "char": "域",
+  "readings": [
+   {
+    "am": "vực",
+    "meaning_vi": "cõi, khu vực"
+   }
+  ],
+  "confidence": 0.95,
+  "level": 5,
+  "traditional": [],
+  "unihan": [
+   "vực"
+  ],
+  "check": "khop"
+ },
+ {
+  "char": "堆",
+  "readings": [
+   {
+    "am": "đôi",
+    "meaning_vi": "đống, chất đống"
+   }
+  ],
+  "confidence": 0.85,
+  "level": 5,
+  "traditional": [],
+  "unihan": [
+   "đôi"
+  ],
+  "check": "khop"
+ },
+ {
+  "char": "壁",
+  "readings": [
+   {
+    "am": "bích",
+    "meaning_vi": "bức tường, vách"
+   }
+  ],
+  "confidence": 0.95,
+  "level": 5,
+  "traditional": [],
+  "unihan": [
+   "bích"
+  ],
+  "check": "khop"
+ },
+ {
+  "char": "士",
+  "readings": [
+   {
+    "am": "sĩ",
+    "meaning_vi": "kẻ sĩ, người học"
+   }
+  ],
+  "confidence": 0.97,
+  "level": 4,
+  "traditional": [],
+  "unihan": [
+   "sĩ"
+  ],
+  "check": "khop"
+ },
+ {
+  "char": "夕",
+  "readings": [
+   {
+    "am": "tịch",
+    "meaning_vi": "buổi tối, chiều"
+   }
+  ],
+  "confidence": 0.95,
+  "level": 5,
+  "traditional": [],
+  "unihan": [
+   "tịch"
+  ],
+  "check": "khop"
+ },
+ {
+  "char": "央",
+  "readings": [
+   {
+    "am": "ương",
+    "meaning_vi": "giữa, trung tâm"
+   }
+  ],
+  "confidence": 0.93,
+  "level": 5,
+  "traditional": [],
+  "unihan": [
+   "ương"
+  ],
+  "check": "khop"
+ },
+ {
+  "char": "夹",
+  "readings": [
+   {
+    "am": "giáp",
+    "meaning_vi": "kẹp, cặp"
+   },
+   {
+    "am": "hiệp",
+    "meaning_vi": "kẹp (âm khác)"
+   }
+  ],
+  "confidence": 0.8,
+  "level": 5,
+  "traditional": [
+   "夾"
+  ],
+  "unihan": [
+   "giáp"
+  ],
+  "check": "khop"
+ },
+ {
+  "char": "奈",
+  "readings": [
+   {
+    "am": "nại",
+    "meaning_vi": "sao, biết làm sao"
+   }
+  ],
+  "confidence": 0.9,
+  "level": 5,
+  "traditional": [],
+  "unihan": [
+   "nại"
+  ],
+  "check": "khop"
+ },
+ {
+  "char": "奋",
+  "readings": [
+   {
+    "am": "phấn",
+    "meaning_vi": "hăng hái, gắng sức"
+   }
+  ],
+  "confidence": 0.95,
+  "level": 4,
+  "traditional": [
+   "奮"
+  ],
+  "unihan": [
+   "phấn"
+  ],
+  "check": "khop"
+ },
+ {
+  "char": "奖",
+  "readings": [
+   {
+    "am": "tưởng",
+    "meaning_vi": "khen thưởng, phần thưởng"
+   }
+  ],
+  "confidence": 0.93,
+  "level": 4,
+  "traditional": [
+   "奬",
+   "獎"
+  ],
+  "unihan": [
+   "tưởng"
+  ],
+  "check": "khop"
+ },
+ {
+  "char": "委",
+  "readings": [
+   {
+    "am": "ủy",
+    "meaning_vi": "giao phó, ủy ban"
+   },
+   {
+    "am": "uy",
+    "meaning_vi": "uy tri (quanh co)"
+   }
+  ],
+  "confidence": 0.85,
+  "level": 5,
+  "traditional": [],
+  "unihan": [
+   "uỷ"
+  ],
+  "check": "khop"
+ },
+ {
+  "char": "守",
+  "readings": [
+   {
+    "am": "thủ",
+    "meaning_vi": "giữ, canh giữ"
+   }
+  ],
+  "confidence": 0.95,
+  "level": 4,
+  "traditional": [],
+  "unihan": [
+   "thú"
+  ],
+  "check": "lech"
+ },
+ {
+  "char": "宽",
+  "readings": [
+   {
+    "am": "khoan",
+    "meaning_vi": "rộng, rộng rãi"
+   }
+  ],
+  "confidence": 0.96,
+  "level": 4,
+  "traditional": [
+   "寬"
+  ],
+  "unihan": [
+   "khoan"
+  ],
+  "check": "khop"
+ },
+ {
+  "char": "宾",
+  "readings": [
+   {
+    "am": "tân",
+    "meaning_vi": "khách"
+   }
+  ],
+  "confidence": 0.96,
+  "level": 5,
+  "traditional": [
+   "賓"
+  ],
+  "unihan": [
+   "tân"
+  ],
+  "check": "khop"
+ },
+ {
+  "char": "宿",
+  "readings": [
+   {
+    "am": "túc",
+    "meaning_vi": "trọ, ngủ đêm"
+   },
+   {
+    "am": "tú",
+    "meaning_vi": "chòm sao"
+   }
+  ],
+  "confidence": 0.92,
+  "level": 5,
+  "traditional": [],
+  "unihan": [
+   "túc"
+  ],
+  "check": "khop"
+ },
+ {
+  "char": "寸",
+  "readings": [
+   {
+    "am": "thốn",
+    "meaning_vi": "tấc, đơn vị đo"
+   }
+  ],
+  "confidence": 0.95,
+  "level": 4,
+  "traditional": [],
+  "unihan": [
+   "thốn"
+  ],
+  "check": "khop"
+ },
+ {
+  "char": "寻",
+  "readings": [
+   {
+    "am": "tầm",
+    "meaning_vi": "tìm kiếm"
+   }
+  ],
+  "confidence": 0.95,
+  "level": 4,
+  "traditional": [
+   "尋"
+  ],
+  "unihan": [
+   "tầm"
+  ],
+  "check": "khop"
+ },
+ {
+  "char": "寿",
+  "readings": [
+   {
+    "am": "thọ",
+    "meaning_vi": "sống lâu, tuổi thọ"
+   }
+  ],
+  "confidence": 0.97,
+  "level": 5,
+  "traditional": [
+   "壽"
+  ],
+  "unihan": [
+   "thọ"
+  ],
+  "check": "khop"
+ },
+ {
+  "char": "射",
+  "readings": [
+   {
+    "am": "xạ",
+    "meaning_vi": "bắn, phóng"
+   },
+   {
+    "am": "dạ",
+    "meaning_vi": "bộc xạ (chức quan)"
+   },
+   {
+    "am": "thạch",
+    "meaning_vi": "chán (dịch)"
+   }
+  ],
+  "confidence": 0.8,
+  "level": 5,
+  "traditional": [],
+  "unihan": [
+   "xạ"
+  ],
+  "check": "khop"
+ },
+ {
+  "char": "尊",
+  "readings": [
+   {
+    "am": "tôn",
+    "meaning_vi": "kính trọng, cao quý"
+   }
+  ],
+  "confidence": 0.97,
+  "level": 5,
+  "traditional": [],
+  "unihan": [
+   "tôn"
+  ],
+  "check": "khop"
+ },
+ {
+  "char": "尔",
+  "readings": [
+   {
+    "am": "nhĩ",
+    "meaning_vi": "anh, ngươi, thế"
+   }
+  ],
+  "confidence": 0.93,
+  "level": 5,
+  "traditional": [
+   "爾"
+  ],
+  "unihan": [
+   "nể",
+   "nhãi"
+  ],
+  "check": "lech"
+ },
+ {
+  "char": "尝",
+  "readings": [
+   {
+    "am": "thường",
+    "meaning_vi": "nếm, từng"
+   }
+  ],
+  "confidence": 0.95,
+  "level": 5,
+  "traditional": [
+   "嘗"
+  ],
+  "unihan": [],
+  "check": "thieu"
+ },
+ {
+  "char": "尤",
+  "readings": [
+   {
+    "am": "vưu",
+    "meaning_vi": "lạ, đặc biệt, lỗi"
+   }
+  ],
+  "confidence": 0.85,
+  "level": 5,
+  "traditional": [],
+  "unihan": [],
+  "check": "thieu"
+ },
+ {
+  "char": "局",
+  "readings": [
+   {
+    "am": "cục",
+    "meaning_vi": "cuộc, sở, bàn cờ"
+   }
+  ],
+  "confidence": 0.96,
+  "level": 4,
+  "traditional": [],
+  "unihan": [
+   "cục"
+  ],
+  "check": "khop"
+ },
+ {
+  "char": "居",
+  "readings": [
+   {
+    "am": "cư",
+    "meaning_vi": "ở, cư trú"
+   }
+  ],
+  "confidence": 0.97,
+  "level": 4,
+  "traditional": [],
+  "unihan": [
+   "cư"
+  ],
+  "check": "khop"
+ },
+ {
+  "char": "届",
+  "readings": [
+   {
+    "am": "giới",
+    "meaning_vi": "kỳ, khóa, đến"
+   }
+  ],
+  "confidence": 0.9,
+  "level": 5,
+  "traditional": [
+   "屆"
+  ],
+  "unihan": [],
+  "check": "thieu"
+ },
+ {
+  "char": "岸",
+  "readings": [
+   {
+    "am": "ngạn",
+    "meaning_vi": "bờ"
+   }
+  ],
+  "confidence": 0.96,
+  "level": 5,
+  "traditional": [],
+  "unihan": [
+   "ngàn"
+  ],
+  "check": "lech"
+ },
+ {
+  "char": "帘",
+  "readings": [
+   {
+    "am": "liêm",
+    "meaning_vi": "rèm, mành"
+   }
+  ],
+  "confidence": 0.9,
+  "level": 5,
+  "traditional": [
+   "簾"
+  ],
+  "unihan": [
+   "rèm"
+  ],
+  "check": "lech"
+ },
+ {
+  "char": "幅",
+  "readings": [
+   {
+    "am": "phúc",
+    "meaning_vi": "khổ vải, bề rộng, tấm"
+   },
+   {
+    "am": "bức",
+    "meaning_vi": "bức tranh, tấm (lượng từ)"
+   }
+  ],
+  "confidence": 0.85,
+  "level": 5,
+  "traditional": [],
+  "unihan": [
+   "bức"
+  ],
+  "check": "lech"
+ },
+ {
+  "char": "幕",
+  "readings": [
+   {
+    "am": "mạc",
+    "meaning_vi": "màn, tấm màn; hồi kịch"
+   }
+  ],
+  "confidence": 0.97,
+  "level": 5,
+  "traditional": [],
+  "unihan": [],
+  "check": "thieu"
+ },
+ {
+  "char": "幽",
+  "readings": [
+   {
+    "am": "u",
+    "meaning_vi": "sâu kín, tối, yên tĩnh"
+   }
+  ],
+  "confidence": 0.97,
+  "level": 5,
+  "traditional": [],
+  "unihan": [],
+  "check": "thieu"
+ },
+ {
+  "char": "库",
+  "readings": [
+   {
+    "am": "khố",
+    "meaning_vi": "kho chứa"
+   }
+  ],
+  "confidence": 0.95,
+  "level": 5,
+  "traditional": [
+   "庫"
+  ],
+  "unihan": [
+   "kho"
+  ],
+  "check": "lech"
+ },
+ {
+  "char": "延",
+  "readings": [
+   {
+    "am": "diên",
+    "meaning_vi": "kéo dài, lan rộng"
+   }
+  ],
+  "confidence": 0.96,
+  "level": 4,
+  "traditional": [],
+  "unihan": [
+   "dang"
+  ],
+  "check": "lech"
+ },
+ {
+  "char": "弃",
+  "readings": [
+   {
+    "am": "khí",
+    "meaning_vi": "bỏ, vứt bỏ"
+   }
+  ],
+  "confidence": 0.97,
+  "level": 5,
+  "traditional": [
+   "棄"
+  ],
+  "unihan": [],
+  "check": "thieu"
+ },
+ {
+  "char": "弱",
+  "readings": [
+   {
+    "am": "nhược",
+    "meaning_vi": "yếu, kém"
+   }
+  ],
+  "confidence": 0.98,
+  "level": 4,
+  "traditional": [],
+  "unihan": [
+   "nhược"
+  ],
+  "check": "khop"
+ },
+ {
+  "char": "弹",
+  "readings": [
+   {
+    "am": "đàn",
+    "meaning_vi": "gảy đàn, bắn, đàn hồi"
+   },
+   {
+    "am": "đạn",
+    "meaning_vi": "viên đạn, bom đạn"
+   }
+  ],
+  "confidence": 0.95,
+  "level": 5,
+  "traditional": [
+   "彈"
+  ],
+  "unihan": [
+   "đàn"
+  ],
+  "check": "khop"
+ },
+ {
+  "char": "彼",
+  "readings": [
+   {
+    "am": "bỉ",
+    "meaning_vi": "kia, người kia, bên kia"
+   }
+  ],
+  "confidence": 0.97,
+  "level": 5,
+  "traditional": [],
+  "unihan": [
+   "bỉ"
+  ],
+  "check": "khop"
+ },
+ {
+  "char": "征",
+  "readings": [
+   {
+    "am": "chinh",
+    "meaning_vi": "đi xa, đánh dẹp"
+   },
+   {
+    "am": "trưng",
+    "meaning_vi": "thu thuế, triệu tập, dấu hiệu"
+   },
+   {
+    "am": "chủy",
+    "meaning_vi": "một âm trong ngũ âm"
+   }
+  ],
+  "confidence": 0.85,
+  "level": 4,
+  "traditional": [
+   "徵"
+  ],
+  "unihan": [
+   "chinh",
+   "trưng"
+  ],
+  "check": "khop"
+ },
+ {
+  "char": "微",
+  "readings": [
+   {
+    "am": "vi",
+    "meaning_vi": "nhỏ bé, tinh vi, suy yếu"
+   }
+  ],
+  "confidence": 0.97,
+  "level": 4,
+  "traditional": [],
+  "unihan": [
+   "vi"
+  ],
+  "check": "khop"
+ },
+ {
+  "char": "德",
+  "readings": [
+   {
+    "am": "đức",
+    "meaning_vi": "đạo đức, ơn, phẩm hạnh"
+   }
+  ],
+  "confidence": 0.98,
+  "level": 5,
+  "traditional": [],
+  "unihan": [
+   "đức"
+  ],
+  "check": "khop"
+ },
+ {
+  "char": "忆",
+  "readings": [
+   {
+    "am": "ức",
+    "meaning_vi": "nhớ, hồi tưởng"
+   }
+  ],
+  "confidence": 0.96,
+  "level": 5,
+  "traditional": [
+   "憶"
+  ],
+  "unihan": [
+   "hắt",
+   "ức"
+  ],
+  "check": "khop"
+ },
+ {
+  "char": "忍",
+  "readings": [
+   {
+    "am": "nhẫn",
+    "meaning_vi": "chịu đựng, nhịn, nỡ"
+   }
+  ],
+  "confidence": 0.98,
+  "level": 5,
+  "traditional": [],
+  "unihan": [
+   "nhẫn"
+  ],
+  "check": "khop"
+ },
+ {
+  "char": "怀",
+  "readings": [
+   {
+    "am": "hoài",
+    "meaning_vi": "nhớ, ôm ấp, trong lòng"
+   }
+  ],
+  "confidence": 0.97,
+  "level": 4,
+  "traditional": [
+   "懷"
+  ],
+  "unihan": [
+   "hoài"
+  ],
+  "check": "khop"
+ },
+ {
+  "char": "怜",
+  "readings": [
+   {
+    "am": "liên",
+    "meaning_vi": "thương xót, thương yêu"
+   }
+  ],
+  "confidence": 0.96,
+  "level": 5,
+  "traditional": [
+   "憐"
+  ],
+  "unihan": [
+   "lanh"
+  ],
+  "check": "lech"
+ },
+ {
+  "char": "怨",
+  "readings": [
+   {
+    "am": "oán",
+    "meaning_vi": "oán giận, thù hận"
+   }
+  ],
+  "confidence": 0.98,
+  "level": 5,
+  "traditional": [],
+  "unihan": [
+   "oán"
+  ],
+  "check": "khop"
+ },
+ {
+  "char": "恋",
+  "readings": [
+   {
+    "am": "luyến",
+    "meaning_vi": "quyến luyến, yêu mến"
+   }
+  ],
+  "confidence": 0.97,
+  "level": 5,
+  "traditional": [
+   "戀"
+  ],
+  "unihan": [
+   "luyến"
+  ],
+  "check": "khop"
+ },
+ {
+  "char": "恢",
+  "readings": [
+   {
+    "am": "khôi",
+    "meaning_vi": "lớn rộng, khôi phục"
+   }
+  ],
+  "confidence": 0.96,
+  "level": 5,
+  "traditional": [],
+  "unihan": [],
+  "check": "thieu"
+ },
+ {
+  "char": "恨",
+  "readings": [
+   {
+    "am": "hận",
+    "meaning_vi": "căm giận, oán hận"
+   }
+  ],
+  "confidence": 0.98,
+  "level": 5,
+  "traditional": [],
+  "unihan": [
+   "hận"
+  ],
+  "check": "khop"
+ },
+ {
+  "char": "悄",
+  "readings": [
+   {
+    "am": "tiễu",
+    "meaning_vi": "lặng lẽ, im lặng"
+   },
+   {
+    "am": "thiểu",
+    "meaning_vi": "buồn rầu, ưu sầu"
+   }
+  ],
+  "confidence": 0.8,
+  "level": 5,
+  "traditional": [],
+  "unihan": [],
+  "check": "thieu"
+ },
+ {
+  "char": "悉",
+  "readings": [
+   {
+    "am": "tất",
+    "meaning_vi": "biết rõ, hết thảy"
+   }
+  ],
+  "confidence": 0.96,
+  "level": 5,
+  "traditional": [],
+  "unihan": [
+   "tạt"
+  ],
+  "check": "lech"
+ },
+ {
+  "char": "悔",
+  "readings": [
+   {
+    "am": "hối",
+    "meaning_vi": "hối hận, ăn năn"
+   }
+  ],
+  "confidence": 0.98,
+  "level": 5,
+  "traditional": [],
+  "unihan": [
+   "hối"
+  ],
+  "check": "khop"
+ },
+ {
+  "char": "悲",
+  "readings": [
+   {
+    "am": "bi",
+    "meaning_vi": "buồn thương, đau xót"
+   }
+  ],
+  "confidence": 0.98,
+  "level": 5,
+  "traditional": [],
+  "unihan": [
+   "bi"
+  ],
+  "check": "khop"
+ },
+ {
+  "char": "惊",
+  "readings": [
+   {
+    "am": "kinh",
+    "meaning_vi": "sợ hãi, giật mình"
+   }
+  ],
+  "confidence": 0.97,
+  "level": 4,
+  "traditional": [
+   "驚"
+  ],
+  "unihan": [
+   "kinh"
+  ],
+  "check": "khop"
+ },
+ {
+  "char": "惜",
+  "readings": [
+   {
+    "am": "tích",
+    "meaning_vi": "tiếc, thương tiếc, quý"
+   }
+  ],
+  "confidence": 0.97,
+  "level": 5,
+  "traditional": [],
+  "unihan": [
+   "tiếc"
+  ],
+  "check": "lech"
+ },
+ {
+  "char": "惠",
+  "readings": [
+   {
+    "am": "huệ",
+    "meaning_vi": "ơn, ban ơn, lợi ích"
+   }
+  ],
+  "confidence": 0.97,
+  "level": 5,
+  "traditional": [],
+  "unihan": [
+   "huệ"
+  ],
+  "check": "khop"
+ },
+ {
+  "char": "愁",
+  "readings": [
+   {
+    "am": "sầu",
+    "meaning_vi": "buồn rầu, lo lắng"
+   }
+  ],
+  "confidence": 0.98,
+  "level": 5,
+  "traditional": [],
+  "unihan": [
+   "sầu"
+  ],
+  "check": "khop"
+ },
+ {
+  "char": "慌",
+  "readings": [
+   {
+    "am": "hoảng",
+    "meaning_vi": "vội vàng, lo sợ, hốt hoảng"
+   }
+  ],
+  "confidence": 0.95,
+  "level": 5,
+  "traditional": [],
+  "unihan": [
+   "hoảng"
+  ],
+  "check": "khop"
+ },
+ {
+  "char": "慰",
+  "readings": [
+   {
+    "am": "úy",
+    "meaning_vi": "an ủi, yên lòng"
+   },
+   {
+    "am": "uý",
+    "meaning_vi": "an ủi (cách viết khác)"
+   }
+  ],
+  "confidence": 0.85,
+  "level": 5,
+  "traditional": [],
+  "unihan": [
+   "uý"
+  ],
+  "check": "khop"
+ },
+ {
+  "char": "戒",
+  "readings": [
+   {
+    "am": "giới",
+    "meaning_vi": "răn, cấm, phòng bị"
+   }
+  ],
+  "confidence": 0.97,
+  "level": 5,
+  "traditional": [],
+  "unihan": [
+   "giới"
+  ],
+  "check": "khop"
+ },
+ {
+  "char": "户",
+  "readings": [
+   {
+    "am": "hộ",
+    "meaning_vi": "cửa, nhà, hộ gia đình"
+   }
+  ],
+  "confidence": 0.97,
+  "level": 4,
+  "traditional": [
+   "戶"
+  ],
+  "unihan": [
+   "hộ"
+  ],
+  "check": "khop"
+ },
+ {
+  "char": "扇",
+  "readings": [
+   {
+    "am": "phiến",
+    "meaning_vi": "cánh cửa, quạt, tấm"
+   },
+   {
+    "am": "phiên",
+    "meaning_vi": "quạt, thổi, xúi giục"
+   }
+  ],
+  "confidence": 0.8,
+  "level": 5,
+  "traditional": [],
+  "unihan": [
+   "phiến"
+  ],
+  "check": "khop"
+ },
+ {
+  "char": "扔",
+  "readings": [
+   {
+    "am": "nhưng",
+    "meaning_vi": "ném, vứt bỏ"
+   }
+  ],
+  "confidence": 0.7,
+  "level": 5,
+  "traditional": [],
+  "unihan": [
+   "nẫy"
+  ],
+  "check": "lech"
+ },
+ {
+  "char": "托",
+  "readings": [
+   {
+    "am": "thác",
+    "meaning_vi": "nâng, nhờ cậy, ủy thác"
+   }
+  ],
+  "confidence": 0.93,
+  "level": 5,
+  "traditional": [],
+  "unihan": [
+   "thác",
+   "thách",
+   "thốc",
+   "thước",
+   "thướt"
+  ],
+  "check": "khop"
+ },
+ {
+  "char": "执",
+  "readings": [
+   {
+    "am": "chấp",
+    "meaning_vi": "cầm, giữ, thi hành"
+   }
+  ],
+  "confidence": 0.97,
+  "level": 5,
+  "traditional": [
+   "執"
+  ],
+  "unihan": [
+   "chấp"
+  ],
+  "check": "khop"
+ },
+ {
+  "char": "扮",
+  "readings": [
+   {
+    "am": "bạn",
+    "meaning_vi": "hóa trang, giả dạng"
+   },
+   {
+    "am": "phẫn",
+    "meaning_vi": "cải trang, đóng vai"
+   }
+  ],
+  "confidence": 0.65,
+  "level": 5,
+  "traditional": [],
+  "unihan": [],
+  "check": "thieu"
+ },
+ {
+  "char": "扰",
+  "readings": [
+   {
+    "am": "nhiễu",
+    "meaning_vi": "quấy rối, làm phiền"
+   }
+  ],
+  "confidence": 0.96,
+  "level": 5,
+  "traditional": [
+   "擾"
+  ],
+  "unihan": [
+   "nhiễu"
+  ],
+  "check": "khop"
+ },
+ {
+  "char": "扶",
+  "readings": [
+   {
+    "am": "phù",
+    "meaning_vi": "đỡ, giúp đỡ"
+   }
+  ],
+  "confidence": 0.97,
+  "level": 5,
+  "traditional": [],
+  "unihan": [
+   "phù"
+  ],
+  "check": "khop"
+ },
+ {
+  "char": "承",
+  "readings": [
+   {
+    "am": "thừa",
+    "meaning_vi": "vâng, nhận, nối tiếp"
+   }
+  ],
+  "confidence": 0.97,
+  "level": 4,
+  "traditional": [],
+  "unihan": [
+   "thừa"
+  ],
+  "check": "khop"
+ },
+ {
+  "char": "抢",
+  "readings": [
+   {
+    "am": "thưởng",
+    "meaning_vi": "cướp, giành"
+   },
+   {
+    "am": "thương",
+    "meaning_vi": "cướp đoạt"
+   },
+   {
+    "am": "sảng",
+    "meaning_vi": "va chạm, đụng"
+   }
+  ],
+  "confidence": 0.55,
+  "level": 5,
+  "traditional": [
+   "搶"
+  ],
+  "unihan": [],
+  "check": "thieu"
+ },
+ {
+  "char": "披",
+  "readings": [
+   {
+    "am": "phi",
+    "meaning_vi": "khoác, xẻ ra, mở"
+   }
+  ],
+  "confidence": 0.93,
+  "level": 5,
+  "traditional": [],
+  "unihan": [
+   "phơ"
+  ],
+  "check": "lech"
+ },
+ {
+  "char": "抬",
+  "readings": [
+   {
+    "am": "đài",
+    "meaning_vi": "nâng, khiêng"
+   }
+  ],
+  "confidence": 0.8,
+  "level": 5,
+  "traditional": [],
+  "unihan": [],
+  "check": "thieu"
+ },
+ {
+  "char": "抱",
+  "readings": [
+   {
+    "am": "bão",
+    "meaning_vi": "ôm, ấp ủ"
+   }
+  ],
+  "confidence": 0.96,
+  "level": 4,
+  "traditional": [],
+  "unihan": [
+   "bão"
+  ],
+  "check": "khop"
+ },
+ {
+  "char": "押",
+  "readings": [
+   {
+    "am": "áp",
+    "meaning_vi": "ký tên, giam giữ, áp giải"
+   }
+  ],
+  "confidence": 0.93,
+  "level": 5,
+  "traditional": [],
+  "unihan": [
+   "áp"
+  ],
+  "check": "khop"
+ },
+ {
+  "char": "拆",
+  "readings": [
+   {
+    "am": "sách",
+    "meaning_vi": "mở ra, tháo dỡ"
+   },
+   {
+    "am": "sạch",
+    "meaning_vi": "tháo, xé"
+   }
+  ],
+  "confidence": 0.6,
+  "level": 5,
+  "traditional": [],
+  "unihan": [
+   "sách"
+  ],
+  "check": "khop"
+ },
+ {
+  "char": "拒",
+  "readings": [
+   {
+    "am": "cự",
+    "meaning_vi": "chống cự, từ chối"
+   }
+  ],
+  "confidence": 0.96,
+  "level": 5,
+  "traditional": [],
+  "unihan": [
+   "cự"
+  ],
+  "check": "khop"
+ },
+ {
+  "char": "拔",
+  "readings": [
+   {
+    "am": "bạt",
+    "meaning_vi": "nhổ, rút, vượt trội"
+   }
+  ],
+  "confidence": 0.96,
+  "level": 5,
+  "traditional": [],
+  "unihan": [
+   "bạt"
+  ],
+  "check": "khop"
+ },
+ {
+  "char": "招",
+  "readings": [
+   {
+    "am": "chiêu",
+    "meaning_vi": "vẫy gọi, mời, chiêu mộ"
+   }
+  ],
+  "confidence": 0.96,
+  "level": 4,
+  "traditional": [],
+  "unihan": [
+   "chiêu"
+  ],
+  "check": "khop"
+ },
+ {
+  "char": "拜",
+  "readings": [
+   {
+    "am": "bái",
+    "meaning_vi": "lạy, vái, thăm viếng"
+   }
+  ],
+  "confidence": 0.97,
+  "level": 5,
+  "traditional": [],
+  "unihan": [
+   "bái"
+  ],
+  "check": "khop"
+ },
+ {
+  "char": "拥",
+  "readings": [
+   {
+    "am": "ủng",
+    "meaning_vi": "ôm, vây quanh, ủng hộ"
+   }
+  ],
+  "confidence": 0.96,
+  "level": 5,
+  "traditional": [
+   "擁"
+  ],
+  "unihan": [
+   "dùng"
+  ],
+  "check": "lech"
+ },
+ {
+  "char": "拼",
+  "readings": [
+   {
+    "am": "bính",
+    "meaning_vi": "ghép lại, liều"
+   },
+   {
+    "am": "phanh",
+    "meaning_vi": "ghép, bỏ liều"
+   }
+  ],
+  "confidence": 0.6,
+  "level": 5,
+  "traditional": [],
+  "unihan": [
+   "phanh"
+  ],
+  "check": "lech"
+ },
+ {
+  "char": "拾",
+  "readings": [
+   {
+    "am": "thập",
+    "meaning_vi": "mười (chữ kép)"
+   },
+   {
+    "am": "thấp",
+    "meaning_vi": "nhặt, lượm"
+   }
+  ],
+  "confidence": 0.8,
+  "level": 5,
+  "traditional": [],
+  "unihan": [
+   "thập"
+  ],
+  "check": "khop"
+ },
+ {
+  "char": "挡",
+  "readings": [
+   {
+    "am": "đáng",
+    "meaning_vi": "ngăn cản, che chắn"
+   }
+  ],
+  "confidence": 0.8,
+  "level": 5,
+  "traditional": [
+   "擋"
+  ],
+  "unihan": [],
+  "check": "thieu"
+ },
+ {
+  "char": "挣",
+  "readings": [
+   {
+    "am": "tránh",
+    "meaning_vi": "giằng ra, kiếm tiền"
+   },
+   {
+    "am": "tránh",
+    "meaning_vi": "vùng vẫy, thoát ra"
+   }
+  ],
+  "confidence": 0.5,
+  "level": 5,
+  "traditional": [
+   "掙"
+  ],
+  "unihan": [
+   "tránh"
+  ],
+  "check": "khop"
+ },
+ {
+  "char": "挤",
+  "readings": [
+   {
+    "am": "tễ",
+    "meaning_vi": "chen, ép, chật"
+   },
+   {
+    "am": "tê",
+    "meaning_vi": "chen lấn"
+   }
+  ],
+  "confidence": 0.6,
+  "level": 5,
+  "traditional": [
+   "擠"
+  ],
+  "unihan": [],
+  "check": "thieu"
+ },
+ {
+  "char": "振",
+  "readings": [
+   {
+    "am": "chấn",
+    "meaning_vi": "rung, phấn chấn, cứu giúp"
+   }
+  ],
+  "confidence": 0.96,
+  "level": 5,
+  "traditional": [],
+  "unihan": [
+   "chấn"
+  ],
+  "check": "khop"
+ },
+ {
+  "char": "损",
+  "readings": [
+   {
+    "am": "tổn",
+    "meaning_vi": "hao hụt, thiệt hại"
+   }
+  ],
+  "confidence": 0.97,
+  "level": 5,
+  "traditional": [
+   "損"
+  ],
+  "unihan": [
+   "tốn"
+  ],
+  "check": "lech"
+ },
+ {
+  "char": "掌",
+  "readings": [
+   {
+    "am": "chưởng",
+    "meaning_vi": "lòng bàn tay, nắm giữ"
+   }
+  ],
+  "confidence": 0.96,
+  "level": 5,
+  "traditional": [],
+  "unihan": [],
+  "check": "thieu"
+ },
+ {
+  "char": "控",
+  "readings": [
+   {
+    "am": "khống",
+    "meaning_vi": "kiềm chế, tố cáo"
+   }
+  ],
+  "confidence": 0.93,
+  "level": 5,
+  "traditional": [],
+  "unihan": [
+   "khống"
+  ],
+  "check": "khop"
+ },
+ {
+  "char": "插",
+  "readings": [
+   {
+    "am": "sáp",
+    "meaning_vi": "cắm, chèn vào"
+   }
+  ],
+  "confidence": 0.95,
+  "level": 5,
+  "traditional": [],
+  "unihan": [
+   "chắp"
+  ],
+  "check": "lech"
+ },
+ {
+  "char": "搜",
+  "readings": [
+   {
+    "am": "sưu",
+    "meaning_vi": "tìm kiếm, lục soát"
+   }
+  ],
+  "confidence": 0.95,
+  "level": 5,
+  "traditional": [],
+  "unihan": [
+   "sưu"
+  ],
+  "check": "khop"
+ },
+ {
+  "char": "搞",
+  "readings": [
+   {
+    "am": "cảo",
+    "meaning_vi": "làm, xoay xở (khẩu ngữ)"
+   }
+  ],
+  "confidence": 0.6,
+  "level": 5,
+  "traditional": [],
+  "unihan": [
+   "cào"
+  ],
+  "check": "lech"
+ },
+ {
+  "char": "摄",
+  "readings": [
+   {
+    "am": "nhiếp",
+    "meaning_vi": "chụp, thu giữ, nhiếp ảnh"
+   }
+  ],
+  "confidence": 0.95,
+  "level": 5,
+  "traditional": [
+   "攝"
+  ],
+  "unihan": [
+   "nhép"
+  ],
+  "check": "lech"
+ },
+ {
+  "char": "摇",
+  "readings": [
+   {
+    "am": "dao",
+    "meaning_vi": "lay, lắc, rung"
+   }
+  ],
+  "confidence": 0.95,
+  "level": 4,
+  "traditional": [
+   "搖"
+  ],
+  "unihan": [
+   "gieo"
+  ],
+  "check": "lech"
+ },
+ {
+  "char": "摔",
+  "readings": [
+   {
+    "am": "suất",
+    "meaning_vi": "ngã, quăng, ném"
+   }
+  ],
+  "confidence": 0.7,
+  "level": 5,
+  "traditional": [],
+  "unihan": [],
+  "check": "thieu"
+ },
+ {
+  "char": "摘",
+  "readings": [
+   {
+    "am": "trích",
+    "meaning_vi": "hái, nhặt, trích ra"
+   }
+  ],
+  "confidence": 0.95,
+  "level": 5,
+  "traditional": [],
+  "unihan": [
+   "trích"
+  ],
+  "check": "khop"
+ },
+ {
+  "char": "摩",
+  "readings": [
+   {
+    "am": "ma",
+    "meaning_vi": "xoa, cọ xát, mài"
+   }
+  ],
+  "confidence": 0.95,
+  "level": 5,
+  "traditional": [],
+  "unihan": [],
+  "check": "thieu"
+ },
+ {
+  "char": "撞",
+  "readings": [
+   {
+    "am": "chàng",
+    "meaning_vi": "đụng, va chạm"
+   },
+   {
+    "am": "tràng",
+    "meaning_vi": "đụng, đánh (chuông)"
+   }
+  ],
+  "confidence": 0.6,
+  "level": 5,
+  "traditional": [],
+  "unihan": [
+   "chàng"
+  ],
+  "check": "khop"
+ },
+ {
+  "char": "擦",
+  "readings": [
+   {
+    "am": "sát",
+    "meaning_vi": "chà, lau, cọ"
+   }
+  ],
+  "confidence": 0.85,
+  "level": 4,
+  "traditional": [],
+  "unihan": [
+   "xát"
+  ],
+  "check": "lech"
+ },
+ {
+  "char": "敏",
+  "readings": [
+   {
+    "am": "mẫn",
+    "meaning_vi": "nhanh nhẹn, nhạy"
+   }
+  ],
+  "confidence": 0.97,
+  "level": 5,
+  "traditional": [],
+  "unihan": [
+   "mẫn"
+  ],
+  "check": "khop"
+ },
+ {
+  "char": "敬",
+  "readings": [
+   {
+    "am": "kính",
+    "meaning_vi": "tôn kính, kính trọng"
+   }
+  ],
+  "confidence": 0.98,
+  "level": 5,
+  "traditional": [],
+  "unihan": [
+   "kính"
+  ],
+  "check": "khop"
+ },
+ {
+  "char": "敲",
+  "readings": [
+   {
+    "am": "xao",
+    "meaning_vi": "gõ, đánh"
+   },
+   {
+    "am": "khao",
+    "meaning_vi": "gõ, đập"
+   }
+  ],
+  "confidence": 0.7,
+  "level": 5,
+  "traditional": [],
+  "unihan": [
+   "xao"
+  ],
+  "check": "khop"
+ },
+ {
+  "char": "料",
+  "readings": [
+   {
+    "am": "liệu",
+    "meaning_vi": "tính toán, nguyên liệu"
+   }
+  ],
+  "confidence": 0.97,
+  "level": 4,
+  "traditional": [],
+  "unihan": [
+   "liệu"
+  ],
+  "check": "khop"
+ },
+ {
+  "char": "斜",
+  "readings": [
+   {
+    "am": "tà",
+    "meaning_vi": "xiên, nghiêng"
+   }
+  ],
+  "confidence": 0.97,
+  "level": 5,
+  "traditional": [],
+  "unihan": [
+   "tà"
+  ],
+  "check": "khop"
+ },
+ {
+  "char": "无",
+  "readings": [
+   {
+    "am": "vô",
+    "meaning_vi": "không, không có"
+   }
+  ],
+  "confidence": 0.98,
+  "level": 4,
+  "traditional": [
+   "無"
+  ],
+  "unihan": [
+   "vô"
+  ],
+  "check": "khop"
+ },
+ {
+  "char": "旦",
+  "readings": [
+   {
+    "am": "đán",
+    "meaning_vi": "buổi sáng, ban mai"
+   }
+  ],
+  "confidence": 0.97,
+  "level": 5,
+  "traditional": [],
+  "unihan": [
+   "đán"
+  ],
+  "check": "khop"
+ },
+ {
+  "char": "暂",
+  "readings": [
+   {
+    "am": "tạm",
+    "meaning_vi": "tạm thời, chốc lát"
+   }
+  ],
+  "confidence": 0.97,
+  "level": 5,
+  "traditional": [
+   "暫"
+  ],
+  "unihan": [
+   "tạm"
+  ],
+  "check": "khop"
+ },
+ {
+  "char": "曲",
+  "readings": [
+   {
+    "am": "khúc",
+    "meaning_vi": "bài hát, cong queo"
+   },
+   {
+    "am": "khúc",
+    "meaning_vi": "men rượu (麯)"
+   }
+  ],
+  "confidence": 0.8,
+  "level": 5,
+  "traditional": [
+   "麯"
+  ],
+  "unihan": [
+   "khúc"
+  ],
+  "check": "khop"
+ },
+ {
+  "char": "朗",
+  "readings": [
+   {
+    "am": "lãng",
+    "meaning_vi": "sáng sủa, rõ ràng"
+   }
+  ],
+  "confidence": 0.97,
+  "level": 5,
+  "traditional": [],
+  "unihan": [
+   "lãng"
+  ],
+  "check": "khop"
+ },
+ {
+  "char": "朵",
+  "readings": [
+   {
+    "am": "đóa",
+    "meaning_vi": "đóa hoa, cái đóa"
+   }
+  ],
+  "confidence": 0.95,
+  "level": 5,
+  "traditional": [],
+  "unihan": [
+   "đoá"
+  ],
+  "check": "khop"
+ },
+ {
+  "char": "杀",
+  "readings": [
+   {
+    "am": "sát",
+    "meaning_vi": "giết"
+   },
+   {
+    "am": "sái",
+    "meaning_vi": "suy giảm, rút bớt"
+   }
+  ],
+  "confidence": 0.85,
+  "level": 5,
+  "traditional": [
+   "殺"
+  ],
+  "unihan": [
+   "sát"
+  ],
+  "check": "khop"
+ },
+ {
+  "char": "析",
+  "readings": [
+   {
+    "am": "tích",
+    "meaning_vi": "phân tích, tách ra"
+   }
+  ],
+  "confidence": 0.95,
+  "level": 5,
+  "traditional": [],
+  "unihan": [],
+  "check": "thieu"
+ },
+ {
+  "char": "林",
+  "readings": [
+   {
+    "am": "lâm",
+    "meaning_vi": "rừng"
+   }
+  ],
+  "confidence": 0.98,
+  "level": 4,
+  "traditional": [],
+  "unihan": [
+   "lâm"
+  ],
+  "check": "khop"
+ },
+ {
+  "char": "枪",
+  "readings": [
+   {
+    "am": "thương",
+    "meaning_vi": "cây giáo, súng"
+   },
+   {
+    "am": "sanh",
+    "meaning_vi": "chòm sao (thiên sanh)"
+   }
+  ],
+  "confidence": 0.8,
+  "level": 5,
+  "traditional": [
+   "槍"
+  ],
+  "unihan": [
+   "thương"
+  ],
+  "check": "khop"
+ },
+ {
+  "char": "染",
+  "readings": [
+   {
+    "am": "nhiễm",
+    "meaning_vi": "nhuộm, lây nhiễm"
+   }
+  ],
+  "confidence": 0.97,
+  "level": 5,
+  "traditional": [],
+  "unihan": [
+   "nhuộm"
+  ],
+  "check": "lech"
+ },
+ {
+  "char": "柜",
+  "readings": [
+   {
+    "am": "quỹ",
+    "meaning_vi": "tủ, quầy"
+   },
+   {
+    "am": "cử",
+    "meaning_vi": "cây cử (liễu)"
+   }
+  ],
+  "confidence": 0.8,
+  "level": 5,
+  "traditional": [
+   "櫃"
+  ],
+  "unihan": [
+   "cũi"
+  ],
+  "check": "lech"
+ },
+ {
+  "char": "柴",
+  "readings": [
+   {
+    "am": "sài",
+    "meaning_vi": "củi"
+   }
+  ],
+  "confidence": 0.95,
+  "level": 5,
+  "traditional": [],
+  "unihan": [
+   "sài"
+  ],
+  "check": "khop"
+ },
+ {
+  "char": "柿",
+  "readings": [
+   {
+    "am": "thị",
+    "meaning_vi": "quả hồng"
+   }
+  ],
+  "confidence": 0.93,
+  "level": 5,
+  "traditional": [],
+  "unihan": [
+   "thị"
+  ],
+  "check": "khop"
+ },
+ {
+  "char": "核",
+  "readings": [
+   {
+    "am": "hạch",
+    "meaning_vi": "hạt, hạch, hạt nhân"
+   },
+   {
+    "am": "hạt",
+    "meaning_vi": "hạt (đọc khác)"
+   }
+  ],
+  "confidence": 0.8,
+  "level": 5,
+  "traditional": [],
+  "unihan": [
+   "hạch"
+  ],
+  "check": "khop"
+ },
+ {
+  "char": "桃",
+  "readings": [
+   {
+    "am": "đào",
+    "meaning_vi": "cây đào, quả đào"
+   }
+  ],
+  "confidence": 0.97,
+  "level": 5,
+  "traditional": [],
+  "unihan": [
+   "đào"
+  ],
+  "check": "khop"
+ },
+ {
+  "char": "梨",
+  "readings": [
+   {
+    "am": "lê",
+    "meaning_vi": "cây lê, quả lê"
+   }
+  ],
+  "confidence": 0.97,
+  "level": 5,
+  "traditional": [],
+  "unihan": [
+   "lê"
+  ],
+  "check": "khop"
+ },
+ {
+  "char": "棒",
+  "readings": [
+   {
+    "am": "bổng",
+    "meaning_vi": "cây gậy, côn"
+   }
+  ],
+  "confidence": 0.93,
+  "level": 5,
+  "traditional": [],
+  "unihan": [
+   "vổng"
+  ],
+  "check": "lech"
+ },
+ {
+  "char": "模",
+  "readings": [
+   {
+    "am": "mô",
+    "meaning_vi": "khuôn mẫu, mô phỏng"
+   },
+   {
+    "am": "mạc",
+    "meaning_vi": "mơ hồ (mô hồ)"
+   }
+  ],
+  "confidence": 0.8,
+  "level": 4,
+  "traditional": [],
+  "unihan": [
+   "mô"
+  ],
+  "check": "khop"
+ },
+ {
+  "char": "欠",
+  "readings": [
+   {
+    "am": "khiếm",
+    "meaning_vi": "thiếu, nợ"
+   }
+  ],
+  "confidence": 0.96,
+  "level": 5,
+  "traditional": [],
+  "unihan": [
+   "khiếm"
+  ],
+  "check": "khop"
+ },
+ {
+  "char": "欣",
+  "readings": [
+   {
+    "am": "hân",
+    "meaning_vi": "vui mừng"
+   }
+  ],
+  "confidence": 0.97,
+  "level": 5,
+  "traditional": [],
+  "unihan": [
+   "hân"
+  ],
+  "check": "khop"
+ },
+ {
+  "char": "款",
+  "readings": [
+   {
+    "am": "khoản",
+    "meaning_vi": "khoản tiền, điều khoản"
+   }
+  ],
+  "confidence": 0.95,
+  "level": 5,
+  "traditional": [],
+  "unihan": [
+   "khoản"
+  ],
+  "check": "khop"
+ },
+ {
+  "char": "歇",
+  "readings": [
+   {
+    "am": "hiết",
+    "meaning_vi": "nghỉ, ngừng"
+   }
+  ],
+  "confidence": 0.85,
+  "level": 5,
+  "traditional": [],
+  "unihan": [
+   "hết"
+  ],
+  "check": "lech"
+ },
+ {
+  "char": "毒",
+  "readings": [
+   {
+    "am": "độc",
+    "meaning_vi": "chất độc, độc hại"
+   }
+  ],
+  "confidence": 0.97,
+  "level": 5,
+  "traditional": [],
+  "unihan": [
+   "độc"
+  ],
+  "check": "khop"
+ },
+ {
+  "char": "毕",
+  "readings": [
+   {
+    "am": "tất",
+    "meaning_vi": "xong, hết, kết thúc"
+   }
+  ],
+  "confidence": 0.95,
+  "level": 4,
+  "traditional": [
+   "畢"
+  ],
+  "unihan": [
+   "tất"
+  ],
+  "check": "khop"
+ },
+ {
+  "char": "汇",
+  "readings": [
+   {
+    "am": "vị",
+    "meaning_vi": "tụ họp, loại (từ vị)"
+   },
+   {
+    "am": "hối",
+    "meaning_vi": "gửi tiền, hối đoái"
+   }
+  ],
+  "confidence": 0.85,
+  "level": 4,
+  "traditional": [
+   "匯",
+   "彙"
+  ],
+  "unihan": [],
+  "check": "thieu"
+ },
+ {
+  "char": "汗",
+  "readings": [
+   {
+    "am": "hãn",
+    "meaning_vi": "mồ hôi"
+   },
+   {
+    "am": "hàn",
+    "meaning_vi": "khả hãn (Hàn)"
+   }
+  ],
+  "confidence": 0.85,
+  "level": 5,
+  "traditional": [],
+  "unihan": [],
+  "check": "thieu"
+ },
+ {
+  "char": "池",
+  "readings": [
+   {
+    "am": "trì",
+    "meaning_vi": "ao, hồ"
+   }
+  ],
+  "confidence": 0.97,
+  "level": 5,
+  "traditional": [],
+  "unihan": [
+   "trì"
+  ],
+  "check": "khop"
+ },
+ {
+  "char": "污",
+  "readings": [
+   {
+    "am": "ô",
+    "meaning_vi": "bẩn, nhơ"
+   }
+  ],
+  "confidence": 0.96,
+  "level": 5,
+  "traditional": [],
+  "unihan": [
+   "ô"
+  ],
+  "check": "khop"
+ },
+ {
+  "char": "沟",
+  "readings": [
+   {
+    "am": "câu",
+    "meaning_vi": "mương, rãnh"
+   }
+  ],
+  "confidence": 0.96,
+  "level": 5,
+  "traditional": [
+   "溝"
+  ],
+  "unihan": [],
+  "check": "thieu"
+ },
+ {
+  "char": "治",
+  "readings": [
+   {
+    "am": "trị",
+    "meaning_vi": "cai trị, chữa trị"
+   },
+   {
+    "am": "trì",
+    "meaning_vi": "tên đất (hiếm)"
+   }
+  ],
+  "confidence": 0.85,
+  "level": 4,
+  "traditional": [],
+  "unihan": [
+   "trị"
+  ],
+  "check": "khop"
+ },
+ {
+  "char": "泉",
+  "readings": [
+   {
+    "am": "tuyền",
+    "meaning_vi": "suối"
+   }
+  ],
+  "confidence": 0.96,
+  "level": 4,
+  "traditional": [],
+  "unihan": [
+   "tuyền"
+  ],
+  "check": "khop"
+ },
+ {
+  "char": "泛",
+  "readings": [
+   {
+    "am": "phiếm",
+    "meaning_vi": "nổi, rộng khắp"
+   },
+   {
+    "am": "phúng",
+    "meaning_vi": "tràn, nổi (ít dùng)"
+   }
+  ],
+  "confidence": 0.8,
+  "level": 5,
+  "traditional": [],
+  "unihan": [
+   "phiếm"
+  ],
+  "check": "khop"
+ },
+ {
+  "char": "泼",
+  "readings": [
+   {
+    "am": "bát",
+    "meaning_vi": "hắt nước, tưới"
+   }
+  ],
+  "confidence": 0.9,
+  "level": 5,
+  "traditional": [
+   "潑"
+  ],
+  "unihan": [],
+  "check": "thieu"
+ },
+ {
+  "char": "洒",
+  "readings": [
+   {
+    "am": "sái",
+    "meaning_vi": "rảy, vẩy nước"
+   },
+   {
+    "am": "sải",
+    "meaning_vi": "rảy nước (biến âm)"
+   }
+  ],
+  "confidence": 0.7,
+  "level": 5,
+  "traditional": [
+   "灑"
+  ],
+  "unihan": [
+   "sái",
+   "rạy",
+   "rởi",
+   "rợi",
+   "rưới",
+   "sợi"
+  ],
+  "check": "khop"
+ },
+ {
+  "char": "洞",
+  "readings": [
+   {
+    "am": "động",
+    "meaning_vi": "hang, lỗ"
+   },
+   {
+    "am": "đỗng",
+    "meaning_vi": "thông suốt"
+   }
+  ],
+  "confidence": 0.9,
+  "level": 5,
+  "traditional": [],
+  "unihan": [
+   "đọng"
+  ],
+  "check": "lech"
+ },
+ {
+  "char": "测",
+  "readings": [
+   {
+    "am": "trắc",
+    "meaning_vi": "đo lường, suy đoán"
+   }
+  ],
+  "confidence": 0.97,
+  "level": 4,
+  "traditional": [
+   "測"
+  ],
+  "unihan": [
+   "trắc"
+  ],
+  "check": "khop"
+ },
+ {
+  "char": "润",
+  "readings": [
+   {
+    "am": "nhuận",
+    "meaning_vi": "ẩm ướt, nhuận"
+   }
+  ],
+  "confidence": 0.97,
+  "level": 5,
+  "traditional": [
+   "潤"
+  ],
+  "unihan": [
+   "nhuần"
+  ],
+  "check": "lech"
+ },
+ {
+  "char": "涨",
+  "readings": [
+   {
+    "am": "trướng",
+    "meaning_vi": "dâng lên, tăng"
+   },
+   {
+    "am": "chướng",
+    "meaning_vi": "nước dâng, trương"
+   }
+  ],
+  "confidence": 0.8,
+  "level": 5,
+  "traditional": [
+   "漲"
+  ],
+  "unihan": [
+   "trướng"
+  ],
+  "check": "khop"
+ },
+ {
+  "char": "滑",
+  "readings": [
+   {
+    "am": "hoạt",
+    "meaning_vi": "trơn, trượt"
+   },
+   {
+    "am": "cốt",
+    "meaning_vi": "hoạt kê (cốt kê)"
+   }
+  ],
+  "confidence": 0.88,
+  "level": 5,
+  "traditional": [],
+  "unihan": [
+   "gột"
+  ],
+  "check": "lech"
+ },
+ {
+  "char": "滚",
+  "readings": [
+   {
+    "am": "cổn",
+    "meaning_vi": "lăn, cuộn"
+   }
+  ],
+  "confidence": 0.95,
+  "level": 5,
+  "traditional": [
+   "滾"
+  ],
+  "unihan": [
+   "củn"
+  ],
+  "check": "lech"
+ },
+ {
+  "char": "漏",
+  "readings": [
+   {
+    "am": "lậu",
+    "meaning_vi": "rò rỉ, sót"
+   }
+  ],
+  "confidence": 0.97,
+  "level": 5,
+  "traditional": [],
+  "unihan": [
+   "lậu"
+  ],
+  "check": "khop"
+ },
+ {
+  "char": "漠",
+  "readings": [
+   {
+    "am": "mạc",
+    "meaning_vi": "sa mạc, lạnh nhạt"
+   }
+  ],
+  "confidence": 0.97,
+  "level": 5,
+  "traditional": [],
+  "unihan": [
+   "mạc"
+  ],
+  "check": "khop"
+ },
+ {
+  "char": "漫",
+  "readings": [
+   {
+    "am": "mạn",
+    "meaning_vi": "tràn, tản mạn"
+   }
+  ],
+  "confidence": 0.95,
+  "level": 5,
+  "traditional": [],
+  "unihan": [
+   "man"
+  ],
+  "check": "lech"
+ },
+ {
+  "char": "灰",
+  "readings": [
+   {
+    "am": "hôi",
+    "meaning_vi": "tro, màu xám"
+   }
+  ],
+  "confidence": 0.96,
+  "level": 5,
+  "traditional": [],
+  "unihan": [
+   "hôi"
+  ],
+  "check": "khop"
+ },
+ {
+  "char": "灾",
+  "readings": [
+   {
+    "am": "tai",
+    "meaning_vi": "tai họa, thiên tai"
+   }
+  ],
+  "confidence": 0.97,
+  "level": 5,
+  "traditional": [
+   "災"
+  ],
+  "unihan": [
+   "tai"
+  ],
+  "check": "khop"
+ },
+ {
+  "char": "烂",
+  "readings": [
+   {
+    "am": "lạn",
+    "meaning_vi": "nát, rữa, mục"
+   }
+  ],
+  "confidence": 0.95,
+  "level": 5,
+  "traditional": [
+   "爛"
+  ],
+  "unihan": [
+   "lạn"
+  ],
+  "check": "khop"
+ },
+ {
+  "char": "烤",
+  "readings": [
+   {
+    "am": "khảo",
+    "meaning_vi": "nướng, sấy lửa"
+   }
+  ],
+  "confidence": 0.8,
+  "level": 5,
+  "traditional": [],
+  "unihan": [
+   "khảo"
+  ],
+  "check": "khop"
+ },
+ {
+  "char": "煤",
+  "readings": [
+   {
+    "am": "môi",
+    "meaning_vi": "than đá"
+   }
+  ],
+  "confidence": 0.93,
+  "level": 5,
+  "traditional": [],
+  "unihan": [
+   "muồi"
+  ],
+  "check": "lech"
+ },
+ {
+  "char": "熊",
+  "readings": [
+   {
+    "am": "hùng",
+    "meaning_vi": "con gấu"
+   }
+  ],
+  "confidence": 0.97,
+  "level": 5,
+  "traditional": [],
+  "unihan": [
+   "hùng"
+  ],
+  "check": "khop"
+ },
+ {
+  "char": "燃",
+  "readings": [
+   {
+    "am": "nhiên",
+    "meaning_vi": "cháy, đốt"
+   }
+  ],
+  "confidence": 0.97,
+  "level": 4,
+  "traditional": [],
+  "unihan": [
+   "nhen"
+  ],
+  "check": "lech"
+ },
+ {
+  "char": "版",
+  "readings": [
+   {
+    "am": "bản",
+    "meaning_vi": "ván in, xuất bản"
+   }
+  ],
+  "confidence": 0.96,
+  "level": 5,
+  "traditional": [],
+  "unihan": [
+   "bản"
+  ],
+  "check": "khop"
+ },
+ {
+  "char": "犹",
+  "readings": [
+   {
+    "am": "do",
+    "meaning_vi": "còn, như, giống như"
+   }
+  ],
+  "confidence": 0.93,
+  "level": 5,
+  "traditional": [
+   "猶"
+  ],
+  "unihan": [],
+  "check": "thieu"
+ },
+ {
+  "char": "狂",
+  "readings": [
+   {
+    "am": "cuồng",
+    "meaning_vi": "điên, ngông cuồng"
+   }
+  ],
+  "confidence": 0.97,
+  "level": 5,
+  "traditional": [],
+  "unihan": [
+   "cuồng"
+  ],
+  "check": "khop"
+ },
+ {
+  "char": "猜",
+  "readings": [
+   {
+    "am": "sai",
+    "meaning_vi": "đoán, nghi ngờ"
+   }
+  ],
+  "confidence": 0.85,
+  "level": 5,
+  "traditional": [],
+  "unihan": [],
+  "check": "thieu"
+ },
+ {
+  "char": "献",
+  "readings": [
+   {
+    "am": "hiến",
+    "meaning_vi": "dâng, tặng"
+   }
+  ],
+  "confidence": 0.97,
+  "level": 5,
+  "traditional": [
+   "獻"
+  ],
+  "unihan": [
+   "hiến"
+  ],
+  "check": "khop"
+ },
+ {
+  "char": "猴",
+  "readings": [
+   {
+    "am": "hầu",
+    "meaning_vi": "con khỉ"
+   }
+  ],
+  "confidence": 0.96,
+  "level": 5,
+  "traditional": [],
+  "unihan": [
+   "hầu"
+  ],
+  "check": "khop"
+ },
+ {
+  "char": "率",
+  "readings": [
+   {
+    "am": "suất",
+    "meaning_vi": "tỉ lệ, tỉ suất"
+   },
+   {
+    "am": "soái",
+    "meaning_vi": "dẫn đầu, thống lĩnh"
+   },
+   {
+    "am": "luật",
+    "meaning_vi": "họ Luật, tỉ lệ (cổ)"
+   }
+  ],
+  "confidence": 0.85,
+  "level": 4,
+  "traditional": [],
+  "unihan": [],
+  "check": "thieu"
+ },
+ {
+  "char": "玻",
+  "readings": [
+   {
+    "am": "pha",
+    "meaning_vi": "pha lê, thủy tinh"
+   }
+  ],
+  "confidence": 0.85,
+  "level": 5,
+  "traditional": [],
+  "unihan": [],
+  "check": "thieu"
+ },
+ {
+  "char": "珍",
+  "readings": [
+   {
+    "am": "trân",
+    "meaning_vi": "quý báu, của quý"
+   }
+  ],
+  "confidence": 0.97,
+  "level": 5,
+  "traditional": [],
+  "unihan": [
+   "trân"
+  ],
+  "check": "khop"
+ },
+ {
+  "char": "珠",
+  "readings": [
+   {
+    "am": "châu",
+    "meaning_vi": "ngọc trai, hạt châu"
+   }
+  ],
+  "confidence": 0.97,
+  "level": 5,
+  "traditional": [],
+  "unihan": [
+   "châu"
+  ],
+  "check": "khop"
+ },
+ {
+  "char": "琴",
+  "readings": [
+   {
+    "am": "cầm",
+    "meaning_vi": "đàn"
+   }
+  ],
+  "confidence": 0.97,
+  "level": 5,
+  "traditional": [],
+  "unihan": [
+   "cầm"
+  ],
+  "check": "khop"
+ },
+ {
+  "char": "璃",
+  "readings": [
+   {
+    "am": "ly",
+    "meaning_vi": "lưu ly, pha lê"
+   }
+  ],
+  "confidence": 0.9,
+  "level": 5,
+  "traditional": [],
+  "unihan": [
+   "lê",
+   "li",
+   "ly"
+  ],
+  "check": "khop"
+ },
+ {
+  "char": "甲",
+  "readings": [
+   {
+    "am": "giáp",
+    "meaning_vi": "can thứ nhất, áo giáp, vỏ"
+   }
+  ],
+  "confidence": 0.97,
+  "level": 5,
+  "traditional": [],
+  "unihan": [
+   "giáp"
+  ],
+  "check": "khop"
+ },
+ {
+  "char": "疑",
+  "readings": [
+   {
+    "am": "nghi",
+    "meaning_vi": "ngờ vực, nghi ngờ"
+   }
+  ],
+  "confidence": 0.97,
+  "level": 4,
+  "traditional": [],
+  "unihan": [],
+  "check": "thieu"
+ },
+ {
+  "char": "疯",
+  "readings": [
+   {
+    "am": "phong",
+    "meaning_vi": "điên, bệnh phong"
+   }
+  ],
+  "confidence": 0.93,
+  "level": 5,
+  "traditional": [
+   "瘋"
+  ],
+  "unihan": [
+   "phong"
+  ],
+  "check": "khop"
+ },
+ {
+  "char": "瘦",
+  "readings": [
+   {
+    "am": "sấu",
+    "meaning_vi": "gầy, ốm"
+   }
+  ],
+  "confidence": 0.93,
+  "level": 5,
+  "traditional": [],
+  "unihan": [
+   "xấu"
+  ],
+  "check": "lech"
+ },
+ {
+  "char": "盆",
+  "readings": [
+   {
+    "am": "bồn",
+    "meaning_vi": "chậu, bồn"
+   }
+  ],
+  "confidence": 0.97,
+  "level": 5,
+  "traditional": [],
+  "unihan": [
+   "bòn",
+   "bồn",
+   "bộn",
+   "bùn",
+   "buồn",
+   "dồn",
+   "vồn"
+  ],
+  "check": "khop"
+ },
+ {
+  "char": "盒",
+  "readings": [
+   {
+    "am": "hạp",
+    "meaning_vi": "hộp, cái hộp"
+   }
+  ],
+  "confidence": 0.85,
+  "level": 5,
+  "traditional": [],
+  "unihan": [
+   "hộp"
+  ],
+  "check": "lech"
+ },
+ {
+  "char": "盘",
+  "readings": [
+   {
+    "am": "bàn",
+    "meaning_vi": "cái mâm, khay, bàn"
+   }
+  ],
+  "confidence": 0.95,
+  "level": 4,
+  "traditional": [
+   "盤"
+  ],
+  "unihan": [
+   "bàn"
+  ],
+  "check": "khop"
+ },
+ {
+  "char": "盾",
+  "readings": [
+   {
+    "am": "thuẫn",
+    "meaning_vi": "cái khiên, mộc"
+   }
+  ],
+  "confidence": 0.93,
+  "level": 5,
+  "traditional": [],
+  "unihan": [
+   "thuẫn"
+  ],
+  "check": "khop"
+ },
+ {
+  "char": "眠",
+  "readings": [
+   {
+    "am": "miên",
+    "meaning_vi": "ngủ, giấc ngủ"
+   }
+  ],
+  "confidence": 0.97,
+  "level": 5,
+  "traditional": [],
+  "unihan": [
+   "miên"
+  ],
+  "check": "khop"
+ },
+ {
+  "char": "瞧",
+  "readings": [
+   {
+    "am": "tiều",
+    "meaning_vi": "nhìn, xem"
+   }
+  ],
+  "confidence": 0.7,
+  "level": 5,
+  "traditional": [],
+  "unihan": [],
+  "check": "thieu"
+ },
+ {
+  "char": "矛",
+  "readings": [
+   {
+    "am": "mâu",
+    "meaning_vi": "cây giáo, ngọn mác"
+   }
+  ],
+  "confidence": 0.97,
+  "level": 5,
+  "traditional": [],
+  "unihan": [
+   "mâu"
+  ],
+  "check": "khop"
+ },
+ {
+  "char": "码",
+  "readings": [
+   {
+    "am": "mã",
+    "meaning_vi": "mã số, ngọc mã, đơn vị yard"
+   }
+  ],
+  "confidence": 0.9,
+  "level": 4,
+  "traditional": [
+   "碼"
+  ],
+  "unihan": [],
+  "check": "thieu"
+ },
+ {
+  "char": "研",
+  "readings": [
+   {
+    "am": "nghiên",
+    "meaning_vi": "nghiền, mài; nghiên cứu"
+   }
+  ],
+  "confidence": 0.97,
+  "level": 4,
+  "traditional": [],
+  "unihan": [
+   "nghiên",
+   "nghiền",
+   "nghiến",
+   "nghiện"
+  ],
+  "check": "khop"
+ },
+ {
+  "char": "硕",
+  "readings": [
+   {
+    "am": "thạc",
+    "meaning_vi": "lớn; học vị thạc sĩ"
+   }
+  ],
+  "confidence": 0.97,
+  "level": 5,
+  "traditional": [
+   "碩"
+  ],
+  "unihan": [
+   "thạc"
+  ],
+  "check": "khop"
+ },
+ {
+  "char": "硬",
+  "readings": [
+   {
+    "am": "ngạnh",
+    "meaning_vi": "cứng, rắn"
+   }
+  ],
+  "confidence": 0.93,
+  "level": 5,
+  "traditional": [],
+  "unihan": [
+   "ngạnh"
+  ],
+  "check": "khop"
+ },
+ {
+  "char": "碍",
+  "readings": [
+   {
+    "am": "ngại",
+    "meaning_vi": "cản trở, trở ngại"
+   }
+  ],
+  "confidence": 0.97,
+  "level": 5,
+  "traditional": [
+   "礙"
+  ],
+  "unihan": [
+   "ngại"
+  ],
+  "check": "khop"
+ },
+ {
+  "char": "碎",
+  "readings": [
+   {
+    "am": "toái",
+    "meaning_vi": "vụn, vỡ nát"
+   }
+  ],
+  "confidence": 0.96,
+  "level": 5,
+  "traditional": [],
+  "unihan": [
+   "toái"
+  ],
+  "check": "khop"
+ },
+ {
+  "char": "私",
+  "readings": [
+   {
+    "am": "tư",
+    "meaning_vi": "riêng, việc riêng"
+   }
+  ],
+  "confidence": 0.98,
+  "level": 5,
+  "traditional": [],
+  "unihan": [
+   "tư"
+  ],
+  "check": "khop"
+ },
+ {
+  "char": "秒",
+  "readings": [
+   {
+    "am": "miểu",
+    "meaning_vi": "giây; đầu ngọn lúa"
+   }
+  ],
+  "confidence": 0.95,
+  "level": 5,
+  "traditional": [],
+  "unihan": [],
+  "check": "thieu"
+ },
+ {
+  "char": "稍",
+  "readings": [
+   {
+    "am": "sảo",
+    "meaning_vi": "hơi, dần dần"
+   },
+   {
+    "am": "sao",
+    "meaning_vi": "ngọn, phần cuối"
+   }
+  ],
+  "confidence": 0.8,
+  "level": 5,
+  "traditional": [],
+  "unihan": [],
+  "check": "thieu"
+ },
+ {
+  "char": "究",
+  "readings": [
+   {
+    "am": "cứu",
+    "meaning_vi": "xét cho cùng, nghiên cứu"
+   }
+  ],
+  "confidence": 0.97,
+  "level": 4,
+  "traditional": [],
+  "unihan": [
+   "cứu"
+  ],
+  "check": "khop"
+ },
+ {
+  "char": "窗",
+  "readings": [
+   {
+    "am": "song",
+    "meaning_vi": "cửa sổ"
+   }
+  ],
+  "confidence": 0.96,
+  "level": 4,
+  "traditional": [],
+  "unihan": [
+   "song"
+  ],
+  "check": "khop"
+ },
+ {
+  "char": "竞",
+  "readings": [
+   {
+    "am": "cạnh",
+    "meaning_vi": "tranh đua, cạnh tranh"
+   }
+  ],
+  "confidence": 0.97,
+  "level": 5,
+  "traditional": [
+   "競"
+  ],
+  "unihan": [],
+  "check": "thieu"
+ },
+ {
+  "char": "竟",
+  "readings": [
+   {
+    "am": "cánh",
+    "meaning_vi": "rốt cuộc, xong; lại"
+   },
+   {
+    "am": "cảnh",
+    "meaning_vi": "biên giới (dùng như 境)"
+   }
+  ],
+  "confidence": 0.8,
+  "level": 4,
+  "traditional": [],
+  "unihan": [
+   "cánh"
+  ],
+  "check": "khop"
+ },
+ {
+  "char": "竹",
+  "readings": [
+   {
+    "am": "trúc",
+    "meaning_vi": "cây tre, trúc"
+   }
+  ],
+  "confidence": 0.98,
+  "level": 5,
+  "traditional": [],
+  "unihan": [
+   "trúc"
+  ],
+  "check": "khop"
+ },
+ {
+  "char": "筑",
+  "readings": [
+   {
+    "am": "trúc",
+    "meaning_vi": "xây dựng, kiến trúc"
+   }
+  ],
+  "confidence": 0.96,
+  "level": 5,
+  "traditional": [
+   "築"
+  ],
+  "unihan": [
+   "trúc",
+   "trốc"
+  ],
+  "check": "khop"
+ },
+ {
+  "char": "签",
+  "readings": [
+   {
+    "am": "thiêm",
+    "meaning_vi": "ký tên; cắm, ghi"
+   },
+   {
+    "am": "tiêm",
+    "meaning_vi": "thẻ, que, xăm"
+   }
+  ],
+  "confidence": 0.85,
+  "level": 5,
+  "traditional": [
+   "簽",
+   "籤"
+  ],
+  "unihan": [],
+  "check": "thieu"
+ },
+ {
+  "char": "籍",
+  "readings": [
+   {
+    "am": "tịch",
+    "meaning_vi": "sổ sách, quê quán"
+   },
+   {
+    "am": "tạ",
+    "meaning_vi": "mượn; giẫm lên (tạ tịch)"
+   }
+  ],
+  "confidence": 0.85,
+  "level": 5,
+  "traditional": [],
+  "unihan": [],
+  "check": "thieu"
+ },
+ {
+  "char": "糊",
+  "readings": [
+   {
+    "am": "hồ",
+    "meaning_vi": "hồ dán, cháo; mơ hồ"
+   }
+  ],
+  "confidence": 0.95,
+  "level": 5,
+  "traditional": [],
+  "unihan": [
+   "hồ"
+  ],
+  "check": "khop"
+ },
+ {
+  "char": "糕",
+  "readings": [
+   {
+    "am": "cao",
+    "meaning_vi": "bánh, bánh gạo"
+   }
+  ],
+  "confidence": 0.95,
+  "level": 5,
+  "traditional": [],
+  "unihan": [],
+  "check": "thieu"
+ },
+ {
+  "char": "糟",
+  "readings": [
+   {
+    "am": "tao",
+    "meaning_vi": "bã rượu; hỏng, tệ"
+   }
+  ],
+  "confidence": 0.95,
+  "level": 5,
+  "traditional": [],
+  "unihan": [],
+  "check": "thieu"
+ },
+ {
+  "char": "索",
+  "readings": [
+   {
+    "am": "sách",
+    "meaning_vi": "dây thừng; tìm kiếm"
+   },
+   {
+    "am": "tác",
+    "meaning_vi": "dây, tìm tòi (đọc khác)"
+   }
+  ],
+  "confidence": 0.8,
+  "level": 5,
+  "traditional": [],
+  "unihan": [
+   "sách"
+  ],
+  "check": "khop"
+ },
+ {
+  "char": "紫",
+  "readings": [
+   {
+    "am": "tử",
+    "meaning_vi": "màu tím"
+   }
+  ],
+  "confidence": 0.97,
+  "level": 5,
+  "traditional": [],
+  "unihan": [
+   "tía"
+  ],
+  "check": "lech"
+ },
+ {
+  "char": "繁",
+  "readings": [
+   {
+    "am": "phồn",
+    "meaning_vi": "nhiều, rậm rạp, phức tạp"
+   },
+   {
+    "am": "bàn",
+    "meaning_vi": "họ Bàn"
+   }
+  ],
+  "confidence": 0.8,
+  "level": 5,
+  "traditional": [],
+  "unihan": [
+   "phồn"
+  ],
+  "check": "khop"
+ },
+ {
+  "char": "纲",
+  "readings": [
+   {
+    "am": "cương",
+    "meaning_vi": "giềng lưới; đại cương"
+   }
+  ],
+  "confidence": 0.97,
+  "level": 5,
+  "traditional": [
+   "綱"
+  ],
+  "unihan": [
+   "cương"
+  ],
+  "check": "khop"
+ },
+ {
+  "char": "细",
+  "readings": [
+   {
+    "am": "tế",
+    "meaning_vi": "nhỏ, mịn, tỉ mỉ"
+   }
+  ],
+  "confidence": 0.97,
+  "level": 4,
+  "traditional": [
+   "細"
+  ],
+  "unihan": [
+   "tới"
+  ],
+  "check": "lech"
+ },
+ {
+  "char": "织",
+  "readings": [
+   {
+    "am": "chức",
+    "meaning_vi": "dệt, đan"
+   }
+  ],
+  "confidence": 0.97,
+  "level": 5,
+  "traditional": [
+   "織"
+  ],
+  "unihan": [
+   "chức"
+  ],
+  "check": "khop"
+ },
+ {
+  "char": "绒",
+  "readings": [
+   {
+    "am": "nhung",
+    "meaning_vi": "vải nhung, lông tơ"
+   }
+  ],
+  "confidence": 0.96,
+  "level": 5,
+  "traditional": [
+   "絨"
+  ],
+  "unihan": [
+   "nhung"
+  ],
+  "check": "khop"
+ },
+ {
+  "char": "绕",
+  "readings": [
+   {
+    "am": "nhiễu",
+    "meaning_vi": "quấn quanh, vòng"
+   }
+  ],
+  "confidence": 0.94,
+  "level": 5,
+  "traditional": [
+   "繞"
+  ],
+  "unihan": [
+   "nhiễu"
+  ],
+  "check": "khop"
+ },
+ {
+  "char": "络",
+  "readings": [
+   {
+    "am": "lạc",
+    "meaning_vi": "mạng lưới, liên lạc"
+   }
+  ],
+  "confidence": 0.96,
+  "level": 4,
+  "traditional": [
+   "絡"
+  ],
+  "unihan": [
+   "rạc"
+  ],
+  "check": "lech"
+ },
+ {
+  "char": "维",
+  "readings": [
+   {
+    "am": "duy",
+    "meaning_vi": "giữ gìn, dây buộc; chiều"
+   }
+  ],
+  "confidence": 0.97,
+  "level": 4,
+  "traditional": [
+   "維"
+  ],
+  "unihan": [],
+  "check": "thieu"
+ },
+ {
+  "char": "编",
+  "readings": [
+   {
+    "am": "biên",
+    "meaning_vi": "đan, soạn, biên tập"
+   }
+  ],
+  "confidence": 0.97,
+  "level": 4,
+  "traditional": [
+   "編"
+  ],
+  "unihan": [
+   "biên"
+  ],
+  "check": "khop"
+ },
+ {
+  "char": "罚",
+  "readings": [
+   {
+    "am": "phạt",
+    "meaning_vi": "trừng phạt, hình phạt"
+   }
+  ],
+  "confidence": 0.97,
+  "level": 5,
+  "traditional": [
+   "罰"
+  ],
+  "unihan": [
+   "phạt"
+  ],
+  "check": "khop"
+ },
+ {
+  "char": "羽",
+  "readings": [
+   {
+    "am": "vũ",
+    "meaning_vi": "lông chim, lông vũ"
+   }
+  ],
+  "confidence": 0.97,
+  "level": 5,
+  "traditional": [],
+  "unihan": [
+   "võ"
+  ],
+  "check": "lech"
+ },
+ {
+  "char": "耐",
+  "readings": [
+   {
+    "am": "nại",
+    "meaning_vi": "chịu đựng, nhẫn nại"
+   }
+  ],
+  "confidence": 0.96,
+  "level": 5,
+  "traditional": [],
+  "unihan": [],
+  "check": "thieu"
+ },
+ {
+  "char": "耳",
+  "readings": [
+   {
+    "am": "nhĩ",
+    "meaning_vi": "tai"
+   }
+  ],
+  "confidence": 0.97,
+  "level": 4,
+  "traditional": [],
+  "unihan": [
+   "nhĩ"
+  ],
+  "check": "khop"
+ },
+ {
+  "char": "聪",
+  "readings": [
+   {
+    "am": "thông",
+    "meaning_vi": "tai thính, thông minh"
+   }
+  ],
+  "confidence": 0.96,
+  "level": 5,
+  "traditional": [
+   "聰"
+  ],
+  "unihan": [
+   "thông"
+  ],
+  "check": "khop"
+ },
+ {
+  "char": "肃",
+  "readings": [
+   {
+    "am": "túc",
+    "meaning_vi": "nghiêm trang, kính cẩn"
+   }
+  ],
+  "confidence": 0.96,
+  "level": 5,
+  "traditional": [
+   "肅"
+  ],
+  "unihan": [],
+  "check": "thieu"
+ },
+ {
+  "char": "肌",
+  "readings": [
+   {
+    "am": "cơ",
+    "meaning_vi": "thịt, bắp thịt, da thịt"
+   }
+  ],
+  "confidence": 0.96,
+  "level": 5,
+  "traditional": [],
+  "unihan": [],
+  "check": "thieu"
+ },
+ {
+  "char": "肠",
+  "readings": [
+   {
+    "am": "trường",
+    "meaning_vi": "ruột"
+   }
+  ],
+  "confidence": 0.96,
+  "level": 5,
+  "traditional": [
+   "腸"
+  ],
+  "unihan": [],
+  "check": "thieu"
+ },
+ {
+  "char": "肤",
+  "readings": [
+   {
+    "am": "phu",
+    "meaning_vi": "da, bì phu"
+   }
+  ],
+  "confidence": 0.96,
+  "level": 5,
+  "traditional": [
+   "膚"
+  ],
+  "unihan": [],
+  "check": "thieu"
+ },
+ {
+  "char": "肩",
+  "readings": [
+   {
+    "am": "kiên",
+    "meaning_vi": "vai, gánh vác"
+   }
+  ],
+  "confidence": 0.95,
+  "level": 5,
+  "traditional": [],
+  "unihan": [],
+  "check": "thieu"
+ },
+ {
+  "char": "肯",
+  "readings": [
+   {
+    "am": "khẳng",
+    "meaning_vi": "bằng lòng, ưng chịu"
+   }
+  ],
+  "confidence": 0.96,
+  "level": 5,
+  "traditional": [],
+  "unihan": [
+   "khẳng"
+  ],
+  "check": "khop"
+ },
+ {
+  "char": "胃",
+  "readings": [
+   {
+    "am": "vị",
+    "meaning_vi": "dạ dày"
+   }
+  ],
+  "confidence": 0.97,
+  "level": 5,
+  "traditional": [],
+  "unihan": [],
+  "check": "thieu"
+ },
+ {
+  "char": "胆",
+  "readings": [
+   {
+    "am": "đảm",
+    "meaning_vi": "mật, gan dạ"
+   }
+  ],
+  "confidence": 0.96,
+  "level": 5,
+  "traditional": [
+   "膽"
+  ],
+  "unihan": [
+   "đảm"
+  ],
+  "check": "khop"
+ },
+ {
+  "char": "胡",
+  "readings": [
+   {
+    "am": "hồ",
+    "meaning_vi": "rợ Hồ, bừa bãi, râu"
+   }
+  ],
+  "confidence": 0.95,
+  "level": 5,
+  "traditional": [
+   "衚",
+   "鬍"
+  ],
+  "unihan": [],
+  "check": "thieu"
+ },
+ {
+  "char": "胶",
+  "readings": [
+   {
+    "am": "giao",
+    "meaning_vi": "keo, chất dính"
+   }
+  ],
+  "confidence": 0.96,
+  "level": 5,
+  "traditional": [
+   "膠"
+  ],
+  "unihan": [
+   "keo"
+  ],
+  "check": "lech"
+ },
+ {
+  "char": "脆",
+  "readings": [
+   {
+    "am": "thúy",
+    "meaning_vi": "giòn, mềm yếu"
+   }
+  ],
+  "confidence": 0.85,
+  "level": 5,
+  "traditional": [],
+  "unihan": [],
+  "check": "thieu"
+ },
+ {
+  "char": "脱",
+  "readings": [
+   {
+    "am": "thoát",
+    "meaning_vi": "cởi ra, thoát, rơi rụng"
+   }
+  ],
+  "confidence": 0.96,
+  "level": 4,
+  "traditional": [
+   "脫"
+  ],
+  "unihan": [
+   "thoát"
+  ],
+  "check": "khop"
+ },
+ {
+  "char": "脾",
+  "readings": [
+   {
+    "am": "tỳ",
+    "meaning_vi": "lá lách"
+   },
+   {
+    "am": "bì",
+    "meaning_vi": "tì khí, tính khí"
+   }
+  ],
+  "confidence": 0.85,
+  "level": 5,
+  "traditional": [],
+  "unihan": [
+   "tì"
+  ],
+  "check": "lech"
+ },
+ {
+  "char": "臭",
+  "readings": [
+   {
+    "am": "xú",
+    "meaning_vi": "hôi thối"
+   },
+   {
+    "am": "khứu",
+    "meaning_vi": "ngửi, mùi"
+   }
+  ],
+  "confidence": 0.93,
+  "level": 5,
+  "traditional": [],
+  "unihan": [
+   "xú"
+  ],
+  "check": "khop"
+ },
+ {
+  "char": "致",
+  "readings": [
+   {
+    "am": "trí",
+    "meaning_vi": "đưa đến, tinh mịn, khít"
+   }
+  ],
+  "confidence": 0.93,
+  "level": 4,
+  "traditional": [
+   "緻"
+  ],
+  "unihan": [
+   "nhí"
+  ],
+  "check": "lech"
+ },
+ {
+  "char": "舍",
+  "readings": [
+   {
+    "am": "xá",
+    "meaning_vi": "nhà, quán xá"
+   },
+   {
+    "am": "xả",
+    "meaning_vi": "bỏ, buông bỏ"
+   }
+  ],
+  "confidence": 0.93,
+  "level": 5,
+  "traditional": [
+   "捨"
+  ],
+  "unihan": [
+   "xá",
+   "xả"
+  ],
+  "check": "khop"
+ },
+ {
+  "char": "良",
+  "readings": [
+   {
+    "am": "lương",
+    "meaning_vi": "tốt, lành"
+   }
+  ],
+  "confidence": 0.97,
+  "level": 4,
+  "traditional": [],
+  "unihan": [
+   "lương"
+  ],
+  "check": "khop"
+ },
+ {
+  "char": "艰",
+  "readings": [
+   {
+    "am": "gian",
+    "meaning_vi": "khó khăn, gian nan"
+   }
+  ],
+  "confidence": 0.96,
+  "level": 5,
+  "traditional": [
+   "艱"
+  ],
+  "unihan": [
+   "gian"
+  ],
+  "check": "khop"
+ },
+ {
+  "char": "艳",
+  "readings": [
+   {
+    "am": "diễm",
+    "meaning_vi": "đẹp, kiều diễm"
+   }
+  ],
+  "confidence": 0.95,
+  "level": 5,
+  "traditional": [
+   "艷"
+  ],
+  "unihan": [
+   "diễm"
+  ],
+  "check": "khop"
+ },
+ {
+  "char": "荣",
+  "readings": [
+   {
+    "am": "vinh",
+    "meaning_vi": "vẻ vang, hiển vinh"
+   }
+  ],
+  "confidence": 0.97,
+  "level": 5,
+  "traditional": [
+   "榮"
+  ],
+  "unihan": [
+   "vinh"
+  ],
+  "check": "khop"
+ },
+ {
+  "char": "萄",
+  "readings": [
+   {
+    "am": "đào",
+    "meaning_vi": "bồ đào, nho"
+   }
+  ],
+  "confidence": 0.93,
+  "level": 5,
+  "traditional": [],
+  "unihan": [],
+  "check": "thieu"
+ },
+ {
+  "char": "葡",
+  "readings": [
+   {
+    "am": "bồ",
+    "meaning_vi": "bồ đào, nho"
+   }
+  ],
+  "confidence": 0.93,
+  "level": 5,
+  "traditional": [],
+  "unihan": [],
+  "check": "thieu"
+ },
+ {
+  "char": "蔬",
+  "readings": [
+   {
+    "am": "sơ",
+    "meaning_vi": "rau củ, rau quả"
+   }
+  ],
+  "confidence": 0.9,
+  "level": 5,
+  "traditional": [],
+  "unihan": [],
+  "check": "thieu"
+ },
+ {
+  "char": "薄",
+  "readings": [
+   {
+    "am": "bạc",
+    "meaning_vi": "mỏng, nhạt, bạc bẽo"
+   },
+   {
+    "am": "bặc",
+    "meaning_vi": "bạc hà (âm khác)"
+   }
+  ],
+  "confidence": 0.8,
+  "level": 4,
+  "traditional": [],
+  "unihan": [],
+  "check": "thieu"
+ },
+ {
+  "char": "虎",
+  "readings": [
+   {
+    "am": "hổ",
+    "meaning_vi": "con hổ, cọp"
+   }
+  ],
+  "confidence": 0.97,
+  "level": 5,
+  "traditional": [],
+  "unihan": [
+   "hổ"
+  ],
+  "check": "khop"
+ },
+ {
+  "char": "虚",
+  "readings": [
+   {
+    "am": "hư",
+    "meaning_vi": "trống rỗng, không thật"
+   }
+  ],
+  "confidence": 0.97,
+  "level": 5,
+  "traditional": [
+   "虛"
+  ],
+  "unihan": [
+   "hư"
+  ],
+  "check": "khop"
+ },
+ {
+  "char": "蛇",
+  "readings": [
+   {
+    "am": "xà",
+    "meaning_vi": "con rắn"
+   },
+   {
+    "am": "di",
+    "meaning_vi": "uốn khúc, ung dung (委蛇)"
+   }
+  ],
+  "confidence": 0.9,
+  "level": 5,
+  "traditional": [],
+  "unihan": [
+   "xà"
+  ],
+  "check": "khop"
+ },
+ {
+  "char": "裁",
+  "readings": [
+   {
+    "am": "tài",
+    "meaning_vi": "cắt may, quyết định, giảm bớt"
+   }
+  ],
+  "confidence": 0.97,
+  "level": 5,
+  "traditional": [],
+  "unihan": [
+   "trài"
+  ],
+  "check": "lech"
+ },
+ {
+  "char": "览",
+  "readings": [
+   {
+    "am": "lãm",
+    "meaning_vi": "xem, ngắm"
+   }
+  ],
+  "confidence": 0.97,
+  "level": 5,
+  "traditional": [
+   "覽"
+  ],
+  "unihan": [
+   "lãm"
+  ],
+  "check": "khop"
+ },
+ {
+  "char": "触",
+  "readings": [
+   {
+    "am": "xúc",
+    "meaning_vi": "chạm, tiếp xúc"
+   }
+  ],
+  "confidence": 0.97,
+  "level": 5,
+  "traditional": [
+   "觸"
+  ],
+  "unihan": [
+   "xúc"
+  ],
+  "check": "khop"
+ },
+ {
+  "char": "诊",
+  "readings": [
+   {
+    "am": "chẩn",
+    "meaning_vi": "khám bệnh"
+   }
+  ],
+  "confidence": 0.97,
+  "level": 5,
+  "traditional": [
+   "診"
+  ],
+  "unihan": [
+   "chẩn"
+  ],
+  "check": "khop"
+ },
+ {
+  "char": "诗",
+  "readings": [
+   {
+    "am": "thi",
+    "meaning_vi": "thơ"
+   }
+  ],
+  "confidence": 0.98,
+  "level": 4,
+  "traditional": [
+   "詩"
+  ],
+  "unihan": [
+   "thi"
+  ],
+  "check": "khop"
+ },
+ {
+  "char": "诚",
+  "readings": [
+   {
+    "am": "thành",
+    "meaning_vi": "chân thật, thành thật"
+   }
+  ],
+  "confidence": 0.98,
+  "level": 4,
+  "traditional": [
+   "誠"
+  ],
+  "unihan": [
+   "thành"
+  ],
+  "check": "khop"
+ },
+ {
+  "char": "询",
+  "readings": [
+   {
+    "am": "tuân",
+    "meaning_vi": "hỏi, hỏi han"
+   }
+  ],
+  "confidence": 0.85,
+  "level": 5,
+  "traditional": [
+   "詢"
+  ],
+  "unihan": [],
+  "check": "thieu"
+ },
+ {
+  "char": "详",
+  "readings": [
+   {
+    "am": "tường",
+    "meaning_vi": "rõ ràng, tỉ mỉ"
+   }
+  ],
+  "confidence": 0.97,
+  "level": 5,
+  "traditional": [
+   "詳"
+  ],
+  "unihan": [
+   "tường"
+  ],
+  "check": "khop"
+ },
+ {
+  "char": "谊",
+  "readings": [
+   {
+    "am": "nghị",
+    "meaning_vi": "tình bạn, tình nghĩa"
+   }
+  ],
+  "confidence": 0.9,
+  "level": 5,
+  "traditional": [
+   "誼"
+  ],
+  "unihan": [],
+  "check": "thieu"
+ },
+ {
+  "char": "豆",
+  "readings": [
+   {
+    "am": "đậu",
+    "meaning_vi": "hạt đậu, cây đậu"
+   }
+  ],
+  "confidence": 0.97,
+  "level": 4,
+  "traditional": [],
+  "unihan": [
+   "đậu"
+  ],
+  "check": "khop"
+ },
+ {
+  "char": "豪",
+  "readings": [
+   {
+    "am": "hào",
+    "meaning_vi": "người tài giỏi, mạnh mẽ, hào phóng"
+   }
+  ],
+  "confidence": 0.97,
+  "level": 5,
+  "traditional": [],
+  "unihan": [
+   "hào"
+  ],
+  "check": "khop"
+ },
+ {
+  "char": "豫",
+  "readings": [
+   {
+    "am": "dự",
+    "meaning_vi": "vui, sẵn sàng, do dự; tên đất Dự"
+   }
+  ],
+  "confidence": 0.93,
+  "level": 5,
+  "traditional": [],
+  "unihan": [],
+  "check": "thieu"
+ },
+ {
+  "char": "貌",
+  "readings": [
+   {
+    "am": "mạo",
+    "meaning_vi": "dáng vẻ, diện mạo"
+   }
+  ],
+  "confidence": 0.97,
+  "level": 5,
+  "traditional": [],
+  "unihan": [],
+  "check": "thieu"
+ },
+ {
+  "char": "质",
+  "readings": [
+   {
+    "am": "chất",
+    "meaning_vi": "bản chất, phẩm chất"
+   },
+   {
+    "am": "chí",
+    "meaning_vi": "cầm, thế chấp (người làm con tin)"
+   }
+  ],
+  "confidence": 0.85,
+  "level": 4,
+  "traditional": [
+   "質"
+  ],
+  "unihan": [
+   "chất"
+  ],
+  "check": "khop"
+ },
+ {
+  "char": "购",
+  "readings": [
+   {
+    "am": "cấu",
+    "meaning_vi": "mua"
+   }
+  ],
+  "confidence": 0.95,
+  "level": 4,
+  "traditional": [
+   "購"
+  ],
+  "unihan": [],
+  "check": "thieu"
+ },
+ {
+  "char": "贴",
+  "readings": [
+   {
+    "am": "thiếp",
+    "meaning_vi": "dán, kề sát, phụ cấp"
+   }
+  ],
+  "confidence": 0.9,
+  "level": 4,
+  "traditional": [
+   "貼"
+  ],
+  "unihan": [],
+  "check": "thieu"
+ },
+ {
+  "char": "贷",
+  "readings": [
+   {
+    "am": "thải",
+    "meaning_vi": "cho vay, vay mượn"
+   }
+  ],
+  "confidence": 0.93,
+  "level": 5,
+  "traditional": [
+   "貸"
+  ],
+  "unihan": [],
+  "check": "thieu"
+ },
+ {
+  "char": "贸",
+  "readings": [
+   {
+    "am": "mậu",
+    "meaning_vi": "buôn bán, trao đổi"
+   }
+  ],
+  "confidence": 0.97,
+  "level": 5,
+  "traditional": [
+   "貿"
+  ],
+  "unihan": [],
+  "check": "thieu"
+ },
+ {
+  "char": "贺",
+  "readings": [
+   {
+    "am": "hạ",
+    "meaning_vi": "chúc mừng"
+   }
+  ],
+  "confidence": 0.97,
+  "level": 5,
+  "traditional": [
+   "賀"
+  ],
+  "unihan": [
+   "hạ"
+  ],
+  "check": "khop"
+ },
+ {
+  "char": "赏",
+  "readings": [
+   {
+    "am": "thưởng",
+    "meaning_vi": "khen thưởng, thưởng thức"
+   }
+  ],
+  "confidence": 0.97,
+  "level": 4,
+  "traditional": [
+   "賞"
+  ],
+  "unihan": [
+   "thưởng"
+  ],
+  "check": "khop"
+ },
+ {
+  "char": "赔",
+  "readings": [
+   {
+    "am": "bồi",
+    "meaning_vi": "đền bù"
+   }
+  ],
+  "confidence": 0.95,
+  "level": 5,
+  "traditional": [
+   "賠"
+  ],
+  "unihan": [],
+  "check": "thieu"
+ },
+ {
+  "char": "赠",
+  "readings": [
+   {
+    "am": "tặng",
+    "meaning_vi": "cho, biếu tặng"
+   }
+  ],
+  "confidence": 0.97,
+  "level": 5,
+  "traditional": [
+   "贈"
+  ],
+  "unihan": [
+   "tặng"
+  ],
+  "check": "khop"
+ },
+ {
+  "char": "距",
+  "readings": [
+   {
+    "am": "cự",
+    "meaning_vi": "cách, khoảng cách"
+   }
+  ],
+  "confidence": 0.96,
+  "level": 4,
+  "traditional": [],
+  "unihan": [
+   "cựa"
+  ],
+  "check": "lech"
+ },
+ {
+  "char": "躲",
+  "readings": [
+   {
+    "am": "đóa",
+    "meaning_vi": "trốn, né tránh"
+   }
+  ],
+  "confidence": 0.8,
+  "level": 5,
+  "traditional": [],
+  "unihan": [],
+  "check": "thieu"
+ },
+ {
+  "char": "软",
+  "readings": [
+   {
+    "am": "nhuyễn",
+    "meaning_vi": "mềm"
+   }
+  ],
+  "confidence": 0.95,
+  "level": 5,
+  "traditional": [
+   "軟"
+  ],
+  "unihan": [
+   "nhuyễn"
+  ],
+  "check": "khop"
+ },
+ {
+  "char": "辅",
+  "readings": [
+   {
+    "am": "phụ",
+    "meaning_vi": "giúp đỡ, phụ tá"
+   }
+  ],
+  "confidence": 0.97,
+  "level": 5,
+  "traditional": [
+   "輔"
+  ],
+  "unihan": [],
+  "check": "thieu"
+ },
+ {
+  "char": "辈",
+  "readings": [
+   {
+    "am": "bối",
+    "meaning_vi": "bậc, thế hệ, lớp người"
+   }
+  ],
+  "confidence": 0.97,
+  "level": 5,
+  "traditional": [
+   "輩"
+  ],
+  "unihan": [
+   "bối"
+  ],
+  "check": "khop"
+ },
+ {
+  "char": "辑",
+  "readings": [
+   {
+    "am": "tập",
+    "meaning_vi": "biên tập, thu góp"
+   }
+  ],
+  "confidence": 0.96,
+  "level": 5,
+  "traditional": [
+   "輯"
+  ],
+  "unihan": [],
+  "check": "thieu"
+ },
+ {
+  "char": "辛",
+  "readings": [
+   {
+    "am": "tân",
+    "meaning_vi": "cay, vất vả, can thứ tám"
+   }
+  ],
+  "confidence": 0.95,
+  "level": 5,
+  "traditional": [],
+  "unihan": [
+   "tân"
+  ],
+  "check": "khop"
+ },
+ {
+  "char": "辞",
+  "readings": [
+   {
+    "am": "từ",
+    "meaning_vi": "lời văn, từ biệt, từ chối"
+   }
+  ],
+  "confidence": 0.95,
+  "level": 5,
+  "traditional": [
+   "辭"
+  ],
+  "unihan": [
+   "từ"
+  ],
+  "check": "khop"
+ },
+ {
+  "char": "辣",
+  "readings": [
+   {
+    "am": "lạt",
+    "meaning_vi": "cay"
+   }
+  ],
+  "confidence": 0.9,
+  "level": 4,
+  "traditional": [],
+  "unihan": [
+   "lượt"
+  ],
+  "check": "lech"
+ },
+ {
+  "char": "返",
+  "readings": [
+   {
+    "am": "phản",
+    "meaning_vi": "trở về, quay lại"
+   }
+  ],
+  "confidence": 0.93,
+  "level": 5,
+  "traditional": [],
+  "unihan": [
+   "phản"
+  ],
+  "check": "khop"
+ },
+ {
+  "char": "违",
+  "readings": [
+   {
+    "am": "vi",
+    "meaning_vi": "trái, làm trái, lìa xa"
+   }
+  ],
+  "confidence": 0.95,
+  "level": 5,
+  "traditional": [
+   "違"
+  ],
+  "unihan": [
+   "vi"
+  ],
+  "check": "khop"
+ },
+ {
+  "char": "迟",
+  "readings": [
+   {
+    "am": "trì",
+    "meaning_vi": "chậm, muộn"
+   }
+  ],
+  "confidence": 0.95,
+  "level": 4,
+  "traditional": [
+   "遲"
+  ],
+  "unihan": [
+   "trì"
+  ],
+  "check": "khop"
+ },
+ {
+  "char": "迫",
+  "readings": [
+   {
+    "am": "bách",
+    "meaning_vi": "ép buộc, gấp gáp"
+   },
+   {
+    "am": "phách",
+    "meaning_vi": "bức bách (âm ít dùng)"
+   }
+  ],
+  "confidence": 0.85,
+  "level": 4,
+  "traditional": [],
+  "unihan": [
+   "bách"
+  ],
+  "check": "khop"
+ },
+ {
+  "char": "逃",
+  "readings": [
+   {
+    "am": "đào",
+    "meaning_vi": "trốn chạy"
+   }
+  ],
+  "confidence": 0.95,
+  "level": 5,
+  "traditional": [],
+  "unihan": [
+   "đào"
+  ],
+  "check": "khop"
+ },
+ {
+  "char": "递",
+  "readings": [
+   {
+    "am": "đệ",
+    "meaning_vi": "chuyển giao, đưa dần"
+   }
+  ],
+  "confidence": 0.95,
+  "level": 4,
+  "traditional": [
+   "遞"
+  ],
+  "unihan": [
+   "đệ"
+  ],
+  "check": "khop"
+ },
+ {
+  "char": "逻",
+  "readings": [
+   {
+    "am": "la",
+    "meaning_vi": "tuần xét, logic"
+   }
+  ],
+  "confidence": 0.93,
+  "level": 5,
+  "traditional": [
+   "邏"
+  ],
+  "unihan": [
+   "lạ"
+  ],
+  "check": "lech"
+ },
+ {
+  "char": "遵",
+  "readings": [
+   {
+    "am": "tuân",
+    "meaning_vi": "noi theo, tuân thủ"
+   }
+  ],
+  "confidence": 0.96,
+  "level": 5,
+  "traditional": [],
+  "unihan": [
+   "tuân"
+  ],
+  "check": "khop"
+ },
+ {
+  "char": "避",
+  "readings": [
+   {
+    "am": "tị",
+    "meaning_vi": "tránh"
+   },
+   {
+    "am": "tỵ",
+    "meaning_vi": "tránh (biến âm)"
+   }
+  ],
+  "confidence": 0.85,
+  "level": 4,
+  "traditional": [],
+  "unihan": [
+   "tị"
+  ],
+  "check": "khop"
+ },
+ {
+  "char": "邀",
+  "readings": [
+   {
+    "am": "yêu",
+    "meaning_vi": "mời, đón"
+   }
+  ],
+  "confidence": 0.93,
+  "level": 5,
+  "traditional": [],
+  "unihan": [],
+  "check": "thieu"
+ },
+ {
+  "char": "邻",
+  "readings": [
+   {
+    "am": "lân",
+    "meaning_vi": "láng giềng, bên cạnh"
+   }
+  ],
+  "confidence": 0.96,
+  "level": 5,
+  "traditional": [
+   "鄰"
+  ],
+  "unihan": [
+   "lân"
+  ],
+  "check": "khop"
+ },
+ {
+  "char": "郊",
+  "readings": [
+   {
+    "am": "giao",
+    "meaning_vi": "vùng ngoại thành, ngoại ô"
+   }
+  ],
+  "confidence": 0.95,
+  "level": 5,
+  "traditional": [],
+  "unihan": [],
+  "check": "thieu"
+ },
+ {
+  "char": "酸",
+  "readings": [
+   {
+    "am": "toan",
+    "meaning_vi": "chua, axit, đau xót"
+   }
+  ],
+  "confidence": 0.95,
+  "level": 4,
+  "traditional": [],
+  "unihan": [],
+  "check": "thieu"
+ },
+ {
+  "char": "醉",
+  "readings": [
+   {
+    "am": "túy",
+    "meaning_vi": "say rượu, mê đắm"
+   }
+  ],
+  "confidence": 0.96,
+  "level": 5,
+  "traditional": [],
+  "unihan": [],
+  "check": "thieu"
+ },
+ {
+  "char": "钢",
+  "readings": [
+   {
+    "am": "cương",
+    "meaning_vi": "thép"
+   }
+  ],
+  "confidence": 0.95,
+  "level": 5,
+  "traditional": [
+   "鋼"
+  ],
+  "unihan": [
+   "gang"
+  ],
+  "check": "lech"
+ },
+ {
+  "char": "铃",
+  "readings": [
+   {
+    "am": "linh",
+    "meaning_vi": "cái chuông nhỏ"
+   }
+  ],
+  "confidence": 0.95,
+  "level": 5,
+  "traditional": [
+   "鈴"
+  ],
+  "unihan": [],
+  "check": "thieu"
+ },
+ {
+  "char": "锁",
+  "readings": [
+   {
+    "am": "tỏa",
+    "meaning_vi": "khóa, xiềng"
+   }
+  ],
+  "confidence": 0.95,
+  "level": 5,
+  "traditional": [
+   "鎖"
+  ],
+  "unihan": [
+   "toả"
+  ],
+  "check": "khop"
+ },
+ {
+  "char": "锅",
+  "readings": [
+   {
+    "am": "oa",
+    "meaning_vi": "cái nồi, chảo"
+   }
+  ],
+  "confidence": 0.9,
+  "level": 5,
+  "traditional": [
+   "鍋"
+  ],
+  "unihan": [],
+  "check": "thieu"
+ },
+ {
+  "char": "键",
+  "readings": [
+   {
+    "am": "kiện",
+    "meaning_vi": "then cài, phím đàn"
+   }
+  ],
+  "confidence": 0.9,
+  "level": 5,
+  "traditional": [
+   "鍵"
+  ],
+  "unihan": [],
+  "check": "thieu"
+ },
+ {
+  "char": "闭",
+  "readings": [
+   {
+    "am": "bế",
+    "meaning_vi": "đóng, khép lại"
+   }
+  ],
+  "confidence": 0.96,
+  "level": 4,
+  "traditional": [
+   "閉"
+  ],
+  "unihan": [
+   "bế"
+  ],
+  "check": "khop"
+ },
+ {
+  "char": "闯",
+  "readings": [
+   {
+    "am": "sấm",
+    "meaning_vi": "xông vào, đột nhập"
+   }
+  ],
+  "confidence": 0.85,
+  "level": 5,
+  "traditional": [
+   "闖"
+  ],
+  "unihan": [
+   "sấm"
+  ],
+  "check": "khop"
+ },
+ {
+  "char": "闲",
+  "readings": [
+   {
+    "am": "nhàn",
+    "meaning_vi": "rảnh rỗi, thư nhàn"
+   },
+   {
+    "am": "nhàn",
+    "meaning_vi": "cái chuồng, ngăn giữ (閑)"
+   }
+  ],
+  "confidence": 0.9,
+  "level": 5,
+  "traditional": [
+   "閑"
+  ],
+  "unihan": [
+   "nhàn"
+  ],
+  "check": "khop"
+ },
+ {
+  "char": "阅",
+  "readings": [
+   {
+    "am": "duyệt",
+    "meaning_vi": "xem, đọc, kiểm duyệt"
+   }
+  ],
+  "confidence": 0.96,
+  "level": 4,
+  "traditional": [
+   "閱",
+   "閲"
+  ],
+  "unihan": [
+   "duyệt"
+  ],
+  "check": "khop"
+ },
+ {
+  "char": "阻",
+  "readings": [
+   {
+    "am": "trở",
+    "meaning_vi": "ngăn cản, cách trở"
+   }
+  ],
+  "confidence": 0.95,
+  "level": 4,
+  "traditional": [],
+  "unihan": [
+   "trở"
+  ],
+  "check": "khop"
+ },
+ {
+  "char": "附",
+  "readings": [
+   {
+    "am": "phụ",
+    "meaning_vi": "gắn vào, kèm theo"
+   }
+  ],
+  "confidence": 0.96,
+  "level": 4,
+  "traditional": [],
+  "unihan": [
+   "phò"
+  ],
+  "check": "lech"
+ },
+ {
+  "char": "陪",
+  "readings": [
+   {
+    "am": "bồi",
+    "meaning_vi": "theo cùng, tháp tùng"
+   }
+  ],
+  "confidence": 0.95,
+  "level": 5,
+  "traditional": [],
+  "unihan": [],
+  "check": "thieu"
+ },
+ {
+  "char": "隔",
+  "readings": [
+   {
+    "am": "cách",
+    "meaning_vi": "ngăn cách, cách quãng"
+   }
+  ],
+  "confidence": 0.96,
+  "level": 4,
+  "traditional": [],
+  "unihan": [
+   "cách"
+  ],
+  "check": "khop"
+ },
+ {
+  "char": "雄",
+  "readings": [
+   {
+    "am": "hùng",
+    "meaning_vi": "mạnh mẽ, anh hùng, giống đực"
+   }
+  ],
+  "confidence": 0.98,
+  "level": 5,
+  "traditional": [],
+  "unihan": [
+   "hùng"
+  ],
+  "check": "khop"
+ },
+ {
+  "char": "震",
+  "readings": [
+   {
+    "am": "chấn",
+    "meaning_vi": "rung chuyển, động đất, sấm"
+   }
+  ],
+  "confidence": 0.97,
+  "level": 5,
+  "traditional": [],
+  "unihan": [],
+  "check": "thieu"
+ },
+ {
+  "char": "革",
+  "readings": [
+   {
+    "am": "cách",
+    "meaning_vi": "da thuộc, cải cách, thay đổi"
+   }
+  ],
+  "confidence": 0.97,
+  "level": 5,
+  "traditional": [],
+  "unihan": [],
+  "check": "thieu"
+ },
+ {
+  "char": "频",
+  "readings": [
+   {
+    "am": "tần",
+    "meaning_vi": "thường xuyên, nhiều lần"
+   }
+  ],
+  "confidence": 0.96,
+  "level": 5,
+  "traditional": [
+   "頻"
+  ],
+  "unihan": [],
+  "check": "thieu"
+ },
+ {
+  "char": "颗",
+  "readings": [
+   {
+    "am": "khỏa",
+    "meaning_vi": "hạt, viên (lượng từ)"
+   }
+  ],
+  "confidence": 0.9,
+  "level": 5,
+  "traditional": [
+   "顆"
+  ],
+  "unihan": [],
+  "check": "thieu"
+ },
+ {
+  "char": "饮",
+  "readings": [
+   {
+    "am": "ẩm",
+    "meaning_vi": "uống, đồ uống"
+   }
+  ],
+  "confidence": 0.97,
+  "level": 5,
+  "traditional": [
+   "飲"
+  ],
+  "unihan": [
+   "ẩm"
+  ],
+  "check": "khop"
+ },
+ {
+  "char": "饰",
+  "readings": [
+   {
+    "am": "sức",
+    "meaning_vi": "trang sức, tô điểm"
+   }
+  ],
+  "confidence": 0.96,
+  "level": 5,
+  "traditional": [
+   "飾"
+  ],
+  "unihan": [],
+  "check": "thieu"
+ },
+ {
+  "char": "饼",
+  "readings": [
+   {
+    "am": "bính",
+    "meaning_vi": "bánh"
+   }
+  ],
+  "confidence": 0.95,
+  "level": 5,
+  "traditional": [
+   "餅"
+  ],
+  "unihan": [
+   "bánh"
+  ],
+  "check": "lech"
+ },
+ {
+  "char": "驶",
+  "readings": [
+   {
+    "am": "sử",
+    "meaning_vi": "lái xe, chạy nhanh"
+   }
+  ],
+  "confidence": 0.85,
+  "level": 5,
+  "traditional": [
+   "駛"
+  ],
+  "unihan": [],
+  "check": "thieu"
+ },
+ {
+  "char": "驾",
+  "readings": [
+   {
+    "am": "giá",
+    "meaning_vi": "cưỡi, lái xe, xa giá"
+   }
+  ],
+  "confidence": 0.96,
+  "level": 5,
+  "traditional": [
+   "駕"
+  ],
+  "unihan": [
+   "giá"
+  ],
+  "check": "khop"
+ },
+ {
+  "char": "骂",
+  "readings": [
+   {
+    "am": "mạ",
+    "meaning_vi": "chửi mắng"
+   }
+  ],
+  "confidence": 0.96,
+  "level": 5,
+  "traditional": [
+   "罵",
+   "駡"
+  ],
+  "unihan": [
+   "mạ"
+  ],
+  "check": "khop"
+ },
+ {
+  "char": "骗",
+  "readings": [
+   {
+    "am": "phiến",
+    "meaning_vi": "lừa dối, lừa gạt"
+   }
+  ],
+  "confidence": 0.85,
+  "level": 5,
+  "traditional": [
+   "騙"
+  ],
+  "unihan": [],
+  "check": "thieu"
+ },
+ {
+  "char": "鬼",
+  "readings": [
+   {
+    "am": "quỷ",
+    "meaning_vi": "ma quỷ, linh hồn"
+   }
+  ],
+  "confidence": 0.98,
+  "level": 5,
+  "traditional": [],
+  "unihan": [
+   "quỷ"
+  ],
+  "check": "khop"
+ },
+ {
+  "char": "鲜",
+  "readings": [
+   {
+    "am": "tiên",
+    "meaning_vi": "tươi, mới, ngon"
+   },
+   {
+    "am": "tiển",
+    "meaning_vi": "ít, hiếm"
+   }
+  ],
+  "confidence": 0.93,
+  "level": 4,
+  "traditional": [
+   "鮮"
+  ],
+  "unihan": [
+   "tiên"
+  ],
+  "check": "khop"
+ },
+ {
+  "char": "鸭",
+  "readings": [
+   {
+    "am": "áp",
+    "meaning_vi": "con vịt"
+   }
+  ],
+  "confidence": 0.95,
+  "level": 5,
+  "traditional": [
+   "鴨"
+  ],
+  "unihan": [],
+  "check": "thieu"
+ },
+ {
+  "char": "默",
+  "readings": [
+   {
+    "am": "mặc",
+    "meaning_vi": "lặng im, âm thầm"
+   }
+  ],
+  "confidence": 0.97,
+  "level": 4,
+  "traditional": [],
+  "unihan": [
+   "mặc"
+  ],
+  "check": "khop"
+ },
+ {
+  "char": "鼓",
+  "readings": [
+   {
+    "am": "cổ",
+    "meaning_vi": "cái trống, đánh trống, khích lệ"
+   }
+  ],
+  "confidence": 0.98,
+  "level": 5,
+  "traditional": [],
+  "unihan": [],
+  "check": "thieu"
+ },
+ {
+  "char": "鼠",
+  "readings": [
+   {
+    "am": "thử",
+    "meaning_vi": "con chuột"
+   }
+  ],
+  "confidence": 0.97,
+  "level": 5,
+  "traditional": [],
+  "unihan": [],
+  "check": "thieu"
+ },
+ {
+  "char": "鼻",
+  "readings": [
+   {
+    "am": "tỵ",
+    "meaning_vi": "mũi"
+   }
+  ],
+  "confidence": 0.95,
+  "level": 5,
+  "traditional": [],
+  "unihan": [],
+  "check": "thieu"
+ },
+ {
+  "char": "龄",
+  "readings": [
+   {
+    "am": "linh",
+    "meaning_vi": "tuổi, niên linh"
+   }
+  ],
+  "confidence": 0.96,
+  "level": 5,
+  "traditional": [
+   "齡"
+  ],
+  "unihan": [],
+  "check": "thieu"
  }
 ]

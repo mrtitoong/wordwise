@@ -32,7 +32,11 @@ describe("parseHskList", () => {
     ]);
   });
 
-  it("bỏ cấp sau cấp 3", () => {
-    expect(parseHskList("四级词汇表\n1 爱\n")).toEqual([]);
+  it("đọc cả cấp 4–6, nhóm 7–9 ghi là cấp 7; bảng tên lạ thì bỏ mục", () => {
+    const text = "五级词汇表\n1 岸\n七一九级词汇表\n1 蔼\n附录词汇表\n1 爱\n";
+    expect(parseHskList(text).map((e) => [e.level, e.word])).toEqual([
+      [5, "岸"],
+      [7, "蔼"],
+    ]);
   });
 });

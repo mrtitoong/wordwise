@@ -25,7 +25,7 @@ import {
 import { recordSlow, timed, watchMainThread } from "@/lib/diagnostics/slow-log";
 import { addFreeLog, clearSession, markSessionFinished, saveSession } from "@/lib/db/review-store";
 import type { Voice } from "@/lib/media/tts-azure";
-import { studyDay, studyDayEnd } from "@/lib/review/day";
+import { DEFAULT_TIME_ZONE, studyDay, studyDayEnd } from "@/lib/review/day";
 import { buildMcq, type ChoiceSense, type Mcq } from "@/lib/review/mcq";
 import {
   canResume,
@@ -53,7 +53,14 @@ import { buildPractice, type PracticeRequest } from "@/lib/review/practice";
 import type { PronunciationLocale } from "@/lib/pronunciation/api";
 import { masteryLevel, type MasteryLevel } from "@/lib/srs/mastery";
 import { getSupabaseEnv } from "@/lib/supabase/env";
-import { remainingItems, requeue, wordKeyOf, type SessionItem } from "@/lib/srs/queue";
+import {
+  MAX_WORD_ASKS_PER_DAY,
+  remainingItems,
+  requeue,
+  wordKeyOf,
+  type SessionItem,
+} from "@/lib/srs/queue";
+import { speakingState } from "@/lib/srs/speaking";
 import { addedQuestionReason, type AddedReason } from "@/lib/review/added-question";
 import { createScheduler } from "@/lib/srs/scheduler";
 import { useOwner } from "@/lib/sync/owner";
@@ -630,13 +637,28 @@ export function SessionScreen({
         wordKeyOf(cards.get(i.cardId)?.word.content.lemma ?? i.cardId);
       const asks = (wordAsks.current.get(wordOf(item)) ?? 0) + 1;
       wordAsks.current.set(wordOf(item), asks);
+      // Thẻ Phát âm: một câu mỗi phiên, không chèn lại (chốt 2026-11-21).
+      const speaking = prep.card.skill === "speaking";
+      if (speaking && !result.log.is_extra && isScheduled(run.kind)) {
+        const rest = speakingState(
+          [...data.logs.filter((l) => l.card_id === item.cardId), result.log],
+          data.settings.timezone ?? DEFAULT_TIME_ZONE,
+        );
+        if (rest.restDays && rest.failDays > 0 && !result.log.correct) {
+          showToast({ text: t("speakingRest", { days: rest.restDays }) });
+        }
+      }
       const queue = result.log.is_extra
         ? run.queue
         : requeue(
             run.queue,
             run.position,
             item,
-            { again, nextDue: new Date(result.card.due), asks },
+            {
+              again,
+              nextDue: new Date(result.card.due),
+              asks: speaking ? MAX_WORD_ASKS_PER_DAY : asks,
+            },
             now,
             Math.random,
             (a, b) => wordOf(a) === wordOf(b),

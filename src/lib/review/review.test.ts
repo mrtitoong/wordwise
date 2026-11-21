@@ -276,6 +276,34 @@ describe("today", () => {
     expect(tomorrow.items.map((i) => i.cardId)).toContain(reviewed.id);
   });
 
+  it("thẻ Phát âm: bỏ cụm nhiều chữ và thẻ đã hỏi hôm nay; tự chọn ôn thì vẫn có", () => {
+    const speak = (u: UserWordRow): CardRow => ({
+      ...createCards(u, ["speaking"], NOW)[0]!,
+      state: State.Review,
+      stability: 4,
+      due: NOW.toISOString(),
+      last_review: new Date(NOW.getTime() - 5 * DAY).toISOString(),
+    });
+    const [a, b] = [speak(userWords[0]!), speak(userWords[1]!)];
+    const base = (logs: ReviewLogRow[], lemmas: Record<string, string>): TodayInput => ({
+      ...input(logs),
+      cards: [a, b],
+      settings: { ...input().settings, practiceSpeaking: true },
+      lemmaOf: (s) => lemmas[s] ?? "",
+    });
+    const ids = (plan: { items: { cardId: string }[] }) => plan.items.map((i) => i.cardId).sort();
+    expect(ids(planToday(base([], { s1: "alpha", s2: "beta" }), scheduler, NOW))).toEqual(
+      [a.id, b.id].sort(),
+    );
+    const phrase = base([], { s1: "gothic architecture", s2: "beta" });
+    expect(ids(planToday(phrase, scheduler, NOW))).toEqual([b.id]);
+    expect(ids(planToday(phrase, scheduler, NOW, { onlyCardIds: new Set([a.id]) }))).toEqual([
+      a.id,
+    ]);
+    const asked = base([log({ card_id: b.id, correct: false })], { s1: "alpha", s2: "beta" });
+    expect(ids(planToday(asked, scheduler, NOW))).toEqual([a.id]);
+  });
+
   it("planToday: đếm thẻ ôn, từ mới, thời gian; phiên ngắn cắt theo 5 phút; chỉ một thẻ", () => {
     const plan = planToday(input(), scheduler, NOW);
     expect(plan).toMatchObject({ reviews: 2, news: 1, gentle: false });

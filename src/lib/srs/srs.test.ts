@@ -122,6 +122,21 @@ describe("gradeFromOutcome (plan.md §3.3)", () => {
     expect(speak(62, 95)).toBe(Rating.Hard);
     expect(speak(85, 95)).toBe(Rating.Good);
   });
+
+  it("phát âm ở bước học: đọc đạt 60 (kể cả đọc lại) là Nhớ để thẻ qua bước", () => {
+    const speak = (score: number, best: number) =>
+      gradeFromOutcome({
+        mode: "speaking",
+        pronunciationScore: score,
+        pronunciationBest: best,
+        learning: true,
+        cardLevel: 0,
+      });
+    expect(speak(28.6, 63.4)).toBe(Rating.Good);
+    expect(speak(64.2, 64.2)).toBe(Rating.Good);
+    expect(speak(27, 59)).toBe(Rating.Again);
+    expect(speak(92, 92)).toBe(Rating.Easy);
+  });
 });
 
 describe("gradeFromOutcome: trả lời đúng mà chậm", () => {

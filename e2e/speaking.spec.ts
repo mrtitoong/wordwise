@@ -116,9 +116,10 @@ test.describe("Tập phát âm", () => {
     );
     expect(logs.length).toBeGreaterThanOrEqual(5);
     expect(logs.every((l) => typeof l.pronunciation_score === "number")).toBe(true);
-    // 45 điểm rồi đọc lại 86 → Khó (lưu cả điểm cao nhất và số lần chấm); 86 điểm ngay → Nhớ.
+    // Thẻ Phát âm mới (bước học): 45 điểm rồi đọc lại 86 → Nhớ để thẻ qua bước (lưu cả điểm cao
+    // nhất và số lần chấm); 86 điểm ngay → Nhớ.
     const retried = logs.find((l) => l.pronunciation_score === 45);
-    expect(retried).toMatchObject({ rating: 2, pronunciation_best: 86, pronunciation_attempts: 2 });
+    expect(retried).toMatchObject({ rating: 3, pronunciation_best: 86, pronunciation_attempts: 2 });
     expect(logs.find((l) => l.pronunciation_score === 86)).toMatchObject({
       rating: 3,
       pronunciation_attempts: 1,

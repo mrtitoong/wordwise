@@ -94,7 +94,10 @@ export type Outcome = {
   /** Câu gõ chữ: số chữ cái của từ và trung vị thời gian mỗi chữ (xem `timingBaseline`). */
   letters?: number;
   userMedianPerLetterMs?: number | null;
-  /** Thẻ đang ở bước học/học lại: trả lời đúng mà chậm vẫn là Nhớ (chốt 2026-11-05). */
+  /**
+   * Thẻ đang ở bước học/học lại: trả lời đúng mà chậm vẫn là Nhớ (chốt 2026-11-05); phát âm đọc đạt
+   * 60 là Nhớ (chốt 2026-11-21).
+   */
   learning?: boolean;
   /** Không xét nhanh chậm (viết chữ Hán: viết tay lâu là bình thường). */
   untimed?: boolean;
@@ -135,10 +138,12 @@ function rawGrade(outcome: Outcome): Grade {
 
   if (outcome.mode === "speaking" && typeof outcome.pronunciationScore === "number") {
     const score = outcome.pronunciationScore;
+    const passed = Math.max(score, outcome.pronunciationBest ?? 0) >= PRONUNCIATION_PASS;
+    // Bước học/học lại: đọc đạt (kể cả đọc lại) là Nhớ để thẻ qua bước; Khó ở bước học không cho
+    // thẻ đi tiếp nên người đọc mãi không tới 80 bị hỏi mỗi ngày (chốt 2026-11-21).
+    if (outcome.learning && passed && score < 80) return Rating.Good;
     // Lần đầu chưa đạt nhưng đọc lại đạt: Khó, như dùng gợi ý (chốt 2026-11-18).
-    if (score < PRONUNCIATION_PASS) {
-      return (outcome.pronunciationBest ?? 0) >= PRONUNCIATION_PASS ? Rating.Hard : Rating.Again;
-    }
+    if (score < PRONUNCIATION_PASS) return passed ? Rating.Hard : Rating.Again;
     if (score < 80) return Rating.Hard;
     if (score < 90) return Rating.Good;
     return Rating.Easy;

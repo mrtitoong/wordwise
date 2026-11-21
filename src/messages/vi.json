@@ -1486,6 +1486,7 @@
     "mute": "Tắt âm thanh",
     "unmute": "Bật âm thanh",
     "saveFailed": "Không lưu được lượt ôn vừa rồi trên máy. Từ này sẽ được hỏi lại ở lần ôn sau.",
+    "speakingRest": "Tạm nghỉ phát âm từ này {days} ngày. Bạn vẫn luyện được ở trang Luyện tập.",
     "exitTitle": "Thoát phiên?",
     "exitBody": "Kết quả các câu đã làm đã được lưu. Bạn có thể tiếp tục phiên này sau từ màn Hôm nay.",
     "stay": "Ở lại",

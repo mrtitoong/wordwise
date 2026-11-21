@@ -13,6 +13,7 @@ import type {
 import { studyDay, studyDayEnd } from "@/lib/review/day";
 import { pacedNewLimit } from "@/lib/srs/pacing";
 import { medianResponseMs } from "@/lib/srs/grade";
+import { isPhrase, speakingAllowed } from "@/lib/srs/speaking";
 import { DEFAULT_ANSWER_MS, estimateMinutes, NEW_WORD_MS } from "./estimate";
 import {
   buildSession,
@@ -147,6 +148,36 @@ export function sessionSettings(input: TodayInput, now: Date): SessionSettings {
   };
 }
 
+/**
+ * Phiên theo lịch: bỏ thẻ Phát âm của cụm nhiều chữ, thẻ đã hỏi hôm nay hoặc đang nghỉ
+ * (`src/lib/srs/speaking.ts`). Lịch của thẻ giữ nguyên.
+ */
+function withoutBlockedSpeaking(
+  cards: readonly QueueCard[],
+  input: TodayInput,
+  now: Date,
+): QueueCard[] {
+  if (!cards.some((c) => c.skill === "speaking")) return [...cards];
+  const logsOf = new Map<string, ReviewLogRow[]>();
+  for (const log of input.logs) {
+    const list = logsOf.get(log.card_id);
+    if (list) list.push(log);
+    else logsOf.set(log.card_id, [log]);
+  }
+  const today = studyDay(now, input.settings.timeZone);
+  return cards.filter(
+    (c) =>
+      c.skill !== "speaking" ||
+      (!isPhrase(c.lemma) &&
+        speakingAllowed(
+          logsOf.get(c.card.id) ?? [],
+          today,
+          input.settings.timeZone,
+          input.freeLogIds,
+        )),
+  );
+}
+
 export type TodayPlan = SessionPlan & {
   reviews: number;
   news: number;
@@ -175,6 +206,8 @@ export function planToday(
     // Người học tự chọn ôn những thẻ này: không áp trần mỗi ngày.
     cards = cards.filter((c) => options.onlyCardIds!.has(c.card.id));
     delete settings.wordAsks;
+  } else {
+    cards = withoutBlockedSpeaking(cards, input, now);
   }
   const plan = buildSession(cards, settings, scheduler, now);
   const perAnswer = answerMs(input.logs);

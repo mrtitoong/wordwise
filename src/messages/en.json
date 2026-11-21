@@ -1486,6 +1486,7 @@
     "mute": "Mute sound",
     "unmute": "Unmute sound",
     "saveFailed": "Couldn't save that answer on this device. You'll see the word again next time.",
+    "speakingRest": "Taking a {days}-day break from pronouncing this word. You can still practise it in Practice.",
     "exitTitle": "Leave the session?",
     "exitBody": "Your answers so far are saved. You can continue this session later from Today.",
     "stay": "Stay",

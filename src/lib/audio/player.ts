@@ -24,7 +24,16 @@ export interface UtteranceLike {
   addEventListener(type: "end", listener: () => void): void;
 }
 
+/**
+ * Kênh dùng chung giữa các player: mỗi lúc chỉ một âm thanh kêu trong cả app (nút loa của thẻ,
+ * tập nghe, màn kết quả). Không truyền thì player có kênh riêng.
+ */
+export interface PlayChannel {
+  active: { halt(): void } | null;
+}
+
 export interface PlayerEnv {
+  channel?: PlayChannel;
   createAudio(url: string): AudioLike;
   speech?: {
     speak(utterance: UtteranceLike): void;
@@ -50,12 +59,26 @@ export interface PlayRequest {
 export type PlayResult = "audio" | "speech" | "none";
 
 export function createPlayer(env: PlayerEnv) {
+  const channel = env.channel ?? { active: null };
   let current: AudioLike | null = null;
+  // Đánh số lượt phát: lượt đang chờ URL/file mà đã bị thay (phát lượt mới, dừng, rời màn) thì bỏ,
+  // không phát chồng lên lượt sau.
+  let turn = 0;
 
+  const self = {
+    halt() {
+      turn++;
+      current?.pause();
+      current = null;
+      env.speech?.cancel();
+      if (channel.active === self) channel.active = null;
+    },
+  };
+
+  /** Dừng âm thanh của player này (âm thanh của player khác đang kêu thì để yên). */
   function stop() {
-    current?.pause();
-    current = null;
-    env.speech?.cancel();
+    if (channel.active === self) self.halt();
+    else turn++;
   }
 
   function speak(request: PlayRequest): PlayResult {
@@ -69,10 +92,15 @@ export function createPlayer(env: PlayerEnv) {
   }
 
   async function play(request: PlayRequest): Promise<PlayResult> {
-    stop();
+    if (channel.active && channel.active !== self) channel.active.halt();
+    self.halt();
+    channel.active = self;
+    const mine = turn;
+    const stale = () => mine !== turn;
     let url = request.url ?? null;
     if (!url && request.resolveUrl) {
       url = await request.resolveUrl().catch(() => null);
+      if (stale()) return "none";
     }
     if (url) {
       const audio = env.createAudio(url);
@@ -83,8 +111,13 @@ export function createPlayer(env: PlayerEnv) {
       current = audio;
       try {
         await audio.play();
+        if (stale()) {
+          audio.pause();
+          return "none";
+        }
         return "audio";
       } catch {
+        if (stale()) return "none";
         current = null; // file lỗi, mất mạng → đọc bằng trình duyệt
       }
     }
@@ -94,10 +127,14 @@ export function createPlayer(env: PlayerEnv) {
   return { play, stop };
 }
 
+/** Một kênh cho cả trang. */
+const browserChannel: PlayChannel = { active: null };
+
 /** Môi trường thật trong trình duyệt. */
 export function browserPlayerEnv(): PlayerEnv {
   const hasSpeech = typeof window !== "undefined" && "speechSynthesis" in window;
   return {
+    channel: browserChannel,
     createAudio: (url) => new Audio(url),
     ...(hasSpeech
       ? {

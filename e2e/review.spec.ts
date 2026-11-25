@@ -260,6 +260,91 @@ test.describe("Phiên ôn", () => {
     await expect(page.getByRole("region", { name: "Đáp án đúng" })).toContainText(answer);
   });
 
+  test("nghe câu: trả lời khi file câu còn đang tải → câu chỉ phát một lần, không vọng", async ({
+    page,
+  }) => {
+    // Đếm mọi lần bắt đầu phát (file MP3 hoặc giọng trình duyệt).
+    await page.addInitScript(() => {
+      const plays: string[] = [];
+      (window as unknown as { __plays: string[] }).__plays = plays;
+      const play = HTMLMediaElement.prototype.play;
+      HTMLMediaElement.prototype.play = function (this: HTMLMediaElement) {
+        plays.push(`audio:${this.src}`);
+        return play.call(this);
+      };
+      const speak = speechSynthesis.speak.bind(speechSynthesis);
+      speechSynthesis.speak = (u: SpeechSynthesisUtterance) => {
+        plays.push(`speech:${u.text}`);
+        speak(u);
+      };
+    });
+    await learnStarterWords(page);
+    await page.getByRole("button", { name: "Xong", exact: true }).click();
+    await expect(page).toHaveURL("/");
+
+    // Máy chủ tạo audio câu chậm: giữ yêu cầu tới khi test cho trả lời.
+    const SENTENCE_URL = "https://audio.e2e.test/sentence.wav";
+    await page.route(SENTENCE_URL, (route) =>
+      route.fulfill({
+        path: "tests/fixtures/audio/speech-then-silence.wav",
+        contentType: "audio/wav",
+      }),
+    );
+    let requests = 0;
+    let release!: () => void;
+    const released = new Promise<void>((r) => (release = r));
+    await page.route("**/functions/v1/word-media", async (route) => {
+      if (route.request().method() !== "POST") return route.continue();
+      requests++;
+      await released;
+      await route.fulfill({ json: { status: "ready", url: SENTENCE_URL } });
+    });
+
+    await waitForTestHooks(page);
+    await page.evaluate(() => {
+      localStorage.setItem("ww_e2e_overrides", JSON.stringify({ spellingKind: "listen-cloze" }));
+      return (
+        window as unknown as {
+          __wordwiseE2E: {
+            patchCards: (skill: string, patch: object, limit?: number) => Promise<number>;
+          };
+        }
+      ).__wordwiseE2E.patchCards(
+        "spelling",
+        {
+          state: 2,
+          stability: 10,
+          difficulty: 5,
+          reps: 3,
+          scheduled_days: 10,
+          learning_steps: 0,
+          last_review: new Date(Date.now() - 10 * 86_400_000).toISOString(),
+        },
+        1,
+      );
+    });
+    await page.goto("/review/session");
+    await expect(page.getByText("Nghe câu rồi điền từ còn thiếu")).toBeVisible();
+    await expect.poll(() => requests).toBe(1);
+    // Chưa nghe thấy gì nên bấm nghe lại, rồi trả lời luôn (sai để màn kết quả ở lại): màn kết
+    // quả cũng tự phát câu.
+    await page.getByRole("button", { name: "Nghe lại" }).click();
+    await typeAnswer(page, `${await currentAnswer(page)}qq`);
+    await expect(page.getByText("Chưa đúng")).toBeVisible();
+    release();
+
+    const plays = () => page.evaluate(() => (window as unknown as { __plays: string[] }).__plays);
+    await expect
+      .poll(async () => (await plays()).filter((p) => p.includes(SENTENCE_URL)))
+      .toHaveLength(1);
+    // Chờ thêm: lượt cũ không được phát muộn chồng lên.
+    await page.waitForTimeout(1_000);
+    expect((await plays()).filter((p) => p.includes(SENTENCE_URL))).toHaveLength(1);
+    expect((await plays()).filter((p) => p.startsWith("speech:"))).toHaveLength(0);
+    // Câu hỏi và màn kết quả dùng chung một lần xin file.
+    expect(requests).toBe(1);
+  });
+
   test("tập nghe: nghe → gõ lại, nghe câu → điền từ, nghe → chọn nghĩa; nghe lại nhiều lần thì Khó", async ({
     page,
   }) => {

@@ -1,5 +1,20 @@
 import { describe, expect, it, vi } from "vitest";
-import { createPlayer, type AudioLike, type PlayerEnv, type UtteranceLike } from "./player";
+import {
+  createPlayer,
+  type AudioLike,
+  type PlayChannel,
+  type PlayerEnv,
+  type UtteranceLike,
+} from "./player";
+
+/** Promise tự quyết lúc nào xong (giả máy chủ tạo audio câu chậm). */
+function deferred<T>() {
+  let resolve!: (value: T) => void;
+  const promise = new Promise<T>((r) => (resolve = r));
+  return { promise, resolve };
+}
+
+const playing = (audios: { paused: boolean }[]) => audios.filter((a) => !a.paused).length;
 
 function fakeEnv(options: { playFails?: boolean; speech?: boolean } = {}) {
   const audios: (AudioLike & { url: string; paused: boolean })[] = [];
@@ -98,5 +113,74 @@ describe("createPlayer", () => {
     expect(audios[0]!.paused).toBe(true);
     expect(audios[1]!.paused).toBe(false);
     expect(cancel).toHaveBeenCalled();
+  });
+
+  it("bấm nghe lại khi lượt tự phát còn chờ file câu → chỉ một âm thanh", async () => {
+    const { env, audios } = fakeEnv();
+    const player = createPlayer(env);
+    const url = deferred<string | null>();
+    const resolveUrl = () => url.promise;
+    const auto = player.play({ resolveUrl, text: "A long sentence.", voice: "us", rate: 1 });
+    const tap = player.play({ resolveUrl, text: "A long sentence.", voice: "us", rate: 1 });
+    url.resolve("https://s.mp3");
+    expect(await auto).toBe("none");
+    expect(await tap).toBe("audio");
+    expect(audios).toHaveLength(1);
+    expect(playing(audios)).toBe(1);
+  });
+
+  it("dừng (rời màn câu hỏi) khi còn chờ file → không phát nữa", async () => {
+    const { env, audios, spoken } = fakeEnv();
+    const player = createPlayer(env);
+    const url = deferred<string | null>();
+    const pending = player.play({
+      resolveUrl: () => url.promise,
+      text: "A long sentence.",
+      voice: "us",
+      rate: 1,
+    });
+    player.stop();
+    url.resolve("https://s.mp3");
+    expect(await pending).toBe("none");
+    expect(audios).toHaveLength(0);
+    expect(spoken).toHaveLength(0);
+  });
+
+  it("chờ file lâu rồi lỗi nhưng đã bị thay → không đọc bằng giọng trình duyệt chồng lên", async () => {
+    const { env, spoken } = fakeEnv();
+    const player = createPlayer(env);
+    const url = deferred<string | null>();
+    const pending = player.play({ resolveUrl: () => url.promise, text: "x", voice: "us", rate: 1 });
+    player.stop();
+    url.resolve(null);
+    expect(await pending).toBe("none");
+    expect(spoken).toHaveLength(0);
+  });
+
+  it("hai nút loa chung kênh: nút sau phát thì nút trước im, nút trước rời màn không tắt nút sau", async () => {
+    const channel: PlayChannel = { active: null };
+    const { env, audios } = fakeEnv();
+    const shared = { ...env, channel };
+    const question = createPlayer(shared);
+    const result = createPlayer(shared);
+    const url = deferred<string | null>();
+    // Câu hỏi còn chờ file câu, người học đã trả lời: màn kết quả tự phát lại câu.
+    const pending = question.play({
+      resolveUrl: () => url.promise,
+      text: "s",
+      voice: "us",
+      rate: 1,
+    });
+    await result.play({ url: "https://s.mp3", text: "s", voice: "us", rate: 1 });
+    question.stop();
+    url.resolve("https://s.mp3");
+    expect(await pending).toBe("none");
+    expect(audios).toHaveLength(1);
+    expect(playing(audios)).toBe(1);
+
+    const other = createPlayer(shared);
+    await other.play({ url: "https://w.mp3", text: "w", voice: "us", rate: 1 });
+    expect(audios[0]!.paused).toBe(true);
+    expect(audios[1]!.paused).toBe(false);
   });
 });
